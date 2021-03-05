@@ -1,0 +1,24 @@
+.layout {
+  height: 100%;
+}
+
+.toolbar {
+  background-color: #8bc34a;
+  width: max-content;
+  height: max-content;
+  border-bottom-right-radius: 30px;
+  border-top-left-radius: 0;
+}
+
+.center-title-line {
+  display: flex;
+  align-items: center;
+}
+
+.toolbar-text {
+  color: white !important; // expansion-panel forces gray color here
+}
+
+.toolbar-content {
+  background-color: aqua;
+}

@@ -1,0 +1,53 @@
+@import 'node_modules/@angular/material/theming';
+
+/*
+$cp-kerbal: (
+  50: #e8eaf6,
+  100: #c5cae9,
+  200: #9fa8da,
+  300: #BADA55,
+  400: #5c6bc0,
+  500: #3f51b5,
+  600: #3949ab,
+  700: #303f9f,
+  800: #283593,
+  900: #1a237e,
+  A100: #8c9eff,
+  A200: #536dfe,
+  A400: #3d5afe,
+  A700: #304ffe,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $dark-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);
+*/
+
+@include mat-core();
+
+$ksp-comms-planner-primary: mat-palette($mat-light-green);
+$ksp-comms-planner-accent: mat-palette($mat-amber, A200, A100, A400);
+$ksp-comms-planner-warn: mat-palette($mat-deep-orange);
+
+$ksp-comms-planner-theme: mat-light-theme((
+  color: (
+    primary: $ksp-comms-planner-primary,
+    accent: $ksp-comms-planner-accent,
+    warn: $ksp-comms-planner-warn,
+  )
+));
+
+@include angular-material-theme($ksp-comms-planner-theme);
+
