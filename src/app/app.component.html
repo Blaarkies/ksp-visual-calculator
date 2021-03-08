@@ -10,13 +10,22 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-selection-list [multiple]="false">
-      <mat-list-option *ngFor="let link of [1,2,3]"
-                       [value]="link"
-                       routerLink="/{{routes.DistanceCheck}}">
-        {{link}}
-      </mat-list-option>
-    </mat-selection-list>
+    <div class="overlap-container">
+      <div class="route-list-background"></div>
+
+      <mat-selection-list [multiple]="false">
+        <mat-list-option *ngFor="let page of pages"
+                         [value]="page"
+                         (click)="expander.close()"
+                         routerLink="/{{page.route}}">
+
+          <div class="route-button">
+            <span class="text-white route-link">{{page.label}}</span>
+            <mat-icon>{{page.icon}}</mat-icon>
+          </div>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
   </mat-expansion-panel>
 
   <div>
