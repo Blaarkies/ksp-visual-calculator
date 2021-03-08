@@ -21,7 +21,7 @@ export class AppComponent {
 
   routes = UsableRoutes;
   pages: Page[] = [
-    new Page('Distance Check', UsableRoutes.DistanceCheck, Icons.PlanetSearch),
+    new Page('Signal Check', UsableRoutes.DistanceCheck, Icons.PlanetSearch),
 
     new Page('Blaarkies.com', '../blaarkies.com', Icons.Blaarkies),
   ];

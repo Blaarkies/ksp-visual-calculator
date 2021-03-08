@@ -4,8 +4,9 @@ import { PageDistanceCheckComponent } from './pages/page-distance-check/page-dis
 import { UsableRoutes } from './usable-routes';
 
 const routes: Routes = [
-  {path: '', component: PageDistanceCheckComponent},
   {path: UsableRoutes.DistanceCheck, component: PageDistanceCheckComponent},
+
+  {path: '**', redirectTo: UsableRoutes.DistanceCheck},
 ];
 
 @NgModule({

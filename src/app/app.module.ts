@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { PageDistanceCheckComponent } from './pages/page-distance-check/page-distance-check.component';
 import { DraggableSpaceObjectComponent } from './components/draggable-space-object/draggable-space-object.component';
 import { OrbitLineComponent } from './components/orbit-line/orbit-line.component';
+import { TransmissionLineComponent } from './components/transmission-line/transmission-line.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { OrbitLineComponent } from './components/orbit-line/orbit-line.component
     PageDistanceCheckComponent,
     DraggableSpaceObjectComponent,
     OrbitLineComponent,
+    TransmissionLineComponent,
   ],
   imports: [
     BrowserModule,

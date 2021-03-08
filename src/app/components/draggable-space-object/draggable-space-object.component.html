@@ -1,7 +1,7 @@
 <div class="draggable-body overlap-container"
      [class.cursor-grab]="!spaceObject.isGrabbing"
-     [style.left.px]="spaceObject.x"
-     [style.top.px]="spaceObject.y"
+     [style.left.px]="spaceObject.location.x"
+     [style.top.px]="spaceObject.location.y"
      (mousedown)="dragSpaceObject.emit($event)">
   <ng-content></ng-content>
   <span class="label-space-object">

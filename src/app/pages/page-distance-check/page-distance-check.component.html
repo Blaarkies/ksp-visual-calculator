@@ -1,6 +1,8 @@
-<div #screen class="text-white">
+<div #screen class="text-white overlap-container">
 
   <cp-orbit-line *ngFor="let orbit of orbits" [orbit]="orbit"></cp-orbit-line>
+
+  <cp-transmission-line *ngFor="let line of transmissionLines" [transmissionLine]="line"></cp-transmission-line>
 
   <cp-draggable-space-object *ngFor="let body of celestialBodies"
                              [spaceObject]="body"
