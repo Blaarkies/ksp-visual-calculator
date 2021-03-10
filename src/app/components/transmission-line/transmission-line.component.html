@@ -2,11 +2,9 @@
      xmlns="http://www.w3.org/2000/svg">
   <line [attr.stroke-width]="2"
         [attr.stroke]="transmissionLine.color + 'A'"
-        [attr.x1]="transmissionLine.nodes[0].location.x"
-        [attr.y1]="transmissionLine.nodes[0].location.y"
-        [attr.x2]="transmissionLine.nodes[1].location.x"
-        [attr.y2]="transmissionLine.nodes[1].location.y"
+        [attr.x1]="scale * transmissionLine.nodes[0].location.x"
+        [attr.y1]="scale * transmissionLine.nodes[0].location.y"
+        [attr.x2]="scale * transmissionLine.nodes[1].location.x"
+        [attr.y2]="scale * transmissionLine.nodes[1].location.y"
   />
 </svg>
-
-{{transmissionLine.strength}}

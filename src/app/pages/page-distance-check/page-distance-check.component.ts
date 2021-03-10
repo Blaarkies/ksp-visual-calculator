@@ -11,6 +11,7 @@ import { CraftType } from '../../common/domain/craft-type';
 import { Antenna } from '../../common/domain/antenna';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { CameraComponent } from '../../components/camera/camera.component';
 
 @Component({
   selector: 'cp-page-distance-check',
@@ -67,8 +68,8 @@ export class PageDistanceCheckComponent {
       .filter(tl => tl.strength);
   }
 
-  startBodyDrag(body: Draggable, event: MouseEvent, screen: HTMLDivElement) {
-    body.startDrag(event, screen, () => this.updateUniverse());
+  startBodyDrag(body: Draggable, event: MouseEvent, screen: HTMLDivElement, camera?: CameraComponent) {
+    body.startDrag(event, screen, () => this.updateUniverse(), camera);
   }
 
   private updateUniverse() {

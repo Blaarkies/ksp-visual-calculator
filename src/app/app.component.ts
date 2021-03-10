@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { UsableRoutes } from './usable-routes';
-import { Icons } from './common/icons';
+import { Icons } from './common/domain/icons';
 
 class Page {
 

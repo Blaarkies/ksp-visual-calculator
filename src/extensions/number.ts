@@ -10,15 +10,35 @@ Number.prototype.also = function (this: number, callback: (it) => void): number 
 };
 
 Number.prototype.pow = function (this: number, exponent: number = 2): number {
-  return Math.pow(Number(this), exponent);
+  return Math.pow(this, exponent);
 };
 
 Number.prototype.sqrt = function (this: number): number {
-  return Math.sqrt(Number(this));
+  return Math.sqrt(this);
+};
+
+Number.prototype.between = function (this: number,
+                                     lower: number,
+                                     upper: number,
+                                     exclusive: boolean = false): boolean {
+  return exclusive
+    ? (this > lower && this < upper)
+    : !(this < lower || this > upper);
+};
+
+Number.prototype.lerp = function (this: number, other: number, ratio: number = .5): number {
+  if (!ratio.between(0, 1)) {
+    throw `ratio "${ratio}" must be between 0 and 1`;
+  }
+  return this * ratio + other * (1 - ratio);
 };
 
 Number.prototype.odd = function (this: number): boolean {
   return this % 2 !== 0;
+};
+
+Number.prototype.sign = function (this: number): number {
+  return Math.sign(this);
 };
 
 Number.prototype.bitwiseIncludes = function (this: number, value: number): boolean {

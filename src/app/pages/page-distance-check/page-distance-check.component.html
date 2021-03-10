@@ -1,28 +1,43 @@
-<div #screen class="text-white overlap-container">
+<div #screen
+     class="screen-space text-white">
 
-  <cp-orbit-line *ngFor="let orbit of orbits" [orbit]="orbit"></cp-orbit-line>
+  <cp-camera #camera>
 
-  <cp-transmission-line *ngFor="let line of transmissionLines" [transmissionLine]="line"></cp-transmission-line>
+    <cp-orbit-line [@animateFade]
+                   *ngFor="let orbit of orbits"
+                   [orbit]="orbit"
+                   [scale]="camera.scale"></cp-orbit-line>
 
-  <cp-draggable-space-object *ngFor="let body of celestialBodies"
-                             [spaceObject]="body"
-                             (dragSpaceObject)="startBodyDrag(body, $event, screen)">
-    <div class="div-as-image"
-         draggable="false"
-         [style.background]="body.imageUrl"
-         [style.width.px]="body.size"
-         [style.height.px]="body.size"></div>
-  </cp-draggable-space-object>
+    <cp-transmission-line [@animateFade]
+                          *ngFor="let line of transmissionLines"
+                          [transmissionLine]="line"
+                          [scale]="camera.scale"></cp-transmission-line>
 
-  <cp-draggable-space-object *ngFor="let craft of crafts"
-                             [spaceObject]="craft"
-                             (dragSpaceObject)="startBodyDrag(craft, $event, screen)">
-    <div class="craft-icon-sprite-image"
-         draggable="false"
-         [style.background]="craft.imageUrl"
-         [style.background-position-x.px]="craft.spriteLocation.x"
-         [style.background-position-y.px]="craft.spriteLocation.y"
-         [style.zoom]="craft.size / 100"></div>
-  </cp-draggable-space-object>
+    <cp-draggable-space-object [@animateFade]
+                               *ngFor="let body of celestialBodies"
+                               [spaceObject]="body"
+                               [scale]="camera.scale"
+                               (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)">
+      <div class="div-as-image"
+           draggable="false"
+           [style.background]="body.imageUrl"
+           [style.width.px]="body.size"
+           [style.height.px]="body.size"></div>
+    </cp-draggable-space-object>
+
+    <cp-draggable-space-object [@animateFade]
+                               *ngFor="let craft of crafts"
+                               [spaceObject]="craft"
+                               [scale]="camera.scale"
+                               (dragSpaceObject)="startBodyDrag(craft,$event,screen,camera)">
+      <div class="craft-icon-sprite-image"
+           draggable="false"
+           [style.background]="craft.imageUrl"
+           [style.background-position-x.px]="craft.spriteLocation.x"
+           [style.background-position-y.px]="craft.spriteLocation.y"
+           [style.zoom]="craft.size * .01"></div>
+    </cp-draggable-space-object>
+  </cp-camera>
+
 
 </div>

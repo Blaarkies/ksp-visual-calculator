@@ -9,5 +9,6 @@ import { Orbit } from '../../common/domain/orbit';
 export class OrbitLineComponent {
 
   @Input() orbit: Orbit;
+  @Input() scale: number;
 
 }

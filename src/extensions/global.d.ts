@@ -18,6 +18,12 @@ declare global {
 
     odd(this: number): boolean;
 
+    sign(this: number): number;
+
+    between(this: number, lower: number, upper: number, exclusive?: boolean): boolean;
+
+    lerp(this: number, other: number, ratio?: number): number;
+
     bitwiseIncludes(this: number, value: number): boolean;
 
     coerceAtLeast(this: number, threshold: number): number;

@@ -9,7 +9,7 @@ export class LocationConstraints {
 
   static circularMove(circle: Circle): ConstrainLocationFunction {
     return (x, y) => {
-      const direction = Math.atan2(y - circle.y, x - circle.x);
+      let direction = Math.atan2(y - circle.y, x - circle.x);
       return [
         circle.x + circle.r * Math.cos(direction),
         circle.y + circle.r * Math.sin(direction)];

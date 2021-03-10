@@ -13,6 +13,7 @@ import { PageDistanceCheckComponent } from './pages/page-distance-check/page-dis
 import { DraggableSpaceObjectComponent } from './components/draggable-space-object/draggable-space-object.component';
 import { OrbitLineComponent } from './components/orbit-line/orbit-line.component';
 import { TransmissionLineComponent } from './components/transmission-line/transmission-line.component';
+import { CameraComponent } from './components/camera/camera.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { TransmissionLineComponent } from './components/transmission-line/transm
     DraggableSpaceObjectComponent,
     OrbitLineComponent,
     TransmissionLineComponent,
+    CameraComponent,
   ],
   imports: [
     BrowserModule,

@@ -9,5 +9,6 @@ import { TransmissionLine } from '../../common/domain/transmission-line';
 export class TransmissionLineComponent {
 
   @Input() transmissionLine: TransmissionLine;
+  @Input() scale: number;
 
 }

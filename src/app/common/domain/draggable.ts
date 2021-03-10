@@ -2,6 +2,7 @@ import { fromEvent } from 'rxjs';
 import { filter, finalize, map, takeUntil, throttleTime } from 'rxjs/operators';
 import { ConstrainLocationFunction } from './constrain-location-function';
 import { Vector2 } from './vector2';
+import { CameraComponent } from '../../components/camera/camera.component';
 
 export class Draggable {
 
@@ -15,7 +16,10 @@ export class Draggable {
     this.setNewLocation();
   }
 
-  startDrag(event: MouseEvent, screen: HTMLDivElement, updateCallback: () => void) {
+  startDrag(event: MouseEvent,
+            screen: HTMLDivElement,
+            updateCallback: () => void = () => void 0,
+            camera?: CameraComponent) {
     screen.style.cursor = 'grabbing';
     this.isGrabbing = true;
     updateCallback();
@@ -25,7 +29,10 @@ export class Draggable {
         throttleTime(25),
         // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
         filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
-        map((move: MouseEvent) => [move.pageX, move.pageY]),
+        map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
+        map(pair => camera
+          ? [pair[0] / camera.scale, pair[1] / camera.scale]
+          : pair),
         finalize(() => {
           screen.style.cursor = 'unset';
           this.isGrabbing = false;
