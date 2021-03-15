@@ -1,0 +1,11 @@
+<mat-form-field>
+  <mat-label>{{label}}</mat-label>
+  <input #input
+         matInput
+         (focus)="isActive = true"
+         (blur)="isActive = false"
+         (input)="userInputChange($any($event).currentTarget.value)"
+  />
+</mat-form-field>
+
+<cp-validation-message [fieldName]="label" [errors]="errors"></cp-validation-message>

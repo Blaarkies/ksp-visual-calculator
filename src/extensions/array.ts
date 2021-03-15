@@ -1,4 +1,3 @@
-
 export {}; // this file needs to be a module
 
 Array.prototype.shuffle = function (this: Array<any>): Array<any> {
@@ -22,6 +21,10 @@ Array.prototype.count = function (this: Array<any>, callback: (item: any) => boo
 
 Array.prototype.first = function (this: Array<any>): any {
   return this[0];
+};
+
+Array.prototype.last = function (this: Array<any>): any {
+  return this[this.length - 1];
 };
 
 Array.prototype.sum = function (this: Array<number>): number {

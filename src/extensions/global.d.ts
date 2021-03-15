@@ -2,6 +2,10 @@ export {}; // this file needs to be a module
 declare global {
 
   interface String {
+    fuzzyMatch(this: string, search: string): boolean;
+
+    relevanceScore(this: string, search: string): number;
+
     let<O>(this: String, callback: (it: String) => O): O;
 
     also(this: String, callback: (it: String) => void): String;
@@ -41,6 +45,8 @@ declare global {
     count(this: Array<T>, callback: (item) => boolean): number;
 
     first(this: Array<T>): T;
+
+    last(this: Array<T>): T;
 
     sum(this: Array<number>): number;
 

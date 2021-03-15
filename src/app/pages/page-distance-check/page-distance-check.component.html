@@ -1,5 +1,4 @@
-<div #screen
-     class="screen-space text-white">
+<div #screen class="text-white">
 
   <cp-camera #camera>
 
@@ -17,7 +16,8 @@
                                *ngFor="let body of celestialBodies"
                                [spaceObject]="body"
                                [scale]="camera.scale"
-                               (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)">
+                               (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
+                               (editSpaceObject)="editCelestialBody(body)">
       <div class="div-as-image"
            draggable="false"
            [style.background]="body.imageUrl"
@@ -29,7 +29,8 @@
                                *ngFor="let craft of crafts"
                                [spaceObject]="craft"
                                [scale]="camera.scale"
-                               (dragSpaceObject)="startBodyDrag(craft,$event,screen,camera)">
+                               (dragSpaceObject)="startBodyDrag(craft,$event,screen,camera)"
+                               (editSpaceObject)="editCraft(craft)">
       <div class="craft-icon-sprite-image"
            draggable="false"
            [style.background]="craft.imageUrl"
@@ -38,6 +39,8 @@
            [style.zoom]="craft.size * .01"></div>
     </cp-draggable-space-object>
   </cp-camera>
+
+  <cp-edit-universe-action-panel></cp-edit-universe-action-panel>
 
 
 </div>

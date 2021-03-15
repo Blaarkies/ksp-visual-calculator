@@ -14,6 +14,19 @@ import { DraggableSpaceObjectComponent } from './components/draggable-space-obje
 import { OrbitLineComponent } from './components/orbit-line/orbit-line.component';
 import { TransmissionLineComponent } from './components/transmission-line/transmission-line.component';
 import { CameraComponent } from './components/camera/camera.component';
+import { MouseHoverDirective } from './directives/mouse-hover.directive';
+import { ActionPanelComponent } from './components/action-panel/action-panel.component';
+import { EditUniverseActionPanelComponent } from './components/edit-universe-action-panel/edit-universe-action-panel.component';
+import { CraftDetailsDialogComponent } from './dialogs/craft-details-dialog/craft-details-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { InputFieldComponent } from './components/input-field/input-field.component';
+import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
+import { SelectComponent } from './components/select/select.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRippleModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -23,16 +36,30 @@ import { CameraComponent } from './components/camera/camera.component';
     OrbitLineComponent,
     TransmissionLineComponent,
     CameraComponent,
+    MouseHoverDirective,
+    ActionPanelComponent,
+    EditUniverseActionPanelComponent,
+    CraftDetailsDialogComponent,
+    InputFieldComponent,
+    InputFieldComponent,
+    ValidationMessageComponent,
+    SelectComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatToolbarModule,
     MatExpansionModule,
     MatButtonModule,
     MatIconModule,
     MatListModule,
+    MatDialogModule,
+    MatSelectModule,
+    MatRippleModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -2,7 +2,6 @@ import { Vector2 } from './vector2';
 import { ChangeDetectorRef, ElementRef } from '@angular/core';
 import { SmoothSetter } from './smooth-setter';
 
-
 export class Camera {
 
   private scaleSmoothSetter = new SmoothSetter(1, 20, 5,

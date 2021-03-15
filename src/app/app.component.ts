@@ -1,15 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { UsableRoutes } from './usable-routes';
 import { Icons } from './common/domain/icons';
-
-class Page {
-
-  constructor(public label: string,
-              public route: string,
-              public icon: string) {
-  }
-
-}
+import { Page } from './common/domain/page';
 
 @Component({
   selector: 'app-root',

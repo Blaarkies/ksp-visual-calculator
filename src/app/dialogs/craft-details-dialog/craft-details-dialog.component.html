@@ -1,0 +1,31 @@
+<h1 mat-dialog-title>Craft Details</h1>
+
+<div mat-dialog-content>
+
+  <ng-container *ngFor="let inputField of inputFieldsList"
+                [ngSwitch]="inputField.controlMeta.type">
+
+    <cp-input-field *ngSwitchCase="controlMetaTypes.Input"
+                    [label]="inputField.label"
+                    [formControl]="inputField.control"
+                    [errors]="inputField.control.errors"></cp-input-field>
+
+    <cp-select *ngSwitchCase="controlMetaTypes.Select"
+               [options]="$any(inputField.controlMeta).list"
+               [label]="inputField.label"
+               [formControl]="inputField.control"
+               [errors]="inputField.control.errors"></cp-select>
+
+<!--    <div *ngIf="controlMetaTypes.Select == inputField.controlMeta.type">-->
+<!--      {{inputField.control.value | json}}</div>-->
+
+  </ng-container>
+
+</div>
+<br>
+*ngSwitchCase="controlMetaTypes.AntennaSelector"
+
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]>Cancel</button>
+  <button color="primary" mat-stroked-button [mat-dialog-close]="'yes'" cdkFocusInitial>Create</button>
+</div>

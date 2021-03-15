@@ -1,0 +1,28 @@
+<mat-form-field>
+  <mat-label>{{label}}</mat-label>
+  <mat-select (selectionChange)="userInputChange($event.value)"
+              (opened)="inputRef.focus()"
+              (closed)="clearSearch(inputRef)"
+              [multiple]="false">
+    <div class="search-box overlap-container" #searchBox>
+      <cp-input-field #inputRef
+                      label="Search"
+                      (keydown)="$event.stopPropagation()"
+                      (output)="searchValue$.next($event)">
+      </cp-input-field>
+      <button class="position-right"
+              mat-icon-button
+              disableRipple
+              (click)="clearSearch(inputRef)">
+        <mat-icon color="primary">{{icons.Clear}}</mat-icon>
+      </button>
+    </div>
+
+    <mat-option *ngFor="let option of filteredOptions"
+                [value]="option.value">
+      {{option.label}}
+    </mat-option>
+
+    <mat-option *ngIf="!filteredOptions?.length" disabled>No Options</mat-option>
+  </mat-select>
+</mat-form-field>

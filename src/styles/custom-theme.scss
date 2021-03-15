@@ -37,7 +37,7 @@ $cp-kerbal: (
 
 @include mat-core();
 
-$ksp-comms-planner-primary: mat-palette($mat-light-green);
+$ksp-comms-planner-primary: mat-palette($mat-green);
 $ksp-comms-planner-accent: mat-palette($mat-amber, A200, A100, A400);
 $ksp-comms-planner-warn: mat-palette($mat-deep-orange);
 

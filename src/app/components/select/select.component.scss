@@ -1,0 +1,18 @@
+.search-box {
+  overflow: hidden;
+  padding: 4px 0 4px 14px;
+  background-color: #ded;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.position-right {
+  overflow: hidden;
+  justify-self: end;
+  transition: .3s ease-in;
+
+  &:active {
+    background-color: #0003;
+  }
+}

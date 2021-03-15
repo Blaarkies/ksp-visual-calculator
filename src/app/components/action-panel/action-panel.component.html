@@ -1,0 +1,39 @@
+<mat-expansion-panel #expander
+                     hideToggle
+                     class="action-panel"
+                     [ngClass]="[color, location]"
+                     disabled>
+  <mat-expansion-panel-header>
+    <mat-panel-title class="center-title-line toolbar-text">
+      <button mat-icon-button (click)="expander.toggle()">
+        <mat-icon>{{startIcon}}</mat-icon>
+      </button>
+      <span>{{startTitle}}</span>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <div class="overlap-container">
+    <div class="list-background"></div>
+
+    <mat-selection-list [multiple]="false">
+
+      <mat-list-option *ngFor="let option of options"
+                       [value]="option"
+                       (click)="expander.close()">
+        <ng-template #optionButton>
+          <div class="route-button" (click)="option.action()">
+            <span class="text-white route-link">{{option.label}}</span>
+            <mat-icon>{{option.icon}}</mat-icon>
+          </div>
+        </ng-template>
+
+        <div *ngIf="option.route; else optionButton"
+             routerLink="/{{option.route}}">
+<!--          routerLink {{option.route}}-->
+          <ng-container *ngTemplateOutlet="optionButton"></ng-container>
+        </div>
+
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+</mat-expansion-panel>

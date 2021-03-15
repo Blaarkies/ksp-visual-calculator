@@ -44,13 +44,13 @@ export class PageDistanceCheckComponent {
     this.addCraft();
     let oldCraft = this.crafts[0];
     let newCraft = new Craft('renamed craft', oldCraft.craftType, oldCraft.constrainLocation, [Antenna.Communotron16]);
-    this.editCraft(oldCraft, newCraft);
+    this.replaceCraft(oldCraft, newCraft);
 
     this.addCraft();
     let oldCraftB = this.crafts[1];
     let newCraftB = new Craft('rescue boi', oldCraftB.craftType, LocationConstraints.anyMove(600, 300),
       [Antenna.Communotron16, Antenna.Communotron16, Antenna.HG5HighGainAntenna]);
-    this.editCraft(oldCraftB, newCraftB);
+    this.replaceCraft(oldCraftB, newCraftB);
 
     this.updateTransmissionLines();
   }
@@ -82,8 +82,15 @@ export class PageDistanceCheckComponent {
     this.crafts.push(craft);
   }
 
-  editCraft(oldCraft: Craft, newCraft: Craft) {
+  replaceCraft(oldCraft: Craft, newCraft: Craft) {
     this.crafts.replace(oldCraft, newCraft);
   }
 
+  editCelestialBody(body: SpaceObject) {
+    console.log('body');
+  }
+
+  editCraft(craft: Craft) {
+    console.log('craft');
+  }
 }

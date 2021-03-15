@@ -1,32 +1,36 @@
 <div class="layout overlap-container">
 
-  <mat-expansion-panel #expander hideToggle class="toolbar" disabled>
-    <mat-expansion-panel-header>
-      <mat-panel-title class="center-title-line toolbar-text">
-        <button mat-icon-button (click)="expander.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <span>KSP CommNet Planner</span>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+  <cp-action-panel startTitle="KSP CommNet Planner"
+                   [options]="pages">
+  </cp-action-panel>
 
-    <div class="overlap-container">
-      <div class="route-list-background"></div>
+  <!--  <mat-expansion-panel #expander hideToggle class="toolbar" disabled>-->
+  <!--    <mat-expansion-panel-header>-->
+  <!--      <mat-panel-title class="center-title-line toolbar-text">-->
+  <!--        <button mat-icon-button (click)="expander.toggle()">-->
+  <!--          <mat-icon>menu</mat-icon>-->
+  <!--        </button>-->
+  <!--        <span>KSP CommNet Planner</span>-->
+  <!--      </mat-panel-title>-->
+  <!--    </mat-expansion-panel-header>-->
 
-      <mat-selection-list [multiple]="false">
-        <mat-list-option *ngFor="let page of pages"
-                         [value]="page"
-                         (click)="expander.close()"
-                         routerLink="/{{page.route}}">
+  <!--    <div class="overlap-container">-->
+  <!--      <div class="route-list-background"></div>-->
 
-          <div class="route-button">
-            <span class="text-white route-link">{{page.label}}</span>
-            <mat-icon>{{page.icon}}</mat-icon>
-          </div>
-        </mat-list-option>
-      </mat-selection-list>
-    </div>
-  </mat-expansion-panel>
+  <!--      <mat-selection-list [multiple]="false">-->
+  <!--        <mat-list-option *ngFor="let page of pages"-->
+  <!--                         [value]="page"-->
+  <!--                         (click)="expander.close()"-->
+  <!--                         routerLink="/{{page.route}}">-->
+
+  <!--          <div class="route-button">-->
+  <!--            <span class="text-white route-link">{{page.label}}</span>-->
+  <!--            <mat-icon>{{page.icon}}</mat-icon>-->
+  <!--          </div>-->
+  <!--        </mat-list-option>-->
+  <!--      </mat-selection-list>-->
+  <!--    </div>-->
+  <!--  </mat-expansion-panel>-->
 
   <div>
     <router-outlet></router-outlet>
