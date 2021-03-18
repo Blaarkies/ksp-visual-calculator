@@ -1,0 +1,28 @@
+<div class="layout">
+  <div *ngFor="let antennaInput of antennaInputs"
+       class="selected-antenna">
+
+    <cp-input-field label="Antenna Type"
+                    [formControl]="antennaInput.antennaControl"></cp-input-field>
+
+    <cp-input-number label="Part Count"
+                     [formControl]="antennaInput.countControl"
+                     [errors]="antennaInput.countControl.errors"
+                     (output)="userInputChange()"></cp-input-number>
+
+    <button mat-icon-button (click)="removeAntenna(antennaInput)">
+      <mat-icon color="warn">{{icons.TrashX}}</mat-icon>
+    </button>
+  </div>
+
+  <cp-select *ngIf="availableOptions.length"
+             label="Antenna Type"
+             [options]="availableOptions"
+             [formControl]="finalControl"
+             (change)="userInputChange()"></cp-select>
+
+  <div>
+    <div>Relay Bias: {{collectionStats.relayBias | number:'.2-2'}}</div>
+    <div>Total Power: {{collectionStats.summedPowerRating | number:'.0-0'}}</div>
+  </div>
+</div>

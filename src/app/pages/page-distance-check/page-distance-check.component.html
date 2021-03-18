@@ -3,17 +3,17 @@
   <cp-camera #camera>
 
     <cp-orbit-line [@animateFade]
-                   *ngFor="let orbit of orbits"
+                   *ngFor="let orbit of orbits$ | async"
                    [orbit]="orbit"
                    [scale]="camera.scale"></cp-orbit-line>
 
     <cp-transmission-line [@animateFade]
-                          *ngFor="let line of transmissionLines"
+                          *ngFor="let line of transmissionLines$ | async"
                           [transmissionLine]="line"
                           [scale]="camera.scale"></cp-transmission-line>
 
     <cp-draggable-space-object [@animateFade]
-                               *ngFor="let body of celestialBodies"
+                               *ngFor="let body of celestialBodies$ | async"
                                [spaceObject]="body"
                                [scale]="camera.scale"
                                (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
@@ -26,10 +26,10 @@
     </cp-draggable-space-object>
 
     <cp-draggable-space-object [@animateFade]
-                               *ngFor="let craft of crafts"
+                               *ngFor="let craft of crafts$ | async"
                                [spaceObject]="craft"
                                [scale]="camera.scale"
-                               (dragSpaceObject)="startBodyDrag(craft,$event,screen,camera)"
+                               (dragSpaceObject)="startBodyDrag(craft, $event, screen, camera)"
                                (editSpaceObject)="editCraft(craft)">
       <div class="craft-icon-sprite-image"
            draggable="false"

@@ -1,13 +1,14 @@
 import { Draggable } from './draggable';
 import { ConstrainLocationFunction } from './constrain-location-function';
 import { Antenna } from './antenna';
+import { Group } from './group';
 
 export class SpaceObject extends Draggable {
 
   constructor(public size: number,
               label: string, imageUrl: string,
               constrainLocation: ConstrainLocationFunction,
-              public antennae: Antenna[] = []) {
+              public antennae: Group<Antenna>[] = []) {
     super(label, `url(${imageUrl}) 0 0`, constrainLocation);
   }
 

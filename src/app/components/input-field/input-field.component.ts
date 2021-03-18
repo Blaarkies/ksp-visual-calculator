@@ -15,6 +15,9 @@ import { FormControlError } from '../../common/domain/input-fields/form-control-
 })
 export class InputFieldComponent extends BasicValueAccessor {
 
+  @Input() type: 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
+    | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
+    | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week' = 'text';
   @Input() label: string;
   @Input() errors: FormControlError;
 

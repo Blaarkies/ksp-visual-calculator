@@ -3,8 +3,7 @@
      [style.left.px]="scale * spaceObject.location.x"
      [style.top.px]="scale * spaceObject.location.y"
      (mousedown)="dragSpaceObject.emit($event)"
-     cpMousehover
-     (hoverChange)="buttonHover$.next($event)">
+     cpMousehover (hoverChange)="buttonHover$.next($event)">
 
   <ng-content></ng-content>
 
@@ -14,7 +13,8 @@
           mat-icon-button
           [@animateFade]
           *ngIf="buttonHover$ | async"
-          (click)="editSpaceObject.next()">
+          (click)="editSpaceObject.next()"
+          (mousedown)="$event.stopPropagation()">
     <mat-icon>edit</mat-icon>
   </button>
 

@@ -5,5 +5,8 @@ export class Icons {
   static Hamburger = 'menu';
   static Craft = 'toys';
   static Clear = 'clear';
+  static TrashX = 'delete_forever';
+  static Planet = 'public';
+  static External = 'launch';
 
 }

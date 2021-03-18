@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Craft Details</h1>
 
-<div mat-dialog-content>
+<div mat-dialog-content class="craft-details-form">
 
   <ng-container *ngFor="let inputField of inputFieldsList"
                 [ngSwitch]="inputField.controlMeta.type">
@@ -16,16 +16,22 @@
                [formControl]="inputField.control"
                [errors]="inputField.control.errors"></cp-select>
 
-<!--    <div *ngIf="controlMetaTypes.Select == inputField.controlMeta.type">-->
-<!--      {{inputField.control.value | json}}</div>-->
+    <cp-antenna-selector *ngSwitchCase="controlMetaTypes.AntennaSelector"
+                         [options]="$any(inputField.controlMeta).list"
+                         [label]="inputField.label"
+                         [formControl]="inputField.control"
+                         [errors]="inputField.control.errors"></cp-antenna-selector>
 
   </ng-container>
 
 </div>
-<br>
-*ngSwitchCase="controlMetaTypes.AntennaSelector"
 
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]>Cancel</button>
-  <button color="primary" mat-stroked-button [mat-dialog-close]="'yes'" cdkFocusInitial>Create</button>
+  <button color="primary"
+          mat-stroked-button
+          [disabled]="form.invalid"
+          (click)="submitCraftDetails()">
+    {{data.edit ? 'Edit' : 'Create'}}
+  </button>
 </div>

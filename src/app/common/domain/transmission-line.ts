@@ -20,7 +20,7 @@ export class TransmissionLine {
     let distance = this.nodes[0].location.distance(this.nodes[1].location);
     // todo: when A direct antenna connects to B relay antenna,
     // disregard B direct antennae from calculation
-    let maxRange = .001 * (this.nodes[0].totalPowerRating * this.nodes[1].totalPowerRating).sqrt();
+    let maxRange = .00005 * (this.nodes[0].totalPowerRating * this.nodes[1].totalPowerRating).sqrt();
 
     if (distance > maxRange) {
       return 0;

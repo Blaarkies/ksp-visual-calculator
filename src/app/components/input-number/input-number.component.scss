@@ -1,0 +1,34 @@
+.layout {
+  display: grid;
+}
+
+.short-input {
+  mat-form-field {
+    width: 50px;
+  }
+}
+
+.no-spinner-arrows {
+  input {
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+}
+
+.slider-popup {
+  border-radius: 20px !important;
+  padding: 0 10px;
+  min-height: unset !important;
+  overflow: hidden !important;
+  left: -25%;
+  position: relative;
+}

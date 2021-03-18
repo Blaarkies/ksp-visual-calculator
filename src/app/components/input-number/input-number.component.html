@@ -1,0 +1,18 @@
+<div class="layout">
+
+  <mat-menu class="slider-popup" #popup="matMenu" yPosition="above">
+    <mat-slider #slider
+                color="primary"
+                (input)="sliderChange($event.value)"></mat-slider>
+  </mat-menu>
+
+  <cp-input-field #input
+                  class="short-input no-spinner-arrows"
+                  type="number"
+                  [label]="label"
+                  [errors]="errors"
+                  [matMenuTriggerFor]="popup"
+                  (output)="inputChange($event)"
+  ></cp-input-field>
+
+</div>

@@ -1,5 +1,11 @@
 export {}; // this file needs to be a module
 
+String.prototype.like = function (this: string, search: string): boolean {
+  const cleanThis = this.trim().toLowerCase();
+  const cleanSearch = search.trim().toLowerCase();
+  return cleanThis === cleanSearch;
+};
+
 String.prototype.fuzzyMatch = function (this: string, search: string): boolean {
   const cleanThis = this.trim().toLowerCase();
   const cleanSearch = search.trim().toLowerCase();
@@ -31,6 +37,10 @@ String.prototype.relevanceScore = function (this: string, search: string): numbe
   }
 
   return relevanceScore;
+};
+
+String.prototype.toNumber = function (this: String): number {
+  return Number(this);
 };
 
 String.prototype.let = function (this: String, callback: (it) => any): any {

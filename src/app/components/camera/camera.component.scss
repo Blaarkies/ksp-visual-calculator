@@ -6,6 +6,7 @@
 }
 
 .screen-space {
+  transition: .05s;
   outline: 1px dashed #0FF7;
 
   position: absolute;

@@ -9,8 +9,16 @@ Number.prototype.also = function (this: number, callback: (it) => void): number 
   return this;
 };
 
+Number.prototype.isNaN = function (this: number): boolean {
+  return isNaN(this);
+};
+
 Number.prototype.pow = function (this: number, exponent: number = 2): number {
   return Math.pow(this, exponent);
+};
+
+Number.prototype.toInt = function (this: number): number {
+  return Math.round(this);
 };
 
 Number.prototype.sqrt = function (this: number): number {

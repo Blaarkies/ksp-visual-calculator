@@ -27,6 +27,10 @@ import { ValidationMessageComponent } from './components/validation-message/vali
 import { SelectComponent } from './components/select/select.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
+import { AntennaSelectorComponent } from './components/antenna-selector/antenna-selector.component';
+import { InputNumberComponent } from './components/input-number/input-number.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -44,6 +48,8 @@ import { MatRippleModule } from '@angular/material/core';
     InputFieldComponent,
     ValidationMessageComponent,
     SelectComponent,
+    AntennaSelectorComponent,
+    InputNumberComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,6 +66,8 @@ import { MatRippleModule } from '@angular/material/core';
     MatDialogModule,
     MatSelectModule,
     MatRippleModule,
+    MatMenuModule,
+    MatSliderModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

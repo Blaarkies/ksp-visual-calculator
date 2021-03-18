@@ -2,6 +2,7 @@
   <mat-label>{{label}}</mat-label>
   <input #input
          matInput
+         [type]="type"
          (focus)="isActive = true"
          (blur)="isActive = false"
          (input)="userInputChange($any($event).currentTarget.value)"

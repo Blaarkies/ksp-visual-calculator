@@ -1,0 +1,13 @@
+.craft-details-form {
+  overflow: hidden;
+
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: max-content auto;
+  gap: 20px 40px;
+
+  cp-antenna-selector {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+}

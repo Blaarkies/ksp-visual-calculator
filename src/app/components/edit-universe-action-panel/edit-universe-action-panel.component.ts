@@ -1,40 +1,50 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DialogPosition } from '@angular/material/dialog/dialog-config';
+import { SpaceObjectService } from '../../services/space-object.service';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
   templateUrl: './edit-universe-action-panel.component.html',
   styleUrls: ['./edit-universe-action-panel.component.scss'],
 })
-export class EditUniverseActionPanelComponent implements OnInit, OnDestroy {
+export class EditUniverseActionPanelComponent implements OnDestroy {
 
   actions: ActionOption[];
   unsubscribe$ = new Subject();
 
-  constructor(dialog: MatDialog) {
+  constructor(dialog: MatDialog,
+              spaceObjectService: SpaceObjectService,
+              cdr: ChangeDetectorRef) {
     this.actions = [
-      new ActionOption('New Craft', Icons.Craft, () => {
-        dialog.open(CraftDetailsDialogComponent, {
-          data: {} as CraftDetailsDialogData,
-          position: {left: '10px'} as DialogPosition,
-        })
-          .afterClosed()
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(result => {
-            console.log(result);
-          });
+      new ActionOption('New Craft', Icons.Craft, {
+        action: () => {
+          dialog.open(CraftDetailsDialogComponent, {
+            data: {
+              forbiddenCraftNames: spaceObjectService.crafts$.value.map(c => c.label),
+            } as CraftDetailsDialogData,
+          })
+            .afterClosed()
+            .pipe(
+              filter(craftDetails => craftDetails),
+              takeUntil(this.unsubscribe$))
+            .subscribe(craftDetails => {
+              spaceObjectService.addCraftToUniverse(craftDetails);
+              cdr.markForCheck();
+            });
+        },
+      }),
+      new ActionOption('New Celestial Body', Icons.Planet, {
+        action: () => {
+          alert('Coming soon!');
+        },
       }),
     ];
-  }
-
-  ngOnInit(): void {
-    this.actions[0].action();
   }
 
   ngOnDestroy() {

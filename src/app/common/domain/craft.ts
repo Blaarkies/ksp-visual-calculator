@@ -4,6 +4,7 @@ import { ConstrainLocationFunction } from './constrain-location-function';
 import { ImageUrls } from './image-urls';
 import { CraftType } from './craft-type';
 import { Antenna } from './antenna';
+import { Group } from './group';
 
 export class Craft extends SpaceObject {
 
@@ -12,7 +13,7 @@ export class Craft extends SpaceObject {
   constructor(label: string,
               public craftType: CraftType,
               constrainLocation: ConstrainLocationFunction,
-              antennae: Antenna[] = []) {
+              antennae: Group<Antenna>[] = []) {
     super(30, label, ImageUrls.CraftIcons, constrainLocation, antennae);
     this.spriteLocation = craftType.spriteLocation;
   }

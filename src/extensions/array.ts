@@ -37,6 +37,12 @@ Array.prototype.replace = function (this: Array<any>, stale: any, fresh: any): A
   return this;
 };
 
+Array.prototype.remove = function (this: Array<any>, stale: any): Array<any> {
+  let index = this.indexOf(stale);
+  this.splice(index, 1);
+  return this;
+};
+
 Array.prototype.flatMap = function (this: Array<any>, selectorCallback: (item: any) => any
   = item => item): Array<any> {
   return this.reduce((sum, c) => [...sum, ...selectorCallback(c)], []);
@@ -53,5 +59,15 @@ Array.prototype.joinSelf = function (this: Array<any>): Array<Array<any>> {
   return this.map((item, i, list) =>
     list.map(innerItem => [item, innerItem]))
     .flatMap();
+};
+
+Array.prototype.except = function (this: Array<any>,
+                                   other: Array<any>,
+                                   selector?: (item: any) => any): Array<any> {
+  let mappedOther = selector
+    ? other.map(item => selector(item))
+    : other;
+  const toRemove = new Set(mappedOther);
+  return this.filter(item => !toRemove.has(selector ? selector(item) : item));
 };
 

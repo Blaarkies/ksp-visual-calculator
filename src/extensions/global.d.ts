@@ -2,9 +2,13 @@ export {}; // this file needs to be a module
 declare global {
 
   interface String {
+    like(this: string, search: string): boolean;
+
     fuzzyMatch(this: string, search: string): boolean;
 
     relevanceScore(this: string, search: string): number;
+
+    toNumber(this: string): number;
 
     let<O>(this: String, callback: (it: String) => O): O;
 
@@ -16,7 +20,11 @@ declare global {
 
     also(this: number, callback: (it: number) => void): number;
 
+    isNaN(this: number): boolean;
+
     pow(this: number, exponent: number): number;
+
+    toInt(this: number): number;
 
     sqrt(this: number): number;
 
@@ -52,11 +60,15 @@ declare global {
 
     replace(this: Array<T>, stale: T, fresh: T): Array<T>;
 
+    remove(this: Array<T>, stale: T): Array<T>;
+
     flatMap(this: Array<T>, selectorCallback?: (item: T) => T): Array<any>;
 
     distinct(this: Array<T>, indexCallback?: (parentItem: T, list: Array<T>) => number): Array<T>;
 
     joinSelf(this: Array<T>): Array<Array<T>>;
+
+    except(this: Array<T>, other: Array<any>, selector?: (item: any) => any): Array<T>;
   }
 
   // interface Object {

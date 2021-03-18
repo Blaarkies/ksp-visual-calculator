@@ -1,6 +1,9 @@
+import { LabeledOption } from './input-fields/labeled-option';
+import { Group } from './group';
+
 export class Antenna {
 
-  constructor(public name: string,
+  constructor(public label: string,
               // public cost: number,
               // public mass: number,
               // public electricityPMit: number,
@@ -17,10 +20,24 @@ export class Antenna {
   static Communotron16 = new Antenna('Communotron 16', false, 5e3, 1);
   static HG5HighGainAntenna = new Antenna('HG-5 High Gain Antenna', true, 5e6, .75);
 
-  static combinedPower(antennae: Antenna[]): number {
-    let strongestAntennaPower = antennae.sort((a, b) => a.powerRating - b.powerRating).first().powerRating;
-    let sumOfAntennaPowers = antennae.map(a => a.powerRating).sum();
-    let averageCombinabilityExponent = antennae.map(a => a.powerRating * a.combinabilityExponent)
+
+  private static All = [
+    Antenna.Dsn1,
+    Antenna.Communotron16,
+    Antenna.HG5HighGainAntenna,
+  ];
+
+  static List = Antenna.All.map(a => new LabeledOption(a.label, a));
+
+  static combinedPower(antennae: Group<Antenna>[]): number {
+    let strongestAntennaPower = antennae
+      .map(g => g.item)
+      .sort((a, b) => a.powerRating - b.powerRating)
+      .first()
+      .powerRating;
+    let sumOfAntennaPowers = antennae.map(({item, count}) => item.powerRating * count).sum();
+    let averageCombinabilityExponent = antennae
+      .map(({item, count}) => item.powerRating * item.combinabilityExponent * count)
       .sum() / sumOfAntennaPowers;
 
     let vesselPower = strongestAntennaPower
@@ -29,7 +46,7 @@ export class Antenna {
     return vesselPower;
   }
 
-  static containsRelay(antennae: Antenna[]): boolean {
-    return antennae.some(a => a.relay);
+  static containsRelay(antennae: Group<Antenna>[]): boolean {
+    return antennae.map(g => g.item).some(a => a.relay);
   }
 }
