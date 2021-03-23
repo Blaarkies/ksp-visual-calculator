@@ -14,7 +14,6 @@ import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details-dial
 import { CameraService } from './camera.service';
 import { Vector2 } from '../common/domain/vector2';
 import { BehaviorSubject } from 'rxjs';
-import { A } from '@angular/cdk/keycodes';
 
 @Injectable({
   providedIn: 'root',

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Icons } from '../../common/domain/icons';
-import { ActionOption } from '../../common/domain/action-option';
+import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
 
 @Component({
   selector: 'cp-action-panel',
@@ -8,7 +8,7 @@ import { ActionOption } from '../../common/domain/action-option';
   styleUrls: ['./action-panel.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ActionPanelComponent implements OnInit {
+export class ActionPanelComponent {
 
   @Input() color: 'green' | 'orange' = 'green';
   @Input() location: 'top-left' | 'bottom-left' = 'top-left';
@@ -17,11 +17,6 @@ export class ActionPanelComponent implements OnInit {
   @Input() options: ActionOption[];
 
   icons = Icons;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  actionTypes = ActionOptionType;
 
 }

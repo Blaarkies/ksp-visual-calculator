@@ -35,19 +35,24 @@
   filter: blur(10px);
 }
 
-.route-link {
-  padding-left: 20px !important;
-}
-
-.route-button {
+.action-button {
+  height: 100%;
   display: grid;
+  gap: 10px;
   grid-auto-flow: column;
   align-items: center;
+
+  padding: 0 20px !important;
 
   mat-icon {
     color: white;
     justify-self: end;
   }
+}
+
+.route-wrap {
+  height: 100%;
+  outline: none !important;
 }
 
 .toolbar-text {
@@ -56,4 +61,18 @@
 
 .mat-expansion-panel-body {
   padding: unset !important; // remove extra padding
+}
+
+.mat-list-text {
+  height: 100%;
+  padding: 0 !important;
+}
+
+.mat-list-item-content {
+  padding: 0 !important;
+}
+
+.anchor-invisible {
+  height: 100%;
+  text-decoration: none;
 }
