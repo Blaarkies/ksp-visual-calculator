@@ -1,5 +1,5 @@
-import { Vector2 } from './vector2';
-import { LabeledOption } from './input-fields/labeled-option';
+import { Vector2 } from '../vector2';
+import { LabeledOption } from '../input-fields/labeled-option';
 
 export class CraftType {
 

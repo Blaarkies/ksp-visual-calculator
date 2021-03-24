@@ -2,38 +2,46 @@
 
   <cp-camera #camera>
 
-    <cp-orbit-line [@animateFade]
-                   *ngFor="let orbit of orbits$ | async"
-                   [orbit]="orbit"
-                   [scale]="camera.scale"></cp-orbit-line>
+    <ng-container *ngFor="let orbit of orbits$ | async">
+      <cp-orbit-line [@animateFade]
+                     *ngIf="orbit.type === spaceObjectTypes.Planet
+                         || orbit.type === spaceObjectTypes.Star
+                         || camera.scale > 4"
+                     [orbit]="orbit"
+                     [scale]="camera.scale"></cp-orbit-line>
+    </ng-container>
 
     <cp-transmission-line [@animateFade]
                           *ngFor="let line of transmissionLines$ | async"
                           [transmissionLine]="line"
                           [scale]="camera.scale"></cp-transmission-line>
 
-    <cp-draggable-space-object [@animateFade]
-                               *ngFor="let body of celestialBodies$ | async"
-                               [spaceObject]="body"
-                               [scale]="camera.scale"
-                               (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
-                               (editSpaceObject)="editCelestialBody(body)">
-      <div class="div-as-image"
-           draggable="false"
-           [style.background]="body.imageUrl"
-           [style.width.px]="body.size"
-           [style.height.px]="body.size"></div>
-    </cp-draggable-space-object>
+    <ng-container *ngFor="let body of celestialBodies$ | async">
+      <cp-draggable-space-object [@animateFade]
+                                 *ngIf="body.type === spaceObjectTypes.Planet
+                                     || body.type === spaceObjectTypes.Star
+                                     || camera.scale > 4"
+                                 [spaceObject]="body"
+                                 [scale]="camera.scale"
+                                 (dragSpaceObject)="startBodyDrag(body.draggableHandle, $event, screen, camera)"
+                                 (editSpaceObject)="editCelestialBody(body)">
+        <div class="div-as-image"
+             draggable="false"
+             [style.background]="body.draggableHandle.imageUrl"
+             [style.width.px]="body.size"
+             [style.height.px]="body.size"></div>
+      </cp-draggable-space-object>
+    </ng-container>
 
     <cp-draggable-space-object [@animateFade]
                                *ngFor="let craft of crafts$ | async"
                                [spaceObject]="craft"
                                [scale]="camera.scale"
-                               (dragSpaceObject)="startBodyDrag(craft, $event, screen, camera)"
+                               (dragSpaceObject)="startBodyDrag(craft.draggableHandle, $event, screen, camera)"
                                (editSpaceObject)="editCraft(craft)">
       <div class="craft-icon-sprite-image"
            draggable="false"
-           [style.background]="craft.imageUrl"
+           [style.background]="craft.draggableHandle.imageUrl"
            [style.background-position-x.px]="craft.spriteLocation.x"
            [style.background-position-y.px]="craft.spriteLocation.y"
            [style.zoom]="craft.size * .01"></div>

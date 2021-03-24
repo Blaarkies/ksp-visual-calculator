@@ -1,4 +1,4 @@
-import { SpaceObject } from './space-object';
+import { SpaceObject } from './space-objects/space-object';
 
 export class TransmissionLine {
 

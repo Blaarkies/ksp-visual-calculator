@@ -1,8 +1,7 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
 import { fromEvent, Subject } from 'rxjs';
 import { finalize, map, takeUntil } from 'rxjs/operators';
-import { Camera } from '../../common/domain/camera';
 import { CameraService } from '../../services/camera.service';
 
 @Component({
@@ -11,8 +10,6 @@ import { CameraService } from '../../services/camera.service';
   styleUrls: ['./camera.component.scss'],
 })
 export class CameraComponent implements OnInit, OnDestroy {
-
-  @Output() change = new EventEmitter<Camera>();
 
   @ViewChild('cameraController', {static: true}) cameraController: ElementRef<HTMLDivElement>;
   @ViewChild('screenSpace', {static: true}) screenSpace: ElementRef<HTMLDivElement>;
@@ -40,7 +37,6 @@ export class CameraComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-    // this.camera.destroy();
   }
 
   updateScale(event: WheelEvent) {

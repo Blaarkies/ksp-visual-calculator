@@ -2,8 +2,8 @@
      xmlns="http://www.w3.org/2000/svg"
      [style.width.px]="scale * 2 * orbit.parameters.r"
      [style.height.px]="scale * 2 * orbit.parameters.r"
-     [style.left.px]="scale * (orbit.parameters.x - orbit.parameters.r)"
-     [style.top.px]="scale * (orbit.parameters.y - orbit.parameters.r)">
+     [style.left.px]="scale * (orbit.parameters.xy[0] - orbit.parameters.r)"
+     [style.top.px]="scale * (orbit.parameters.xy[1] - orbit.parameters.r)">
   <circle cx="50%"
           cy="50%"
           [attr.r]="scale * orbit.parameters.r"

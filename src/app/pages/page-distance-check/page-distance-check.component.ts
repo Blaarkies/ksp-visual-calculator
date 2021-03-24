@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
-import { Draggable } from '../../common/domain/draggable';
-import { Orbit } from '../../common/domain/orbit';
-import { SpaceObject } from '../../common/domain/space-object';
-import { Craft } from '../../common/domain/craft';
+import { Draggable } from '../../common/domain/space-objects/draggable';
+import { Orbit } from '../../common/domain/space-objects/orbit';
+import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
+import { Craft } from '../../common/domain/space-objects/craft';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { CameraComponent } from '../../components/camera/camera.component';
@@ -27,6 +27,7 @@ export class PageDistanceCheckComponent implements OnDestroy {
   crafts$: Observable<Craft[]>;
 
   private unsubscribe$ = new Subject();
+  spaceObjectTypes = SpaceObjectType;
 
   constructor(private _cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,

@@ -68,7 +68,7 @@ export class CameraService {
 
     let nowDiff = nowSize.clone().multiply(1 - scaleRatio);
 
-    let locationRatio = new Vector2(.5, .5)
+    let locationRatio = new Vector2(.33, .33)
     // new Vector2(-this.location.x / screenSize.x, -this.location.y / screenSize.y)
     //   .addVector2(
     //   new Vector2(.5, .5)
@@ -84,7 +84,6 @@ export class CameraService {
 
     this.location = this.location.clone()
       .addVector2(movement);
-
 
     this.scale += delta;
   }

@@ -2,10 +2,10 @@
      class="camera-controller"
      (mousewheel)="updateScale($event)"
      (mousedown)="startMove($event, cameraController)"
-     (contextmenu)="$event.shiftKey || $event.preventDefault()"
->
+     (contextmenu)="$event.shiftKey || $event.preventDefault()">
 
-  <div style="color: #F004;
+  <!--  todo: debug why camera does not follow cursor on zooming-->
+  <!--<div style="color: #F004;
   font-weight: lighter;
   position: absolute;
   font-size: 30px;
@@ -21,7 +21,7 @@
     location-x: {{cameraService?.location?.x | number:'.1-1'}} <br>
     location-y: {{cameraService?.location?.y | number:'.1-1'}} <br>
     scale: {{cameraService?.scale | number:'.2-2'}} <br>
-  </div>
+  </div>-->
 
   <div #screenSpace
        class="screen-space overlap-container"

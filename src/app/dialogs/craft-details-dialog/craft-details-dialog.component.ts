@@ -1,30 +1,20 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormArray, FormControl, Validators } from '@angular/forms';
-import { CraftType } from '../../common/domain/craft-type';
+import { CraftType } from '../../common/domain/space-objects/craft-type';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { ControlMetaAntennaSelector } from '../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 import { Antenna } from '../../common/domain/antenna';
-import { Group } from '../../common/domain/group';
 import { CommonValidators } from '../../common/validators/common-validators';
-import { Craft } from '../../common/domain/craft';
+import { Craft } from '../../common/domain/space-objects/craft';
+import { CraftDetails } from './craft-details';
 
 export class CraftDetailsDialogData {
   forbiddenCraftNames: string[];
   edit?: Craft;
-}
-
-export class CraftDetails {
-
-  constructor(
-    public name: string,
-    public craftType: CraftType,
-    public antennae: Group<Antenna>[]) {
-  }
-
 }
 
 @Component({
