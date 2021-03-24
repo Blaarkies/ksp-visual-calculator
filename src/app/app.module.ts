@@ -31,6 +31,7 @@ import { AntennaSelectorComponent } from './components/antenna-selector/antenna-
 import { InputNumberComponent } from './components/input-number/input-number.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSliderModule } from '@angular/material/slider';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { MatSliderModule } from '@angular/material/slider';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    HttpClientModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

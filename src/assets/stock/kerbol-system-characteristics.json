@@ -1,0 +1,61 @@
+{
+  "bodies": [
+    {
+      "comment": "@type\n",
+      "id": "kerbol",
+      "type": "star",
+      "name": "Kerbol",
+      "equatorialRadius": 2616e5,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/9/96/TinyKerbol.png/125px-TinyKerbol.png"
+    },
+    {
+      "comment": "@type\n",
+      "id": "moho",
+      "type": "planet",
+      "name": "Moho",
+      "parent": "kerbol",
+      "semiMajorAxis": 5263138304,
+      "equatorialRadius": 25e4,
+      "sphereOfInfluence": 9646663,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/3/31/TinyMoho.png",
+      "orbitLineColor": "#F00"
+    },
+
+    {
+      "comment": "@type\n",
+      "id": "eve",
+      "type": "planet",
+      "name": "Eve",
+      "parent": "kerbol",
+      "semiMajorAxis": 9832684544,
+      "equatorialRadius": 7e5,
+      "sphereOfInfluence": 85109365,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/0/03/TinyEve.png/200px-TinyEve.png",
+      "orbitLineColor": "#83f"
+    },
+    {
+      "comment": "@type\n",
+      "id": "gilly",
+      "type": "moon",
+      "name": "Gilly",
+      "parent": "eve",
+      "semiMajorAxis": 315e5,
+      "equatorialRadius": 13e3,
+      "sphereOfInfluence": 126123,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/f/fb/Gilly_tracking.png",
+      "orbitLineColor": "#F00"
+    },
+    {
+      "comment": "@type\n",
+      "id": "kerbin",
+      "type": "planet",
+      "name": "Kerbin",
+      "parent": "kerbol",
+      "semiMajorAxis": 13599840256,
+      "equatorialRadius": 6e5,
+      "sphereOfInfluence": 84159286,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/5/5d/TinyKerbin.png/200px-TinyKerbin.png",
+      "orbitLineColor": "#3ff"
+    }
+  ]
+}

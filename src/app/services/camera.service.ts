@@ -58,7 +58,7 @@ export class CameraService {
   }
 
   addScale(delta: number, mouseLocation: Vector2 = null) {
-    if (!(this.scale + delta).between(.1, 10)) { // todo: connect this with scale setter
+    if (!(this.scale + delta).between(.1, 20)) { // todo: connect this with scale setter
       return;
     }
     let scaleRatio = (delta + this.scale) / this.scale;

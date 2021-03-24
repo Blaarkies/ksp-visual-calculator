@@ -10,6 +10,19 @@ export class SpaceObjectType {
   static Moon = 'moon';
   static Craft = 'craft';
 
+  static fromString(type: string) {
+    let match = [
+      SpaceObjectType.Star,
+      SpaceObjectType.Planet,
+      SpaceObjectType.Moon,
+      SpaceObjectType.Craft,
+    ].includes(type);
+    if (!match) {
+      throw `${type} is not a valid SpaceObjectType`;
+    }
+
+    return type;
+  }
 }
 
 export class SpaceObject {
