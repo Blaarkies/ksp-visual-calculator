@@ -34,3 +34,9 @@ export class SmoothSetter<T> {
     }
 
 }
+
+// todo: requestAnimationFrame to improve visual performance
+// window.requestAnimationFrame(() => {
+//   let val = `translate3D(${posX}px, ${posY}px, 0px) scale(${scale})`
+//   node.style.transform = val
+// })

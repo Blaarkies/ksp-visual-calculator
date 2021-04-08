@@ -2,12 +2,18 @@ import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
 import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
 
+let defaultScale = 5e-8;
+
+let defaultLocation = new Vector2(960, 540);
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CameraService {
 
-  private scaleSmoothSetter = new SmoothSetter(1, 20, 5,
+  private static zoomLimits = [2e-9, 23e-5];
+
+  private scaleSmoothSetter = new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
     (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
     () => this._cdr.markForCheck());
 
@@ -16,12 +22,11 @@ export class CameraService {
   }
 
   set scale(value: number) {
-    let limitedValue = value.coerceIn(.1, 10);
+    let limitedValue = value.coerceIn(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
     this.scaleSmoothSetter.set(limitedValue);
   }
 
-
-  private locationSmoothSetter = new SmoothSetter(new Vector2(0, 0), 20, 5,
+  private locationSmoothSetter = new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
     (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
     () => this._cdr.markForCheck());
 
@@ -33,7 +38,6 @@ export class CameraService {
     this.locationSmoothSetter.set(value);
   }
 
-
   get screenCenterOffset(): Vector2 {
     let element = this.cameraController.nativeElement;
     return new Vector2(element.offsetWidth * .5, element.offsetHeight * .5);
@@ -44,48 +48,35 @@ export class CameraService {
     return new Vector2(element.offsetWidth, element.offsetHeight);
   }
 
-  get screenSpaceSize(): Vector2 {
-    let element = this.screenSpace.nativeElement;
-    return new Vector2(element.offsetWidth, element.offsetHeight);
-  }
-
   // todo: change to proper setters, callbacks
   _cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
   screenSpace: ElementRef<HTMLDivElement>;
 
-  constructor() {
+  worldCursor: Vector2;
+  lastFocus: Vector2;
+
+  reset(scale?: number, location?: Vector2) {
+    this.scaleSmoothSetter.value = scale ?? defaultScale;
+    this.locationSmoothSetter.value = location ?? defaultLocation.clone();
   }
 
-  addScale(delta: number, mouseLocation: Vector2 = null) {
-    if (!(this.scale + delta).between(.1, 20)) { // todo: connect this with scale setter
+  zoomAt(delta: number, mouseLocation: Vector2 = null) {
+    document.querySelector('#debugs').innerHTML = mouseLocation.toString();
+
+    delta = delta > 0 ? 1.6 : 1 / 1.6;
+
+    if (!(this.scale * delta).between(
+      CameraService.zoomLimits[0], CameraService.zoomLimits[1])) {
       return;
     }
-    let scaleRatio = (delta + this.scale) / this.scale;
+    this.scale *= delta;
 
-    let screenSize = this.screenSize;
-    let nowSize = screenSize.clone().multiply(this.scale);
+    // when scale set, the mouseLocation position will move by .6 factor
+    let worldLocation = mouseLocation.add(-this.location.x, -this.location.y);
+    let shift = worldLocation.multiply((delta - 1) * -1);
 
-    let nowDiff = nowSize.clone().multiply(1 - scaleRatio);
-
-    let locationRatio = new Vector2(.33, .33)
-    // new Vector2(-this.location.x / screenSize.x, -this.location.y / screenSize.y)
-    //   .addVector2(
-    //   new Vector2(.5, .5)
-    // );
-    let movement = nowDiff.clone().multiplyVector2(locationRatio);
-
-    // console.log(
-    //   // nowSize,
-    //   // nowDiff,
-    //   movement,
-    //   locationRatio,
-    // );
-
-    this.location = this.location.clone()
-      .addVector2(movement);
-
-    this.scale += delta;
+    this.location.addVector2(shift);
   }
 
   destroy() {

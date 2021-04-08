@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
 import { fromEvent, Subject } from 'rxjs';
-import { finalize, map, takeUntil } from 'rxjs/operators';
+import { finalize, map, sampleTime, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 
 @Component({
@@ -25,7 +25,17 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   constructor(private _cdr: ChangeDetectorRef,
-              public cameraService: CameraService /*todo: public for debug*/) {
+              public cameraService: CameraService /*todo: public for debugging, change to private*/) {
+    this.worldCursorChange$
+      .pipe(sampleTime(33))
+      .subscribe(({x, y}) => this.worldCursor = new Vector2(x, y));
+  }
+
+  worldCursor: Vector2;
+  worldCursorChange$ = new Subject<MouseEvent>();
+
+  setWorldCursor(event: MouseEvent) {
+    this.worldCursorChange$.next(event);
   }
 
   ngOnInit() {
@@ -40,7 +50,7 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   updateScale(event: WheelEvent) {
-    this.cameraService.addScale(-event.deltaY * .01, new Vector2(event.x, event.y));
+    this.cameraService.zoomAt(-event.deltaY, new Vector2(event.x, event.y));
     this._cdr.markForCheck();
   }
 
@@ -65,6 +75,26 @@ export class CameraComponent implements OnInit, OnDestroy {
         this.cameraService.location.add(x, y);
         this._cdr.markForCheck();
       });
+  }
+
+  zeroLocation() {
+    this.cameraService.location = new Vector2(0, 0);
+  }
+
+  zeroScale() {
+    this.cameraService.scale = .00000005;
+  }
+
+  zoomAtTest1() {
+    this.cameraService.reset();
+
+    this.cameraService.zoomAt(+1, new Vector2(1223, 540)); // at Moho with default scale)
+  }
+
+  zoomAtTest2() {
+    this.cameraService.reset(.00000008, new Vector2(960, 540));
+
+    this.cameraService.zoomAt(+1, new Vector2(1223, 540)); // at Moho with default scale)
   }
 
 }

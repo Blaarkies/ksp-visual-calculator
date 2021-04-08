@@ -5,7 +5,7 @@
      (contextmenu)="$event.shiftKey || $event.preventDefault()">
 
   <!--  todo: debug why camera does not follow cursor on zooming-->
-  <!--<div style="color: #F004;
+  <div style="color: #F004;
   font-weight: lighter;
   position: absolute;
   font-size: 30px;
@@ -17,16 +17,35 @@
     ⁘
   </div>
 
-  <div style="position: absolute; top: 100px">
-    location-x: {{cameraService?.location?.x | number:'.1-1'}} <br>
-    location-y: {{cameraService?.location?.y | number:'.1-1'}} <br>
-    scale: {{cameraService?.scale | number:'.2-2'}} <br>
-  </div>-->
+
+  <div style="position: absolute; top: 100px; z-index: 1000">
+    <pre>
+ location-x: {{cameraService?.location?.x | number:'.1-1'}}
+ location-y: {{cameraService?.location?.y | number:'.1-1'}}
+ scale: {{cameraService?.scale | number:'.2-10'}}
+
+ worldCursor: {{worldCursor?.toString()}}
+ <button mat-stroked-button color="accent" (click)="zeroLocation()">location zero</button>
+ <button mat-stroked-button color="accent" (click)="zeroScale()">scale zero</button>
+ <button mat-stroked-button color="warn" (click)="zoomAtTest1()">zoom test 1</button>
+ <button mat-stroked-button color="warn" (click)="zoomAtTest2()">zoom test 2</button>
+  </pre>
+  </div>
+
+  <div id="debugs" style="margin-top: 50px;"></div>
 
   <div #screenSpace
        class="screen-space overlap-container"
        [style.left.px]="location.x"
-       [style.top.px]="location.y">
+       [style.top.px]="location.y"
+       (mousemove)="setWorldCursor($event)"
+  >
+    <div style="position: absolute;"
+         [style.left.px]="scale * cameraService.worldCursor?.x"
+         [style.top.px]="scale * cameraService.worldCursor?.y">
+      +
+    </div>
     <ng-content></ng-content>
   </div>
 </div>
+

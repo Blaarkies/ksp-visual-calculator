@@ -53,8 +53,12 @@ export class Vector2 {
     return this;
   }
 
-  lerpClone(other: Vector2, ratio: number): Vector2 {
+  lerpClone(other: Vector2, ratio: number = .5): Vector2 {
     return this.clone().lerp(other, ratio);
+  }
+
+  toString(): string {
+    return `${this.x} ${this.y}`;
   }
 
 }

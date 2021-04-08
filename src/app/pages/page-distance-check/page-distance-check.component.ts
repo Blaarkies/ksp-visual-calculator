@@ -11,6 +11,7 @@ import { Observable, Subject } from 'rxjs';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { CameraService } from '../../services/camera.service';
 
 @Component({
   selector: 'cp-page-distance-check',
@@ -31,7 +32,8 @@ export class PageDistanceCheckComponent implements OnDestroy {
 
   constructor(private _cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private cameraService: CameraService) {
     this.orbits$ = this.spaceObjectService.orbits$;
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;
     this.celestialBodies$ = this.spaceObjectService.celestialBodies$;
@@ -40,6 +42,9 @@ export class PageDistanceCheckComponent implements OnDestroy {
 
   startBodyDrag(body: Draggable, event: MouseEvent, screen: HTMLDivElement, camera?: CameraComponent) {
     body.startDrag(event, screen, () => this.updateUniverse(), camera);
+
+    // todo: fix camera to zoom in at cursor instead
+    this.cameraService.lastFocus = body.location;
   }
 
   private updateUniverse() {

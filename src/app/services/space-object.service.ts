@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Orbit } from '../common/domain/space-objects/orbit';
-import { Colors } from '../common/domain/colors';
 import { SpaceObject, SpaceObjectType } from '../common/domain/space-objects/space-object';
-import { ImageUrls } from '../common/domain/image-urls';
 import { Group } from '../common/domain/group';
 import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
@@ -57,7 +55,7 @@ export class SpaceObjectService {
             .filter(([cb]) => cb.type !== SpaceObjectType.Star)
             .map(([cb, so]) => [
               /*key  */so,
-              /*value*/new Orbit(OrbitParameterData.fromRadius(cb.semiMajorAxis*1e-8), cb.orbitLineColor),
+              /*value*/new Orbit(OrbitParameterData.fromRadius(cb.semiMajorAxis), cb.orbitLineColor),
             ]));
         bodyOrbitMap.forEach((orbit, body) => {
           body.draggableHandle.addOrbit(orbit);
@@ -67,7 +65,7 @@ export class SpaceObjectService {
         // Done setup, call first location init
         bodyToJsonMapEntries
           .find(([, so]) => so.type === SpaceObjectType.Star)[1]
-          .draggableHandle.updateConstrainLocation({xy: [500, 500]});
+          .draggableHandle.updateConstrainLocation({xy: [0, 0]});
         let listOrbits = Array.from(bodyOrbitMap.values());
 
         this.orbits$.next(listOrbits);
@@ -76,12 +74,16 @@ export class SpaceObjectService {
         this.transmissionLines$.next([]);
 
         this.addCraft(new CraftDetails(
-          'renamed craft', CraftType.Relay, [new Group(Antenna.Communotron16, 1)]),
-          new Vector2(300, 300));
+          'Untitled Craft 1', CraftType.Relay, [new Group(Antenna.Communotron16, 1)]),
+          this.celestialBodies$.value[2].location.lerpClone(
+            this.celestialBodies$.value[4].location)
+        );
 
         this.addCraft(new CraftDetails(
-          'rescue boi', CraftType.Relay, [new Group(Antenna.HG5HighGainAntenna, 15)]),
-          new Vector2(500, 300));
+          'Untitled Craft 2', CraftType.Relay, [new Group(Antenna.HG5HighGainAntenna, 15)]),
+          this.celestialBodies$.value[4].location.lerpClone(
+            this.celestialBodies$.value[7].location)
+        );
 
         this.updateTransmissionLines();
       });

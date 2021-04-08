@@ -18,9 +18,8 @@
       "equatorialRadius": 25e4,
       "sphereOfInfluence": 9646663,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/3/31/TinyMoho.png",
-      "orbitLineColor": "#F00"
+      "orbitLineColor": "#fdbc89"
     },
-
     {
       "comment": "@type\n",
       "id": "eve",
@@ -31,7 +30,7 @@
       "equatorialRadius": 7e5,
       "sphereOfInfluence": 85109365,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/0/03/TinyEve.png/200px-TinyEve.png",
-      "orbitLineColor": "#83f"
+      "orbitLineColor": "#7320f5"
     },
     {
       "comment": "@type\n",
@@ -43,7 +42,7 @@
       "equatorialRadius": 13e3,
       "sphereOfInfluence": 126123,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/f/fb/Gilly_tracking.png",
-      "orbitLineColor": "#F00"
+      "orbitLineColor": "#9f7966"
     },
     {
       "comment": "@type\n",
@@ -55,7 +54,151 @@
       "equatorialRadius": 6e5,
       "sphereOfInfluence": 84159286,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/5/5d/TinyKerbin.png/200px-TinyKerbin.png",
-      "orbitLineColor": "#3ff"
+      "orbitLineColor": "#30f0f0"
+    },
+    {
+      "comment": "@type\n",
+      "id": "mun",
+      "type": "moon",
+      "name": "Mun",
+      "parent": "kerbin",
+      "semiMajorAxis": 12e6,
+      "equatorialRadius": 2e5,
+      "sphereOfInfluence": 2429559,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/1/15/TinyMun.png/300px-TinyMun.png",
+      "orbitLineColor": "#d0d0f0"
+    },
+    {
+      "comment": "@type\n",
+      "id": "minmus",
+      "type": "moon",
+      "name": "Minmus",
+      "parent": "kerbin",
+      "semiMajorAxis": 47e6,
+      "equatorialRadius": 6e4,
+      "sphereOfInfluence": 2247428,
+      "imageUrl": "https://kerbal-forum-uploads.s3.us-west-2.amazonaws.com/monthly_2018_06/TinyMinmus.png.78390ffd8e132e428cd43fccb49db51c.png",
+      "orbitLineColor": "#b090c0"
+    },
+    {
+      "comment": "@type\n",
+      "id": "duna",
+      "type": "planet",
+      "name": "Duna",
+      "parent": "kerbol",
+      "semiMajorAxis": 20726155264,
+      "equatorialRadius": 32e4,
+      "sphereOfInfluence": 47921949,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/1/17/TinyDuna.png/200px-TinyDuna.png",
+      "orbitLineColor": "#ab4323"
+    },
+    {
+      "comment": "@type\n",
+      "id": "ike",
+      "type": "moon",
+      "name": "Ike",
+      "parent": "duna",
+      "semiMajorAxis": 32e5,
+      "equatorialRadius": 13e4,
+      "sphereOfInfluence": 1049598,
+      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyIke.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "dres",
+      "type": "planet",
+      "name": "Dres",
+      "parent": "kerbol",
+      "semiMajorAxis": 40839348203,
+      "equatorialRadius": 138e3,
+      "sphereOfInfluence": 32832840,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/d/dd/TinyDres.png/200px-TinyDres.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "jool",
+      "type": "planet",
+      "name": "Jool",
+      "parent": "kerbol",
+      "semiMajorAxis": 68773560320,
+      "equatorialRadius": 6e6,
+      "sphereOfInfluence": 2.4559852e9,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/3/35/TinyJool.png",
+      "orbitLineColor": "#568e0e"
+    },
+    {
+      "comment": "@type\n",
+      "id": "laythe",
+      "type": "moon",
+      "name": "Laythe",
+      "parent": "jool",
+      "semiMajorAxis": 27184000,
+      "equatorialRadius": 5e5,
+      "sphereOfInfluence": 3723645,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/9/94/TinyLaythe.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "vall",
+      "type": "moon",
+      "name": "Vall",
+      "parent": "jool",
+      "semiMajorAxis": 43152e3,
+      "equatorialRadius": 3e5,
+      "sphereOfInfluence": 2406401,
+      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyVall.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "tylo",
+      "type": "moon",
+      "name": "Tylo",
+      "parent": "jool",
+      "semiMajorAxis": 685e5,
+      "equatorialRadius": 6e5,
+      "sphereOfInfluence": 10856518,
+      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyTylo.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "bop",
+      "type": "moon",
+      "name": "Bop",
+      "parent": "jool",
+      "semiMajorAxis": 1285e5,
+      "equatorialRadius": 65e3,
+      "sphereOfInfluence": 1221060,
+      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyBop.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "pol",
+      "type": "moon",
+      "name": "Pol",
+      "parent": "jool",
+      "semiMajorAxis": 17989e4,
+      "equatorialRadius": 44e3,
+      "sphereOfInfluence": 1042138,
+      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyPol.png",
+      "orbitLineColor": "#ff0000"
+    },
+    {
+      "comment": "@type\n",
+      "id": "eeloo",
+      "type": "planet",
+      "name": "Eeloo",
+      "parent": "kerbol",
+      "semiMajorAxis": 9011882e4,
+      "equatorialRadius": 21e4,
+      "sphereOfInfluence": 1.1908294e8,
+      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/e/e0/TinyEeloo.png/200px-TinyEeloo.png",
+      "orbitLineColor": "#707678"
     }
   ]
 }
