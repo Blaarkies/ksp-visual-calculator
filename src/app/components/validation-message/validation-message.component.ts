@@ -6,6 +6,7 @@ export class ErrorMessageTranscriber {
   private static messageTypes = new Map<string, (name: string, meta: any) => string>([
     ['required', (name, meta) => `${name} is required`],
     ['min', (name, meta) => `${name} must be at least ${meta.min}`],
+    ['max', (name, meta) => `${name} must be less than ${meta.max}`],
     ['duplicateString', (name, meta) => `${name} must be unique`],
   ]);
 

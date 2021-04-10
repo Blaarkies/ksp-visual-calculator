@@ -2,6 +2,7 @@ import { Draggable } from './draggable';
 import { Antenna } from '../antenna';
 import { Group } from '../group';
 import { Vector2 } from '../vector2';
+import { LabeledOption } from '../input-fields/labeled-option';
 
 export class SpaceObjectType {
 
@@ -10,13 +11,18 @@ export class SpaceObjectType {
   static Moon = 'moon';
   static Craft = 'craft';
 
+  private static All = [
+    SpaceObjectType.Star,
+    SpaceObjectType.Planet,
+    SpaceObjectType.Moon,
+    SpaceObjectType.Craft,
+  ];
+
+  // todo: use dedicated labels instead of re-using source code labels
+  static List = SpaceObjectType.All.map(a => new LabeledOption(a[0].toLocaleUpperCase() + a.slice(1), a));
+
   static fromString(type: string) {
-    let match = [
-      SpaceObjectType.Star,
-      SpaceObjectType.Planet,
-      SpaceObjectType.Moon,
-      SpaceObjectType.Craft,
-    ].includes(type);
+    let match = SpaceObjectType.All.includes(type);
     if (!match) {
       throw `${type} is not a valid SpaceObjectType`;
     }

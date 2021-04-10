@@ -18,7 +18,7 @@ export class Draggable {
 
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
   private parent: Draggable;
-  private orbit: Orbit;
+  public orbit: Orbit;
 
   constructor(public label: string,
               public imageUrl: string,

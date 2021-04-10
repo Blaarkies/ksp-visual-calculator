@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormArray, FormControl, Validators } from '@angular/forms';
 import { CraftType } from '../../common/domain/space-objects/craft-type';
@@ -13,7 +13,7 @@ import { CraftDetails } from './craft-details';
 import { SetupService } from '../../services/setup.service';
 
 export class CraftDetailsDialogData {
-  forbiddenCraftNames: string[];
+  forbiddenNames: string[];
   edit?: Craft;
 }
 
@@ -21,20 +21,20 @@ export class CraftDetailsDialogData {
   selector: 'cp-craft-details-dialog',
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class CraftDetailsDialogComponent {
 
-  controlMetaTypes = ControlMetaType;
   inputFields = {
     name: {
-      label: 'Craft Name',
+      label: 'Name',
       control: new FormControl(this.data.edit?.label ?? 'Untitled Space Craft', [Validators.required,
-        CommonValidators.uniqueString(this.data.forbiddenCraftNames.except([this.data.edit?.label]))],
+        CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
       ),
       controlMeta: new ControlMetaInput(),
     },
     craftType: {
-      label: 'Craft Type',
+      label: 'Type',
       control: new FormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
       controlMeta: new ControlMetaSelect(CraftType.List),
     },

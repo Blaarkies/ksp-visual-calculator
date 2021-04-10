@@ -1,0 +1,9 @@
+.celestial-body-details-form > cp-input-field-list {
+  overflow: hidden;
+
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-auto-flow: column;
+  gap: 20px 40px;
+
+}

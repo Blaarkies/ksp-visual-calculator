@@ -26,7 +26,7 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
         action: () => {
           dialog.open(CraftDetailsDialogComponent, {
             data: {
-              forbiddenCraftNames: spaceObjectService.crafts$.value.map(c => c.label),
+              forbiddenNames: spaceObjectService.crafts$.value.map(c => c.label),
             } as CraftDetailsDialogData,
           })
             .afterClosed()

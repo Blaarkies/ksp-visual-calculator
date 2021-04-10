@@ -13,6 +13,8 @@ import { OrbitParameterData } from '../common/domain/space-objects/orbit-paramet
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
 import { filter, tap } from 'rxjs/operators';
+import { A } from '@angular/cdk/keycodes';
+import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 
 @Injectable({
   providedIn: 'root',
@@ -88,8 +90,12 @@ export class SpaceObjectService {
     this.updateTransmissionLines();
   }
 
-  editCelestialBody(body: SpaceObject) {
-    console.log('body edit');
+  editCelestialBody(body: SpaceObject, details: CelestialBodyDetails) {
+    body.draggableHandle.label = details.name;
+    body.type = details.celestialBodyType;
+    body.size = details.size;
+    body.draggableHandle.orbit.color = details.orbitColor;
+    body.hasDsn = details.hasDsn;
   }
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {

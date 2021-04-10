@@ -11,6 +11,11 @@ import { Observable, Subject } from 'rxjs';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
+import { CelestialBodyDetails } from '../../dialogs/celestial-body-details-dialog/celestial-body-details';
+import {
+  CelestialBodyDetailsDialogComponent,
+  CelestialBodyDetailsDialogData,
+} from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
 
 @Component({
   selector: 'cp-page-distance-check',
@@ -48,22 +53,35 @@ export class PageDistanceCheckComponent implements OnDestroy {
   }
 
   editCelestialBody(body: SpaceObject) {
-    // this.spaceObjectService.editCelestialBody(body);
+    this.dialog.open(CelestialBodyDetailsDialogComponent, {
+      data: {
+        forbiddenNames: this.spaceObjectService.celestialBodies$.value.map(c => c.label),
+        edit: body,
+      } as CelestialBodyDetailsDialogData,
+    })
+      .afterClosed()
+      .pipe(
+        filter(details => details),
+        takeUntil(this.unsubscribe$))
+      .subscribe(details => {
+        this.spaceObjectService.editCelestialBody(body, details);
+        this._cdr.markForCheck();
+      });
   }
 
   editCraft(craft: Craft) {
     this.dialog.open(CraftDetailsDialogComponent, {
       data: {
-        forbiddenCraftNames: this.spaceObjectService.crafts$.value.map(c => c.label),
+        forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
         edit: craft,
       } as CraftDetailsDialogData,
     })
       .afterClosed()
       .pipe(
-        filter(craftDetails => craftDetails),
+        filter(details => details),
         takeUntil(this.unsubscribe$))
-      .subscribe(craftDetails => {
-        this.spaceObjectService.editCraft(craft, craftDetails);
+      .subscribe(details => {
+        this.spaceObjectService.editCraft(craft, details);
         this._cdr.markForCheck();
       });
   }

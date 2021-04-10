@@ -1,6 +1,6 @@
-<h1 mat-dialog-title>Craft Details</h1>
+<h1 mat-dialog-title>Celestial Body Details</h1>
 
-<div mat-dialog-content class="craft-details-form">
+<div mat-dialog-content class="celestial-body-details-form">
   <cp-input-field-list [inputFields]="inputFieldsList"></cp-input-field-list>
 </div>
 
@@ -9,7 +9,7 @@
   <button color="primary"
           mat-stroked-button
           [disabled]="form.invalid"
-          (click)="submitCraftDetails()">
+          (click)="submitDetails()">
     {{data.edit ? 'Edit' : 'Create'}}
   </button>
 </div>
