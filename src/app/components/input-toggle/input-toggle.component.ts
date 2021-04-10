@@ -1,0 +1,57 @@
+import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { FormControlError } from '../../common/domain/input-fields/form-control-error';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
+
+@Component({
+  selector: 'cp-input-toggle',
+  templateUrl: './input-toggle.component.html',
+  styleUrls: ['./input-toggle.component.scss'],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => InputToggleComponent),
+    multi: true,
+  }],
+})
+export class InputToggleComponent extends BasicValueAccessor {
+
+  @Input() label: string;
+  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
+  @Input() indeterminate?: boolean;
+  @Input() errors: FormControlError;
+
+  @ViewChild('checkbox', {static: true}) checkbox: MatCheckbox;
+
+  constructor() {
+    super();
+  }
+
+  writeValue(value: any) {
+    let booledValue = !!value;
+    this.checkbox.checked = booledValue;
+    this.value = booledValue;
+  }
+
+  registerOnChange(fn: (value: any) => any) {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => any) {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean) {
+    this.checkbox.disabled = isDisabled;
+  }
+
+  userInputChange(value: boolean) {
+    this.writeValue(value);
+    this.onChange && this.onChange(value);
+  }
+
+  focus() {
+    this.checkbox.focus();
+  }
+
+}

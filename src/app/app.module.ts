@@ -51,6 +51,7 @@ import { HttpClientModule } from '@angular/common/http';
     SelectComponent,
     AntennaSelectorComponent,
     InputNumberComponent,
+    InputToggleComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +71,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatRippleModule,
     MatMenuModule,
     MatSliderModule,
+    MatCheckboxModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

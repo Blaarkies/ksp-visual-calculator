@@ -2,6 +2,8 @@ export {}; // this file needs to be a module
 declare global {
 
   interface String {
+    toTitleCase(this: string): string;
+
     like(this: string, search: string): boolean;
 
     fuzzyMatch(this: string, search: string): boolean;

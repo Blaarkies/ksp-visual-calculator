@@ -1,5 +1,11 @@
 export {}; // this file needs to be a module
 
+String.prototype.toTitleCase = function (this: string): string {
+  return this.replace(
+    /([^\W_]+[^\s-]*) */g, // match words separated by space/dash
+    word => word[0].toUpperCase() + word.slice(1).toLowerCase());
+};
+
 String.prototype.like = function (this: string, search: string): boolean {
   const cleanThis = this.trim().toLowerCase();
   const cleanSearch = search.trim().toLowerCase();

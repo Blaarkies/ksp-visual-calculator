@@ -1,0 +1,9 @@
+<mat-checkbox #checkbox
+              [checked]="value"
+              [color]="color"
+              [indeterminate]="indeterminate"
+              (change)="userInputChange($event.checked)">
+  {{label}}
+</mat-checkbox>
+
+<cp-validation-message [fieldName]="label" [errors]="errors"></cp-validation-message>

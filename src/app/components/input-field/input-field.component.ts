@@ -15,6 +15,7 @@ import { FormControlError } from '../../common/domain/input-fields/form-control-
 })
 export class InputFieldComponent extends BasicValueAccessor {
 
+  // todo: these only work for character input types (text, number, ...)
   @Input() type: 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
     | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
     | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week' = 'text';
