@@ -1,33 +1,20 @@
-import { LabeledOption } from './input-fields/labeled-option';
 import { Group } from './group';
+import { AntennaPart } from '../../services/json-interfaces/antenna-part';
 
 export class Antenna {
 
-  constructor(public label: string,
-              // public cost: number,
-              // public mass: number,
-              // public electricityPMit: number,
-              // public electricityPS: number,
-              // public transmissionSpeed: number,
-              public relay: boolean,
-              // public tier: number,
-              public powerRating: number,
-              public combinabilityExponent: number,
-  ) {
+  constructor(
+    public label: string,
+    public cost: number,
+    public mass: number,
+    public electricityPMit: number,
+    public electricityPS: number,
+    public transmissionSpeed: number,
+    public relay: boolean,
+    public tier: number,
+    public powerRating: number,
+    public combinabilityExponent: number) {
   }
-
-  static Dsn1 = new Antenna('DSN Network 1', true, 2e9, .75);
-  static Communotron16 = new Antenna('Communotron 16', false, 5e3, 1);
-  static HG5HighGainAntenna = new Antenna('HG-5 High Gain Antenna', true, 5e6, .75);
-
-
-  private static All = [
-    Antenna.Dsn1,
-    Antenna.Communotron16,
-    Antenna.HG5HighGainAntenna,
-  ];
-
-  static List = Antenna.All.map(a => new LabeledOption(a.label, a));
 
   static combinedPower(antennae: Group<Antenna>[]): number {
     let strongestAntennaPower = antennae
@@ -49,4 +36,20 @@ export class Antenna {
   static containsRelay(antennae: Group<Antenna>[]): boolean {
     return antennae.map(g => g.item).some(a => a.relay);
   }
+
+  static fromAntennaPart(part: AntennaPart): Antenna {
+    return new Antenna(
+      part.label,
+      part.cost,
+      part.mass,
+      part.electricityPMit,
+      part.electricityPS,
+      part.transmissionSpeed,
+      part.relay,
+      part.tier,
+      part.powerRating,
+      part.combinabilityExponent,
+    );
+  }
+
 }

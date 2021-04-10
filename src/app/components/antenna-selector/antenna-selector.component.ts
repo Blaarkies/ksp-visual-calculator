@@ -101,8 +101,8 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
 
   removeAntenna(antennaInput: AntennaInput) {
     this.antennaInputs.remove(antennaInput);
-    this.updateCollectionStats(this.antennaInputs);
     this.refreshAvailableOptions();
+    this.userInputChange();
   }
 
   private updateCollectionStats(antennaInputs: AntennaInput[]) {

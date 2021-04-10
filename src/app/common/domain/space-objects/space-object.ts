@@ -42,7 +42,8 @@ export class SpaceObject {
               imageUrl: string,
               moveType: 'noMove' | 'freeMove' | 'orbital',
               public type: SpaceObjectType,
-              public antennae: Group<Antenna>[] = []) {
+              public antennae: Group<Antenna>[] = [],
+              public hasDsn?: boolean) {
     this.draggableHandle = new Draggable(label, `url(${imageUrl}) 0 0`, moveType);
   }
 

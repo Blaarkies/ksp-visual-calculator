@@ -54,7 +54,6 @@ export class CameraService {
   screenSpace: ElementRef<HTMLDivElement>;
 
   worldCursor: Vector2;
-  lastFocus: Vector2;
 
   reset(scale?: number, location?: Vector2) {
     this.scaleSmoothSetter.value = scale ?? defaultScale;
@@ -62,9 +61,9 @@ export class CameraService {
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
-    document.querySelector('#debugs').innerHTML = mouseLocation.toString();
+    // document.querySelector('#debugs').innerHTML = mouseLocation.toString();
 
-    delta = delta > 0 ? 1.6 : 1 / 1.6;
+    delta = delta > 0 ? 1.4 : 1 / 1.4;
 
     if (!(this.scale * delta).between(
       CameraService.zoomLimits[0], CameraService.zoomLimits[1])) {
@@ -72,9 +71,8 @@ export class CameraService {
     }
     this.scale *= delta;
 
-    // when scale set, the mouseLocation position will move by .6 factor
     let worldLocation = mouseLocation.add(-this.location.x, -this.location.y);
-    let shift = worldLocation.multiply((delta - 1) * -1);
+    let shift = worldLocation.multiply(-(delta - 1));
 
     this.location.addVector2(shift);
   }

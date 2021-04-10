@@ -54,7 +54,8 @@
       "equatorialRadius": 6e5,
       "sphereOfInfluence": 84159286,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/5/5d/TinyKerbin.png/200px-TinyKerbin.png",
-      "orbitLineColor": "#30f0f0"
+      "orbitLineColor": "#30f0f0",
+      "hasDsn": true
     },
     {
       "comment": "@type\n",
@@ -102,7 +103,7 @@
       "equatorialRadius": 13e4,
       "sphereOfInfluence": 1049598,
       "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyIke.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#967354"
     },
     {
       "comment": "@type\n",
@@ -114,7 +115,7 @@
       "equatorialRadius": 138e3,
       "sphereOfInfluence": 32832840,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/d/dd/TinyDres.png/200px-TinyDres.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#5e4835"
     },
     {
       "comment": "@type\n",
@@ -138,7 +139,7 @@
       "equatorialRadius": 5e5,
       "sphereOfInfluence": 3723645,
       "imageUrl": "https://wiki.kerbalspaceprogram.com/images/9/94/TinyLaythe.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#4859a3"
     },
     {
       "comment": "@type\n",
@@ -150,7 +151,7 @@
       "equatorialRadius": 3e5,
       "sphereOfInfluence": 2406401,
       "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyVall.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#73a1bc"
     },
     {
       "comment": "@type\n",
@@ -162,7 +163,7 @@
       "equatorialRadius": 6e5,
       "sphereOfInfluence": 10856518,
       "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyTylo.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#c89292"
     },
     {
       "comment": "@type\n",
@@ -174,7 +175,7 @@
       "equatorialRadius": 65e3,
       "sphereOfInfluence": 1221060,
       "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyBop.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#c2a783"
     },
     {
       "comment": "@type\n",
@@ -186,7 +187,7 @@
       "equatorialRadius": 44e3,
       "sphereOfInfluence": 1042138,
       "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyPol.png",
-      "orbitLineColor": "#ff0000"
+      "orbitLineColor": "#e6edb4"
     },
     {
       "comment": "@type\n",

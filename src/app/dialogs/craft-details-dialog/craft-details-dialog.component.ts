@@ -7,10 +7,10 @@ import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta
 import { ControlMetaAntennaSelector } from '../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
-import { Antenna } from '../../common/domain/antenna';
 import { CommonValidators } from '../../common/validators/common-validators';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { CraftDetails } from './craft-details';
+import { SetupService } from '../../services/setup.service';
 
 export class CraftDetailsDialogData {
   forbiddenCraftNames: string[];
@@ -40,8 +40,8 @@ export class CraftDetailsDialogComponent {
     },
     antennaSelection: {
       label: 'Antennae Onboard',
-      control: new FormControl(this.data.edit?.antennae, Validators.required),
-      controlMeta: new ControlMetaAntennaSelector(Antenna.List),
+      control: new FormControl(this.data.edit?.antennae),
+      controlMeta: new ControlMetaAntennaSelector(this.setupService.antennaList),
     },
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);
@@ -49,7 +49,8 @@ export class CraftDetailsDialogComponent {
   form = new FormArray(this.inputFieldsList.map(field => field.control));
 
   constructor(private dialogRef: MatDialogRef<CraftDetailsDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData) {
+              @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData,
+              private setupService: SetupService) {
   }
 
   submitCraftDetails() {

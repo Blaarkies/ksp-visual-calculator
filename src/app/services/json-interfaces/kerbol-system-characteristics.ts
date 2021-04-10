@@ -1,8 +1,5 @@
 export interface KerbolSystemCharacteristics {
-
   bodies: CelestialBody[];
-
-
 }
 
 export interface CelestialBody {
@@ -10,11 +7,12 @@ export interface CelestialBody {
   id: string;
   type: string;
   name: string;
-  parent: string;
-  semiMajorAxis: number;
+  parent?: string;
+  semiMajorAxis?: number;
   equatorialRadius: number;
-  sphereOfInfluence: number;
+  sphereOfInfluence?: number;
   imageUrl: string;
-  orbitLineColor: string;
+  orbitLineColor?: string;
+  hasDsn?: boolean;
 
 }

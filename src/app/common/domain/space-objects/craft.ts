@@ -1,4 +1,4 @@
-import { SpaceObject } from './space-object';
+import { SpaceObject, SpaceObjectType } from './space-object';
 import { Vector2 } from '../vector2';
 import { ImageUrls } from '../image-urls';
 import { CraftType } from './craft-type';
@@ -12,7 +12,7 @@ export class Craft extends SpaceObject {
   constructor(label: string,
               public craftType: CraftType,
               antennae: Group<Antenna>[] = []) {
-    super(30, label, ImageUrls.CraftIcons, 'freeMove', antennae);
+    super(30, label, ImageUrls.CraftIcons, 'freeMove', SpaceObjectType.Craft, antennae);
     this.spriteLocation = craftType.spriteLocation;
   }
 

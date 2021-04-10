@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Orbit } from '../common/domain/space-objects/orbit';
-import { SpaceObject, SpaceObjectType } from '../common/domain/space-objects/space-object';
+import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { Group } from '../common/domain/group';
 import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
@@ -8,85 +8,54 @@ import { TransmissionLine } from '../common/domain/transmission-line';
 import { CraftType } from '../common/domain/space-objects/craft-type';
 import { CameraService } from './camera.service';
 import { Vector2 } from '../common/domain/vector2';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, concat } from 'rxjs';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
-import { HttpClient } from '@angular/common/http';
-import { CelestialBody, KerbolSystemCharacteristics } from './kerbol-system-characteristics';
+import { SetupService } from './setup.service';
+import { filter, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpaceObjectService {
 
-  orbits$: BehaviorSubject<Orbit[]> = new BehaviorSubject(null);
-  transmissionLines$: BehaviorSubject<TransmissionLine[]> = new BehaviorSubject(null);
-  celestialBodies$: BehaviorSubject<SpaceObject[]> = new BehaviorSubject(null);
-  crafts$: BehaviorSubject<Craft[]> = new BehaviorSubject(null);
+  orbits$ = new BehaviorSubject<Orbit[]>(null);
+  transmissionLines$ = new BehaviorSubject<TransmissionLine[]>(null);
+  celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
+  crafts$ = new BehaviorSubject<Craft[]>(null);
 
-  constructor(private cameraService: CameraService, http: HttpClient) {
-    http.get<KerbolSystemCharacteristics>('assets/stock/kerbol-system-characteristics.json')
-      .subscribe(data => {
-
-        // Setup abstract celestial bodies
-        let bodyToJsonMap = new Map<CelestialBody, SpaceObject>(
-          data.bodies.map(b => [
-            /*key  */ b,
-            /*value*/ new SpaceObject(
-              Math.log(b.equatorialRadius) * 4,
-              b.name, b.imageUrl,
-              b.type === SpaceObjectType.Star ? 'noMove' : 'orbital',
-              SpaceObjectType.fromString(b.type)),
-          ]));
-
-        // Setup SOI hierarchies
-        bodyToJsonMap.forEach((parentSo, parentCb, map) => {
-          let moons = Array.from(map.entries())
-            .filter(([cb]) => cb.parent === parentCb.id)
-            .map(([, so]) => so);
-
-          parentSo.draggableHandle.setChildren(moons);
-        });
-
-        // Setup movement rules
-        let bodyToJsonMapEntries = Array.from(bodyToJsonMap.entries());
-        let bodyOrbitMap = new Map<SpaceObject, Orbit>(
-          bodyToJsonMapEntries
-            .filter(([cb]) => cb.type !== SpaceObjectType.Star)
-            .map(([cb, so]) => [
-              /*key  */so,
-              /*value*/new Orbit(OrbitParameterData.fromRadius(cb.semiMajorAxis), cb.orbitLineColor),
-            ]));
-        bodyOrbitMap.forEach((orbit, body) => {
-          body.draggableHandle.addOrbit(orbit);
-          orbit.type = body.type;
-        });
-
-        // Done setup, call first location init
-        bodyToJsonMapEntries
-          .find(([, so]) => so.type === SpaceObjectType.Star)[1]
-          .draggableHandle.updateConstrainLocation({xy: [0, 0]});
-        let listOrbits = Array.from(bodyOrbitMap.values());
-
+  constructor(private cameraService: CameraService, setupService: SetupService) {
+    let setupPlanets$ = setupService.stockPlanets$
+      .pipe(tap(({listOrbits, celestialBodies}) => {
         this.orbits$.next(listOrbits);
-        this.celestialBodies$.next(bodyToJsonMapEntries.map(([, so]) => so));
+        this.celestialBodies$.next(celestialBodies);
         this.crafts$.next([]);
         this.transmissionLines$.next([]);
+      }));
 
-        this.addCraft(new CraftDetails(
-          'Untitled Craft 1', CraftType.Relay, [new Group(Antenna.Communotron16, 1)]),
-          this.celestialBodies$.value[2].location.lerpClone(
-            this.celestialBodies$.value[4].location)
-        );
+    let setupCraft$ = setupService.availableAntennae$
+      .pipe(
+        filter(a => !!a.length),
+        tap(() => {
+          this.addCraft(new CraftDetails(
+            'Craft Communotron16', CraftType.Relay, [new Group(setupService.getAntenna('Communotron 16'), 1)]),
+            this.celestialBodies$.value[4].location.lerpClone(
+              this.celestialBodies$.value[5].location),
+          );
 
-        this.addCraft(new CraftDetails(
-          'Untitled Craft 2', CraftType.Relay, [new Group(Antenna.HG5HighGainAntenna, 15)]),
-          this.celestialBodies$.value[4].location.lerpClone(
-            this.celestialBodies$.value[7].location)
-        );
+          this.addCraft(new CraftDetails(
+            'Relay sat 15', CraftType.Relay, [new Group(setupService.getAntenna('HG-5 High Gain Antenna'), 1)]),
+            this.celestialBodies$.value[4].location.lerpClone(
+              this.celestialBodies$.value[6].location),
+          );
 
-        this.updateTransmissionLines();
-      });
+          this.celestialBodies$.value.find(cb => cb.hasDsn).antennae.push(
+            new Group<Antenna>(setupService.getAntenna('Tracking Station 1')));
+
+          this.updateTransmissionLines();
+        }));
+
+    concat(setupPlanets$, setupCraft$).subscribe();
   }
 
   private static getIndexOfSameCombination = (parentItem, list) => list.findIndex(item => item.every(so => parentItem.includes(so)));

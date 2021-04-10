@@ -6,7 +6,7 @@
       <cp-orbit-line [@animateFade]
                      *ngIf="orbit.type === spaceObjectTypes.Planet
                          || orbit.type === spaceObjectTypes.Star
-                         || camera.scale > 3e-6"
+                         || camera.scale > 2e-6"
                      [orbit]="orbit"
                      [scale]="camera.scale"></cp-orbit-line>
     </ng-container>
@@ -20,7 +20,7 @@
       <cp-draggable-space-object [@animateFade]
                                  *ngIf="body.type === spaceObjectTypes.Planet
                                      || body.type === spaceObjectTypes.Star
-                                     || camera.scale > 3e-6"
+                                     || camera.scale > 2e-6"
                                  [spaceObject]="body"
                                  [scale]="camera.scale"
                                  (dragSpaceObject)="startBodyDrag(body.draggableHandle, $event, screen, camera)"
