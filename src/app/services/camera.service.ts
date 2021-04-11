@@ -57,7 +57,7 @@ export class CameraService {
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
-    delta = delta > 0 ? 1.4 : 1 / 1.4;
+    delta = delta > 0 ? 1.3 : 1 / 1.3;
 
     if (!(this.scale * delta).between(
       CameraService.zoomLimits[0], CameraService.zoomLimits[1])) {

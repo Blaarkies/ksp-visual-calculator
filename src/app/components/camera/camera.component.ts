@@ -25,17 +25,7 @@ export class CameraComponent implements OnInit, OnDestroy {
   }
 
   constructor(private _cdr: ChangeDetectorRef,
-              public cameraService: CameraService /*todo: public for debugging, change to private*/) {
-    this.worldCursorChange$
-      .pipe(sampleTime(33))
-      .subscribe(({x, y}) => this.worldCursor = new Vector2(x, y));
-  }
-
-  worldCursor: Vector2;
-  worldCursorChange$ = new Subject<MouseEvent>();
-
-  setWorldCursor(event: MouseEvent) {
-    this.worldCursorChange$.next(event);
+              private cameraService: CameraService) {
   }
 
   ngOnInit() {
@@ -74,26 +64,6 @@ export class CameraComponent implements OnInit, OnDestroy {
         this.cameraService.location.add(x, y);
         this._cdr.markForCheck();
       });
-  }
-
-  zeroLocation() {
-    this.cameraService.location = new Vector2(0, 0);
-  }
-
-  zeroScale() {
-    this.cameraService.scale = .00000005;
-  }
-
-  zoomAtTest1() {
-    this.cameraService.reset();
-
-    this.cameraService.zoomAt(+1, new Vector2(1223, 540)); // at Moho with default scale)
-  }
-
-  zoomAtTest2() {
-    this.cameraService.reset(.00000008, new Vector2(960, 540));
-
-    this.cameraService.zoomAt(+1, new Vector2(1223, 540)); // at Moho with default scale)
   }
 
 }
