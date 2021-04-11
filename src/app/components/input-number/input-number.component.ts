@@ -1,4 +1,4 @@
-import { Component, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
@@ -28,7 +28,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
   isActive: boolean;
 
-  constructor() {
+  constructor(private _cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -84,9 +84,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
   sliderChange(value: number) {
     let scaledNumber = value.pow(1.1).toInt();
-    this.value = scaledNumber;
-    this.inputRef.writeValue(this.value.toString());
-    this.onChange && this.onChange(this.value);
-    this.output.emit(this.value);
+    this.userInputChange(scaledNumber);
+    this._cdr.markForCheck();
   }
 }

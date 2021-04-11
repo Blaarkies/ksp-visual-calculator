@@ -3,7 +3,7 @@ import { ControlMetaType } from './control-meta-type';
 
 export class ControlMetaInput<T> extends ControlMeta {
 
-    constructor() {
+    constructor(public inputType: 'text' | 'color' = 'text') {
         super(ControlMetaType.Input);
     }
 

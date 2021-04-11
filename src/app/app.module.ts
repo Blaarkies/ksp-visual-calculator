@@ -35,6 +35,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CelestialBodyDetailsDialogComponent } from './dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { InputToggleComponent } from './components/input-toggle/input-toggle.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { InputFieldListComponent } from './components/input-field-list/input-field-list.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     InputNumberComponent,
     CelestialBodyDetailsDialogComponent,
     InputToggleComponent,
+    InputFieldListComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,7 +5,7 @@ export class InputFields {
   [key: string]: InputField;
 }
 
-class InputField {
+export class InputField {
   label: string;
   control: FormControl;
   controlMeta?: ControlMeta;

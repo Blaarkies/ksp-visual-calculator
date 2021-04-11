@@ -1,0 +1,31 @@
+<ng-container *ngFor="let inputField of inputFields"
+              [ngSwitch]="inputField.controlMeta.type">
+
+  <cp-input-field *ngSwitchCase="controlMetaTypes.Input"
+                  [type]="$any(inputField.controlMeta).inputType"
+                  [label]="inputField.label"
+                  [formControl]="inputField.control"
+                  [errors]="inputField.control.errors"></cp-input-field>
+
+  <cp-input-number *ngSwitchCase="controlMetaTypes.Number"
+                   [label]="inputField.label"
+                   [formControl]="inputField.control"
+                   [errors]="inputField.control.errors"></cp-input-number>
+
+  <cp-select *ngSwitchCase="controlMetaTypes.Select"
+             [options]="$any(inputField.controlMeta).list"
+             [label]="inputField.label"
+             [formControl]="inputField.control"
+             [errors]="inputField.control.errors"></cp-select>
+
+  <cp-input-toggle *ngSwitchCase="controlMetaTypes.Toggle"
+                   [label]="inputField.label"
+                   [formControl]="inputField.control"
+                   [errors]="inputField.control.errors"></cp-input-toggle>
+
+  <cp-antenna-selector *ngSwitchCase="controlMetaTypes.AntennaSelector"
+                       [options]="$any(inputField.controlMeta).list"
+                       [label]="inputField.label"
+                       [formControl]="inputField.control"
+                       [errors]="inputField.control.errors"></cp-antenna-selector>
+</ng-container>
