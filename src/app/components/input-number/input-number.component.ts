@@ -84,7 +84,10 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
   sliderChange(value: number) {
     let scaledNumber = value.pow(1.1).toInt();
-    this.userInputChange(scaledNumber);
+    this.value = scaledNumber;
+    this.inputRef.writeValue(scaledNumber);
+    this.onChange && this.onChange(value);
+    this.output.emit(value);
     this._cdr.markForCheck();
   }
 }

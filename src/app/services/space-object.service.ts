@@ -25,7 +25,7 @@ export class SpaceObjectService {
   celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
   crafts$ = new BehaviorSubject<Craft[]>(null);
 
-  constructor(private cameraService: CameraService, setupService: SetupService) {
+  constructor(private cameraService: CameraService, private setupService: SetupService) {
     let setupPlanets$ = setupService.stockPlanets$
       .pipe(tap(({listOrbits, celestialBodies}) => {
         this.orbits$.next(listOrbits);
@@ -67,8 +67,9 @@ export class SpaceObjectService {
       .joinSelf()
       .distinct(SpaceObjectService.getIndexOfSameCombination)
       .distinct(SpaceObjectService.getIndexOfSameCombination) // opposing permutations are still similar as combinations
-      .map(pair => this.transmissionLines$.value.find(t => pair.every(n => t.nodes.includes(n)))
-        ?? new TransmissionLine(pair))
+      .map(pair => // leave existing transmission lines here so that visuals do not flicker
+        this.transmissionLines$.value.find(t => pair.every(n => t.nodes.includes(n)))
+        ?? new TransmissionLine(pair, this.setupService))
       .filter(tl => tl.strength);
   }
 

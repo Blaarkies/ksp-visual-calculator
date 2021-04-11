@@ -9,6 +9,7 @@ import { Orbit } from '../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { map } from 'rxjs/operators';
 import { LabeledOption } from '../common/domain/input-fields/labeled-option';
+import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +18,7 @@ export class SetupService {
 
   availableAntennae$ = new BehaviorSubject<Antenna[]>([]);
   stockPlanets$: Observable<{ listOrbits, celestialBodies }>;
+  difficultySetting: DifficultySetting;
 
   constructor(http: HttpClient) {
     http.get<AntennaPart[]>('assets/stock/antenna-parts.json')
@@ -29,6 +31,8 @@ export class SetupService {
 
     this.stockPlanets$ = http.get<KerbolSystemCharacteristics>('assets/stock/kerbol-system-characteristics.json')
       .pipe(map(data => SetupService.generateOrbitsAndCelestialBodies(data)));
+
+    this.difficultySetting = DifficultySetting.normal;
   }
 
   getAntenna(search: string): Antenna {
@@ -37,6 +41,10 @@ export class SetupService {
 
   get antennaList(): LabeledOption<Antenna>[] {
     return this.availableAntennae$.value.map(a => new LabeledOption<Antenna>(a.label, a));
+  }
+
+  updateDifficultySetting(details: DifficultySetting) {
+    this.difficultySetting = details;
   }
 
   // todo: move method to some 'generate' handler
@@ -86,4 +94,5 @@ export class SetupService {
 
     return {listOrbits, celestialBodies};
   }
+
 }

@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>Game Difficulty</h1>
+
+<div mat-dialog-content class="game-difficulty-form">
+  <mat-button-toggle-group class="button-colors" (change)="buttonGroupChange($event.value)">
+    <ng-container *ngFor="let setting of difficultySettings.List">
+      <mat-button-toggle [value]="setting.value">{{setting.label}}</mat-button-toggle>
+    </ng-container>
+  </mat-button-toggle-group>
+
+  <cp-input-field-list [inputFields]="inputFieldsList"></cp-input-field-list>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]>Cancel</button>
+  <button color="primary"
+          mat-stroked-button
+          [disabled]="form.invalid"
+          (click)="submitDetails()">
+    Accept
+  </button>
+</div>

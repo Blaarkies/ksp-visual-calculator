@@ -37,6 +37,8 @@ import { InputToggleComponent } from './components/input-toggle/input-toggle.com
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { InputFieldListComponent } from './components/input-field-list/input-field-list.component';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DifficultySettingsDialogComponent } from './dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,7 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
     CelestialBodyDetailsDialogComponent,
     InputToggleComponent,
     InputFieldListComponent,
+    DifficultySettingsDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,6 +74,7 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
     MatToolbarModule,
     MatExpansionModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatIconModule,
     MatListModule,
     MatDialogModule,

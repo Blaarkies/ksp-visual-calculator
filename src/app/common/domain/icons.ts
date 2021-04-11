@@ -8,5 +8,6 @@ export class Icons {
   static TrashX = 'delete_forever';
   static Planet = 'public';
   static External = 'launch';
+  static Difficulty = 'settings';
 
 }

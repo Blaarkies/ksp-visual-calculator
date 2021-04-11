@@ -8,6 +8,9 @@ import { Subject } from 'rxjs';
 import { DialogPosition } from '@angular/material/dialog/dialog-config';
 import { SpaceObjectService } from '../../services/space-object.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { DifficultySettingsDialogComponent, DifficultySettingsDialogData } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import { SetupService } from '../../services/setup.service';
+import { DifficultySetting } from '../../dialogs/difficulty-settings-dialog/difficulty-setting';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
@@ -21,6 +24,7 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
 
   constructor(dialog: MatDialog,
               spaceObjectService: SpaceObjectService,
+              setupService: SetupService,
               cdr: ChangeDetectorRef,
               snackBar: MatSnackBar) {
     this.actions = [
@@ -44,6 +48,21 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
       new ActionOption('New Celestial Body', Icons.Planet, {
         action: () => {
           snackBar.open('Adding moons, planets, and stars are coming soon!');
+        },
+      }),
+      new ActionOption('Difficulty Settings', Icons.Difficulty, {
+        action: () => {
+          dialog.open(DifficultySettingsDialogComponent,
+            {data: setupService.difficultySetting})
+            .afterClosed()
+            .pipe(
+              filter(details => details),
+              takeUntil(this.unsubscribe$))
+            .subscribe(details => {
+              setupService.updateDifficultySetting(details);
+              cdr.markForCheck();
+              // todo: refresh universe, because 0 strength transmission lines are still visible
+            });
         },
       }),
     ];
