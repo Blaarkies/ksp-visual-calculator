@@ -6,7 +6,7 @@
       "type": "star",
       "name": "Kerbol",
       "equatorialRadius": 2616e5,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/9/96/TinyKerbol.png/125px-TinyKerbol.png"
+      "imageUrl": "assets/stock/kerbol-system-icons/kerbol.png"
     },
     {
       "comment": "@type\n",
@@ -17,7 +17,7 @@
       "semiMajorAxis": 5263138304,
       "equatorialRadius": 25e4,
       "sphereOfInfluence": 9646663,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/3/31/TinyMoho.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/moho.png",
       "orbitLineColor": "#fdbc89"
     },
     {
@@ -29,7 +29,7 @@
       "semiMajorAxis": 9832684544,
       "equatorialRadius": 7e5,
       "sphereOfInfluence": 85109365,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/0/03/TinyEve.png/200px-TinyEve.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/eve.png",
       "orbitLineColor": "#7320f5"
     },
     {
@@ -41,7 +41,7 @@
       "semiMajorAxis": 315e5,
       "equatorialRadius": 13e3,
       "sphereOfInfluence": 126123,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/f/fb/Gilly_tracking.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/gilly.png",
       "orbitLineColor": "#9f7966"
     },
     {
@@ -53,7 +53,7 @@
       "semiMajorAxis": 13599840256,
       "equatorialRadius": 6e5,
       "sphereOfInfluence": 84159286,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/5/5d/TinyKerbin.png/200px-TinyKerbin.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/kerbin.png",
       "orbitLineColor": "#30f0f0",
       "hasDsn": true
     },
@@ -66,7 +66,7 @@
       "semiMajorAxis": 12e6,
       "equatorialRadius": 2e5,
       "sphereOfInfluence": 2429559,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/1/15/TinyMun.png/300px-TinyMun.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/mun.png",
       "orbitLineColor": "#d0d0f0"
     },
     {
@@ -78,7 +78,7 @@
       "semiMajorAxis": 47e6,
       "equatorialRadius": 6e4,
       "sphereOfInfluence": 2247428,
-      "imageUrl": "https://kerbal-forum-uploads.s3.us-west-2.amazonaws.com/monthly_2018_06/TinyMinmus.png.78390ffd8e132e428cd43fccb49db51c.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/minmus.png",
       "orbitLineColor": "#b090c0"
     },
     {
@@ -90,7 +90,7 @@
       "semiMajorAxis": 20726155264,
       "equatorialRadius": 32e4,
       "sphereOfInfluence": 47921949,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/1/17/TinyDuna.png/200px-TinyDuna.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/duna.png",
       "orbitLineColor": "#ab4323"
     },
     {
@@ -102,7 +102,7 @@
       "semiMajorAxis": 32e5,
       "equatorialRadius": 13e4,
       "sphereOfInfluence": 1049598,
-      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyIke.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/ike.png",
       "orbitLineColor": "#967354"
     },
     {
@@ -114,7 +114,7 @@
       "semiMajorAxis": 40839348203,
       "equatorialRadius": 138e3,
       "sphereOfInfluence": 32832840,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/d/dd/TinyDres.png/200px-TinyDres.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/dres.png",
       "orbitLineColor": "#5e4835"
     },
     {
@@ -126,7 +126,7 @@
       "semiMajorAxis": 68773560320,
       "equatorialRadius": 6e6,
       "sphereOfInfluence": 2.4559852e9,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/3/35/TinyJool.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/jool.png",
       "orbitLineColor": "#568e0e"
     },
     {
@@ -138,7 +138,7 @@
       "semiMajorAxis": 27184000,
       "equatorialRadius": 5e5,
       "sphereOfInfluence": 3723645,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/9/94/TinyLaythe.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/laythe.png",
       "orbitLineColor": "#4859a3"
     },
     {
@@ -150,7 +150,7 @@
       "semiMajorAxis": 43152e3,
       "equatorialRadius": 3e5,
       "sphereOfInfluence": 2406401,
-      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyVall.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/vall.png",
       "orbitLineColor": "#73a1bc"
     },
     {
@@ -162,7 +162,7 @@
       "semiMajorAxis": 685e5,
       "equatorialRadius": 6e5,
       "sphereOfInfluence": 10856518,
-      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyTylo.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/tylo.png",
       "orbitLineColor": "#c89292"
     },
     {
@@ -174,7 +174,7 @@
       "semiMajorAxis": 1285e5,
       "equatorialRadius": 65e3,
       "sphereOfInfluence": 1221060,
-      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyBop.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/bop.png",
       "orbitLineColor": "#c2a783"
     },
     {
@@ -186,7 +186,7 @@
       "semiMajorAxis": 17989e4,
       "equatorialRadius": 44e3,
       "sphereOfInfluence": 1042138,
-      "imageUrl": "https://13375.de/KSPDeltaVMap/img/TinyPol.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/pol.png",
       "orbitLineColor": "#e6edb4"
     },
     {
@@ -198,7 +198,7 @@
       "semiMajorAxis": 9011882e4,
       "equatorialRadius": 21e4,
       "sphereOfInfluence": 1.1908294e8,
-      "imageUrl": "https://wiki.kerbalspaceprogram.com/images/thumb/e/e0/TinyEeloo.png/200px-TinyEeloo.png",
+      "imageUrl": "assets/stock/kerbol-system-icons/eeloo.png",
       "orbitLineColor": "#707678"
     }
   ]

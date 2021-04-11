@@ -21,9 +21,7 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/assets/stock",
-              "src/assets/stock/kerbol-system-icons"
+              "src/assets"
             ],
             "styles": [
               "src/styles/custom-theme.scss",
