@@ -11,7 +11,6 @@ import { Observable, Subject } from 'rxjs';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
-import { CelestialBodyDetails } from '../../dialogs/celestial-body-details-dialog/celestial-body-details';
 import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData,

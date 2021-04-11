@@ -13,7 +13,6 @@ import { OrbitParameterData } from '../common/domain/space-objects/orbit-paramet
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
 import { filter, tap } from 'rxjs/operators';
-import { A } from '@angular/cdk/keycodes';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 
 @Injectable({
@@ -78,8 +77,12 @@ export class SpaceObjectService {
   }
 
   private addCraft(details: CraftDetails, location?: Vector2) {
-    location = location ?? this.cameraService.location.clone().addVector2(
-      this.cameraService.screenCenterOffset);
+    let inverseScale = 1 / this.cameraService.scale;
+    location = location
+      ?? this.cameraService.location.clone()
+        .multiply(-inverseScale)
+        .addVector2(this.cameraService.screenCenterOffset
+          .multiply(inverseScale));
     let craft = new Craft(details.name, details.craftType, details.antennae);
     craft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(location));
     this.crafts$.next([...this.crafts$.value, craft]);

@@ -36,6 +36,7 @@ import { CelestialBodyDetailsDialogComponent } from './dialogs/celestial-body-de
 import { InputToggleComponent } from './components/input-toggle/input-toggle.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { InputFieldListComponent } from './components/input-field-list/input-field-list.component';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -78,8 +79,11 @@ import { InputFieldListComponent } from './components/input-field-list/input-fie
     MatMenuModule,
     MatSliderModule,
     MatCheckboxModule,
+    MatSnackBarModule,
   ],
-  providers: [],
+  providers: [
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {

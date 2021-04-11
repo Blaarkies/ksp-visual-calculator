@@ -3,7 +3,6 @@ import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
 
 let defaultScale = 5e-8;
-
 let defaultLocation = new Vector2(960, 540);
 
 @Injectable({
@@ -51,9 +50,6 @@ export class CameraService {
   // todo: change to proper setters, callbacks
   _cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
-  screenSpace: ElementRef<HTMLDivElement>;
-
-  worldCursor: Vector2;
 
   reset(scale?: number, location?: Vector2) {
     this.scaleSmoothSetter.value = scale ?? defaultScale;
@@ -61,8 +57,6 @@ export class CameraService {
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
-    // document.querySelector('#debugs').innerHTML = mouseLocation.toString();
-
     delta = delta > 0 ? 1.4 : 1 / 1.4;
 
     if (!(this.scale * delta).between(

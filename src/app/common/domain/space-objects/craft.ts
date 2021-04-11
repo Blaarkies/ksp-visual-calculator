@@ -13,7 +13,7 @@ export class Craft extends SpaceObject {
               public craftType: CraftType,
               antennae: Group<Antenna>[] = []) {
     super(30, label, ImageUrls.CraftIcons, 'freeMove', SpaceObjectType.Craft, antennae);
-    this.spriteLocation = craftType.spriteLocation;
+    this.spriteLocation = craftType.iconLocation;
   }
 
 }

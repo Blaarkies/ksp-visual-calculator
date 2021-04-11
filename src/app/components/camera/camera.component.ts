@@ -41,7 +41,6 @@ export class CameraComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cameraService._cdr = this._cdr;
     this.cameraService.cameraController = this.cameraController;
-    this.cameraService.screenSpace = this.screenSpace;
   }
 
   ngOnDestroy() {

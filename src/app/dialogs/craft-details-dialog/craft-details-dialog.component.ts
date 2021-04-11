@@ -6,7 +6,6 @@ import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { ControlMetaAntennaSelector } from '../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
-import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 import { CommonValidators } from '../../common/validators/common-validators';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { CraftDetails } from './craft-details';

@@ -7,6 +7,7 @@ import { filter, takeUntil, takeWhile } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DialogPosition } from '@angular/material/dialog/dialog-config';
 import { SpaceObjectService } from '../../services/space-object.service';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
@@ -20,7 +21,8 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
 
   constructor(dialog: MatDialog,
               spaceObjectService: SpaceObjectService,
-              cdr: ChangeDetectorRef) {
+              cdr: ChangeDetectorRef,
+              snackBar: MatSnackBar) {
     this.actions = [
       new ActionOption('New Craft', Icons.Craft, {
         action: () => {
@@ -41,7 +43,7 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
       }),
       new ActionOption('New Celestial Body', Icons.Planet, {
         action: () => {
-          alert('Coming soon!');
+          snackBar.open('Adding moons, planets, and stars are coming soon!');
         },
       }),
     ];

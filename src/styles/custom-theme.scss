@@ -37,17 +37,17 @@ $cp-kerbal: (
 
 @include mat-core();
 
-$ksp-comms-planner-primary: mat-palette($mat-green);
-$ksp-comms-planner-accent: mat-palette($mat-amber, A200, A100, A400);
-$ksp-comms-planner-warn: mat-palette($mat-deep-orange);
+$cp-primary: mat-palette($mat-green);
+$cp-accent: mat-palette($mat-amber, A700, 300, 900);
+$cp-warn: mat-palette($mat-deep-orange);
 
-$ksp-comms-planner-theme: mat-light-theme((
+$cp-theme: mat-light-theme((
   color: (
-    primary: $ksp-comms-planner-primary,
-    accent: $ksp-comms-planner-accent,
-    warn: $ksp-comms-planner-warn,
+    primary: $cp-primary,
+    accent: $cp-accent,
+    warn: $cp-warn,
   )
 ));
 
-@include angular-material-theme($ksp-comms-planner-theme);
+@include angular-material-theme($cp-theme);
 
