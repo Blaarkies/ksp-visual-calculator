@@ -39,6 +39,17 @@ import { InputFieldListComponent } from './components/input-field-list/input-fie
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DifficultySettingsDialogComponent } from './dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { PrivacyDialogComponent } from './dialogs/privacy-dialog/privacy-dialog.component';
+import { AccountDialogComponent } from './dialogs/account-dialog/account-dialog.component';
+import { CreditsDialogComponent } from './dialogs/credits-dialog/credits-dialog.component';
+import { BuyMeACoffeeDialogComponent } from './dialogs/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatBadgeModule } from '@angular/material/badge';
+import { SimpleDialogComponent } from './dialogs/simple-dialog/simple-dialog.component';
+import { FeedbackDialogComponent } from './dialogs/feedback-dialog/feedback-dialog.component';
+import { InputTextAreaComponent } from './components/input-text-area/input-text-area.component';
+import { AppInfoActionPanelComponent } from './components/app-info-action-panel/app-info-action-panel.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +73,14 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     InputToggleComponent,
     InputFieldListComponent,
     DifficultySettingsDialogComponent,
+    PrivacyDialogComponent,
+    AccountDialogComponent,
+    CreditsDialogComponent,
+    BuyMeACoffeeDialogComponent,
+    SimpleDialogComponent,
+    FeedbackDialogComponent,
+    InputTextAreaComponent,
+    AppInfoActionPanelComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +102,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatMenuModule,
     MatSliderModule,
     MatCheckboxModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
+    MatBadgeModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

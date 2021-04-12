@@ -6,12 +6,6 @@ import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { DifficultySetting } from './difficulty-setting';
 
-export class DifficultySettingsDialogData {
-  constructor(public rangeModifier: number,
-              public dsnModifier: number) {
-  }
-}
-
 @Component({
   selector: 'cp-difficulty-settings-dialog',
   templateUrl: './difficulty-settings-dialog.component.html',

@@ -7,6 +7,11 @@
                   [formControl]="inputField.control"
                   [errors]="inputField.control.errors"></cp-input-field>
 
+  <cp-input-text-area *ngSwitchCase="controlMetaTypes.FreeText"
+                      [label]="inputField.label"
+                      [formControl]="inputField.control"
+                      [errors]="inputField.control.errors"></cp-input-text-area>
+
   <cp-input-number *ngSwitchCase="controlMetaTypes.Number"
                    [label]="inputField.label"
                    [formControl]="inputField.control"

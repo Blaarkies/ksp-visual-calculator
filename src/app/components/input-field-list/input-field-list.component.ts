@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { InputField } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 
@@ -7,16 +7,10 @@ import { ControlMetaType } from '../../common/domain/input-fields/control-meta-t
   templateUrl: './input-field-list.component.html',
   styleUrls: ['./input-field-list.component.scss'],
 })
-export class InputFieldListComponent implements OnInit {
+export class InputFieldListComponent {
 
   @Input() inputFields: InputField[] = [];
 
   controlMetaTypes = ControlMetaType;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
 }

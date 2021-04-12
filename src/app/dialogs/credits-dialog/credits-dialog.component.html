@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Credits and Sources</h1>
+
+<div mat-dialog-content class="layout">
+  <div *ngFor="let credit of credits">
+    <span class="creator-text">{{credit.creator ? credit.creator + ' ' : ''}}</span>
+    <span class="action-text">{{credit.action ? credit.action + ' ' : ''}}</span>
+    <a class="product-text" [href]="credit.link">{{credit.product ? credit.product + ' ' : ''}}</a>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <button color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>

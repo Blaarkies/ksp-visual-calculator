@@ -3,12 +3,16 @@
                      class="action-panel"
                      [ngClass]="[color, location]"
                      disabled>
-  <mat-expansion-panel-header>
+  <mat-expansion-panel-header class="no-hover-effect">
     <mat-panel-title class="center-title-line toolbar-text">
       <button mat-icon-button (click)="expander.toggle()">
         <mat-icon>{{startIcon}}</mat-icon>
       </button>
       <span>{{startTitle}}</span>
+      <span class="notify-badge"
+            matBadgeColor="warn"
+            [matBadgeHidden]="!unreadCount"
+            [matBadge]="unreadCount"></span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -22,26 +26,29 @@
         <ng-template #button>
           <div class="action-button">
             <span class="text-white">{{option.label}}</span>
+            <span matBadgeColor="warn"
+                  [matBadgeHidden]="!option.unread"
+                  matBadge="!"></span>
             <mat-icon>{{option.icon}}</mat-icon>
           </div>
         </ng-template>
 
         <mat-list-option *ngSwitchCase="actionTypes.Action"
                          [value]="option"
-                         (click)="expander.close(); option.actionMeta.action()">
+                         (click)="expander.close(); option.actionMeta.action(); updateUnreads(option)">
           <ng-container *ngTemplateOutlet="button"></ng-container>
         </mat-list-option>
 
         <mat-list-option *ngSwitchCase="actionTypes.Route"
                          [value]="option"
-                         (click)="expander.close()"
+                         (click)="expander.close(); updateUnreads(option)"
                          routerLink="/{{option.actionMeta.route}}">
           <ng-container *ngTemplateOutlet="button"></ng-container>
         </mat-list-option>
 
         <mat-list-option *ngSwitchCase="actionTypes.ExternalRoute"
                          [value]="option"
-                         (click)="expander.close()">
+                         (click)="expander.close(); updateUnreads(option)">
           <a class="anchor-invisible" [href]="option.actionMeta.externalRoute">
             <ng-container *ngTemplateOutlet="button"></ng-container>
           </a>

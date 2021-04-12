@@ -3,6 +3,7 @@ import { FormControlError } from '../../common/domain/input-fields/form-control-
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'cp-input-toggle',
@@ -18,10 +19,12 @@ export class InputToggleComponent extends BasicValueAccessor {
 
   @Input() label: string;
   @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
+  @Input() type: 'checkbox' | 'switch' = 'checkbox';
   @Input() indeterminate?: boolean;
   @Input() errors: FormControlError;
 
   @ViewChild('checkbox', {static: true}) checkbox: MatCheckbox;
+  @ViewChild('switch', {static: true}) switch: MatSlideToggle;
 
   constructor() {
     super();
@@ -29,7 +32,8 @@ export class InputToggleComponent extends BasicValueAccessor {
 
   writeValue(value: any) {
     let booledValue = !!value;
-    this.checkbox.checked = booledValue;
+    this.checkbox?.writeValue(booledValue);
+    this.switch?.writeValue(booledValue);
     this.value = booledValue;
   }
 
@@ -42,7 +46,8 @@ export class InputToggleComponent extends BasicValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
-    this.checkbox.disabled = isDisabled;
+    this.checkbox?.setDisabledState(isDisabled);
+    this.switch?.setDisabledState(isDisabled);
   }
 
   userInputChange(value: boolean) {
@@ -51,7 +56,8 @@ export class InputToggleComponent extends BasicValueAccessor {
   }
 
   focus() {
-    this.checkbox.focus();
+    this.checkbox?.focus();
+    this.switch?.focus();
   }
 
 }

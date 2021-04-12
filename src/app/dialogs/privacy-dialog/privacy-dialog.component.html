@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Anonymous Usage Tracking</h1>
+
+<div mat-dialog-content class="layout">
+  <span class="usage-data-explained">
+    <p>This application tracks anonymous usage data without recording any information that could identify specific users.</p>
+
+    <p>The anonymous data will be beneficial to me in order to improve this application through identifying which features
+      are used more often.</p>
+
+    <p>No user names, craft names, planet names, or browser information will ever be collected for this.</p>
+
+    <p>You can opt-out with the toggle below.</p>
+  </span>
+
+  <cp-input-toggle label="Anonymous Usage Tracking"
+                   color="primary"
+                   type="switch"
+                   [formControl]="trackingControl">
+  </cp-input-toggle>
+</div>
+
+<div mat-dialog-actions>
+  <button color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>

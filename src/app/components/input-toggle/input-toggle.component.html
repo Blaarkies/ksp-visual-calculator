@@ -1,9 +1,20 @@
-<mat-checkbox #checkbox
-              [checked]="value"
-              [color]="color"
-              [indeterminate]="indeterminate"
-              (change)="userInputChange($event.checked)">
-  {{label}}
-</mat-checkbox>
+<ng-container [ngSwitch]="type">
+  <mat-checkbox *ngSwitchCase="'checkbox'"
+                #checkbox
+                [checked]="value"
+                [color]="color"
+                [indeterminate]="indeterminate"
+                (change)="userInputChange($event.checked)">
+    {{label}}
+  </mat-checkbox>
+
+  <mat-slide-toggle *ngSwitchCase="'switch'"
+                    #switch
+                    [checked]="value"
+                    [color]="color"
+                    (change)="userInputChange($event.checked)">
+    {{label}}
+  </mat-slide-toggle>
+</ng-container>
 
 <cp-validation-message [fieldName]="label" [errors]="errors"></cp-validation-message>

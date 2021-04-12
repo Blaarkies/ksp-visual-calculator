@@ -1,0 +1,18 @@
+.layout {
+  max-width: 600px;
+  overflow: hidden;
+  display: grid;
+
+  cp-input-field-list {
+    display: grid;
+    gap: 20px 40px;
+    grid-template-columns: auto auto;
+
+    cp-input-text-area {
+      grid-column: 1/3;
+      mat-form-field {
+        width: 100%;
+      }
+    }
+  }
+}

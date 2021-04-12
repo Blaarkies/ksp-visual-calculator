@@ -4,4 +4,5 @@ export class ControlMetaType {
   static Input = 'input';
   static Toggle = 'toggle';
   static Number = 'number';
+  static FreeText = 'freetext';
 }

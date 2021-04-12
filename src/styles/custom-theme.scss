@@ -51,3 +51,11 @@ $cp-theme: mat-light-theme((
 
 @include angular-material-theme($cp-theme);
 
+:root {
+  --color-primary-text: #{map-get($cp-primary, 700)};
+  --color-background-panel-green: #77b82e;
+  --color-background-panel-orange: #f24100;
+  --color-background-panel-cosmic-blue: #3f51b557;
+  --color-hyperlink-text: #263dc1;
+}
+

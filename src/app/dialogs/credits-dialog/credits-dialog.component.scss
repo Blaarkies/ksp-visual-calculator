@@ -1,0 +1,23 @@
+.layout {
+  display: grid;
+  gap: 20px;
+
+  max-width: 600px;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.creator-text {
+  color: var(--color-primary-text);
+  font-weight: bold;
+}
+
+.action-text {
+
+}
+
+.product-text {
+  color: var(--color-hyperlink-text);
+  text-decoration: none;
+  font-style: italic;
+}

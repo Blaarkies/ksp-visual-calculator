@@ -1,16 +1,14 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, takeUntil, takeWhile } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { DialogPosition } from '@angular/material/dialog/dialog-config';
 import { SpaceObjectService } from '../../services/space-object.service';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { DifficultySettingsDialogComponent, DifficultySettingsDialogData } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { SetupService } from '../../services/setup.service';
-import { DifficultySetting } from '../../dialogs/difficulty-settings-dialog/difficulty-setting';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',

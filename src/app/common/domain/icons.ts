@@ -9,5 +9,11 @@ export class Icons {
   static Planet = 'public';
   static External = 'launch';
   static Difficulty = 'settings';
+  static Analytics = 'analytics';
+  static AccountSettings = 'manage_accounts';
+  static Credits = 'theater_comedy';
+  static Coffee = 'emoji_food_beverage';
+  static Feedback = 'comment';
+  static Help = 'help';
 
 }

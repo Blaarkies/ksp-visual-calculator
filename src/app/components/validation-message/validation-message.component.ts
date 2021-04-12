@@ -7,6 +7,7 @@ export class ErrorMessageTranscriber {
     ['required', (name, meta) => `${name} is required`],
     ['min', (name, meta) => `${name} must be at least ${meta.min}`],
     ['max', (name, meta) => `${name} must be less than ${meta.max}`],
+    ['maxlength', (name, meta) => `${name} must be shorter than ${meta.requiredLength} characters`],
     ['duplicateString', (name, meta) => `${name} must be unique`],
   ]);
 

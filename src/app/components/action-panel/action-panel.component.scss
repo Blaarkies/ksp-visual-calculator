@@ -1,3 +1,7 @@
+.no-hover-effect:hover {
+  background: none !important;
+}
+
 .action-panel {
   width: max-content;
   height: max-content;
@@ -5,23 +9,36 @@
   z-index: 1;
 
   &.green {
-    background-color: #77b82e;
+    background-color: var(--color-background-panel-green);
   }
 
   &.orange {
-    background-color: #f24100;
+    background-color: var(--color-background-panel-orange);
   }
+
+  &.cosmic-blue {
+    background-color: var(--color-background-panel-cosmic-blue);
+  }
+
+  --panel-rounding: 30px;
 
   &.top-left {
     border-radius: 0 !important;
-    border-bottom-right-radius: 30px !important;
+    border-bottom-right-radius: var(--panel-rounding) !important;
   }
 
   &.bottom-left {
     border-radius: 0 !important;
-    border-top-right-radius: 30px !important;
+    border-top-right-radius: var(--panel-rounding) !important;
     position: absolute;
     bottom: 0;
+  }
+
+  &.top-right {
+    border-radius: 0 !important;
+    border-bottom-left-radius: var(--panel-rounding) !important;
+    position: absolute;
+    right: 0;
   }
 }
 
@@ -47,6 +64,12 @@
   mat-icon {
     color: white;
     justify-self: end;
+  }
+
+  transition: .25s ease-out;
+
+  &:hover {
+    background-color: #0002;
   }
 }
 
@@ -75,4 +98,20 @@
 .anchor-invisible {
   height: 100%;
   text-decoration: none;
+}
+
+.notify-badge {
+  padding-left: 16px;
+  animation: kf-animate-fade-in 4s linear infinite forwards;
+}
+
+@keyframes kf-animate-fade-in {
+  0% {opacity: 0}
+  25% {opacity: 1}
+  45% {opacity: 1}
+  50% {opacity: .5}
+  60% {opacity: 1}
+  90% {opacity: 1}
+  100% {opacity: 0}
+
 }
