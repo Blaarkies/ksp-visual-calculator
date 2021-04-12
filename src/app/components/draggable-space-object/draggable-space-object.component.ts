@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } 
 import { Draggable } from '../../common/domain/space-objects/draggable';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Subject } from 'rxjs';
+import { CameraService } from '../../services/camera.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'cp-draggable-space-object',
@@ -19,6 +21,19 @@ export class DraggableSpaceObjectComponent implements OnDestroy {
   @Output() editSpaceObject = new EventEmitter<void>();
 
   buttonHover$ = new Subject<boolean>();
+
+  constructor(cameraService: CameraService) {
+    // tell camera service that any zoom at action should focus on this object
+    this.buttonHover$
+      .pipe(
+        filter(hoverOn => {
+          let mustSetNewObject = !cameraService.currentHoverObject || hoverOn;
+          let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject && !hoverOn;
+          return mustSetNewObject || mustRemoveSelf;
+        }),
+      )
+      .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject : null);
+  }
 
   ngOnDestroy() {
     this.buttonHover$.next();

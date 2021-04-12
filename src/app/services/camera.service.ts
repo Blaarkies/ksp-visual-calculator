@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
 import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
+import { Draggable } from '../common/domain/space-objects/draggable';
 
 let defaultScale = 5e-8;
 let defaultLocation = new Vector2(960, 540);
@@ -47,6 +48,8 @@ export class CameraService {
     return new Vector2(element.offsetWidth, element.offsetHeight);
   }
 
+  currentHoverObject: Draggable;
+
   // todo: change to proper setters, callbacks
   _cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
@@ -63,9 +66,13 @@ export class CameraService {
       CameraService.zoomLimits[0], CameraService.zoomLimits[1])) {
       return;
     }
+    // zoom at hover objects, unless no object is currently hovered
+    let zoomAtLocation = this.currentHoverObject
+      ? this.currentHoverObject.location.clone().multiply(this.scale).addVector2(this.location)
+      : mouseLocation;
     this.scale *= delta;
 
-    let worldLocation = mouseLocation.add(-this.location.x, -this.location.y);
+    let worldLocation = zoomAtLocation.add(-this.location.x, -this.location.y);
     let shift = worldLocation.multiply(-(delta - 1));
 
     this.location.addVector2(shift);
