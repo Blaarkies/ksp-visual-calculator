@@ -1,0 +1,23 @@
+<mat-card>
+  <div class="layout">
+    <h1 *ngIf="title" class="title">{{title}}</h1>
+
+    <div class="messages">
+      <p *ngFor="let message of messages">{{message}}</p>
+    </div>
+
+    <mat-icon *ngIf="icon" color="primary">{{icon}}</mat-icon>
+
+    <button mat-button color="accent" (click)="cancelWizard()">Cancel Tutorial</button>
+  </div>
+</mat-card>
+
+
+<!--<div mat-dialog-actions>-->
+
+<!--  <button color="primary"-->
+<!--          mat-stroked-button-->
+<!--          [mat-dialog-close]="true">-->
+<!--    {{data.okButtonText || 'OK'}}-->
+<!--  </button>-->
+<!--</div>-->

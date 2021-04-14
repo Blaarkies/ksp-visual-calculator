@@ -1,0 +1,48 @@
+:host {
+  position: fixed;
+  max-width: 400px;
+  z-index: 1001; // mat-dialog adds a z-index:1000 backdrop
+
+  animation: kf-animate-fade-in ease-out .75s forwards;
+
+  @keyframes kf-animate-fade-in {
+    from {opacity: 0}
+    to {opacity: 1}
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: auto max-content;
+  grid-template-areas:
+    'title    icon'
+    'messages icon'
+    'buttons  buttons';
+
+  .title {
+    grid-area: title;
+  }
+
+  .messages {
+    grid-area: messages;
+  }
+
+  mat-icon {
+    grid-area: icon;
+    padding-right: 10px;
+  }
+
+  button {
+    grid-area: buttons;
+    justify-self: start;
+    width: max-content;
+  }
+
+  .mat-icon {
+    font-size: 75px;
+    width: 75px;
+    height: 75px;
+    align-self: center;
+    opacity: .75;
+  }
+}

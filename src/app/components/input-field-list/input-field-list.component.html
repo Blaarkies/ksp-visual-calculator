@@ -17,11 +17,11 @@
                    [formControl]="inputField.control"
                    [errors]="inputField.control.errors"></cp-input-number>
 
-  <cp-select *ngSwitchCase="controlMetaTypes.Select"
-             [options]="$any(inputField.controlMeta).list"
-             [label]="inputField.label"
-             [formControl]="inputField.control"
-             [errors]="inputField.control.errors"></cp-select>
+  <cp-input-select *ngSwitchCase="controlMetaTypes.Select"
+                   [options]="$any(inputField.controlMeta).list"
+                   [label]="inputField.label"
+                   [formControl]="inputField.control"
+                   [errors]="inputField.control.errors"></cp-input-select>
 
   <cp-input-toggle *ngSwitchCase="controlMetaTypes.Toggle"
                    [label]="inputField.label"

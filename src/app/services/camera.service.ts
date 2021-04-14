@@ -57,6 +57,7 @@ export class CameraService {
   reset(scale?: number, location?: Vector2) {
     this.scaleSmoothSetter.value = scale ?? defaultScale;
     this.locationSmoothSetter.value = location ?? defaultLocation.clone();
+    this._cdr.markForCheck();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {

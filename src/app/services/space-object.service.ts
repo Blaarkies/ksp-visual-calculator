@@ -38,17 +38,17 @@ export class SpaceObjectService {
       .pipe(
         filter(a => !!a.length),
         tap(() => {
-          this.addCraft(new CraftDetails(
-            'Craft Communotron16', CraftType.Relay, [new Group(setupService.getAntenna('Communotron 16'), 1)]),
-            this.celestialBodies$.value[4].location.lerpClone(
-              this.celestialBodies$.value[5].location),
-          );
-
-          this.addCraft(new CraftDetails(
-            'Relay sat 15', CraftType.Relay, [new Group(setupService.getAntenna('HG-5 High Gain Antenna'), 1)]),
-            this.celestialBodies$.value[4].location.lerpClone(
-              this.celestialBodies$.value[6].location),
-          );
+          // this.addCraft(new CraftDetails(
+          //   'Craft Communotron16', CraftType.Relay, [new Group(setupService.getAntenna('Communotron 16'), 1)]),
+          //   this.celestialBodies$.value[4].location.lerpClone(
+          //     this.celestialBodies$.value[5].location),
+          // );
+          //
+          // this.addCraft(new CraftDetails(
+          //   'Relay sat 15', CraftType.Relay, [new Group(setupService.getAntenna('HG-5 High Gain Antenna'), 1)]),
+          //   this.celestialBodies$.value[4].location.lerpClone(
+          //     this.celestialBodies$.value[6].location),
+          // );
 
           this.celestialBodies$.value.find(cb => cb.hasDsn).antennae.push(
             new Group<Antenna>(setupService.getAntenna('Tracking Station 1')));

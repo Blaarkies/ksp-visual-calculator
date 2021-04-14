@@ -15,11 +15,11 @@
     </button>
   </div>
 
-  <cp-select *ngIf="availableOptions.length"
-             label="Antenna Type"
-             [options]="availableOptions"
-             [formControl]="finalControl"
-             (change)="userInputChange()"></cp-select>
+  <cp-input-select *ngIf="availableOptions.length"
+                   label="Antenna Type"
+                   [options]="availableOptions"
+                   [formControl]="finalControl"
+                   (change)="userInputChange()"></cp-input-select>
 
   <div>
     <div>Relay Bias: {{collectionStats.relayBias | number:'.2-2'}}</div>

@@ -10,16 +10,16 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'cp-select',
-  templateUrl: './select.component.html',
-  styleUrls: ['./select.component.scss'],
+  selector: 'cp-input-select',
+  templateUrl: './input-select.component.html',
+  styleUrls: ['./input-select.component.scss'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => SelectComponent),
+    useExisting: forwardRef(() => InputSelectComponent),
     multi: true,
   }],
 })
-export class SelectComponent extends BasicValueAccessor implements OnDestroy {
+export class InputSelectComponent extends BasicValueAccessor implements OnDestroy {
 
   @Input() set options(list: LabeledOption<any>[]) {
     this.unsubscribe$.next();

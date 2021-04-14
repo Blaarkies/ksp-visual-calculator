@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ActionOption } from '../../common/domain/action-option';
@@ -9,6 +9,9 @@ import { AccountDialogComponent } from '../../dialogs/account-dialog/account-dia
 import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../../dialogs/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { FeedbackDialogComponent } from '../../dialogs/feedback-dialog/feedback-dialog.component';
+import { filter } from 'rxjs/operators';
+import { WizardSpotlightService } from '../../services/wizard-spotlight.service';
+import { TutorialService } from '../../services/tutorial.service';
 
 @Component({
   selector: 'cp-app-info-action-panel',
@@ -19,7 +22,7 @@ export class AppInfoActionPanelComponent {
 
   infoOptions: ActionOption[];
 
-  constructor(snackBar: MatSnackBar, dialog: MatDialog) {
+  constructor(snackBar: MatSnackBar, dialog: MatDialog, tutorialService: TutorialService) {
     this.infoOptions = [
       new ActionOption('Tutorial', Icons.Help, {
           action: () => {
@@ -34,8 +37,8 @@ export class AppInfoActionPanelComponent {
               } as SimpleDialogData,
             })
               .afterClosed()
-              .pipe()
-              .subscribe();
+              .pipe(filter(ok => ok))
+              .subscribe(() => tutorialService.startFullTutorial());
           },
         },
         true),

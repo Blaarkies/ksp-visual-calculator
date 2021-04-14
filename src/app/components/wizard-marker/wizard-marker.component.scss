@@ -1,0 +1,56 @@
+.ring-host {
+  place-self: center;
+  position: absolute;
+  display: grid;
+}
+
+.pane-marker {
+  width: 100%;
+  height: 100%;
+  transform: translateY(-100%);
+
+  position: absolute;
+  z-index: -1;
+
+  // background oscillates color from dark to bright with transparency
+  animation: kf-animate-background-color-wobble 1.5s ease infinite alternate forwards,
+  kf-animate-fade-in ease-out 3s;
+}
+
+.ring-marker {
+  --border-radius: 40px;
+
+  width: 150px;
+  height: 150px;
+  border: 2px solid #fff;
+  border-radius: var(--border-radius);
+  place-self: center;
+
+  filter: glow(10px);
+
+  // ring reshapes between rounded square and circle
+  --in-cubic-tf: cubic-bezier(0.55, 0.06, 0.68, 0.19); // In · Cubic
+  animation: kf-animate-opacity-wobble 1.5s var(--in-cubic-tf) infinite alternate forwards,
+  kf-animate-border-radius-wobble 1.5s var(--in-cubic-tf) infinite alternate forwards,
+  kf-animate-fade-in ease-out 1s;
+}
+
+@keyframes kf-animate-opacity-wobble {
+  from {opacity: 1}
+  to {opacity: .5}
+}
+
+@keyframes kf-animate-border-radius-wobble {
+  from {border-radius: var(--border-radius)}
+  to {border-radius: calc(var(--border-radius) * 1.5)}
+}
+
+@keyframes kf-animate-fade-in {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
+@keyframes kf-animate-background-color-wobble {
+  from {background-color: #0002}
+  to {background-color: #fff4}
+}

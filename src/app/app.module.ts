@@ -24,7 +24,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { InputFieldComponent } from './components/input-field/input-field.component';
 import { ValidationMessageComponent } from './components/validation-message/validation-message.component';
-import { SelectComponent } from './components/select/select.component';
+import { InputSelectComponent } from './components/input-select/input-select.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRippleModule } from '@angular/material/core';
 import { AntennaSelectorComponent } from './components/antenna-selector/antenna-selector.component';
@@ -44,12 +44,14 @@ import { AccountDialogComponent } from './dialogs/account-dialog/account-dialog.
 import { CreditsDialogComponent } from './dialogs/credits-dialog/credits-dialog.component';
 import { BuyMeACoffeeDialogComponent } from './dialogs/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { SimpleDialogComponent } from './dialogs/simple-dialog/simple-dialog.component';
 import { FeedbackDialogComponent } from './dialogs/feedback-dialog/feedback-dialog.component';
 import { InputTextAreaComponent } from './components/input-text-area/input-text-area.component';
 import { AppInfoActionPanelComponent } from './components/app-info-action-panel/app-info-action-panel.component';
+import { WizardMessageComponent } from './components/wizard-message/wizard-message.component';
+import { MatCardModule } from '@angular/material/card';
+import { WizardMarkerComponent } from './components/wizard-marker/wizard-marker.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,7 @@ import { AppInfoActionPanelComponent } from './components/app-info-action-panel/
     InputFieldComponent,
     InputFieldComponent,
     ValidationMessageComponent,
-    SelectComponent,
+    InputSelectComponent,
     AntennaSelectorComponent,
     InputNumberComponent,
     CelestialBodyDetailsDialogComponent,
@@ -81,6 +83,8 @@ import { AppInfoActionPanelComponent } from './components/app-info-action-panel/
     FeedbackDialogComponent,
     InputTextAreaComponent,
     AppInfoActionPanelComponent,
+    WizardMessageComponent,
+    WizardMarkerComponent,
   ],
   imports: [
     BrowserModule,
@@ -105,6 +109,7 @@ import { AppInfoActionPanelComponent } from './components/app-info-action-panel/
     MatSlideToggleModule,
     MatSnackBarModule,
     MatBadgeModule,
+    MatCardModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

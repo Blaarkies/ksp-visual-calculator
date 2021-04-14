@@ -18,6 +18,7 @@
 
     <ng-container *ngFor="let body of celestialBodies$ | async">
       <cp-draggable-space-object [@animateFade]
+                                 [id]="body.label"
                                  *ngIf="body.type === spaceObjectTypes.Planet
                                      || body.type === spaceObjectTypes.Star
                                      || camera.scale > 2e-6"
