@@ -1,4 +1,5 @@
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object';
+import { Antenna } from '../../common/domain/antenna';
 
 export class CelestialBodyDetails {
 
@@ -6,7 +7,7 @@ export class CelestialBodyDetails {
               public celestialBodyType: SpaceObjectType,
               public size: number,
               public orbitColor: string,
-              public hasDsn: boolean) {
+              public currentDsn: Antenna) {
   }
 
 }

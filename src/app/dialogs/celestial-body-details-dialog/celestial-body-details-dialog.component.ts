@@ -8,7 +8,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CelestialBodyDetails } from './celestial-body-details';
 import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
-import { ControlMetaToggle } from '../../common/domain/input-fields/control-meta-toggle';
+import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { Antenna } from '../../common/domain/antenna';
+import { SetupService } from '../../services/setup.service';
 
 export class CelestialBodyDetailsDialogData {
   forbiddenNames: string[];
@@ -44,13 +46,17 @@ export class CelestialBodyDetailsDialogComponent {
     },
     orbitColor: {
       label: 'Color',
-      control: new FormControl(this.data.edit?.draggableHandle.orbit?.color ?? '#FF0000', [Validators.required]),
+      control: new FormControl(this.data.edit?.draggableHandle.orbit?.color ?? '#ff0000', [Validators.required]),
       controlMeta: new ControlMetaInput('color'),
     },
-    hasDsn: {
-      label: 'Tracking Station',
-      control: new FormControl(this.data.edit?.hasDsn),
-      controlMeta: new ControlMetaToggle(),
+    currentDsn: {
+      label: 'Current Tracking Station',
+      control: new FormControl(this.data.edit?.antennae[0]?.item),
+      controlMeta: new ControlMetaSelect(this.setupService.availableAntennae$.value
+        .filter(a => a.label.includes('Tracking Station'))
+        .map(a => new LabeledOption<Antenna>(a.label, a))
+        .concat(new LabeledOption<Antenna>('None', null))),
+      // tooltip: ''
     },
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);
@@ -58,7 +64,8 @@ export class CelestialBodyDetailsDialogComponent {
   form = new FormArray(this.inputFieldsList.map(field => field.control));
 
   constructor(private dialogRef: MatDialogRef<CelestialBodyDetailsDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CelestialBodyDetailsDialogData) {
+              @Inject(MAT_DIALOG_DATA) public data: CelestialBodyDetailsDialogData,
+              private setupService: SetupService) {
   }
 
   submitDetails() {
@@ -67,7 +74,7 @@ export class CelestialBodyDetailsDialogComponent {
       this.inputFields.celestialBodyType.control.value,
       this.inputFields.size.control.value,
       this.inputFields.orbitColor.control.value,
-      this.inputFields.hasDsn.control.value);
+      this.inputFields.currentDsn.control.value);
     this.dialogRef.close(details);
   }
 

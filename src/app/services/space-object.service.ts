@@ -99,7 +99,7 @@ export class SpaceObjectService {
     body.type = details.celestialBodyType;
     body.size = details.size;
     body.draggableHandle.orbit.color = details.orbitColor;
-    body.hasDsn = details.hasDsn;
+    body.antennae = details.currentDsn ? [new Group(details.currentDsn)] : [];
   }
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
