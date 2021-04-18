@@ -52,6 +52,9 @@ import { AppInfoActionPanelComponent } from './components/app-info-action-panel/
 import { WizardMessageComponent } from './components/wizard-message/wizard-message.component';
 import { MatCardModule } from '@angular/material/card';
 import { WizardMarkerComponent } from './components/wizard-marker/wizard-marker.component';
+import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -87,6 +90,8 @@ import { WizardMarkerComponent } from './components/wizard-marker/wizard-marker.
     WizardMarkerComponent,
   ],
   imports: [
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAnalyticsModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "ksp-commnet-planner": {
+      "hosting": {
+        "ksp-commnet-planner": [
+          "ksp-commnet-planner"
+        ]
+      }
+    }
+  }
+}

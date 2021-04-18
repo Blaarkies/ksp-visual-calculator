@@ -117,6 +117,10 @@
               "devServerTarget": "ksp-commnet-planner:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }
