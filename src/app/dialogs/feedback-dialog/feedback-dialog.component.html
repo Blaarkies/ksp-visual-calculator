@@ -20,10 +20,14 @@
 
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]>Cancel</button>
-  <button color="primary"
-          mat-stroked-button
-          [disabled]="form.invalid"
-          (click)="submitFeedback()">
-    Submit
-  </button>
+
+  <div [matTooltip]="messageCannotSubmit"
+       [matTooltipDisabled]="isTracking">
+    <button color="primary"
+            mat-stroked-button
+            [disabled]="form.invalid || !isTracking"
+            (click)="submitFeedback()">
+      Submit
+    </button>
+  </div>
 </div>

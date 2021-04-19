@@ -12,6 +12,8 @@ declare global {
 
     toNumber(this: string): number;
 
+    toBoolean(this: string): boolean;
+
     let<O>(this: String, callback: (it: String) => O): O;
 
     also(this: String, callback: (it: String) => void): String;
@@ -80,7 +82,7 @@ declare global {
   // }
 
   interface Boolean {
-    toString(this: Boolean, variety?: 'yes' | 'good' | '✅'): string;
+    toString(this: Boolean, variety?: 'yes' | 'good' | '✅' | 'on'): string;
 
     let<O>(this: Boolean, callback: (it: Boolean) => O): O;
 

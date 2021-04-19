@@ -1,6 +1,6 @@
 export {}; // this file needs to be a module
 
-Boolean.prototype.toString = function (this: Boolean, variety?: 'yes' | 'good' | '✅'): string {
+Boolean.prototype.toString = function (this: Boolean, variety?: 'yes' | 'good' | '✅' | 'on'): string {
   switch (variety) {
     case 'yes':
       return this ? 'yes' : 'no';
@@ -8,6 +8,8 @@ Boolean.prototype.toString = function (this: Boolean, variety?: 'yes' | 'good' |
       return this ? 'good' : 'bad';
     case '✅':
       return this ? '✅' : '❎';
+    case 'on':
+      return this ? 'on' : 'off';
     default:
       return this ? 'true' : 'false';
   }

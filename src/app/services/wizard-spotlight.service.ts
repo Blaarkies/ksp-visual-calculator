@@ -123,10 +123,9 @@ export class WizardSpotlightService {
     return topRight;
   }
 
-  runSteps(steps: Observable<any>[]) {
-    concat(...steps)
-      .pipe(takeUntil(this.stopTutorial$))
-      .subscribe();
+  runSteps(steps: Observable<any>[]): Observable<void> {
+    return concat(...steps)
+      .pipe(takeUntil(this.stopTutorial$));
   }
 
 }

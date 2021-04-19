@@ -1,7 +1,6 @@
 {
   "bodies": [
     {
-      "comment": "@type\n",
       "id": "kerbol",
       "type": "star",
       "name": "Kerbol",
@@ -9,7 +8,6 @@
       "imageUrl": "assets/stock/kerbol-system-icons/kerbol.png"
     },
     {
-      "comment": "@type\n",
       "id": "moho",
       "type": "planet",
       "name": "Moho",
@@ -21,7 +19,6 @@
       "orbitLineColor": "#fdbc89"
     },
     {
-      "comment": "@type\n",
       "id": "eve",
       "type": "planet",
       "name": "Eve",
@@ -33,7 +30,6 @@
       "orbitLineColor": "#7320f5"
     },
     {
-      "comment": "@type\n",
       "id": "gilly",
       "type": "moon",
       "name": "Gilly",
@@ -45,7 +41,6 @@
       "orbitLineColor": "#9f7966"
     },
     {
-      "comment": "@type\n",
       "id": "kerbin",
       "type": "planet",
       "name": "Kerbin",
@@ -58,7 +53,6 @@
       "hasDsn": true
     },
     {
-      "comment": "@type\n",
       "id": "mun",
       "type": "moon",
       "name": "Mun",
@@ -70,7 +64,6 @@
       "orbitLineColor": "#d0d0f0"
     },
     {
-      "comment": "@type\n",
       "id": "minmus",
       "type": "moon",
       "name": "Minmus",
@@ -82,7 +75,6 @@
       "orbitLineColor": "#b090c0"
     },
     {
-      "comment": "@type\n",
       "id": "duna",
       "type": "planet",
       "name": "Duna",
@@ -94,7 +86,6 @@
       "orbitLineColor": "#ab4323"
     },
     {
-      "comment": "@type\n",
       "id": "ike",
       "type": "moon",
       "name": "Ike",
@@ -106,7 +97,6 @@
       "orbitLineColor": "#967354"
     },
     {
-      "comment": "@type\n",
       "id": "dres",
       "type": "planet",
       "name": "Dres",
@@ -118,7 +108,6 @@
       "orbitLineColor": "#5e4835"
     },
     {
-      "comment": "@type\n",
       "id": "jool",
       "type": "planet",
       "name": "Jool",
@@ -130,7 +119,6 @@
       "orbitLineColor": "#568e0e"
     },
     {
-      "comment": "@type\n",
       "id": "laythe",
       "type": "moon",
       "name": "Laythe",
@@ -142,7 +130,6 @@
       "orbitLineColor": "#4859a3"
     },
     {
-      "comment": "@type\n",
       "id": "vall",
       "type": "moon",
       "name": "Vall",
@@ -154,7 +141,6 @@
       "orbitLineColor": "#73a1bc"
     },
     {
-      "comment": "@type\n",
       "id": "tylo",
       "type": "moon",
       "name": "Tylo",
@@ -166,7 +152,6 @@
       "orbitLineColor": "#c89292"
     },
     {
-      "comment": "@type\n",
       "id": "bop",
       "type": "moon",
       "name": "Bop",
@@ -178,7 +163,6 @@
       "orbitLineColor": "#c2a783"
     },
     {
-      "comment": "@type\n",
       "id": "pol",
       "type": "moon",
       "name": "Pol",
@@ -190,7 +174,6 @@
       "orbitLineColor": "#e6edb4"
     },
     {
-      "comment": "@type\n",
       "id": "eeloo",
       "type": "planet",
       "name": "Eeloo",

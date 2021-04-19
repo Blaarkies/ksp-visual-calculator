@@ -15,6 +15,7 @@ import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData,
 } from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
+import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 
 @Component({
   selector: 'cp-page-distance-check',
@@ -35,7 +36,8 @@ export class PageDistanceCheckComponent implements OnDestroy {
 
   constructor(private _cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private analyticsService: AnalyticsService) {
     this.orbits$ = this.spaceObjectService.orbits$;
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;
     this.celestialBodies$ = this.spaceObjectService.celestialBodies$;
@@ -44,6 +46,13 @@ export class PageDistanceCheckComponent implements OnDestroy {
 
   startBodyDrag(body: Draggable, event: MouseEvent, screen: HTMLDivElement, camera?: CameraComponent) {
     body.startDrag(event, screen, () => this.updateUniverse(), camera);
+
+    this.analyticsService.logEvent('Drag body', {
+      category: EventLogs.Category.CelestialBody,
+      details: {
+        label: EventLogs.Sanitize.anonymize(body.label),
+      },
+    });
   }
 
   private updateUniverse() {
@@ -52,6 +61,13 @@ export class PageDistanceCheckComponent implements OnDestroy {
   }
 
   editCelestialBody(body: SpaceObject) {
+    this.analyticsService.logEvent('Start edit body', {
+      category: EventLogs.Category.CelestialBody,
+      details: {
+        label: EventLogs.Sanitize.anonymize(body.label),
+      },
+    });
+
     this.dialog.open(CelestialBodyDetailsDialogComponent, {
       data: {
         forbiddenNames: this.spaceObjectService.celestialBodies$.value.map(c => c.label),
@@ -69,6 +85,10 @@ export class PageDistanceCheckComponent implements OnDestroy {
   }
 
   editCraft(craft: Craft) {
+    this.analyticsService.logEvent('Start edit craft', {
+      category: EventLogs.Category.Craft,
+    });
+
     this.dialog.open(CraftDetailsDialogComponent, {
       data: {
         forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),

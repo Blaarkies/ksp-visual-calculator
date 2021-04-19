@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Icons } from '../../common/domain/icons';
 import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
+import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 
 @Component({
   selector: 'cp-action-panel',
@@ -29,8 +30,27 @@ export class ActionPanelComponent {
   actionTypes = ActionOptionType;
   unreadCount: number;
 
+  constructor(private analyticsService: AnalyticsService) {
+  }
+
   updateUnreads(option: ActionOption) {
     option.unread = false;
     this.unreadCount = this._options.count(ao => ao.unread);
+  }
+
+  logExternalLink(externalRoute: string) {
+    this.analyticsService.logEvent('Routed to external link', {
+      category: EventLogs.Category.Route,
+      link: externalRoute,
+      external: true,
+    });
+  }
+
+  logRoute(route: string) {
+    this.analyticsService.logEvent('Routed to page', {
+      category: EventLogs.Category.Route,
+      link: route,
+      external: false,
+    });
   }
 }

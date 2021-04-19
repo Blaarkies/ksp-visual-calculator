@@ -1,9 +1,12 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormArray, FormControl, Validators } from '@angular/forms';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaFreeText } from '../../common/domain/input-fields/control-meta-free-text';
+import { AnalyticsService } from '../../services/analytics.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize, takeUntil } from 'rxjs/operators';
 
 export class FeedbackSubmissionForm {
 
@@ -43,9 +46,25 @@ export class FeedbackDialogComponent {
   inputFieldsList = Object.values(this.inputFields);
 
   form = new FormArray(this.inputFieldsList.map(field => field.control));
+  isTracking = this.analyticsService.isTracking;
+
+  readonly messageCannotSubmit = 'Cannot submit feedback while Anonymous Usage Tracking is disabled';
 
   constructor(private dialogRef: MatDialogRef<FeedbackDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any) {
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private analyticsService: AnalyticsService,
+              snackBar: MatSnackBar) {
+    if (!this.analyticsService.isTracking) {
+      snackBar.open(this.messageCannotSubmit, 'Enable', {duration: 60e3})
+        .onAction()
+        .pipe(
+          finalize(() => snackBar.dismiss()),
+          takeUntil(dialogRef.afterClosed()))
+        .subscribe(() => {
+          this.analyticsService.setActive(true);
+          this.isTracking = this.analyticsService.isTracking;
+        });
+    }
   }
 
   submitFeedback() {
@@ -53,6 +72,6 @@ export class FeedbackDialogComponent {
       this.inputFields.name.control.value,
       this.inputFields.contact.control.value,
       this.inputFields.feedback.control.value);
-    this.dialogRef.close(feedbackForm);
+    this.dialogRef.close(feedbackForm.feedback ? feedbackForm : null);
   }
 }

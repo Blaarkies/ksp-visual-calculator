@@ -3,19 +3,30 @@ import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service'
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, timer } from 'rxjs';
 import { delay, filter, mapTo, take } from 'rxjs/operators';
+import { AnalyticsService, EventLogs } from './analytics.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TutorialService {
 
-  constructor(private wizardSpotlightService: WizardSpotlightService) {
+  constructor(private wizardSpotlightService: WizardSpotlightService,
+              private analyticsService: AnalyticsService) {
   }
 
   startFullTutorial() {
+    this.analyticsService.logEvent('Start tutorial', {
+      category: EventLogs.Category.Tutorial,
+    });
+
     let compiledSteps = this.getCompiledSteps();
 
-    this.wizardSpotlightService.runSteps(compiledSteps);
+    this.wizardSpotlightService
+      .runSteps(compiledSteps)
+      .subscribe(() => this.analyticsService
+        .logEvent('Finish tutorial', {
+          category: EventLogs.Category.Tutorial,
+        }));
   }
 
   private getCompiledSteps(): Observable<any>[] {

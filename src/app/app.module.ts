@@ -55,6 +55,7 @@ import { WizardMarkerComponent } from './components/wizard-marker/wizard-marker.
 import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import { environment } from '../environments/environment';
     MatSnackBarModule,
     MatBadgeModule,
     MatCardModule,
+    MatTooltipModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

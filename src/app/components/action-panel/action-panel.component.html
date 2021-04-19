@@ -35,20 +35,26 @@
 
         <mat-list-option *ngSwitchCase="actionTypes.Action"
                          [value]="option"
-                         (click)="expander.close(); option.actionMeta.action(); updateUnreads(option)">
+                         (click)="expander.close();
+                                  option.actionMeta.action();
+                                  updateUnreads(option)">
           <ng-container *ngTemplateOutlet="button"></ng-container>
         </mat-list-option>
 
         <mat-list-option *ngSwitchCase="actionTypes.Route"
                          [value]="option"
-                         (click)="expander.close(); updateUnreads(option)"
+                         (click)="expander.close();
+                                  updateUnreads(option);
+                                  logRoute(option.actionMeta.route)"
                          routerLink="/{{option.actionMeta.route}}">
           <ng-container *ngTemplateOutlet="button"></ng-container>
         </mat-list-option>
 
         <mat-list-option *ngSwitchCase="actionTypes.ExternalRoute"
                          [value]="option"
-                         (click)="expander.close(); updateUnreads(option)">
+                         (click)="expander.close();
+                                  updateUnreads(option);
+                                  logExternalLink(option.actionMeta.externalRoute)">
           <a class="anchor-invisible" [href]="option.actionMeta.externalRoute">
             <ng-container *ngTemplateOutlet="button"></ng-container>
           </a>

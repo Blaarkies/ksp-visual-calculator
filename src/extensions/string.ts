@@ -49,6 +49,10 @@ String.prototype.toNumber = function (this: String): number {
   return Number(this);
 };
 
+String.prototype.toBoolean = function (this: String): boolean {
+  return this === 'true';
+};
+
 String.prototype.let = function (this: String, callback: (it) => any): any {
   return callback(this);
 };

@@ -9,6 +9,7 @@ import { SpaceObjectService } from '../../services/space-object.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { SetupService } from '../../services/setup.service';
+import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
@@ -24,10 +25,15 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
               spaceObjectService: SpaceObjectService,
               setupService: SetupService,
               cdr: ChangeDetectorRef,
-              snackBar: MatSnackBar) {
+              snackBar: MatSnackBar,
+              analyticsService: AnalyticsService) {
     this.actions = [
       new ActionOption('New Craft', Icons.Craft, {
         action: () => {
+          analyticsService.logEvent('Call new craft dialog', {
+            category: EventLogs.Category.Craft,
+          });
+
           dialog.open(CraftDetailsDialogComponent, {
             data: {
               forbiddenNames: spaceObjectService.crafts$.value.map(c => c.label),
@@ -45,11 +51,19 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
       }),
       new ActionOption('New Celestial Body', Icons.Planet, {
         action: () => {
+          analyticsService.logEvent('Call new celestial body dialog', {
+            category: EventLogs.Category.CelestialBody,
+          });
+
           snackBar.open('Adding moons, planets, and stars are coming soon!');
         },
       }),
       new ActionOption('Difficulty Settings', Icons.Difficulty, {
         action: () => {
+          analyticsService.logEvent('Call difficulty settings dialog', {
+            category: EventLogs.Category.Difficulty,
+          });
+
           dialog.open(DifficultySettingsDialogComponent,
             {data: setupService.difficultySetting})
             .afterClosed()

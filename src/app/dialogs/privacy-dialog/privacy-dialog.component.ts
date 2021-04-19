@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { UsageTrackingService } from '../../services/usage-tracking.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'cp-privacy-dialog',
@@ -9,12 +9,12 @@ import { UsageTrackingService } from '../../services/usage-tracking.service';
 })
 export class PrivacyDialogComponent {
 
-  trackingControl = new FormControl(this.usageTrackingService.isTracking);
+  trackingControl = new FormControl(this.analyticsService.isTracking);
 
-  constructor(private usageTrackingService: UsageTrackingService) {
+  constructor(private analyticsService: AnalyticsService) {
     this.trackingControl.valueChanges
       .pipe()
-      .subscribe(isTracking => this.usageTrackingService.isTracking = isTracking);
+      .subscribe(isTracking => this.analyticsService.setActive(isTracking));
   }
 
 }

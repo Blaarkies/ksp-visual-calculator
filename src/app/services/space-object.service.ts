@@ -5,7 +5,6 @@ import { Group } from '../common/domain/group';
 import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
 import { TransmissionLine } from '../common/domain/transmission-line';
-import { CraftType } from '../common/domain/space-objects/craft-type';
 import { CameraService } from './camera.service';
 import { Vector2 } from '../common/domain/vector2';
 import { BehaviorSubject, concat } from 'rxjs';
@@ -14,6 +13,7 @@ import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
 import { filter, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
+import { AnalyticsService, EventLogs } from './analytics.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +25,9 @@ export class SpaceObjectService {
   celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
   crafts$ = new BehaviorSubject<Craft[]>(null);
 
-  constructor(private cameraService: CameraService, private setupService: SetupService) {
+  constructor(private cameraService: CameraService,
+              private setupService: SetupService,
+              private analyticsService: AnalyticsService) {
     let setupPlanets$ = setupService.stockPlanets$
       .pipe(tap(({listOrbits, celestialBodies}) => {
         this.orbits$.next(listOrbits);
@@ -50,6 +52,7 @@ export class SpaceObjectService {
           //     this.celestialBodies$.value[6].location),
           // );
 
+          // todo: hasDsn is removed. add default tracking station another way
           this.celestialBodies$.value.find(cb => cb.hasDsn).antennae.push(
             new Group<Antenna>(setupService.getAntenna('Tracking Station 1')));
 
@@ -92,13 +95,42 @@ export class SpaceObjectService {
   addCraftToUniverse(details: CraftDetails, location?: Vector2) {
     this.addCraft(details, location);
     this.updateTransmissionLines();
+
+    this.analyticsService.logEvent('Add craft', {
+      category: EventLogs.Category.Craft,
+      details: {
+        craftType: details.craftType,
+        antennae: details.antennae.map(a => ({
+          label: a.item.label,
+          count: a.count,
+        })),
+      },
+    });
   }
 
   editCelestialBody(body: SpaceObject, details: CelestialBodyDetails) {
+    this.analyticsService.logEvent('Edit celestial body', {
+      category: EventLogs.Category.CelestialBody,
+      oldDetails: {
+        label: EventLogs.Sanitize.anonymize(body.label),
+        craftType: body.type,
+        size: body.size,
+        dsn: body.antennae[0] && body.antennae[0].item.label,
+      },
+      newDetails: {
+        label: EventLogs.Sanitize.anonymize(details.name),
+        craftType: details.celestialBodyType,
+        size: details.size,
+        dsn: details.currentDsn?.label,
+      },
+    });
+
     body.draggableHandle.label = details.name;
     body.type = details.celestialBodyType;
     body.size = details.size;
-    body.draggableHandle.orbit.color = details.orbitColor;
+    if (body.draggableHandle.orbit) {
+      body.draggableHandle.orbit.color = details.orbitColor;
+    }
     body.antennae = details.currentDsn ? [new Group(details.currentDsn)] : [];
   }
 
@@ -107,6 +139,24 @@ export class SpaceObjectService {
     newCraft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(oldCraft.location));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
     this.updateTransmissionLines();
+
+    this.analyticsService.logEvent('Edit craft', {
+      category: EventLogs.Category.Craft,
+      detailsOld: {
+        craftType: oldCraft.craftType,
+        antennae: oldCraft.antennae.map(a => ({
+          label: a.item.label,
+          count: a.count,
+        })),
+      },
+      detailsNew: {
+        craftType: craftDetails.craftType,
+        antennae: craftDetails.antennae.map(a => ({
+          label: a.item.label,
+          count: a.count,
+        })),
+      },
+    });
   }
 
 }
