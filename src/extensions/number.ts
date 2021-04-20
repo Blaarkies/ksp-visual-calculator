@@ -36,7 +36,7 @@ Number.prototype.between = function (this: number,
 
 Number.prototype.lerp = function (this: number, other: number, ratio: number = .5): number {
   if (!ratio.between(0, 1)) {
-    throw `ratio "${ratio}" must be between 0 and 1`;
+    console.error(`ratio "${ratio}" must be between 0 and 1`);
   }
   return this * ratio + other * (1 - ratio);
 };
@@ -63,7 +63,7 @@ Number.prototype.coerceAtMost = function (this: number, threshold: number = 0): 
 
 Number.prototype.coerceIn = function (this: number, lower: number = 0, upper: number = 1): number {
   if (lower > upper) {
-    throw `lower "${lower}" must be less than or equal to upper "${upper}"`;
+    console.error(`lower "${lower}" must be less than or equal to upper "${upper}"`);
   }
   let lowLimitedValue = this.coerceAtLeast(lower);
   return lowLimitedValue.coerceAtMost(upper);

@@ -24,7 +24,7 @@ export class SpaceObjectType {
   static fromString(type: string) {
     let match = SpaceObjectType.All.includes(type);
     if (!match) {
-      throw `${type} is not a valid SpaceObjectType`;
+      throw console.error(`${type} is not a valid SpaceObjectType`);
     }
 
     return type;

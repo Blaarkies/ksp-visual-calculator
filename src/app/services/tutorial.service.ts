@@ -35,7 +35,7 @@ export class TutorialService {
 
   private getStepDetails(): StepDetails[] {
     let dragPlanet = {
-      dialogTargetCallback: () => document.querySelector('#Eve').firstChild,
+      dialogTargetCallback: () => this.selectObjectInDom('eve').firstChild,
       dialogMessages: [
         'This is a planet, it can be dragged around its orbit.',
         'Moons and spacecraft can also be moved.',
@@ -44,10 +44,10 @@ export class TutorialService {
       stages: [
         {
           callback: () => defer(() => {
-            let eve = document.querySelector('#Eve');
-            let attachPoint = eve.firstChild?.firstChild as HTMLDivElement;
+            let eve = this.selectObjectInDom('eve');
+            let attachPoint = eve.firstChild.firstChild as HTMLElement;
             if (!attachPoint) {
-              throw 'Expected draggable element to contain an image element.';
+              console.error('Expected draggable element to contain an image element.');
             }
 
             attachPoint.style.display = 'grid'; // this centers the wizardMarker around the planet
@@ -71,12 +71,12 @@ export class TutorialService {
           }),
         },
       ],
-      markerTargetCallback: () => document.querySelector('#Eve').firstChild?.firstChild as HTMLDivElement,
+      markerTargetCallback: () => this.selectObjectInDom('eve').firstChild.firstChild as HTMLDivElement,
       markerType: 'ring',
     } as StepDetails;
 
     let moveCamera = {
-      dialogTargetCallback: () => document.querySelector('#Kerbol').firstChild,
+      dialogTargetCallback: () => this.selectObjectInDom('kerbol').firstChild,
       dialogMessages: [
         'The camera can be moved around to see other parts of the Kerbol system.',
         'Right-click and hold in the universe to pan the camera around.'],
@@ -94,7 +94,7 @@ export class TutorialService {
     } as StepDetails;
 
     let zoomCamera = {
-      dialogTargetCallback: () => document.querySelector('#Kerbin').firstChild?.firstChild,
+      dialogTargetCallback: () => this.selectObjectInDom('kerbin').firstChild,
       dialogMessages: [
         'Some planets have moons, but you have to zoom in to see them.',
         'Point the mouse cursor at Kerbin, then scroll in/out with the mouse wheel, to zoom in/out.',
@@ -103,10 +103,10 @@ export class TutorialService {
       stages: [
         {
           callback: () => defer(() => {
-            let kerbin = document.querySelector('#Kerbin');
-            let attachPoint = kerbin.firstChild?.firstChild as HTMLDivElement;
+            let kerbin = this.selectObjectInDom('kerbin');
+            let attachPoint = kerbin.firstChild.firstChild as HTMLDivElement;
             if (!attachPoint) {
-              throw 'Expected draggable element to contain an image element.';
+              console.error('Expected draggable element to contain an image element.');
             }
 
             attachPoint.style.display = 'grid'; // this centers the wizardMarker around the planet
@@ -121,7 +121,7 @@ export class TutorialService {
         },
         {
           callback: (input: { kerbin, attachPoint }) => fromEvent(document.body, 'mousewheel').pipe(
-            filter(() => !!document.querySelector('#Mun, #Minmus')),
+            filter(() => !!this.selectObjectInDom('mun or minmus')),
             take(1),
             delay(1000),
             mapTo(input)),
@@ -133,7 +133,7 @@ export class TutorialService {
           }),
         },
       ],
-      markerTargetCallback: () => document.querySelector('#Kerbin').firstChild?.firstChild as HTMLDivElement,
+      markerTargetCallback: () => this.selectObjectInDom('kerbin').firstChild.firstChild as HTMLDivElement,
       markerType: 'ring',
     } as StepDetails;
 
@@ -311,4 +311,23 @@ export class TutorialService {
     cameraElement.dispatchEvent(new MouseEvent('mouseup'));
   }
 
+  private selectObjectInDom(urlId: 'eve' | 'kerbol' | 'kerbin' | 'mun or minmus') {
+    switch (urlId) {
+      case 'eve':
+        return this.getByImageUrl(urlId);
+      case 'kerbol':
+        return this.getByImageUrl(urlId);
+      case 'kerbin':
+        return this.getByImageUrl(urlId);
+      case 'mun or minmus':
+        return this.getByImageUrl('mun') || this.getByImageUrl('minmus');
+      default:
+        return document.body;
+    }
+  }
+
+  private getByImageUrl(urlId: string): HTMLElement {
+    return Array.from(document.querySelectorAll('cp-draggable-space-object'))
+      .find(p => (p.querySelector('.div-as-image') as HTMLElement).style.background.includes(urlId)) as HTMLElement;
+  }
 }
