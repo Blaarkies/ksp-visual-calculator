@@ -9,12 +9,18 @@ class ActionMeta {
 export class ActionOption {
 
   type: ActionOptionType;
+  readNotification: () => void;
 
   constructor(public label: string,
               public icon: string,
               public actionMeta: ActionMeta,
-              public unread: boolean = false) {
+              public unread: boolean = false,
+              onRead?: () => void) {
     this.type = ActionOptionType.fromActionMeta(actionMeta);
+    this.readNotification = () => {
+      this.unread = false;
+      onRead && onRead();
+    };
   }
 
 }

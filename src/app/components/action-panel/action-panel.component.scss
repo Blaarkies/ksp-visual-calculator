@@ -1,3 +1,8 @@
+mat-expansion-panel-header {
+  cursor: pointer;
+  user-select: none;
+}
+
 .no-hover-effect:hover {
   background: none !important;
 }

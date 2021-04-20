@@ -1,12 +1,20 @@
-<h1 mat-dialog-title>Want to support this?</h1>
+<h1 mat-dialog-title>Do you want to support this?</h1>
 
 <div mat-dialog-content class="layout">
   <span class="credits-explained">
-    <p>Did this tool make your life easier? Did you like using it and want to support me making this better?</p>
+    <p>Does this tool make your kerbals' lives easier, do you like using it and want to support me making this better?</p>
 
-    <p>Then if you want to, you can buy me a coffee using the form below</p>
+    <p>You can buy me a coffee with the big coffee button link below</p>
 
-    <p>coffee form</p>
+    <p>
+      <a href="https://www.buymeacoffee.com/Blaarkies" (click)="logCoffeeEvent()">
+        <button mat-stroked-button color="accent">
+          <img src="assets/buy-me-a-coffee-logo.png"/>
+        </button>
+      </a>
+    </p>
+
+    <p>Thanks either way, I appreciate your visit</p>
   </span>
 </div>
 

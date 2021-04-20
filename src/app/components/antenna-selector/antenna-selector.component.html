@@ -1,4 +1,5 @@
 <div class="layout">
+
   <div *ngFor="let antennaInput of antennaInputs"
        class="selected-antenna">
 
@@ -21,8 +22,8 @@
                    [formControl]="finalControl"
                    (change)="userInputChange()"></cp-input-select>
 
-  <div>
-    <div>Relay Bias: {{collectionStats.relayBias | number:'.2-2'}}</div>
-    <div>Total Power: {{collectionStats.summedPowerRating | number:'.0-0'}}</div>
-  </div>
+<!--  <div>-->
+<!--    <div>Relay Bias: {{collectionStats.relayBias | number:'.2-2'}}</div>-->
+<!--    <div>Total Power: {{collectionStats.summedPowerRating | number:'.0-0'}}</div>-->
+<!--  </div>-->
 </div>

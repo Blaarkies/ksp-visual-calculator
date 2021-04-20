@@ -24,9 +24,7 @@ export class TutorialService {
     this.wizardSpotlightService
       .runSteps(compiledSteps)
       .subscribe(() => this.analyticsService
-        .logEvent('Finish tutorial', {
-          category: EventLogs.Category.Tutorial,
-        }));
+        .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial}));
   }
 
   private getCompiledSteps(): Observable<any>[] {

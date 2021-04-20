@@ -1,13 +1,28 @@
 .craft-details-form > cp-input-field-list {
+  --grid-col-gap: 40px;
+
   overflow: hidden;
 
   display: grid;
+  gap: 20px var(--grid-col-gap);
   grid-template-columns: auto auto;
   grid-template-rows: max-content auto;
-  gap: 20px 40px;
+  grid-template-areas:
+    'name antennae'
+    'type antennae';
 
   cp-antenna-selector {
-    grid-column: 2;
-    grid-row: 1 / 3;
+    grid-area: antennae;
+
+    border-left: 1px solid #0003;
+
+    --half-col-gap: calc(var(--grid-col-gap) * .5);
+    padding-left: var(--half-col-gap);
+    margin-left: calc(var(--half-col-gap) * -1);
   }
+
+  > *:not(cp-antenna-selector) {
+    grid-column: 1 / 2;
+  }
+
 }

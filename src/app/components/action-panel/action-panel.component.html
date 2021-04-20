@@ -3,9 +3,11 @@
                      class="action-panel"
                      [ngClass]="[color, location]"
                      disabled>
-  <mat-expansion-panel-header class="no-hover-effect">
+  <mat-expansion-panel-header class="no-hover-effect"
+                              (click)="expander.toggle();
+                              menuButton.ripple.launch(0, 0)">
     <mat-panel-title class="center-title-line toolbar-text">
-      <button mat-icon-button (click)="expander.toggle()">
+      <button mat-icon-button #menuButton>
         <mat-icon>{{startIcon}}</mat-icon>
       </button>
       <span>{{startTitle}}</span>

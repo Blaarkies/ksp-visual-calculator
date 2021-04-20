@@ -111,13 +111,13 @@ export class SpaceObjectService {
   editCelestialBody(body: SpaceObject, details: CelestialBodyDetails) {
     this.analyticsService.logEvent('Edit celestial body', {
       category: EventLogs.Category.CelestialBody,
-      oldDetails: {
+      old: {
         label: EventLogs.Sanitize.anonymize(body.label),
         craftType: body.type,
         size: body.size,
         dsn: body.antennae[0] && body.antennae[0].item.label,
       },
-      newDetails: {
+      new: {
         label: EventLogs.Sanitize.anonymize(details.name),
         craftType: details.celestialBodyType,
         size: details.size,
@@ -142,14 +142,14 @@ export class SpaceObjectService {
 
     this.analyticsService.logEvent('Edit craft', {
       category: EventLogs.Category.Craft,
-      detailsOld: {
+      old: {
         craftType: oldCraft.craftType,
         antennae: oldCraft.antennae.map(a => ({
           label: a.item.label,
           count: a.count,
         })),
       },
-      detailsNew: {
+      new: {
         craftType: craftDetails.craftType,
         antennae: craftDetails.antennae.map(a => ({
           label: a.item.label,

@@ -6,4 +6,12 @@
   max-width: 400px;
   text-align: justify;
   text-justify: inter-word;
+
+  display: grid;
+}
+
+img {
+  place-self: center;
+  padding: 10px;
+  max-width: 75%;
 }

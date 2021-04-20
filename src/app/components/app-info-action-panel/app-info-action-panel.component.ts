@@ -48,7 +48,8 @@ export class AppInfoActionPanelComponent {
               .subscribe(() => tutorialService.startFullTutorial());
           },
         },
-        true),
+        !localStorage.getItem('tutorial-viewed'),
+        () => localStorage.setItem('tutorial-viewed', true.toString())),
       new ActionOption('Privacy', Icons.Analytics, {
           action: () => {
             analyticsService.logEvent('Call privacy dialog', {
@@ -61,19 +62,20 @@ export class AppInfoActionPanelComponent {
               .subscribe();
           },
         },
-        true),
-      new ActionOption('Account', Icons.AccountSettings, {
-        action: () => {
-          analyticsService.logEvent('Call account dialog', {
-            category: EventLogs.Category.Account,
-          });
-
-          dialog.open(AccountDialogComponent)
-            .afterClosed()
-            .pipe()
-            .subscribe();
-        },
-      }),
+        !localStorage.getItem('privacy-viewed'),
+        () => localStorage.setItem('privacy-viewed', true.toString())),
+      // new ActionOption('Account', Icons.AccountSettings, {
+      //   action: () => {
+      //     analyticsService.logEvent('Call account dialog', {
+      //       category: EventLogs.Category.Account,
+      //     });
+      //
+      //     dialog.open(AccountDialogComponent)
+      //       .afterClosed()
+      //       .pipe()
+      //       .subscribe();
+      //   },
+      // }),
       new ActionOption('Credits', Icons.Credits, {
         action: () => {
           analyticsService.logEvent('Call Credits dialog', {

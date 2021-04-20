@@ -34,7 +34,7 @@ export class ActionPanelComponent {
   }
 
   updateUnreads(option: ActionOption) {
-    option.unread = false;
+    option.readNotification();
     this.unreadCount = this._options.count(ao => ao.unread);
   }
 
