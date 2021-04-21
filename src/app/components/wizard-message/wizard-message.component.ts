@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
 import { Subject } from 'rxjs';
+import { Icons } from '../../common/domain/icons';
 
 export interface WizardMessage {
   title: string;
@@ -28,6 +29,8 @@ export class WizardMessageComponent implements WizardMessage {
   };
 
   @Input() stopTutorial: Subject<void>;
+
+  icons = Icons;
 
   constructor(private _self: ElementRef) {
   }

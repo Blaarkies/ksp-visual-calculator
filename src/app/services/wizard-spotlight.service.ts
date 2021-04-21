@@ -101,6 +101,7 @@ export class WizardSpotlightService {
         type: stepDetails.markerType,
       } as WizardMarker);
     let wizardMessage = this.createPopup(WizardMessageComponent, document.body, {
+      title: stepDetails.dialogTitle,
       messages: stepDetails.dialogMessages,
       icon: stepDetails.dialogIcon,
       location: popupScreenLocation,

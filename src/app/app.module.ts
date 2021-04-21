@@ -56,6 +56,7 @@ import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAnalyticsModule,
+    DragDropModule,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,

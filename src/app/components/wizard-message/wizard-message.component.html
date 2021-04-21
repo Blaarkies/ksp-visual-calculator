@@ -1,12 +1,19 @@
-<mat-card>
+<mat-card cdkDrag cdkDragBoundary="body">
   <div class="layout">
-    <h1 *ngIf="title" class="title">{{title}}</h1>
+    <div class="title">
+      <h1 *ngIf="title">{{title}}</h1>
+
+      <div class="drag-indicator">
+        <mat-icon cdkDragHandle>{{icons.DragIndicator}}</mat-icon>
+      </div>
+    </div>
+
 
     <div class="messages">
       <p *ngFor="let message of messages">{{message}}</p>
     </div>
 
-    <mat-icon *ngIf="icon" color="primary">{{icon}}</mat-icon>
+    <mat-icon *ngIf="icon" class="icon-large" color="primary">{{icon}}</mat-icon>
 
     <button mat-button color="accent" (click)="cancelWizard()">Cancel Tutorial</button>
   </div>

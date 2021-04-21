@@ -22,5 +22,6 @@ export class Icons {
   static SignalStrength = 'network_check';
   static Relay = 'connect_without_contact';
   static Congratulations = 'emoji_events';
+  static DragIndicator = 'drag_indicator';
 
 }

@@ -35,6 +35,7 @@ export class TutorialService {
 
   private getStepDetails(): StepDetails[] {
     let dragPlanet = {
+      dialogTitle: 'Planets',
       dialogTargetCallback: () => this.selectObjectInDom('eve').firstChild,
       dialogMessages: [
         'This is a planet, it can be dragged around its orbit.',
@@ -76,6 +77,7 @@ export class TutorialService {
     } as StepDetails;
 
     let moveCamera = {
+      dialogTitle: 'Camera',
       dialogTargetCallback: () => this.selectObjectInDom('kerbol').firstChild,
       dialogMessages: [
         'The camera can be moved around to see other parts of the Kerbol system.',
@@ -94,6 +96,7 @@ export class TutorialService {
     } as StepDetails;
 
     let zoomCamera = {
+      dialogTitle: 'Moons',
       dialogTargetCallback: () => this.selectObjectInDom('kerbin').firstChild,
       dialogMessages: [
         'Some planets have moons, but you have to zoom in to see them.',
@@ -138,6 +141,7 @@ export class TutorialService {
     } as StepDetails;
 
     let editUniverse = {
+      dialogTitle: 'Spacecraft',
       dialogTargetCallback: () => document.querySelector('cp-edit-universe-action-panel mat-expansion-panel mat-list-option'),
       dialogMessages: [
         'This universe can be configured here.',
@@ -173,6 +177,7 @@ export class TutorialService {
     } as StepDetails;
 
     let addCraft = {
+      dialogTitle: 'Antenna Types',
       dialogTargetCallback: () => document.querySelector('mat-dialog-container'),
       dialogMessages: [
         'Spacecraft can be added and configured here.',
@@ -205,6 +210,7 @@ export class TutorialService {
     } as StepDetails;
 
     let communicationLines = {
+      dialogTitle: 'Communication lines',
       dialogTargetCallback: () => {
         let crafts = document.querySelectorAll('.craft-icon-sprite-image');
         return crafts[crafts.length - 1];
@@ -245,6 +251,7 @@ export class TutorialService {
     } as StepDetails;
 
     let relaySatellites = {
+      dialogTitle: 'Signal Relay',
       dialogTargetCallback: () => document.querySelector('.craft-icon-sprite-image'),
       dialogMessages: [
         'Some antenna types can relay a weak connection back to Kerbin.',
@@ -271,6 +278,7 @@ export class TutorialService {
     } as StepDetails;
 
     let endTutorial = {
+      dialogTitle: 'The End',
       dialogTargetCallback: () => document.body,
       dialogMessages: [
         'That concludes the tutorial.',
