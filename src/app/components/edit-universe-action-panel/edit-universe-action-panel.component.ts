@@ -10,16 +10,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { WithDestroy } from '../../common/withDestroy';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
   templateUrl: './edit-universe-action-panel.component.html',
   styleUrls: ['./edit-universe-action-panel.component.scss'],
 })
-export class EditUniverseActionPanelComponent implements OnDestroy {
+export class EditUniverseActionPanelComponent extends WithDestroy() {
 
   actions: ActionOption[];
-  unsubscribe$ = new Subject();
 
   constructor(dialog: MatDialog,
               spaceObjectService: SpaceObjectService,
@@ -27,6 +27,8 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
               cdr: ChangeDetectorRef,
               snackBar: MatSnackBar,
               analyticsService: AnalyticsService) {
+    super();
+
     this.actions = [
       new ActionOption('New Craft', Icons.Craft, {
         action: () => {
@@ -42,7 +44,7 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
             .afterClosed()
             .pipe(
               filter(craftDetails => craftDetails),
-              takeUntil(this.unsubscribe$))
+              takeUntil(this.destroy$))
             .subscribe(craftDetails => {
               spaceObjectService.addCraftToUniverse(craftDetails);
               cdr.markForCheck();
@@ -69,7 +71,7 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
             .afterClosed()
             .pipe(
               filter(details => details),
-              takeUntil(this.unsubscribe$))
+              takeUntil(this.destroy$))
             .subscribe(details => {
               setupService.updateDifficultySetting(details);
               cdr.markForCheck();
@@ -78,11 +80,6 @@ export class EditUniverseActionPanelComponent implements OnDestroy {
         },
       }),
     ];
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 }

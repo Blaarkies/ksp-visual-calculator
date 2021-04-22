@@ -3,7 +3,8 @@ import { Draggable } from '../../common/domain/space-objects/draggable';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Subject } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
+import { WithDestroy } from '../../common/withDestroy';
 
 @Component({
   selector: 'cp-draggable-space-object',
@@ -12,7 +13,7 @@ import { filter } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None,
   animations: [CustomAnimation.animateFade],
 })
-export class DraggableSpaceObjectComponent implements OnDestroy {
+export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDestroy {
 
   @Input() spaceObject: Draggable;
   @Input() scale: number;
@@ -23,6 +24,7 @@ export class DraggableSpaceObjectComponent implements OnDestroy {
   buttonHover$ = new Subject<boolean>();
 
   constructor(cameraService: CameraService) {
+    super();
     // tell camera service that any zoom at action should focus on this object
     this.buttonHover$
       .pipe(
@@ -31,7 +33,7 @@ export class DraggableSpaceObjectComponent implements OnDestroy {
           let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject && !hoverOn;
           return mustSetNewObject || mustRemoveSelf;
         }),
-      )
+        takeUntil(this.destroy$))
       .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject : null);
   }
 

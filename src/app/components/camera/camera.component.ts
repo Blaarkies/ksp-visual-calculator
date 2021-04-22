@@ -3,18 +3,17 @@ import { Vector2 } from '../../common/domain/vector2';
 import { fromEvent, Subject } from 'rxjs';
 import { finalize, map, sampleTime, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
+import { WithDestroy } from '../../common/withDestroy';
 
 @Component({
   selector: 'cp-camera',
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.scss'],
 })
-export class CameraComponent implements OnInit, OnDestroy {
+export class CameraComponent extends WithDestroy() implements OnInit {
 
   @ViewChild('cameraController', {static: true}) cameraController: ElementRef<HTMLDivElement>;
   @ViewChild('screenSpace', {static: true}) screenSpace: ElementRef<HTMLDivElement>;
-
-  private unsubscribe$ = new Subject();
 
   get scale(): number {
     return this.cameraService?.scale ?? 1;
@@ -26,6 +25,7 @@ export class CameraComponent implements OnInit, OnDestroy {
 
   constructor(private _cdr: ChangeDetectorRef,
               private cameraService: CameraService) {
+    super();
   }
 
   ngOnInit() {
@@ -33,13 +33,15 @@ export class CameraComponent implements OnInit, OnDestroy {
     this.cameraService.cameraController = this.cameraController;
   }
 
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
+  updateScale(event: WheelEvent & { wheelDeltaY }) {
+    let isTouchPad = event.wheelDeltaY
+      ? Math.abs(event.wheelDeltaY) !== 120
+      : event.deltaMode === 0;
 
-  updateScale(event: WheelEvent) {
-    this.cameraService.zoomAt(-event.deltaY, new Vector2(event.x, event.y));
+    let zoomRatio = isTouchPad ? 1.05 : 1.25;
+    let zoomDirection = -event.deltaY.sign();
+
+    this.cameraService.zoomAt(zoomRatio * zoomDirection, new Vector2(event.x, event.y));
     this._cdr.markForCheck();
   }
 
@@ -48,7 +50,7 @@ export class CameraComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Transition animation causes lag when mouse-dragging the map around
+    // Remove the transition animation that causes lag when mouse-dragging the map around
     let screenStyle = this.screenSpace.nativeElement.style;
     let oldTransition = screenStyle.transition;
     screenStyle.transition = 'unset';
@@ -59,7 +61,7 @@ export class CameraComponent implements OnInit, OnDestroy {
         finalize(() => screenStyle.transition = oldTransition),
         takeUntil(fromEvent(screenSpace, 'mouseleave')),
         takeUntil(fromEvent(screenSpace, 'mouseup')),
-        takeUntil(this.unsubscribe$))
+        takeUntil(this.destroy$))
       .subscribe(([x, y]) => {
         this.cameraService.location.add(x, y);
         this._cdr.markForCheck();

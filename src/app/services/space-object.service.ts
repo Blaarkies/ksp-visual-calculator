@@ -11,14 +11,15 @@ import { BehaviorSubject, concat } from 'rxjs';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
-import { filter, tap } from 'rxjs/operators';
+import { filter, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
+import { WithDestroy } from '../common/withDestroy';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SpaceObjectService {
+export class SpaceObjectService extends WithDestroy() {
 
   orbits$ = new BehaviorSubject<Orbit[]>(null);
   transmissionLines$ = new BehaviorSubject<TransmissionLine[]>(null);
@@ -28,6 +29,8 @@ export class SpaceObjectService {
   constructor(private cameraService: CameraService,
               private setupService: SetupService,
               private analyticsService: AnalyticsService) {
+    super();
+
     let setupPlanets$ = setupService.stockPlanets$
       .pipe(tap(({listOrbits, celestialBodies}) => {
         this.orbits$.next(listOrbits);
@@ -59,7 +62,9 @@ export class SpaceObjectService {
           this.updateTransmissionLines();
         }));
 
-    concat(setupPlanets$, setupCraft$).subscribe();
+    concat(setupPlanets$, setupCraft$)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
   }
 
   private static getIndexOfSameCombination = (parentItem, list) => list.findIndex(item => item.every(so => parentItem.includes(so)));

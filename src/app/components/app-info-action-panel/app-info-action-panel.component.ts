@@ -9,16 +9,17 @@ import { AccountDialogComponent } from '../../dialogs/account-dialog/account-dia
 import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../../dialogs/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { FeedbackDialogComponent } from '../../dialogs/feedback-dialog/feedback-dialog.component';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { TutorialService } from '../../services/tutorial.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { WithDestroy } from '../../common/withDestroy';
 
 @Component({
   selector: 'cp-app-info-action-panel',
   templateUrl: './app-info-action-panel.component.html',
   styleUrls: ['./app-info-action-panel.component.scss'],
 })
-export class AppInfoActionPanelComponent {
+export class AppInfoActionPanelComponent extends WithDestroy() {
 
   infoOptions: ActionOption[];
 
@@ -26,6 +27,8 @@ export class AppInfoActionPanelComponent {
               dialog: MatDialog,
               tutorialService: TutorialService,
               analyticsService: AnalyticsService) {
+    super();
+
     this.infoOptions = [
       new ActionOption('Tutorial', Icons.Help, {
           action: () => {
@@ -44,7 +47,9 @@ export class AppInfoActionPanelComponent {
               } as SimpleDialogData,
             })
               .afterClosed()
-              .pipe(filter(ok => ok))
+              .pipe(
+                filter(ok => ok),
+                takeUntil(this.destroy$))
               .subscribe(() => tutorialService.startFullTutorial());
           },
         },
@@ -58,7 +63,7 @@ export class AppInfoActionPanelComponent {
 
             dialog.open(PrivacyDialogComponent)
               .afterClosed()
-              .pipe()
+              .pipe(takeUntil(this.destroy$))
               .subscribe();
           },
         },
@@ -72,7 +77,7 @@ export class AppInfoActionPanelComponent {
       //
       //     dialog.open(AccountDialogComponent)
       //       .afterClosed()
-      //       .pipe()
+      //       .pipe(takeUntil(this.destroy$))
       //       .subscribe();
       //   },
       // }),
@@ -84,7 +89,7 @@ export class AppInfoActionPanelComponent {
 
           dialog.open(CreditsDialogComponent)
             .afterClosed()
-            .pipe()
+            .pipe(takeUntil(this.destroy$))
             .subscribe();
         },
       }),
@@ -96,7 +101,7 @@ export class AppInfoActionPanelComponent {
 
           dialog.open(BuyMeACoffeeDialogComponent)
             .afterClosed()
-            .pipe()
+            .pipe(takeUntil(this.destroy$))
             .subscribe();
         },
       }),
@@ -108,7 +113,9 @@ export class AppInfoActionPanelComponent {
 
           dialog.open(FeedbackDialogComponent)
             .afterClosed()
-            .pipe(filter(ok => ok))
+            .pipe(
+              filter(ok => ok),
+              takeUntil(this.destroy$))
             .subscribe(details => analyticsService.logEvent('User feedback', {
                 category: EventLogs.Category.Feedback,
                 ...details,

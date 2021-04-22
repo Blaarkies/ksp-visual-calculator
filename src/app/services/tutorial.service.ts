@@ -2,16 +2,18 @@ import { Injectable } from '@angular/core';
 import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, timer } from 'rxjs';
-import { delay, filter, mapTo, take } from 'rxjs/operators';
+import { delay, filter, mapTo, take, takeUntil } from 'rxjs/operators';
 import { AnalyticsService, EventLogs } from './analytics.service';
+import { WithDestroy } from '../common/withDestroy';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TutorialService {
+export class TutorialService extends WithDestroy() {
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
               private analyticsService: AnalyticsService) {
+    super();
   }
 
   startFullTutorial() {
@@ -23,6 +25,7 @@ export class TutorialService {
 
     this.wizardSpotlightService
       .runSteps(compiledSteps)
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.analyticsService
         .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial}));
   }

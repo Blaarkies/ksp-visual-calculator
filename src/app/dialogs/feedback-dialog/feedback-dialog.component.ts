@@ -7,6 +7,7 @@ import { ControlMetaFreeText } from '../../common/domain/input-fields/control-me
 import { AnalyticsService } from '../../services/analytics.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize, takeUntil } from 'rxjs/operators';
+import { WithDestroy } from '../../common/withDestroy';
 
 export class FeedbackSubmissionForm {
 
@@ -24,7 +25,7 @@ export class FeedbackSubmissionForm {
   styleUrls: ['./feedback-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class FeedbackDialogComponent {
+export class FeedbackDialogComponent extends WithDestroy() {
 
   inputFields = {
     name: {
@@ -54,12 +55,15 @@ export class FeedbackDialogComponent {
               @Inject(MAT_DIALOG_DATA) public data: any,
               private analyticsService: AnalyticsService,
               snackBar: MatSnackBar) {
+    super();
+
     if (!this.analyticsService.isTracking) {
       snackBar.open(this.messageCannotSubmit, 'Enable', {duration: 60e3})
         .onAction()
         .pipe(
           finalize(() => snackBar.dismiss()),
-          takeUntil(dialogRef.afterClosed()))
+          takeUntil(dialogRef.afterClosed()),
+          takeUntil(this.destroy$))
         .subscribe(() => {
           this.analyticsService.setActive(true);
           this.isTracking = this.analyticsService.isTracking;

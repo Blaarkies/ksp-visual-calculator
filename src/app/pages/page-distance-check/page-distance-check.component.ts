@@ -16,6 +16,7 @@ import {
   CelestialBodyDetailsDialogData,
 } from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { WithDestroy } from '../../common/withDestroy';
 
 @Component({
   selector: 'cp-page-distance-check',
@@ -24,20 +25,21 @@ import { AnalyticsService, EventLogs } from '../../services/analytics.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [CustomAnimation.animateFade],
 })
-export class PageDistanceCheckComponent implements OnDestroy {
+export class PageDistanceCheckComponent extends WithDestroy() {
 
   orbits$: Observable<Orbit[]>;
   transmissionLines$: Observable<TransmissionLine[]>;
   celestialBodies$: Observable<SpaceObject[]>;
   crafts$: Observable<Craft[]>;
 
-  private unsubscribe$ = new Subject();
   spaceObjectTypes = SpaceObjectType;
 
   constructor(private _cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService) {
+    super();
+
     this.orbits$ = this.spaceObjectService.orbits$;
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;
     this.celestialBodies$ = this.spaceObjectService.celestialBodies$;
@@ -77,7 +79,7 @@ export class PageDistanceCheckComponent implements OnDestroy {
       .afterClosed()
       .pipe(
         filter(details => details),
-        takeUntil(this.unsubscribe$))
+        takeUntil(this.destroy$))
       .subscribe(details => {
         this.spaceObjectService.editCelestialBody(body, details);
         this._cdr.markForCheck();
@@ -98,16 +100,11 @@ export class PageDistanceCheckComponent implements OnDestroy {
       .afterClosed()
       .pipe(
         filter(details => details),
-        takeUntil(this.unsubscribe$))
+        takeUntil(this.destroy$))
       .subscribe(details => {
         this.spaceObjectService.editCraft(craft, details);
         this._cdr.markForCheck();
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 }

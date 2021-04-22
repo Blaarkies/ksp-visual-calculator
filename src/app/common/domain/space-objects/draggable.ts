@@ -7,8 +7,9 @@ import { LocationConstraints } from '../location-constraints';
 import { SpaceObject } from './space-object';
 import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
+import { WithDestroy } from '../../withDestroy';
 
-export class Draggable {
+export class Draggable extends WithDestroy() {
 
   isGrabbing: boolean;
   location = new Vector2();
@@ -23,6 +24,7 @@ export class Draggable {
   constructor(public label: string,
               public imageUrl: string,
               public moveType: 'noMove' | 'freeMove' | 'orbital') {
+    super();
   }
 
   setChildren(spaceObjects: SpaceObject[]) {
@@ -55,7 +57,8 @@ export class Draggable {
         }),
         takeUntil(fromEvent(screen, 'mouseleave')),
         takeUntil(fromEvent(event.target, 'mouseup')),
-        takeUntil(fromEvent(screen, 'mouseup')))
+        takeUntil(fromEvent(screen, 'mouseup')),
+        takeUntil(this.destroy$))
       .subscribe(xy => {
         this.lastAttemptLocation = xy;
         this.setNewLocation(xy);

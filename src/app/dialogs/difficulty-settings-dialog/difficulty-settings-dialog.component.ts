@@ -5,13 +5,15 @@ import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { DifficultySetting } from './difficulty-setting';
+import { WithDestroy } from '../../common/withDestroy';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'cp-difficulty-settings-dialog',
   templateUrl: './difficulty-settings-dialog.component.html',
   styleUrls: ['./difficulty-settings-dialog.component.scss'],
 })
-export class DifficultySettingsDialogComponent implements OnInit {
+export class DifficultySettingsDialogComponent extends WithDestroy() implements OnInit {
 
   @ViewChild(MatButtonToggleGroup, {static: true}) buttonGroup: MatButtonToggleGroup;
 
@@ -37,9 +39,10 @@ export class DifficultySettingsDialogComponent implements OnInit {
 
   constructor(private dialogRef: MatDialogRef<DifficultySettingsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DifficultySetting) {
+    super();
     // Unselect buttonGroup toggle, because a form.valueChanges means this is now a custom difficulty
     this.form.valueChanges
-      .pipe()
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.buttonGroup.writeValue(null));
   }
 

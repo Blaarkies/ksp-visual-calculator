@@ -7,21 +7,25 @@ import { CelestialBody, KerbolSystemCharacteristics } from './json-interfaces/ke
 import { SpaceObject, SpaceObjectType } from '../common/domain/space-objects/space-object';
 import { Orbit } from '../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { LabeledOption } from '../common/domain/input-fields/labeled-option';
 import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
+import { WithDestroy } from '../common/withDestroy';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SetupService {
+export class SetupService extends WithDestroy() {
 
   availableAntennae$ = new BehaviorSubject<Antenna[]>([]);
   stockPlanets$: Observable<{ listOrbits, celestialBodies }>;
   difficultySetting: DifficultySetting;
 
   constructor(http: HttpClient) {
+    super();
+
     http.get<AntennaPart[]>('assets/stock/antenna-parts.json')
+      .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         let antennae = data.map(a => Antenna.fromAntennaPart(a));
         this.availableAntennae$.next(
