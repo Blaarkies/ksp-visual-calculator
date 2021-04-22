@@ -1,23 +1,35 @@
 import { SpaceObject } from './space-objects/space-object';
 import { SetupService } from '../../services/setup.service';
+import memoize from 'fast-memoize';
 
 export class TransmissionLine {
 
-  // todo: memoize these, because the template is just calling a function here, on every change detection cycle
   get color(): string {
-    let power = Math.round(this.strength * 15);
+    return this.memoizeColor(this.strength);
+  }
+
+  get strength(): number {
+    return this.memoizeStrength(
+      this.nodes[0].hasRelay,
+      this.nodes[1].hasRelay,
+      this.nodes[0].location.x,
+      this.nodes[0].location.y,
+      this.nodes[1].location.x,
+      this.nodes[1].location.y,
+      this.nodes[0].antennae,
+      this.nodes[1].antennae,
+    );
+  }
+
+  memoizeColor = memoize(strength => {
+    let power = Math.round(strength * 15);
     let red = (31 - power * 2).coerceAtMost(15);
     let green = (power * 2).coerceAtMost(15);
     return `#${red.toString(16)}${green.toString(16)}0`;
-  }
+  });
 
-  constructor(public nodes: SpaceObject[],
-              private setupService: SetupService /*todo: use a better reference to an up to date difficulty setting*/) {
-  }
-
-  // todo: memoize these, because the template is just calling a function here, on every change detection cycle
-  get strength(): number {
-    if (!this.nodes.some(n => n.hasRelay)) {
+  memoizeStrength = memoize((hasRelay1, hasRelay2, ...rest) => {
+    if (!hasRelay1 && !hasRelay2) {
       return 0;
     }
 
@@ -33,6 +45,11 @@ export class TransmissionLine {
     let x = 1 - distance / maxRange; // relativeDistance
     let signalStrength = (3 - 2 * x) * x.pow(2);
     return signalStrength;
+  });
+
+  constructor(public nodes: SpaceObject[],
+              private setupService: SetupService /*todo: use a better reference to an up to date difficulty setting*/) {
   }
+
 
 }

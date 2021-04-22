@@ -88,6 +88,6 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
     this.inputRef.writeValue(scaledNumber);
     this.onChange && this.onChange(value);
     this.output.emit(value);
-    this.cdr.markForCheck();
+    window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 }

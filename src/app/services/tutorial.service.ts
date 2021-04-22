@@ -339,6 +339,6 @@ export class TutorialService extends WithDestroy() {
 
   private getByImageUrl(urlId: string): HTMLElement {
     return Array.from(document.querySelectorAll('cp-draggable-space-object'))
-      .find(p => (p.querySelector('.div-as-image') as HTMLElement).style.background.includes(urlId)) as HTMLElement;
+      .find(p => (p.querySelector('.div-as-image') as HTMLElement)?.style?.background?.includes(urlId)) as HTMLElement;
   }
 }

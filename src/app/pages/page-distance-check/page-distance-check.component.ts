@@ -46,8 +46,8 @@ export class PageDistanceCheckComponent extends WithDestroy() {
     this.crafts$ = this.spaceObjectService.crafts$;
   }
 
-  startBodyDrag(body: Draggable, event: MouseEvent, screen: HTMLDivElement, camera?: CameraComponent) {
-    body.startDrag(event, screen, () => this.updateUniverse(), camera);
+  startBodyDrag(body: SpaceObject, event: MouseEvent, screen: HTMLDivElement, camera?: CameraComponent) {
+    body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
 
     this.analyticsService.logEvent('Drag body', {
       category: EventLogs.Category.CelestialBody,
@@ -57,9 +57,13 @@ export class PageDistanceCheckComponent extends WithDestroy() {
     });
   }
 
-  private updateUniverse() {
-    this.spaceObjectService.updateTransmissionLines();
-    this.cdr.markForCheck();
+  private updateUniverse(dragged: SpaceObject) {
+    // todo: check if children in SOI feature have antennae
+    if (dragged.antennae.length) {
+      this.spaceObjectService.updateTransmissionLines();
+    }
+
+    window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 
   editCelestialBody(body: SpaceObject) {

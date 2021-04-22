@@ -42,7 +42,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     let zoomDirection = -event.deltaY.sign();
 
     this.cameraService.zoomAt(zoomRatio * zoomDirection, new Vector2(event.x, event.y));
-    this.cdr.markForCheck();
+    window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 
   startMove(event: MouseEvent, screenSpace: HTMLDivElement) {
@@ -64,7 +64,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(([x, y]) => {
         this.cameraService.location.add(x, y);
-        this.cdr.markForCheck();
+        window.requestAnimationFrame(() => this.cdr.markForCheck());
       });
   }
 
