@@ -15,7 +15,7 @@ export class CameraService {
 
   private scaleSmoothSetter = new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
     (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
-    () => this._cdr.markForCheck());
+    () => this.cdr.markForCheck());
 
   get scale(): number {
     return this.scaleSmoothSetter.value;
@@ -28,7 +28,7 @@ export class CameraService {
 
   private locationSmoothSetter = new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
     (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
-    () => this._cdr.markForCheck());
+    () => this.cdr.markForCheck());
 
   get location(): Vector2 {
     return this.locationSmoothSetter.value;
@@ -51,13 +51,13 @@ export class CameraService {
   currentHoverObject: Draggable;
 
   // todo: change to proper setters, callbacks
-  _cdr: ChangeDetectorRef;
+  cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
 
   reset(scale?: number, location?: Vector2) {
     this.scaleSmoothSetter.value = scale ?? defaultScale;
     this.locationSmoothSetter.value = location ?? defaultLocation.clone();
-    this._cdr.markForCheck();
+    this.cdr.markForCheck();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {

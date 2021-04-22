@@ -16,13 +16,13 @@ export class ActionPanelComponent {
   @Input() startIcon = Icons.Hamburger;
   @Input() startTitle?: string;
 
-  private _options: ActionOption[];
+  private actionOptions: ActionOption[];
   get options(): ActionOption[] {
-    return this._options;
+    return this.actionOptions;
   }
 
   @Input() set options(value: ActionOption[]) {
-    this._options = value;
+    this.actionOptions = value;
     this.unreadCount = value.count(ao => ao.unread);
   }
 
@@ -35,7 +35,7 @@ export class ActionPanelComponent {
 
   updateUnreads(option: ActionOption) {
     option.readNotification();
-    this.unreadCount = this._options.count(ao => ao.unread);
+    this.unreadCount = this.actionOptions.count(ao => ao.unread);
   }
 
   logExternalLink(externalRoute: string) {

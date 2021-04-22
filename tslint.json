@@ -1,9 +1,18 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+      "src/extensions/*"
+    ]
+  },
   "rulesDirectory": [
     "codelyzer"
   ],
   "rules": {
+    "no-unused-variable": true,
+    "no-unused-expression": false,
+    "typedef": false,
+    "prefer-const": false,
     "align": {
       "options": [
         "parameters",
@@ -17,14 +26,11 @@
       "severity": "warning"
     },
     "eofline": true,
-    "import-blacklist": [
-      true,
-      "rxjs/Rx"
-    ],
     "import-spacing": true,
     "indent": {
       "options": [
-        "spaces"
+        "spaces",
+        4
       ]
     },
     "max-classes-per-file": false,
@@ -36,9 +42,7 @@
       true,
       {
         "order": [
-          "static-field",
           "instance-field",
-          "static-method",
           "instance-method"
         ]
       }
@@ -73,19 +77,6 @@
         "always"
       ]
     },
-    "space-before-function-paren": {
-      "options": {
-        "anonymous": "never",
-        "asyncArrow": "always",
-        "constructor": "never",
-        "method": "never",
-        "named": "never"
-      }
-    },
-    "typedef": [
-      true,
-      "call-signature"
-    ],
     "typedef-whitespace": {
       "options": [
         {
@@ -139,13 +130,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      "cp",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      "cp",
       "kebab-case"
     ]
   }

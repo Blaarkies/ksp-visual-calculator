@@ -31,6 +31,7 @@ export class ActionOptionType {
   static Route = new ActionOptionType('route');
   static ExternalRoute = new ActionOptionType('externalRoute');
 
+  // tslint:disable-next-line:no-unused-variable
   constructor(private type: string) {
   }
 

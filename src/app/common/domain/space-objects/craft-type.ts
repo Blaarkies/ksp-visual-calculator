@@ -8,15 +8,15 @@ export class CraftType {
               public iconLocation) {
   }
 
-  static Debris = new CraftType('debris', 'Debris', new Vector2(65*15, 65));
-  static Ship = new CraftType('ship', 'Ship', new Vector2(65*11, 65));
-  static Probe = new CraftType('probe', 'Probe', new Vector2(65*14, 65));
-  static Lander = new CraftType('lander', 'Lander', new Vector2(65*12, 65));
-  static Rover = new CraftType('rover', 'Rover', new Vector2(65*13, 65));
-  static Station = new CraftType('station', 'Station', new Vector2(65*10, 65));
-  static Base = new CraftType('base', 'Base', new Vector2(65*9, 65));
-  static Plane = new CraftType('plane', 'Plane', new Vector2(65*8, 65));
-  static Relay = new CraftType('relay', 'Relay', new Vector2(65*7, 65));
+  static Debris = new CraftType('debris', 'Debris', new Vector2(65 * 15, 65));
+  static Ship = new CraftType('ship', 'Ship', new Vector2(65 * 11, 65));
+  static Probe = new CraftType('probe', 'Probe', new Vector2(65 * 14, 65));
+  static Lander = new CraftType('lander', 'Lander', new Vector2(65 * 12, 65));
+  static Rover = new CraftType('rover', 'Rover', new Vector2(65 * 13, 65));
+  static Station = new CraftType('station', 'Station', new Vector2(65 * 10, 65));
+  static Base = new CraftType('base', 'Base', new Vector2(65 * 9, 65));
+  static Plane = new CraftType('plane', 'Plane', new Vector2(65 * 8, 65));
+  static Relay = new CraftType('relay', 'Relay', new Vector2(65 * 7, 65));
 
   private static All = [
     CraftType.Debris,

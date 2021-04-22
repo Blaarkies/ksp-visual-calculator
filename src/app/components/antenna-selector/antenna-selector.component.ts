@@ -22,9 +22,9 @@ import { AntennaInput } from './antenna-input';
 })
 export class AntennaSelectorComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
-  private _options: LabeledOption<Antenna>[];
+  private selectionOptions: LabeledOption<Antenna>[];
   @Input() set options(value: LabeledOption<Antenna>[]) {
-    this._options = value;
+    this.selectionOptions = value;
     this.refreshAvailableOptions();
   }
 
@@ -94,7 +94,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   }
 
   private refreshAvailableOptions() {
-    this.availableOptions = this._options.except(
+    this.availableOptions = this.selectionOptions.except(
       this.antennaInputs.map(ai => ({value: ai.selectedAntenna})),
       lo => lo.value);
   }

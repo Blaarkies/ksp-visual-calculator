@@ -5,7 +5,6 @@ import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { SimpleDialogComponent, SimpleDialogData } from '../../dialogs/simple-dialog/simple-dialog.component';
 import { PrivacyDialogComponent } from '../../dialogs/privacy-dialog/privacy-dialog.component';
-import { AccountDialogComponent } from '../../dialogs/account-dialog/account-dialog.component';
 import { CreditsDialogComponent } from '../../dialogs/credits-dialog/credits-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../../dialogs/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { FeedbackDialogComponent } from '../../dialogs/feedback-dialog/feedback-dialog.component';

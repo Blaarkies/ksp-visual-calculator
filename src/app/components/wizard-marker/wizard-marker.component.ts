@@ -12,12 +12,11 @@ export interface WizardMarker {
 })
 export class WizardMarkerComponent implements WizardMarker {
 
-  _type: 'ring' | 'pane' = 'pane';
+  markerType: 'ring' | 'pane' = 'pane';
   @Input() set type(value: 'ring' | 'pane') {
-    this._type = value;
-    this.ringHost = this._type === 'ring';
+    this.markerType = value;
+    this.ringHost = this.markerType === 'ring';
   }
-
 
   @HostBinding('class.ring-host') ringHost: boolean;
 

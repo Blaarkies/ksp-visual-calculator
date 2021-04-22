@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
-import { fromEvent, Subject } from 'rxjs';
-import { finalize, map, sampleTime, takeUntil } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { finalize, map, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/withDestroy';
 
@@ -23,13 +23,13 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     return this.cameraService?.location ?? new Vector2();
   }
 
-  constructor(private _cdr: ChangeDetectorRef,
+  constructor(private cdr: ChangeDetectorRef,
               private cameraService: CameraService) {
     super();
   }
 
   ngOnInit() {
-    this.cameraService._cdr = this._cdr;
+    this.cameraService.cdr = this.cdr;
     this.cameraService.cameraController = this.cameraController;
   }
 
@@ -42,7 +42,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     let zoomDirection = -event.deltaY.sign();
 
     this.cameraService.zoomAt(zoomRatio * zoomDirection, new Vector2(event.x, event.y));
-    this._cdr.markForCheck();
+    this.cdr.markForCheck();
   }
 
   startMove(event: MouseEvent, screenSpace: HTMLDivElement) {
@@ -64,7 +64,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(([x, y]) => {
         this.cameraService.location.add(x, y);
-        this._cdr.markForCheck();
+        this.cdr.markForCheck();
       });
   }
 

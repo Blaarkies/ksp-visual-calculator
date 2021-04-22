@@ -4,7 +4,7 @@ import { Icons } from './common/domain/icons';
 import { ActionOption } from './common/domain/action-option';
 
 @Component({
-  selector: 'app-root',
+  selector: 'cp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,

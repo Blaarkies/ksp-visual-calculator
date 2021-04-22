@@ -67,8 +67,8 @@ export class SetupService extends WithDestroy() {
       ]));
 
     // Setup SOI hierarchies
-    bodyToJsonMap.forEach((parentSo, parentCb, map) => {
-      let moons = Array.from(map.entries())
+    bodyToJsonMap.forEach((parentSo, parentCb, mapCollection) => {
+      let moons = Array.from(mapCollection.entries())
         .filter(([cb]) => cb.parent === parentCb.id)
         .map(([, so]) => so);
 

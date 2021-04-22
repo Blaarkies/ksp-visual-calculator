@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Draggable } from '../../common/domain/space-objects/draggable';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
@@ -7,7 +7,7 @@ import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { CameraComponent } from '../../components/camera/camera.component';
 import { SpaceObjectService } from '../../services/space-object.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,7 +34,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
 
   spaceObjectTypes = SpaceObjectType;
 
-  constructor(private _cdr: ChangeDetectorRef,
+  constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService) {
@@ -59,7 +59,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
 
   private updateUniverse() {
     this.spaceObjectService.updateTransmissionLines();
-    this._cdr.markForCheck();
+    this.cdr.markForCheck();
   }
 
   editCelestialBody(body: SpaceObject) {
@@ -82,7 +82,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
         takeUntil(this.destroy$))
       .subscribe(details => {
         this.spaceObjectService.editCelestialBody(body, details);
-        this._cdr.markForCheck();
+        this.cdr.markForCheck();
       });
   }
 
@@ -103,7 +103,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
         takeUntil(this.destroy$))
       .subscribe(details => {
         this.spaceObjectService.editCraft(craft, details);
-        this._cdr.markForCheck();
+        this.cdr.markForCheck();
       });
   }
 

@@ -5,7 +5,7 @@ export class LocationConstraints {
 
   static noMove([oldX, oldY]: number[]): ConstrainLocationFunction {
     return (x, y) => [oldX, oldY];
-  };
+  }
 
   static anyMove([oldX, oldY]: number[]): ConstrainLocationFunction {
     return (x, y) => {
@@ -13,7 +13,7 @@ export class LocationConstraints {
         ? [oldX, oldY]
         : [x, y];
     };
-  };
+  }
 
   static circularMove([centerX, centerY]: number[], r: number): ConstrainLocationFunction {
     return (x, y) => {
@@ -22,7 +22,7 @@ export class LocationConstraints {
         centerX + r * Math.cos(direction),
         centerY + r * Math.sin(direction)];
     };
-  };
+  }
 
   static fromMoveType(moveType: 'noMove' | 'freeMove' | 'orbital',
                       data: OrbitParameterData): ConstrainLocationFunction {

@@ -1,5 +1,4 @@
 import { SpaceObject } from './space-objects/space-object';
-import { DifficultySetting } from '../../dialogs/difficulty-settings-dialog/difficulty-setting';
 import { SetupService } from '../../services/setup.service';
 
 export class TransmissionLine {

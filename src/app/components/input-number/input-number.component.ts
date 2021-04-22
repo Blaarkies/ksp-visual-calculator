@@ -28,7 +28,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
   isActive: boolean;
 
-  constructor(private _cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -88,6 +88,6 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
     this.inputRef.writeValue(scaledNumber);
     this.onChange && this.onChange(value);
     this.output.emit(value);
-    this._cdr.markForCheck();
+    this.cdr.markForCheck();
   }
 }

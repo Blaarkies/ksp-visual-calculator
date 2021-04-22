@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormArray, FormControl, Validators } from '@angular/forms';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
