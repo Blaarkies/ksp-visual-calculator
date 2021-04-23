@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ActionPanelComponent } from './action-panel.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('ActionPanelComponent', () => {
-  let component: ActionPanelComponent;
-  let fixture: ComponentFixture<ActionPanelComponent>;
+let componentType = ActionPanelComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ActionPanelComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ActionPanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {color: '', location: ''});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

@@ -1,25 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InputNumberComponent } from './input-number.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { InputFieldComponent } from '../input-field/input-field.component';
 
-describe('InputNumberComponent', () => {
-  let component: InputNumberComponent;
-  let fixture: ComponentFixture<InputNumberComponent>;
+let componentType = InputNumberComponent;
+describe(1 + componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ InputNumberComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InputNumberComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .keep(InputFieldComponent));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

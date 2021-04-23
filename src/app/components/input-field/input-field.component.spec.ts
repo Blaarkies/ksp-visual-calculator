@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InputFieldComponent } from './input-field.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('InputFieldComponent', () => {
-  let component: InputFieldComponent;
-  let fixture: ComponentFixture<InputFieldComponent>;
+let componentType = InputFieldComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ InputFieldComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(InputFieldComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

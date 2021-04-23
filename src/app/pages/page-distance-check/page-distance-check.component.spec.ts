@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PageDistanceCheckComponent } from './page-distance-check.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('PageDistanceCheckComponent', () => {
-  let component: PageDistanceCheckComponent;
-  let fixture: ComponentFixture<PageDistanceCheckComponent>;
+let componentType = PageDistanceCheckComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ PageDistanceCheckComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PageDistanceCheckComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

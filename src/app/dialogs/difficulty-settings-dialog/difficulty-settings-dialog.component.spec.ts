@@ -1,25 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DifficultySettingsDialogComponent } from './difficulty-settings-dialog.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DifficultySetting } from './difficulty-setting';
 
-describe('DifficultySettingsDialogComponent', () => {
-  let component: DifficultySettingsDialogComponent;
-  let fixture: ComponentFixture<DifficultySettingsDialogComponent>;
+let componentType = DifficultySettingsDialogComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DifficultySettingsDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DifficultySettingsDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(MatDialogRef)
+    .mock(MAT_DIALOG_DATA, DifficultySetting.normal));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

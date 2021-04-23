@@ -1,6 +1,7 @@
 <div class="layout">
 
   <div *ngFor="let antennaInput of antennaInputs"
+       [id]="antennaInput.selectedAntenna.label"
        class="selected-antenna">
 
     <cp-input-field label="Antenna Type"

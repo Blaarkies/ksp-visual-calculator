@@ -1,25 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CraftDetailsDialogComponent, CraftDetailsDialogData } from './craft-details-dialog.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ineeda } from 'ineeda';
 
-import { CraftDetailsDialogComponent } from './craft-details-dialog.component';
+let componentType = CraftDetailsDialogComponent;
+describe(componentType.name, () => {
 
-describe('CraftDetailsDialogComponent', () => {
-  let component: CraftDetailsDialogComponent;
-  let fixture: ComponentFixture<CraftDetailsDialogComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ CraftDetailsDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(CraftDetailsDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(MatDialogRef)
+    .mock(MAT_DIALOG_DATA, ineeda<CraftDetailsDialogData>({
+      forbiddenNames: [],
+    })));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

@@ -1,25 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FeedbackDialogComponent } from './feedback-dialog.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { of } from 'rxjs';
 
-describe('FeedbackDialogComponent', () => {
-  let component: FeedbackDialogComponent;
-  let fixture: ComponentFixture<FeedbackDialogComponent>;
+let componentType = FeedbackDialogComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FeedbackDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FeedbackDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(MatDialogRef, {afterClosed: () => of()})
+    .mock(MatSnackBar, {open: () => ({onAction: () => of()})} as any));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

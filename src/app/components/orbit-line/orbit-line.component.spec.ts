@@ -1,25 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { OrbitLineComponent } from './orbit-line.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { ineeda } from 'ineeda';
+import { Orbit } from '../../common/domain/space-objects/orbit';
 
-describe('OrbitLineComponent', () => {
-  let component: OrbitLineComponent;
-  let fixture: ComponentFixture<OrbitLineComponent>;
+let componentType = OrbitLineComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ OrbitLineComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OrbitLineComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {orbit: ineeda<Orbit>()});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

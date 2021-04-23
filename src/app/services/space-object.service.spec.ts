@@ -1,16 +1,18 @@
-import { TestBed } from '@angular/core/testing';
-
 import { SpaceObjectService } from './space-object.service';
+import { MockBuilder, MockService } from 'ng-mocks';
+import { AppModule } from '../app.module';
+import { HttpClient } from '@angular/common/http';
 
-describe('SpaceObjectService', () => {
-  let service: SpaceObjectService;
+let serviceType = SpaceObjectService;
+describe(serviceType.name, () => {
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(SpaceObjectService);
-  });
+  beforeEach(() => MockBuilder(serviceType)
+    .mock(AppModule)
+    .provide(HttpClient));
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    let service = MockService(serviceType);
+    expect(service).toBeDefined();
   });
+
 });

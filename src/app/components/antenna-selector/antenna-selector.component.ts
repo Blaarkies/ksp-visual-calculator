@@ -24,7 +24,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
 
   private selectionOptions: LabeledOption<Antenna>[];
   @Input() set options(value: LabeledOption<Antenna>[]) {
-    this.selectionOptions = value;
+    this.selectionOptions = value ?? [];
     this.refreshAvailableOptions();
   }
 

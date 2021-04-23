@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BuyMeACoffeeDialogComponent } from './buy-me-a-coffee-dialog.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('BuyMeACoffeeDialogComponent', () => {
-  let component: BuyMeACoffeeDialogComponent;
-  let fixture: ComponentFixture<BuyMeACoffeeDialogComponent>;
+let componentType = BuyMeACoffeeDialogComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ BuyMeACoffeeDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BuyMeACoffeeDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

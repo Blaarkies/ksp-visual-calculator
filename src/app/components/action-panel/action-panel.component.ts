@@ -22,8 +22,8 @@ export class ActionPanelComponent {
   }
 
   @Input() set options(value: ActionOption[]) {
-    this.actionOptions = value;
-    this.unreadCount = value.count(ao => ao.unread);
+    this.actionOptions = value ?? [];
+    this.unreadCount = this.actionOptions.count(ao => ao.unread);
   }
 
   icons = Icons;

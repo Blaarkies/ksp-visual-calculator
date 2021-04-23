@@ -1,25 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DraggableSpaceObjectComponent } from './draggable-space-object.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { ineeda } from 'ineeda';
 
-describe('DraggableSpaceObjectComponent', () => {
-  let component: DraggableSpaceObjectComponent;
-  let fixture: ComponentFixture<DraggableSpaceObjectComponent>;
+let componentType = DraggableSpaceObjectComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ DraggableSpaceObjectComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DraggableSpaceObjectComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {spaceObject: ineeda<SpaceObject>()});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

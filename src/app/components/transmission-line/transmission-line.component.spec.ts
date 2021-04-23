@@ -1,25 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TransmissionLineComponent } from './transmission-line.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { TransmissionLine } from '../../common/domain/transmission-line';
+import { ineeda } from 'ineeda';
 
-describe('TransmissionLineComponent', () => {
-  let component: TransmissionLineComponent;
-  let fixture: ComponentFixture<TransmissionLineComponent>;
+let componentType = TransmissionLineComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TransmissionLineComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TransmissionLineComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {transmissionLine: ineeda<TransmissionLine>()});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

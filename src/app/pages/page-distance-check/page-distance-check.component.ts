@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { Draggable } from '../../common/domain/space-objects/draggable';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
@@ -59,7 +58,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
 
   private updateUniverse(dragged: SpaceObject) {
     // todo: check if children in SOI feature have antennae
-    if (dragged.antennae.length) {
+    if (dragged.antennae?.length) {
       this.spaceObjectService.updateTransmissionLines();
     }
 

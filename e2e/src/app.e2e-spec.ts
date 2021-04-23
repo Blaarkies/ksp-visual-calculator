@@ -2,15 +2,16 @@ import { browser, logging } from 'protractor';
 import { AppPage } from './app.po';
 
 describe('workspace-project App', () => {
+
   let page: AppPage;
 
   beforeEach(() => {
     page = new AppPage();
   });
 
-  it('should display welcome message', async () => {
+  it('should display app name in top left corner', async () => {
     await page.navigateTo();
-    expect(await page.getTitleText()).toEqual('ksp-commnet-planner app is running!');
+    expect(await page.getTitleText()).toEqual('KSP CommNet Planner');
   });
 
   afterEach(async () => {
@@ -20,4 +21,5 @@ describe('workspace-project App', () => {
       level: logging.Level.SEVERE,
     } as logging.Entry));
   });
+
 });

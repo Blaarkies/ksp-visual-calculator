@@ -1,25 +1,22 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { SimpleDialogComponent, SimpleDialogData } from './simple-dialog.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ineeda } from 'ineeda';
 
-import { SimpleDialogComponent } from './simple-dialog.component';
+let componentType = SimpleDialogComponent;
+describe(componentType.name, () => {
 
-describe('SimpleDialogComponent', () => {
-  let component: SimpleDialogComponent;
-  let fixture: ComponentFixture<SimpleDialogComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SimpleDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SimpleDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(MAT_DIALOG_DATA, ineeda<SimpleDialogData>({
+      title: '',
+      descriptions: [],
+    })));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

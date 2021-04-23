@@ -6,20 +6,34 @@ on:
       - main
 
 jobs:
+
   firebase-deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@master
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
         with:
-          node-version: '10.x'
-      - run: npm install
-      - run: npm run build --prod
+          node-version: 14.x
 
-      - uses: w9jds/firebase-action@master
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --
+
+      - name: Test
+        run: npm run test -- --no-watch --no-progress
+
+      - name: Build
+        run: npm run build --prod
+
+      - name: Deploy
+        uses: w9jds/firebase-action@master
         with:
           args: deploy --project ksp-commnet-planner --only hosting
         env:

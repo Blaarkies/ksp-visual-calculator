@@ -1,25 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { WizardMessageComponent } from './wizard-message.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { Vector2 } from '../../common/domain/vector2';
 
-describe('WizardMessageComponent', () => {
-  let component: WizardMessageComponent;
-  let fixture: ComponentFixture<WizardMessageComponent>;
+let componentType = WizardMessageComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ WizardMessageComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(WizardMessageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {location: new Vector2()});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

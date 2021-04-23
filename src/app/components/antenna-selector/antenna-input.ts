@@ -9,6 +9,7 @@ export class AntennaInput {
   constructor(public selectedAntenna: Antenna, count: number = 1) {
     this.antennaControl = new FormControl(selectedAntenna.label, Validators.required);
     this.antennaControl.disable();
+
     this.countControl = new FormControl(count, [
       Validators.required,
       Validators.min(1),

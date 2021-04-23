@@ -15,6 +15,7 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
+import { CraftType } from '../common/domain/space-objects/craft-type';
 
 @Injectable({
   providedIn: 'root',
@@ -43,17 +44,17 @@ export class SpaceObjectService extends WithDestroy() {
       .pipe(
         filter(a => !!a.length),
         tap(() => {
-          // this.addCraft(new CraftDetails(
-          //   'Craft Communotron16', CraftType.Relay, [new Group(setupService.getAntenna('Communotron 16'), 1)]),
-          //   this.celestialBodies$.value[4].location.lerpClone(
-          //     this.celestialBodies$.value[5].location),
-          // );
-          //
-          // this.addCraft(new CraftDetails(
-          //   'Relay sat 15', CraftType.Relay, [new Group(setupService.getAntenna('HG-5 High Gain Antenna'), 1)]),
-          //   this.celestialBodies$.value[4].location.lerpClone(
-          //     this.celestialBodies$.value[6].location),
-          // );
+          this.addCraft(new CraftDetails(
+            'Craft Communotron16', CraftType.Relay, [new Group(setupService.getAntenna('Communotron 16'), 1)]),
+            this.celestialBodies$.value[4].location.lerpClone(
+              this.celestialBodies$.value[5].location),
+          );
+
+          this.addCraft(new CraftDetails(
+            'Relay sat 15', CraftType.Relay, [new Group(setupService.getAntenna('HG-5 High Gain Antenna'), 1)]),
+            this.celestialBodies$.value[4].location.lerpClone(
+              this.celestialBodies$.value[6].location),
+          );
 
           // todo: hasDsn is removed. add default tracking station another way
           this.celestialBodies$.value.find(cb => cb.hasDsn).antennae.push(
@@ -105,7 +106,7 @@ export class SpaceObjectService extends WithDestroy() {
       category: EventLogs.Category.Craft,
       details: {
         craftType: details.craftType,
-        antennae: details.antennae.map(a => ({
+        antennae: details.antennae && details.antennae.map(a => ({
           label: a.item.label,
           count: a.count,
         })),
