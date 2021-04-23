@@ -28,7 +28,9 @@ export class CelestialBodyDetailsDialogComponent {
   inputFields = {
     name: {
       label: 'Name',
-      control: new FormControl(this.data.edit?.label ?? 'Untitled Celestial Body', [Validators.required,
+      control: new FormControl(this.data.edit?.label ?? 'Untitled Celestial Body', [
+        Validators.required,
+        Validators.maxLength(128),
         CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
       ),
       controlMeta: new ControlMetaInput(),

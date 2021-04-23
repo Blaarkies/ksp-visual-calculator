@@ -1,0 +1,76 @@
+Extract using this in javascript
+
+`Communotron16-DSN2=12.77e6 99%
+Communotron16-DSN2=79.7e6  50%
+Communotron16-DSN2=149.4e6 1%
+Communotron16-DSN2=163.9e6 0%`
+  .split('\n')
+  .map(t => {
+      let spaceSplits = t.split(' ');
+      let data = {
+          label: t,
+          distance: t.split('=')[1].split(' ')[0],
+          expectedStrength: spaceSplits[spaceSplits.length - 1].split('%')[0]*.01,
+      };
+      return `{label: '${data.label}', distance: ${data.distance},expectedStrength: ${data.expectedStrength.toString().replace('0.', '.')},},`;
+  })
+  .join('');
+
+
+DSN1 unless stated
+
+Internal=
+Internal=
+Internal=1.09e6m 73%
+Internal=3.09e6m 1%
+Internal=3.15e6m 0%
+
+Communotron16=1.75e6 100%
+Communotron16=16.1e6 49%
+Communotron16=30.1e6 1%
+Communotron16=32.1e6 0%
+
+HG-5-high-gain=6.6e6   99%
+HG-5-high-gain=46.4e6  56%
+HG-5-high-gain=95.4e6  1%
+HG-5-high-gain=105.7e6 0%
+
+RA-100=805.4e6 100%
+RA-100=7.13e9  50%
+RA-100=13.5e9  1%
+RA-100=14.38e9 0%
+
+Communotron16-RA-100=14.5e6  99%
+Communotron16-RA-100=114e6   49%
+Communotron16-RA-100=213e6   1%
+Communotron16-RA-100=227.3e6 0%
+
+Communotron16-DSN1=
+
+Communotron16-DSN2=12.77e6 99%
+Communotron16-DSN2=79.7e6  50%
+Communotron16-DSN2=149.4e6 1%
+Communotron16-DSN2=163.9e6 0%
+
+Communotron16-DSN3=23.77e6 99%
+Communotron16-DSN3=178.7e6 50%
+Communotron16-DSN3=336e6   1%
+Communotron16-DSN3=356e6   0%
+
+easy - range mod * 1.5
+Communotron16-easy=2.43e6 99%
+Communotron16-easy=19.3e6 50%
+Communotron16-easy=38e6   1%
+
+Communotron16-normal=
+
+hard - range mod * 0.65
+Communotron16-hard=1.75e6  99%
+Communotron16-hard=12.88e6 50%
+Communotron16-hard=24.56e6 1%
+
+
+
+
+
+

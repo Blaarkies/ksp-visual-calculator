@@ -144,7 +144,7 @@
     "combinabilityExponent": 1
   },
   {
-    "label": "Probe Core",
+    "label": "Internal",
     "cost": 0,
     "mass": 0,
     "electricityPMit": 6,

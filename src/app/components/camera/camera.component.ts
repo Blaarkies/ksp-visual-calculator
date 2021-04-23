@@ -3,7 +3,7 @@ import { Vector2 } from '../../common/domain/vector2';
 import { fromEvent } from 'rxjs';
 import { finalize, map, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-camera',

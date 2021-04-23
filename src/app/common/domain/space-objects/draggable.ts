@@ -7,7 +7,7 @@ import { LocationConstraints } from '../location-constraints';
 import { SpaceObject } from './space-object';
 import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
-import { WithDestroy } from '../../withDestroy';
+import { WithDestroy } from '../../with-destroy';
 
 export class Draggable extends WithDestroy() {
 

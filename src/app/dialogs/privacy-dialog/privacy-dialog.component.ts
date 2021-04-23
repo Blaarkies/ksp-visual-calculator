@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { AnalyticsService } from '../../services/analytics.service';
 import { takeUntil } from 'rxjs/operators';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-privacy-dialog',

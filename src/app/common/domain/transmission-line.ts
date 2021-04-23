@@ -21,14 +21,14 @@ export class TransmissionLine {
     );
   }
 
-  memoizeColor = memoize(strength => {
+  private memoizeColor = memoize(strength => {
     let power = Math.round(strength * 15);
     let red = (31 - power * 2).coerceAtMost(15);
     let green = (power * 2).coerceAtMost(15);
     return `#${red.toString(16)}${green.toString(16)}0`;
   });
 
-  memoizeStrength = memoize((hasRelay1, hasRelay2, ...rest) => {
+  private memoizeStrength = memoize((hasRelay1, hasRelay2, ...rest) => {
     if (!hasRelay1 && !hasRelay2) {
       return 0;
     }
@@ -36,8 +36,10 @@ export class TransmissionLine {
     let distance = this.nodes[0].location.distance(this.nodes[1].location);
     // todo: when A direct antenna connects to B relay antenna,
     // disregard B direct antennae from calculation
-    let maxRange = (this.nodes[0].totalPowerRating * this.nodes[1].totalPowerRating).sqrt()
-      * this.setupService.difficultySetting.rangeModifier;
+    let maxRange = (this.setupService.difficultySetting.rangeModifier
+      * this.nodes[0].totalPowerRating
+      * this.nodes[1].totalPowerRating)
+      .sqrt();
 
     if (distance > maxRange) {
       return 0;

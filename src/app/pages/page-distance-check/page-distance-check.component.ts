@@ -16,7 +16,7 @@ import {
   CelestialBodyDetailsDialogData,
 } from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-page-distance-check',

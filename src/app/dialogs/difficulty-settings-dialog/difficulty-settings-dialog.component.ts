@@ -5,7 +5,7 @@ import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { DifficultySetting } from './difficulty-setting';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

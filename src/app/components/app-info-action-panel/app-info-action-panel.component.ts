@@ -11,7 +11,7 @@ import { FeedbackDialogComponent } from '../../dialogs/feedback-dialog/feedback-
 import { filter, takeUntil } from 'rxjs/operators';
 import { TutorialService } from '../../services/tutorial.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-app-info-action-panel',

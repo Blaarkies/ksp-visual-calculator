@@ -10,7 +10,7 @@ import { OrbitParameterData } from '../common/domain/space-objects/orbit-paramet
 import { map, takeUntil } from 'rxjs/operators';
 import { LabeledOption } from '../common/domain/input-fields/labeled-option';
 import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
-import { WithDestroy } from '../common/withDestroy';
+import { WithDestroy } from '../common/with-destroy';
 
 @Injectable({
   providedIn: 'root',

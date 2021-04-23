@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',

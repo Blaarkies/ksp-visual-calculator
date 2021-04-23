@@ -14,7 +14,7 @@ import { SetupService } from './setup.service';
 import { filter, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
-import { WithDestroy } from '../common/withDestroy';
+import { WithDestroy } from '../common/with-destroy';
 
 @Injectable({
   providedIn: 'root',

@@ -7,7 +7,7 @@ import { ControlMetaFreeText } from '../../common/domain/input-fields/control-me
 import { AnalyticsService } from '../../services/analytics.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize, takeUntil } from 'rxjs/operators';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 export class FeedbackSubmissionForm {
 

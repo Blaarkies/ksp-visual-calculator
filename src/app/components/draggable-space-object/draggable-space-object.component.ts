@@ -4,7 +4,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Subject } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
 import { filter, takeUntil } from 'rxjs/operators';
-import { WithDestroy } from '../../common/withDestroy';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-draggable-space-object',

@@ -33,7 +33,7 @@ class Sanitize {
     'Tylo', 'Bop', 'Pol', 'Eeloo',
     'Communotron 16', 'Communotron 16-S', 'Communotron DTS-M1', 'Communotron HG-55', 'Communotron 88-88', 'HG-5 High Gain Antenna',
     'RA-2 Relay Antenna', 'RA-15 Relay Antenna', 'RA-100 Relay Antenna', 'Tracking Station 1', 'Tracking Station 2', 'Tracking Station 3',
-    'Probe Core', 'Probodobodyne Experiment Control Station', 'Communotron Ground HG-48',
+    'Internal', 'Probodobodyne Experiment Control Station', 'Communotron Ground HG-48',
     'Untitled Space Craft',
   ];
 
