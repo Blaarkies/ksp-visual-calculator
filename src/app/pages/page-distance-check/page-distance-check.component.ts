@@ -16,6 +16,7 @@ import {
 } from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
+import { CameraService } from '../../services/camera.service';
 
 @Component({
   selector: 'cp-page-distance-check',
@@ -32,6 +33,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
   crafts$: Observable<Craft[]>;
 
   spaceObjectTypes = SpaceObjectType;
+  scaleToShowMoons = CameraService.scaleToShowMoons;
 
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,

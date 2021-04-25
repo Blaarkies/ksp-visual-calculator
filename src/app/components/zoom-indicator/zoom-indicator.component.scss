@@ -1,0 +1,28 @@
+.layout {
+  display: grid;
+  place-items: start center;
+
+  &.transition-in {
+    transition: .5s ease-out;
+    opacity: .7;
+  }
+
+  &.transition-out {
+    transition: 3s ease-in;
+    opacity: 0;
+  }
+}
+
+.zoom-line {
+  margin: 20px;
+
+  padding: 40px 20px 20px 40px;
+  overflow: visible;
+
+  height: 40px;
+  width: 800px;
+
+  .move-smooth {
+    transition: .2s linear;
+  }
+}

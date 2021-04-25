@@ -1,0 +1,56 @@
+<div class="layout"
+     [class.transition-in]="show"
+     [class.transition-out]="!show">
+
+  <svg class="zoom-line"
+       xmlns="http://www.w3.org/2000/svg">
+
+    <line x1="0" y1="0" [attr.x2]="lineLength" y2="0"
+          stroke="#aff7"
+          stroke-width="6"/>
+
+    <rect class="move-smooth" [attr.x]="zoomPoint" y="-15" width="10" height="30" rx="2" fill="#77b82e"/>
+
+    <g id="kerbol-system">
+      <circle cx="0"
+              cy="0"
+              r="10"
+              fill="#ECE45A"/>
+
+      <circle cx="0"
+              cy="0"
+              r="15"
+              fill="#0000"
+              stroke="#30f0f0"
+              stroke-width="2"/>
+
+      <circle cx="0"
+              cy="0"
+              r="22"
+              fill="#0000"
+              stroke="#56ae0e"
+              stroke-width="2"/>
+      <text x="0" y="35" fill="#fff" text-anchor="middle">Stars</text>
+    </g>
+
+    <g id="planets">
+      <circle [attr.cx]="positions.planets"
+              cy="0"
+              r="15"
+              fill="#C7936B"/>
+      <text [attr.x]="positions.planets" y="30" fill="#fff" text-anchor="middle">Planets</text>
+    </g>
+
+    <g id="moons">
+      <circle [attr.cx]="positions.moons"
+              cy="0"
+              r="10"
+              fill="#A0A0B8"/>
+      <text [attr.x]="positions.moons" y="25" fill="#fff" text-anchor="middle">Moons</text>
+    </g>
+
+    <rect [attr.x]="lineLength" y="-10" width="5" height="20" rx="2" fill="#fff"/>
+
+  </svg>
+
+</div>

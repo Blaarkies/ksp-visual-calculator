@@ -11,7 +11,8 @@ let defaultLocation = new Vector2(960, 540);
 })
 export class CameraService {
 
-  private static zoomLimits = [2e-9, 23e-5];
+  static zoomLimits = [2e-9, 23e-5];
+  static scaleToShowMoons = 2e-6;
 
   private scaleSmoothSetter = new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
     (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),

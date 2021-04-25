@@ -57,6 +57,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ZoomIndicatorComponent } from './components/zoom-indicator/zoom-indicator.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +91,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AppInfoActionPanelComponent,
     WizardMessageComponent,
     WizardMarkerComponent,
+    ZoomIndicatorComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

@@ -45,6 +45,27 @@ Number.prototype.odd = function (this: number): boolean {
   return this % 2 !== 0;
 };
 
+Number.prototype.transform = function (this: number, type: 'log' | 'eo-parab' | 'ei-parab'): number {
+  if (!this.between(0, 1)) {
+    console.error(`Cannot transform "${this}", it must be between 0 and 1`);
+  }
+
+  switch (type) {
+    case 'log':
+      // todo: this is not exact
+      return Math.log(1 + this) * 1.44269504;
+
+    case 'eo-parab':
+      return this * (2 - this);
+
+    case 'ei-parab':
+      return (1 - this) * (1 + this);
+
+    default:
+      console.error(`Type "${type}" is not a valid transformation function`);
+  }
+};
+
 Number.prototype.sign = function (this: number): number {
   return Math.sign(this);
 };

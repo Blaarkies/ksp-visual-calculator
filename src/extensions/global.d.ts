@@ -34,6 +34,8 @@ declare global {
 
     odd(this: number): boolean;
 
+    transform(this: number, type: 'log' | 'eo-parab' | 'ei-parab'): number;
+
     sign(this: number): number;
 
     between(this: number, lower: number, upper: number, exclusive?: boolean): boolean;

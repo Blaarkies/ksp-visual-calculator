@@ -16,12 +16,15 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   @ViewChild('screenSpace', {static: true}) screenSpace: ElementRef<HTMLDivElement>;
 
   get scale(): number {
-    return this.cameraService?.scale ?? 1;
+    return this.cameraService?.scale;
   }
 
   get location(): Vector2 {
     return this.cameraService?.location ?? new Vector2();
   }
+
+  cameraZoomLimits = CameraService.zoomLimits;
+  scaleToShowMoons = CameraService.scaleToShowMoons;
 
   constructor(private cdr: ChangeDetectorRef,
               private cameraService: CameraService) {
