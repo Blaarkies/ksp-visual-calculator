@@ -13,6 +13,7 @@
                   [errors]="errors"
                   [matMenuTriggerFor]="popup"
                   (output)="inputChange($event)"
+                  (formTouch)="onTouched && onTouched(true)"
   ></cp-input-field>
 
 </div>

@@ -26,3 +26,11 @@
   }
 
 }
+
+[mat-dialog-actions] {
+  grid-template-columns: max-content auto max-content;
+
+  .justify-right {
+    justify-self: end !important; // to override style.scss [mat-dialog-actions]
+  }
+}

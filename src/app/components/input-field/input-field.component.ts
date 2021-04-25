@@ -1,5 +1,5 @@
-import { Component, ElementRef, forwardRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewChild } from '@angular/core';
+import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
 
@@ -22,13 +22,18 @@ export class InputFieldComponent extends BasicValueAccessor {
   @Input() label: string;
   @Input() errors: FormControlError;
 
+  @Input() set formControl(value: FormControl) {
+    this.setDisabledState(value?.disabled);
+  }
+
   @Output() output = new EventEmitter<string>();
+  @Output() formTouch = new EventEmitter<string>();
 
   @ViewChild('input', {static: true}) inputRef: ElementRef<HTMLInputElement>;
 
   isActive: boolean;
 
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     super();
   }
 
@@ -47,6 +52,7 @@ export class InputFieldComponent extends BasicValueAccessor {
 
   setDisabledState(isDisabled: boolean) {
     this.inputRef.nativeElement.disabled = isDisabled;
+    this.cdr.detectChanges();
   }
 
   userInputChange(value: string) {
@@ -57,6 +63,11 @@ export class InputFieldComponent extends BasicValueAccessor {
 
   focus() {
     this.inputRef.nativeElement.focus();
+  }
+
+  touch() {
+    this.onTouched && this.onTouched(true);
+    this.formTouch.emit();
   }
 
 }

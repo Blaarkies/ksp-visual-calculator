@@ -15,7 +15,6 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
-import { CraftType } from '../common/domain/space-objects/craft-type';
 
 @Injectable({
   providedIn: 'root',
@@ -104,8 +103,8 @@ export class SpaceObjectService extends WithDestroy() {
 
     this.analyticsService.logEvent('Add craft', {
       category: EventLogs.Category.Craft,
-      details: {
-        craftType: details.craftType,
+      craft: {
+        type: details.craftType,
         antennae: details.antennae && details.antennae.map(a => ({
           label: a.item.label,
           count: a.count,
@@ -119,13 +118,13 @@ export class SpaceObjectService extends WithDestroy() {
       category: EventLogs.Category.CelestialBody,
       old: {
         label: EventLogs.Sanitize.anonymize(body.label),
-        craftType: body.type,
+        type: body.type,
         size: body.size,
         dsn: body.antennae[0] && body.antennae[0].item.label,
       },
       new: {
         label: EventLogs.Sanitize.anonymize(details.name),
-        craftType: details.celestialBodyType,
+        type: details.celestialBodyType,
         size: details.size,
         dsn: details.currentDsn?.label,
       },
@@ -149,15 +148,15 @@ export class SpaceObjectService extends WithDestroy() {
     this.analyticsService.logEvent('Edit craft', {
       category: EventLogs.Category.Craft,
       old: {
-        craftType: oldCraft.craftType,
-        antennae: oldCraft.antennae.map(a => ({
+        type: oldCraft.craftType,
+        antennae: oldCraft.antennae && oldCraft.antennae.map(a => ({
           label: a.item.label,
           count: a.count,
         })),
       },
       new: {
-        craftType: craftDetails.craftType,
-        antennae: craftDetails.antennae.map(a => ({
+        type: craftDetails.craftType,
+        antennae: craftDetails.antennae && craftDetails.antennae.map(a => ({
           label: a.item.label,
           count: a.count,
         })),
@@ -165,4 +164,19 @@ export class SpaceObjectService extends WithDestroy() {
     });
   }
 
+  removeCraft(existing: Craft) {
+    this.crafts$.next(this.crafts$.value.remove(existing));
+    this.updateTransmissionLines();
+
+    this.analyticsService.logEvent('Remove craft', {
+      category: EventLogs.Category.Craft,
+      craft: {
+        type: existing.craftType,
+        antennae: existing.antennae && existing.antennae.map(a => ({
+          label: a.item.label,
+          count: a.count,
+        })),
+      },
+    });
+  }
 }

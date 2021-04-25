@@ -5,8 +5,11 @@
 </div>
 
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]>{{data.cancelButtonText || 'Cancel'}}</button>
-  <button color="primary"
+  <button *ngIf="data.cancelButtonText !== null"
+          mat-button
+          [mat-dialog-close]>{{data.cancelButtonText || 'Cancel'}}</button>
+  <button *ngIf="data.okButtonText !== null"
+          color="primary"
           mat-stroked-button
           [mat-dialog-close]="true">
     {{data.okButtonText || 'OK'}}

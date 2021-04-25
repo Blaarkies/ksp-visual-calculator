@@ -1,4 +1,5 @@
 :host {
+  pointer-events: none;
   position: fixed;
   max-width: 400px;
   z-index: 1001; // mat-dialog adds a z-index:1000 backdrop
@@ -9,6 +10,10 @@
     from {opacity: 0}
     to {opacity: 1}
   }
+}
+
+mat-card {
+  pointer-events: all;
 }
 
 .layout {

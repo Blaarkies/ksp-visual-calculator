@@ -18,11 +18,6 @@ export class ZoomIndicatorComponent implements OnDestroy {
     this.zoomChange$.next();
   }
 
-  private transformToLinear(ratio: number) {
-    // todo: constants added to fix small ratio to fractional power. use a proper transformation instead
-    return (ratio.pow(.1) - 0.3187892865378054) * 1.4679745638725887;
-  }
-
   @Input() set zoomLimits(value: number[]) {
     this.limits = value;
     this.range = this.limits[1] - this.limits[0];
@@ -62,6 +57,11 @@ export class ZoomIndicatorComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.zoomChange$.complete();
+  }
+
+  private transformToLinear(ratio: number) {
+    // todo: constants added to fix small ratio to fractional power. use a proper transformation instead
+    return (ratio.pow(.1) - 0.3187892865378054) * 1.4679745638725887;
   }
 
 

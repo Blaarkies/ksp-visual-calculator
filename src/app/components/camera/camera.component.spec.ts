@@ -1,5 +1,5 @@
 import { CameraComponent } from './camera.component';
-import { MockBuilder, MockRender, MockService } from 'ng-mocks';
+import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { CameraService } from '../../services/camera.service';
 

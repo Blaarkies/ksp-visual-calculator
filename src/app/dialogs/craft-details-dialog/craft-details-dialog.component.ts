@@ -11,6 +11,7 @@ import { Craft } from '../../common/domain/space-objects/craft';
 import { CraftDetails } from './craft-details';
 import { SetupService } from '../../services/setup.service';
 import { Group } from '../../common/domain/group';
+import { SpaceObjectService } from '../../services/space-object.service';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
@@ -52,7 +53,8 @@ export class CraftDetailsDialogComponent {
 
   constructor(private dialogRef: MatDialogRef<CraftDetailsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData,
-              private setupService: SetupService) {
+              private setupService: SetupService,
+              private spaceObjectService: SpaceObjectService) {
   }
 
   submitCraftDetails() {
@@ -61,6 +63,11 @@ export class CraftDetailsDialogComponent {
       this.inputFields.craftType.control.value,
       this.inputFields.antennaSelection.control.value);
     this.dialogRef.close(craftDetails);
+  }
+
+  remove() {
+    this.spaceObjectService.removeCraft(this.data.edit);
+    this.dialogRef.close();
   }
 
 }

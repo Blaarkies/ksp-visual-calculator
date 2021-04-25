@@ -5,32 +5,32 @@
                   [type]="$any(inputField.controlMeta).inputType"
                   [label]="inputField.label"
                   [formControl]="inputField.control"
-                  [errors]="inputField.control.errors"></cp-input-field>
+                  [errors]="inputField.control.touched && inputField.control.errors"></cp-input-field>
 
   <cp-input-text-area *ngSwitchCase="controlMetaTypes.FreeText"
                       [label]="inputField.label"
                       [formControl]="inputField.control"
-                      [errors]="inputField.control.errors"></cp-input-text-area>
+                      [errors]="inputField.control.touched && inputField.control.errors"></cp-input-text-area>
 
   <cp-input-number *ngSwitchCase="controlMetaTypes.Number"
                    [label]="inputField.label"
                    [formControl]="inputField.control"
-                   [errors]="inputField.control.errors"></cp-input-number>
+                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-number>
 
   <cp-input-select *ngSwitchCase="controlMetaTypes.Select"
                    [options]="$any(inputField.controlMeta).list"
                    [label]="inputField.label"
                    [formControl]="inputField.control"
-                   [errors]="inputField.control.errors"></cp-input-select>
+                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-select>
 
   <cp-input-toggle *ngSwitchCase="controlMetaTypes.Toggle"
                    [label]="inputField.label"
                    [formControl]="inputField.control"
-                   [errors]="inputField.control.errors"></cp-input-toggle>
+                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-toggle>
 
   <cp-antenna-selector *ngSwitchCase="controlMetaTypes.AntennaSelector"
                        [options]="$any(inputField.controlMeta).list"
                        [label]="inputField.label"
                        [formControl]="inputField.control"
-                       [errors]="inputField.control.errors"></cp-antenna-selector>
+                       [errors]="inputField.control.touched && inputField.control.errors"></cp-antenna-selector>
 </ng-container>

@@ -9,7 +9,7 @@
 
     <cp-input-number label="Part Count"
                      [formControl]="antennaInput.countControl"
-                     [errors]="antennaInput.countControl.errors"
+                     [errors]="antennaInput.countControl.touched && antennaInput.countControl.errors"
                      (output)="userInputChange()"></cp-input-number>
 
     <button mat-icon-button (click)="removeAntenna(antennaInput)">
@@ -20,8 +20,7 @@
   <cp-input-select *ngIf="availableOptions.length"
                    label="Antenna Type"
                    [options]="availableOptions"
-                   [formControl]="finalControl"
-                   (change)="userInputChange()"></cp-input-select>
+                   [formControl]="finalControl"></cp-input-select>
 
 <!--  <div>-->
 <!--    <div>Relay Bias: {{collectionStats.relayBias | number:'.2-2'}}</div>-->
