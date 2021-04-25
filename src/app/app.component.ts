@@ -14,7 +14,7 @@ export class AppComponent {
   routes = UsableRoutes;
   pages: ActionOption[] = [
     new ActionOption('Signal Check', Icons.PlanetSearch,
-      {route: UsableRoutes.DistanceCheck}),
+      {route: UsableRoutes.SignalCheck}),
     new ActionOption('Source Code - GitHub', Icons.External,
       {externalRoute: 'https://github.com/Blaarkies/ksp-commnet-planner'}),
   ];

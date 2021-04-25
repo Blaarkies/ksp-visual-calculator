@@ -10,6 +10,7 @@ import { CommonValidators } from '../../common/validators/common-validators';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { CraftDetails } from './craft-details';
 import { SetupService } from '../../services/setup.service';
+import { Group } from '../../common/domain/group';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
@@ -41,7 +42,7 @@ export class CraftDetailsDialogComponent {
     },
     antennaSelection: {
       label: 'Antennae Onboard',
-      control: new FormControl(this.data.edit?.antennae),
+      control: new FormControl(this.data.edit?.antennae ?? [new Group(this.setupService.getAntenna('Internal'))]),
       controlMeta: new ControlMetaAntennaSelector(this.setupService.antennaList),
     },
   } as InputFields;
