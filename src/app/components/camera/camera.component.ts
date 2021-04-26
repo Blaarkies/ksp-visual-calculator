@@ -36,10 +36,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     this.cameraService.cameraController = this.cameraController;
   }
 
-  updateScale(event: WheelEvent & { wheelDeltaY }) {
-    let isTouchPad = event.wheelDeltaY
-      ? Math.abs(event.wheelDeltaY) !== 120
-      : event.deltaMode === 0;
+  updateScale(event: WheelEvent) {
+    let isTouchPad = Math.abs(event.deltaY) < 25;
 
     let zoomRatio = isTouchPad ? 1.05 : 1.25;
     let zoomDirection = -event.deltaY.sign();

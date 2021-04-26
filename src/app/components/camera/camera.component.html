@@ -3,7 +3,7 @@
      [style.background-position-x.px]="location.x * .2"
      [style.background-position-y.px]="location.y * .2"
      [style.background-size.px]="3e3 * scale.pow(.1)"
-     (mousewheel)="updateScale($event)"
+     (wheel)="updateScale($event)"
      (mousedown)="startMove($event, cameraController)"
      (contextmenu)="$event.shiftKey || $event.preventDefault()">
 

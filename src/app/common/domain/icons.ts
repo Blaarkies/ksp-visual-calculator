@@ -1,7 +1,7 @@
 export class Icons {
 
   static PlanetSearch = 'travel_explore';
-  static Blaarkies = 'eco';
+  static Blaarkies = 'grass';
   static Hamburger = 'menu';
   static Craft = 'flight';
   static Clear = 'clear';
@@ -23,5 +23,6 @@ export class Icons {
   static Relay = 'connect_without_contact';
   static Congratulations = 'emoji_events';
   static DragIndicator = 'drag_indicator';
+  static SourceCode = 'source';
 
 }

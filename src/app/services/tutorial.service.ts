@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
-import { defer, fromEvent, interval, Observable, of, timer } from 'rxjs';
+import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
 import { delay, filter, mapTo, take, takeUntil } from 'rxjs/operators';
 import { AnalyticsService, EventLogs } from './analytics.service';
-import { WithDestroy } from '../common/with-destroy';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TutorialService extends WithDestroy() {
+export class TutorialService {
+
+  stopTutorial$ = new Subject();
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
               private analyticsService: AnalyticsService) {
-    super();
   }
 
   startFullTutorial() {
@@ -21,11 +21,13 @@ export class TutorialService extends WithDestroy() {
       category: EventLogs.Category.Tutorial,
     });
 
+    this.stopTutorial$.next();
     let compiledSteps = this.getCompiledSteps();
 
     this.wizardSpotlightService
       .runSteps(compiledSteps)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        takeUntil(this.stopTutorial$))
       .subscribe(() => this.analyticsService
         .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial}));
   }
@@ -126,7 +128,7 @@ export class TutorialService extends WithDestroy() {
           callback: (input: { kerbin, attachPoint }) => of(input),
         },
         {
-          callback: (input: { kerbin, attachPoint }) => fromEvent(document.body, 'mousewheel').pipe(
+          callback: (input: { kerbin, attachPoint }) => fromEvent(document.body, 'wheel').pipe(
             filter(() => !!this.selectObjectInDom('mun or minmus')),
             take(1),
             delay(1000),

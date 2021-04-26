@@ -17,8 +17,10 @@ export class AppComponent implements OnInit {
   pages: ActionOption[] = [
     new ActionOption('Signal Check', Icons.PlanetSearch,
       {route: UsableRoutes.SignalCheck}),
-    new ActionOption('Source Code - GitHub', Icons.External,
+    new ActionOption('Source Code - GitHub', Icons.SourceCode,
       {externalRoute: 'https://github.com/Blaarkies/ksp-commnet-planner'}),
+    new ActionOption('Blaarkies Hub', Icons.Blaarkies,
+      {externalRoute: 'https://blaarkies.com/'}),
   ];
 
   constructor(private dialog: MatDialog) {
