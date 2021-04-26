@@ -27,7 +27,10 @@ jobs:
         run: npm run lint --
 
       - name: Test
-        run: npm run test -- --no-watch --no-progress
+        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+
+      - name: E2e
+        run: npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
 
       - name: Build
         run: npm run build --prod

@@ -53,7 +53,7 @@ export class AnalyticsService {
   isTracking: boolean;
 
   constructor() {
-    let optedOut = localStorage.getItem('user-opted-out-of-tracking');
+    let optedOut = localStorage.getItem('ksp-commnet-planner-user-opted-out-of-tracking');
     if (optedOut?.toBoolean()) {
       this.isTracking = false;
       this.analytics = {
@@ -85,7 +85,7 @@ export class AnalyticsService {
     this.logEvent(`Set tracking ${isTracking.toString('on')}`, {category: EventLogs.Category.Privacy});
     this.analytics.setAnalyticsCollectionEnabled(isTracking);
     this.isTracking = isTracking;
-    localStorage.setItem('user-opted-out-of-tracking', (!isTracking).toString());
+    localStorage.setItem('ksp-commnet-planner-user-opted-out-of-tracking', (!isTracking).toString());
   }
 
   logEvent(name: string, details?: any) {

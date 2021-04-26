@@ -52,8 +52,8 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
               .subscribe(() => tutorialService.startFullTutorial());
           },
         },
-        !localStorage.getItem('tutorial-viewed'),
-        () => localStorage.setItem('tutorial-viewed', true.toString())),
+        !localStorage.getItem('ksp-commnet-planner-tutorial-viewed'),
+        () => localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString())),
       new ActionOption('Privacy', Icons.Analytics, {
           action: () => {
             analyticsService.logEvent('Call privacy dialog', {
@@ -66,8 +66,8 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
               .subscribe();
           },
         },
-        !localStorage.getItem('privacy-viewed'),
-        () => localStorage.setItem('privacy-viewed', true.toString())),
+        !localStorage.getItem('ksp-commnet-planner-privacy-viewed'),
+        () => localStorage.setItem('ksp-commnet-planner-privacy-viewed', true.toString())),
       // new ActionOption('Account', Icons.AccountSettings, {
       //   action: () => {
       //     analyticsService.logEvent('Call account dialog', {
