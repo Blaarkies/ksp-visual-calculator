@@ -21,15 +21,6 @@ interface AntennaScenario extends SignalScenario {
 
 describe('Domain tests', () => {
 
-
-  beforeEach(async () => {
-
-  });
-
-  beforeEach(() => {
-
-  });
-
   describe('Antenna calculations', async () => {
     let setupServiceMock = {
       difficultySetting: DifficultySetting.normal,
@@ -53,9 +44,9 @@ describe('Domain tests', () => {
 
     let spaceObjectMap = {
       internal: makeSpaceObject([[antennaeMap.internal]]),
-      communotron16: makeSpaceObject([[antennaeMap.communotron16]]),
-      hg5HighGain: makeSpaceObject([[antennaeMap.hg5HighGain]]),
-      ra100Relay: makeSpaceObject([[antennaeMap.ra100Relay]]),
+      communotron16: makeSpaceObject([[antennaeMap.internal], [antennaeMap.communotron16]]),
+      hg5HighGain: makeSpaceObject([[antennaeMap.internal], [antennaeMap.hg5HighGain]]),
+      ra100Relay: makeSpaceObject([[antennaeMap.internal], [antennaeMap.ra100Relay]]),
       dsn1: makeSpaceObject([[antennaeMap.dsn1]]),
       dsn2: makeSpaceObject([[antennaeMap.dsn2]]),
       dsn3: makeSpaceObject([[antennaeMap.dsn3]]),

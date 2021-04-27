@@ -19,7 +19,7 @@ export class Antenna {
   static combinedPower(antennae: Group<Antenna>[]): number {
     let strongestAntennaPower = antennae
       .map(g => g.item)
-      .sort((a, b) => a.powerRating - b.powerRating)
+      .sort((a, b) => b.powerRating - a.powerRating)
       .first()
       .powerRating;
     let sumOfAntennaPowers = antennae.map(({item, count}) => item.powerRating * count).sum();
