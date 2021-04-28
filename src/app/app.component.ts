@@ -5,7 +5,7 @@ import { ActionOption } from './common/domain/action-option';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './dialogs/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
-import { takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 
 @Component({
@@ -73,7 +73,9 @@ export class AppComponent extends WithDestroy() implements OnInit {
       } as SimpleDialogData,
     })
       .afterClosed()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter(ok => ok),
+        takeUntil(this.destroy$))
       .subscribe(() => this.tutorialService.startFullTutorial());
   }
 }
