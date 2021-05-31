@@ -17,6 +17,9 @@ export class Antenna {
   }
 
   static combinedPower(antennae: Group<Antenna>[]): number {
+    if (!antennae.length) {
+      return 0;
+    }
     let strongestAntennaPower = antennae
       .map(g => g.item)
       .sort((a, b) => b.powerRating - a.powerRating)

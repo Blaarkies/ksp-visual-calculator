@@ -276,10 +276,10 @@ describe('Domain tests', () => {
           setupServiceMock);
 
         let roundError = .01;
-        let isBetween = transmissionLine.strength.between(scenario.expectedStrength - roundError,
+        let isBetween = transmissionLine.strengthTotal.between(scenario.expectedStrength - roundError,
           scenario.expectedStrength + roundError);
 
-        expect(isBetween).toBeTruthy(`Expected strength:${transmissionLine.strength} to be ${scenario.expectedStrength}`);
+        expect(isBetween).toBeTruthy(`Expected strength:${transmissionLine.strengthTotal} to be ${scenario.expectedStrength}`);
       });
     });
 

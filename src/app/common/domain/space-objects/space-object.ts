@@ -53,8 +53,12 @@ export class SpaceObject {
     this.draggableHandle = new Draggable(label, `url(${imageUrl}) 0 0`, moveType);
   }
 
-  get totalPowerRating(): number {
+  get powerRatingTotal(): number {
     return Antenna.combinedPower(this.antennae);
+  }
+
+  get powerRatingRelay(): number {
+    return Antenna.combinedPower(this.antennae.filter(a => a.item.relay));
   }
 
   get hasRelay(): boolean {

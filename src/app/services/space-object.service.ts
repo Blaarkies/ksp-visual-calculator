@@ -78,7 +78,7 @@ export class SpaceObjectService extends WithDestroy() {
       .map(pair => // leave existing transmission lines here so that visuals do not flicker
         this.transmissionLines$.value.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new TransmissionLine(pair, this.setupService))
-      .filter(tl => tl.strength);
+      .filter(tl => tl.strengthTotal);
   }
 
   updateTransmissionLines() {

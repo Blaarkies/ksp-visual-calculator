@@ -5,3 +5,14 @@
     transition: .25s;
   }
 }
+
+.animate-data-travelling {
+
+  animation: kf-animate-stroke-dashoffset .4s linear infinite;
+
+  @keyframes kf-animate-stroke-dashoffset {
+    from {stroke-dashoffset: 0}
+    to {stroke-dashoffset: 8}
+  }
+}
+
