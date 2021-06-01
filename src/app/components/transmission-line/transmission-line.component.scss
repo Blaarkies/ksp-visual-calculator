@@ -7,7 +7,6 @@
 }
 
 .animate-data-travelling {
-
   animation: kf-animate-stroke-dashoffset .4s linear infinite;
 
   @keyframes kf-animate-stroke-dashoffset {
@@ -16,3 +15,11 @@
   }
 }
 
+.distance-text {
+  text-shadow: 0 0 1px black;
+
+  color: var(--text-map-green);
+  background-color: #0009;
+  border-radius: 10px;
+  padding: 2px 6px;
+}

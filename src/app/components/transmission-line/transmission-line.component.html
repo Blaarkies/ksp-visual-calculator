@@ -18,4 +18,19 @@
         [attr.x2]="scale * transmissionLine.nodes[1].location.x - transmissionLine.offsetVector.x"
         [attr.y2]="scale * transmissionLine.nodes[1].location.y - transmissionLine.offsetVector.y"
   />
+
+  <foreignObject width="100%"
+                 height="100%"
+                 [attr.x]="scale * transmissionLine.textLocation.x - 30"
+                 [attr.y]="scale * transmissionLine.textLocation.y - 10">
+    <span xmlns="http://www.w3.org/1999/xhtml"
+          [@animateFade]
+          *ngIf="(transmissionLine.nodes[0].draggableHandle.isHover$ | async)
+                  || (transmissionLine.nodes[1].draggableHandle.isHover$ | async)"
+          class="distance-text">
+      {{transmissionLine.strengthTotal * 100 | number : '.0-0'}}%
+      &nbsp;
+      {{transmissionLine.displayDistance}}
+    </span>
+  </foreignObject>
 </svg>

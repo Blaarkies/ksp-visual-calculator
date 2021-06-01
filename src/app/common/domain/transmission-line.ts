@@ -5,6 +5,23 @@ import { Vector2 } from './vector2';
 
 export class TransmissionLine {
 
+  get textLocation(): Vector2 {
+    return this.memoizeTextLocation(
+      this.nodes[0].location.x,
+      this.nodes[0].location.y,
+      this.nodes[1].location.x,
+      this.nodes[1].location.y);
+  }
+
+  get displayDistance(): string {
+    return this.memoizeDisplayDistance(
+      this.nodes[0].location.x,
+      this.nodes[0].location.y,
+      this.nodes[1].location.x,
+      this.nodes[1].location.y,
+    );
+  }
+
   get offsetVector(): Vector2 {
     return this.memoizeOffsetVector(
       this.nodes[0].location.x,
@@ -46,6 +63,18 @@ export class TransmissionLine {
       this.nodes[1].antennae,
     );
   }
+
+  private memoizeTextLocation = memoize((x1, y1, x2, y2) => {
+    return this.nodes[0].location
+      .lerpClone(this.nodes[1].location);
+  });
+
+  private memoizeDisplayDistance = memoize((x1, y1, x2, y2) => {
+    let distance = this.nodes[0].location
+      .distance(this.nodes[1].location)
+      .toSi(3);
+    return `${distance}m`;
+  });
 
   private memoizeOffsetVector = memoize((x1, y1, x2, y2) => {
     let a = this.nodes[0].location;

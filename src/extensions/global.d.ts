@@ -49,6 +49,8 @@ declare global {
     coerceAtMost(this: number, threshold: number): number;
 
     coerceIn(this: number, lower: number, upper: number): number;
+
+    toSi(this: number, decimals?: number): string;
   }
 
   interface Array<T> {

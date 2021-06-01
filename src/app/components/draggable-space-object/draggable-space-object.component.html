@@ -1,9 +1,9 @@
 <div class="draggable-body overlap-container"
-     [class.cursor-grab]="!spaceObject.isGrabbing"
+     [class.cursor-grab]="!spaceObject.draggableHandle.isGrabbing"
      [style.left.px]="scale * spaceObject.location.x"
      [style.top.px]="scale * spaceObject.location.y"
      (mousedown)="dragSpaceObject.emit($event)"
-     cpMousehover (hoverChange)="buttonHover$.next($event)">
+     cpMousehover (hoverChange)="buttonHover$.next($event); spaceObject.draggableHandle.isHover$.next($event)">
 
   <ng-content></ng-content>
 
