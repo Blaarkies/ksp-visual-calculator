@@ -11,6 +11,7 @@ interface SignalScenario {
   label: string;
   distance: number;
   expectedStrength: number;
+  craft?: SpaceObject;
 }
 
 interface AntennaScenario extends SignalScenario {
@@ -33,6 +34,8 @@ describe('Domain tests', () => {
       internal: stockAntennae.find(a => a.label === 'Internal'),
       communotron16: stockAntennae.find(a => a.label === 'Communotron 16'),
       hg5HighGain: stockAntennae.find(a => a.label === 'HG-5 High Gain Antenna'),
+      ra2Relay: stockAntennae.find(a => a.label === 'RA-2 Relay Antenna'),
+      ra15Relay: stockAntennae.find(a => a.label === 'RA-15 Relay Antenna'),
       ra100Relay: stockAntennae.find(a => a.label === 'RA-100 Relay Antenna'),
       dsn1: stockAntennae.find(a => a.label === 'Tracking Station 1'),
       dsn2: stockAntennae.find(a => a.label === 'Tracking Station 2'),
@@ -262,6 +265,33 @@ describe('Domain tests', () => {
         },
       ] as SignalScenario[]).map(ss => ({...ss, craft: spaceObjectMap.communotron16, difficulty: DifficultySetting.hard})),
 
+      ...([
+        {
+          label: 'RA-15+RA-100=88.394e9 46%',
+          distance: 88.394e9,
+          expectedStrength: .46,
+          craft: makeSpaceObject([[antennaeMap.internal], [antennaeMap.ra15Relay], [antennaeMap.ra100Relay]]),
+        },
+        {
+          label: 'RA-15+RA-100+RA-2=88.396e9 46%',
+          distance: 88.396e9,
+          expectedStrength: .46,
+          craft: makeSpaceObject([[antennaeMap.internal], [antennaeMap.ra15Relay], [antennaeMap.ra100Relay], [antennaeMap.ra2Relay]]),
+        },
+        {
+          label: '5xRA-15+1xRA-100=88.396e9 57%',
+          distance: 88.396e9,
+          expectedStrength: .57,
+          craft: makeSpaceObject([[antennaeMap.internal], [antennaeMap.ra15Relay, 5], [antennaeMap.ra100Relay]]),
+        },
+        {
+          label: '10xRA-15+1xRA-100=88.396e9 66%',
+          distance: 88.396e9,
+          expectedStrength: .66,
+          craft: makeSpaceObject([[antennaeMap.internal], [antennaeMap.ra15Relay, 10], [antennaeMap.ra100Relay]]),
+        },
+      ] as SignalScenario[]).map(ss => ({...ss, relay: spaceObjectMap.dsn3, difficulty: DifficultySetting.normal})),
+
     ] as AntennaScenario[];
 
     scenarios.forEach(scenario => {
@@ -276,10 +306,10 @@ describe('Domain tests', () => {
           setupServiceMock);
 
         let roundError = .01;
-        let isBetween = transmissionLine.strength.between(scenario.expectedStrength - roundError,
+        let isBetween = transmissionLine.strengthTotal.between(scenario.expectedStrength - roundError,
           scenario.expectedStrength + roundError);
 
-        expect(isBetween).toBeTruthy(`Expected strength:${transmissionLine.strength} to be ${scenario.expectedStrength}`);
+        expect(isBetween).toBeTruthy(`Expected strength:${transmissionLine.strengthTotal} to be ${scenario.expectedStrength}`);
       });
     });
 

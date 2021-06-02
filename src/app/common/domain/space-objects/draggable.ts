@@ -1,4 +1,4 @@
-import { fromEvent } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import { filter, finalize, map, takeUntil, throttleTime } from 'rxjs/operators';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
@@ -12,10 +12,11 @@ import { WithDestroy } from '../../with-destroy';
 export class Draggable extends WithDestroy() {
 
   isGrabbing: boolean;
+  isHover$ = new Subject<boolean>();
   location = new Vector2();
   lastAttemptLocation: number[];
   children: Draggable[];
-  parameterData: OrbitParameterData = new OrbitParameterData();
+  parameterData = new OrbitParameterData();
 
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
@@ -26,6 +27,10 @@ export class Draggable extends WithDestroy() {
               public imageUrl: string,
               public moveType: 'noMove' | 'freeMove' | 'orbital') {
     super();
+    super.ngOnDestroy = () => {
+      super.ngOnDestroy();
+      this.isHover$.complete();
+    };
   }
 
   setChildren(spaceObjects: SpaceObject[]) {

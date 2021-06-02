@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { Draggable } from '../../common/domain/space-objects/draggable';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Subject } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
 
 @Component({
   selector: 'cp-draggable-space-object',
@@ -15,7 +15,7 @@ import { WithDestroy } from '../../common/with-destroy';
 })
 export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDestroy {
 
-  @Input() spaceObject: Draggable;
+  @Input() spaceObject: SpaceObject;
   @Input() scale: number;
 
   @Output() dragSpaceObject = new EventEmitter<MouseEvent>();
@@ -30,11 +30,11 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
       .pipe(
         filter(hoverOn => {
           let mustSetNewObject = !cameraService.currentHoverObject || hoverOn;
-          let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject && !hoverOn;
+          let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject.draggableHandle && !hoverOn;
           return mustSetNewObject || mustRemoveSelf;
         }),
         takeUntil(this.destroy$))
-      .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject : null);
+      .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject.draggableHandle : null);
   }
 
   ngOnDestroy() {

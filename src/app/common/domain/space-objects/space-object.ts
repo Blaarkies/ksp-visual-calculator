@@ -49,12 +49,18 @@ export class SpaceObject {
               moveType: 'noMove' | 'freeMove' | 'orbital',
               public type: SpaceObjectType,
               public antennae: Group<Antenna>[] = [],
-              public hasDsn?: boolean) {
+              public hasDsn?: boolean,
+              public sphereOfInfluence?: number,
+              public equatorialRadius?: number) {
     this.draggableHandle = new Draggable(label, `url(${imageUrl}) 0 0`, moveType);
   }
 
-  get totalPowerRating(): number {
+  get powerRatingTotal(): number {
     return Antenna.combinedPower(this.antennae);
+  }
+
+  get powerRatingRelay(): number {
+    return Antenna.combinedPower(this.antennae.filter(a => a.item.relay));
   }
 
   get hasRelay(): boolean {

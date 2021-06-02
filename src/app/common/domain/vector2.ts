@@ -9,9 +9,9 @@ export class Vector2 {
     return this;
   }
 
-  setVector2(vector2: Vector2): Vector2 {
-    this.x = vector2.x;
-    this.y = vector2.y;
+  setVector2(other: Vector2): Vector2 {
+    this.x = other.x;
+    this.y = other.y;
     return this;
   }
 
@@ -25,9 +25,9 @@ export class Vector2 {
     return this;
   }
 
-  addVector2(vector2: Vector2): Vector2 {
-    this.x += vector2.x;
-    this.y += vector2.y;
+  addVector2(other: Vector2): Vector2 {
+    this.x += other.x;
+    this.y += other.y;
     return this;
   }
 
@@ -61,4 +61,11 @@ export class Vector2 {
     return `${this.x} ${this.y}`;
   }
 
+  direction(other: Vector2): number {
+    return Math.atan2(other.y - this.y, other.x - this.x);
+  }
+
+  static fromDirection(angle: number, distance: number = 1): Vector2 {
+    return new Vector2(Math.cos(angle) * distance, Math.sin(angle) * distance);
+  }
 }

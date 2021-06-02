@@ -21,3 +21,14 @@
   //background-size: 500% 500%;
 }
 
+.altitude-text {
+  color: var(--text-map-green);
+  position: absolute;
+  top: -40%;
+  left: 0px;
+
+  text-shadow: 0 0 1px black;
+  background-color: #0009;
+  border-radius: 10px;
+  padding: 2px 6px;
+}

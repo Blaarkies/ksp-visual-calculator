@@ -78,7 +78,7 @@ export class SpaceObjectService extends WithDestroy() {
       .map(pair => // leave existing transmission lines here so that visuals do not flicker
         this.transmissionLines$.value.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new TransmissionLine(pair, this.setupService))
-      .filter(tl => tl.strength);
+      .filter(tl => tl.strengthTotal);
   }
 
   updateTransmissionLines() {
@@ -92,7 +92,7 @@ export class SpaceObjectService extends WithDestroy() {
         .multiply(-inverseScale)
         .addVector2(this.cameraService.screenCenterOffset
           .multiply(inverseScale));
-    let craft = new Craft(details.name, details.craftType, details.antennae);
+    let craft = new Craft(details.name, details.craftType, details.antennae, this.celestialBodies$);
     craft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(location));
     this.crafts$.next([...this.crafts$.value, craft]);
   }
@@ -140,7 +140,7 @@ export class SpaceObjectService extends WithDestroy() {
   }
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
-    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
+    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae, this.celestialBodies$);
     newCraft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(oldCraft.location));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
     this.updateTransmissionLines();

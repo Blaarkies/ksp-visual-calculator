@@ -89,3 +89,12 @@ Number.prototype.coerceIn = function (this: number, lower: number = 0, upper: nu
   let lowLimitedValue = this.coerceAtLeast(lower);
   return lowLimitedValue.coerceAtMost(upper);
 };
+
+const siSuffixes = ['', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+Number.prototype.toSi = function (this: number, decimals: number = 0): string {
+  const level = this === 0
+    ? this
+    : Math.floor(Math.log(this) / Math.log(1000));
+  let number = parseFloat((this / Math.pow(1000, level)).toFixed(decimals));
+  return `${number}${siSuffixes[level]}`;
+};
