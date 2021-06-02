@@ -69,6 +69,12 @@ Communotron16-hard=1.75e6  99%
 Communotron16-hard=12.88e6 50%
 Communotron16-hard=24.56e6 1%
 
+normal - DSN3
+RA-15+RA-100=88.394e9 46%
+RA-15+RA-100+RA-2=88.396e9 46%
+5xRA-15+1xRA-100=88.396e9 57%
+10xRA-15+1xRA-100=88.396e9 66%
+
 
 
 
