@@ -16,7 +16,7 @@ export class Draggable extends WithDestroy() {
   location = new Vector2();
   lastAttemptLocation: number[];
   children: Draggable[];
-  parameterData: OrbitParameterData = new OrbitParameterData();
+  parameterData = new OrbitParameterData();
 
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];

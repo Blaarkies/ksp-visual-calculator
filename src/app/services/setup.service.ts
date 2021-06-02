@@ -63,7 +63,9 @@ export class SetupService extends WithDestroy() {
           b.type === SpaceObjectType.Star ? 'noMove' : 'orbital',
           SpaceObjectType.fromString(b.type),
           [],
-          b.hasDsn),
+          b.hasDsn,
+          b.sphereOfInfluence,
+          b.equatorialRadius),
       ]));
 
     // Setup SOI hierarchies

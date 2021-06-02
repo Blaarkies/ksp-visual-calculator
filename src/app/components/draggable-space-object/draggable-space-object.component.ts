@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { Draggable } from '../../common/domain/space-objects/draggable';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Subject } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
