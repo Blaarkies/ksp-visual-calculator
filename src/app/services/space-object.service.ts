@@ -15,6 +15,7 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
+import { SpaceObjectContainerService } from './space-object-container.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +24,13 @@ export class SpaceObjectService extends WithDestroy() {
 
   orbits$ = new BehaviorSubject<Orbit[]>(null);
   transmissionLines$ = new BehaviorSubject<TransmissionLine[]>(null);
-  celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
-  crafts$ = new BehaviorSubject<Craft[]>(null);
+  celestialBodies$ = this.spaceObjectContainerService.celestialBodies$;
+  crafts$ = this.spaceObjectContainerService.crafts$;
 
   constructor(private cameraService: CameraService,
               private setupService: SetupService,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private spaceObjectContainerService: SpaceObjectContainerService) {
     super();
 
     let setupPlanets$ = setupService.stockPlanets$
@@ -92,7 +94,7 @@ export class SpaceObjectService extends WithDestroy() {
         .multiply(-inverseScale)
         .addVector2(this.cameraService.screenCenterOffset
           .multiply(inverseScale));
-    let craft = new Craft(details.name, details.craftType, details.antennae, this.celestialBodies$);
+    let craft = new Craft(details.name, details.craftType, details.antennae);
     craft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(location));
     this.crafts$.next([...this.crafts$.value, craft]);
   }
@@ -140,7 +142,7 @@ export class SpaceObjectService extends WithDestroy() {
   }
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
-    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae, this.celestialBodies$);
+    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
     newCraft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(oldCraft.location));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
     this.updateTransmissionLines();

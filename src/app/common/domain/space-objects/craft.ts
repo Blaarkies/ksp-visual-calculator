@@ -4,7 +4,7 @@ import { ImageUrls } from '../image-urls';
 import { CraftType } from './craft-type';
 import { Antenna } from '../antenna';
 import { Group } from '../group';
-import { BehaviorSubject } from 'rxjs';
+import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
 
 export class Craft extends SpaceObject {
 
@@ -12,7 +12,8 @@ export class Craft extends SpaceObject {
 
   get displayAltitude(): string {
     // performance impact on this function seems minimal, since its called from inside an *ngIf
-    let soiParent = this.celestialBodies$.value
+    let soiParent = SpaceObjectContainerService.instance
+      .celestialBodies$.value
       .filter(cb => !cb.sphereOfInfluence || this.location.distance(cb.location) <= cb.sphereOfInfluence)
       .sort((a, b) => a.location.distance(this.location) - b.location.distance(this.location))
       .first();
@@ -24,8 +25,7 @@ export class Craft extends SpaceObject {
 
   constructor(label: string,
               public craftType: CraftType,
-              antennae: Group<Antenna>[] = [],
-              private celestialBodies$: BehaviorSubject<SpaceObject[]>) {
+              antennae: Group<Antenna>[] = []) {
     super(30, label, ImageUrls.CraftIcons, 'freeMove', SpaceObjectType.Craft, antennae);
     this.spriteLocation = craftType.iconLocation;
   }
