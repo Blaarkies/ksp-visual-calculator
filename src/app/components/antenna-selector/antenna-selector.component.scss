@@ -1,11 +1,17 @@
-.layout {
+.antenna-selector-layout {
   height: auto;
 
   display: grid;
   gap: 20px;
+
+  --input-gap: 10px;
+
+  mat-tab-header {
+    margin-bottom: 10px;
+  }
 }
 
 .selected-antenna {
   display: flex;
-  gap: 10px;
+  gap: var(--input-gap);
 }

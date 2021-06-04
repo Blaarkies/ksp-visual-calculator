@@ -1,0 +1,30 @@
+.layout {
+}
+
+.number-stat {
+  display: flex;
+  justify-content: space-between;
+}
+
+.label-and-value {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+
+  mat-progress-bar {
+    height: 6px;
+  }
+}
+
+.number-line {
+  position: relative;
+
+  div {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    background-color: #fffC;
+    padding: 0 4px;
+  }
+}
