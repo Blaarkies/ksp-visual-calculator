@@ -13,10 +13,7 @@ export class Craft extends SpaceObject {
   get displayAltitude(): string {
     // performance impact on this function seems minimal, since its called from inside an *ngIf
     let soiParent = SpaceObjectContainerService.instance
-      .celestialBodies$.value
-      .filter(cb => !cb.sphereOfInfluence || this.location.distance(cb.location) <= cb.sphereOfInfluence)
-      .sort((a, b) => a.location.distance(this.location) - b.location.distance(this.location))
-      .first();
+      .getSoiParent(this.location);
 
     let distance = this.location.distance(soiParent.location) - soiParent.equatorialRadius;
 
@@ -26,7 +23,7 @@ export class Craft extends SpaceObject {
   constructor(label: string,
               public craftType: CraftType,
               antennae: Group<Antenna>[] = []) {
-    super(30, label, ImageUrls.CraftIcons, 'freeMove', SpaceObjectType.Craft, antennae);
+    super(30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft, antennae);
     this.spriteLocation = craftType.iconLocation;
   }
 

@@ -95,7 +95,9 @@ export class SpaceObjectService extends WithDestroy() {
         .addVector2(this.cameraService.screenCenterOffset
           .multiply(inverseScale));
     let craft = new Craft(details.name, details.craftType, details.antennae);
-    craft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(location));
+    let parent = this.spaceObjectContainerService.getSoiParent(location);
+    parent.draggableHandle.addChild(craft.draggableHandle);
+    craft.draggableHandle.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggableHandle));
     this.crafts$.next([...this.crafts$.value, craft]);
   }
 
@@ -143,7 +145,9 @@ export class SpaceObjectService extends WithDestroy() {
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
     let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
-    newCraft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(oldCraft.location));
+    let parent = this.spaceObjectContainerService.getSoiParent(oldCraft.location);
+    parent.draggableHandle.replaceChild(oldCraft.draggableHandle, newCraft.draggableHandle);
+    newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(oldCraft.location.toList(), undefined, parent.draggableHandle));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
     this.updateTransmissionLines();
 

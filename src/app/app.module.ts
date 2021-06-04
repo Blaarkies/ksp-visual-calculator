@@ -58,6 +58,7 @@ import { environment } from '../environments/environment';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ZoomIndicatorComponent } from './components/zoom-indicator/zoom-indicator.component';
+import { SoiCircleComponent } from './components/soi-circle/soi-circle.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { ZoomIndicatorComponent } from './components/zoom-indicator/zoom-indicat
     WizardMessageComponent,
     WizardMarkerComponent,
     ZoomIndicatorComponent,
+    SoiCircleComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

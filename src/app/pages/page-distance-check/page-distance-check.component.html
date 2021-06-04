@@ -30,6 +30,9 @@
              [style.background]="body.draggableHandle.imageUrl"
              [style.width.px]="body.size"
              [style.height.px]="body.size"></div>
+
+        <cp-soi-circle [scale]="camera.scale"
+                       [body]="body"></cp-soi-circle>
       </cp-draggable-space-object>
     </ng-container>
 
@@ -45,9 +48,12 @@
            [style.background-position-x.px]="craft.spriteLocation.x"
            [style.background-position-y.px]="craft.spriteLocation.y"
            [style.zoom]="craft.size * .025"></div>
+
       <div [@animateFade]
            *ngIf="craft.draggableHandle.isHover$ | async"
-           class="altitude-text">{{craft.displayAltitude}}</div>
+           class="altitude-text">
+        {{craft.displayAltitude}}
+      </div>
     </cp-draggable-space-object>
   </cp-camera>
 

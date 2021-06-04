@@ -221,8 +221,8 @@ export class TutorialService {
         return crafts[crafts.length - 1];
       },
       dialogMessages: [
-        'The new spacecraft should have a visible, green connection line to the closest relay (like Kerbin).',
-        'This line color represents the signal strength.',
+        'The new spacecraft should have a visible, green, solid line to the closest relay (like Kerbin).',
+        'This line color represents the signal strength. A dashed line indicates the relay aspect of this connection.',
         'Move the spacecraft closer/farther from Kerbin to see the connection strength change.',
         'Strong antennae can be dragged to far away planets before losing connection.'],
       dialogIcon: Icons.SignalStrength,

@@ -1,5 +1,7 @@
 import { ConstrainLocationFunction } from './constrain-location-function';
 import { OrbitParameterData } from './space-objects/orbit-parameter-data';
+import { MoveType } from './space-objects/move-type';
+import { Vector2 } from './vector2';
 
 export class LocationConstraints {
 
@@ -15,6 +17,14 @@ export class LocationConstraints {
     };
   }
 
+  static soiLock(craft: Vector2, planet: Vector2): ConstrainLocationFunction {
+    let {x: dx, y: dy} = craft.subtractVector2Clone(planet);
+
+    return (x, y) => {
+      return [x + dx, y + dy];
+    };
+  }
+
   static circularMove([centerX, centerY]: number[], r: number): ConstrainLocationFunction {
     return (x, y) => {
       let direction = Math.atan2(y - centerY, x - centerX);
@@ -24,13 +34,15 @@ export class LocationConstraints {
     };
   }
 
-  static fromMoveType(moveType: 'noMove' | 'freeMove' | 'orbital',
+  static fromMoveType(moveType: MoveType,
                       data: OrbitParameterData): ConstrainLocationFunction {
     switch (moveType) {
       case 'noMove':
         return LocationConstraints.noMove(data.xy);
       case 'freeMove':
         return LocationConstraints.anyMove(data.xy);
+      case 'soiLock':
+        return LocationConstraints.soiLock(Vector2.fromList(data.xy), data.parent.location);
       case 'orbital':
         return LocationConstraints.circularMove(data.xy, data.r);
       default:

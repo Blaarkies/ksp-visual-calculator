@@ -3,6 +3,7 @@ import { Antenna } from '../antenna';
 import { Group } from '../group';
 import { Vector2 } from '../vector2';
 import { LabeledOption } from '../input-fields/labeled-option';
+import { MoveType } from './move-type';
 
 export class SpaceObjectType {
 
@@ -34,6 +35,7 @@ export class SpaceObjectType {
 export class SpaceObject {
 
   draggableHandle: Draggable;
+  showSoi?: boolean;
 
   get label(): string {
     return this.draggableHandle.label;
@@ -46,7 +48,7 @@ export class SpaceObject {
   constructor(public size: number,
               label: string,
               imageUrl: string,
-              moveType: 'noMove' | 'freeMove' | 'orbital',
+              moveType: MoveType,
               public type: SpaceObjectType,
               public antennae: Group<Antenna>[] = [],
               public hasDsn?: boolean,
