@@ -1,7 +1,7 @@
-<div class="antenna-selector-layout">
+<mat-tab-group mat-align-tabs="start">
+  <mat-tab label="Antennae">
 
-  <mat-tab-group mat-align-tabs="start">
-    <mat-tab label="Antennae">
+    <div class="antenna-selector-layout">
       <div *ngFor="let antennaInput of antennaInputs"
            [id]="antennaInput.selectedAntenna.label"
            class="selected-antenna">
@@ -16,7 +16,7 @@
 
         <button mat-icon-button (click)="removeAntenna(antennaInput)"
                 [matTooltip]="'Remove this Antenna'">
-          <mat-icon color="warn">{{icons.TrashX}}</mat-icon>
+          <mat-icon color="warn">{{icons.Delete}}</mat-icon>
         </button>
       </div>
 
@@ -24,11 +24,10 @@
                        label="Antenna Type"
                        [options]="availableOptions"
                        [formControl]="finalControl"></cp-input-select>
-    </mat-tab>
+    </div>
+  </mat-tab>
 
-    <mat-tab label="Statistics">
-      <cp-antenna-stats></cp-antenna-stats>
-    </mat-tab>
-  </mat-tab-group>
-</div>
-
+  <mat-tab label="Statistics">
+    <cp-antenna-stats></cp-antenna-stats>
+  </mat-tab>
+</mat-tab-group>

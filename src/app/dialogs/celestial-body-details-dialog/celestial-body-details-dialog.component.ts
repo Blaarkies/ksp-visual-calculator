@@ -44,7 +44,7 @@ export class CelestialBodyDetailsDialogComponent {
       label: 'Size',
       control: new FormControl(this.data.edit?.size.toFixed(2).toNumber() ?? 50,
         [Validators.required, Validators.min(1), Validators.max(100)]),
-      controlMeta: new ControlMetaNumber(),
+      controlMeta: new ControlMetaNumber('°'),
     },
     orbitColor: {
       label: 'Color',

@@ -3,7 +3,7 @@ import { ControlMetaType } from './control-meta-type';
 
 export class ControlMetaNumber<T> extends ControlMeta {
 
-    constructor() {
+    constructor(public suffix?: string) {
         super(ControlMetaType.Number);
     }
 

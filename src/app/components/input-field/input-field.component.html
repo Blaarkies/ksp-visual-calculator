@@ -7,6 +7,7 @@
          (blur)="isActive = false"
          (input)="userInputChange($any($event).currentTarget.value)"
   />
+  <span matSuffix>{{suffix}}</span>
 </mat-form-field>
 
 <cp-validation-message [fieldName]="label" [errors]="errors"></cp-validation-message>

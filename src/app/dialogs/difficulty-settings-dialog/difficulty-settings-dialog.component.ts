@@ -23,13 +23,13 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
     rangeModifier: {
       label: 'Range Modifier',
       control: new FormControl(this.data.rangeModifier ?? 1, [Validators.required, Validators.min(.1), Validators.max(100)]),
-      controlMeta: new ControlMetaNumber(),
+      controlMeta: new ControlMetaNumber('°'),
       // tooltip: 'Multiplier applied to antenna strengths'
     },
     dsnModifier: {
       label: 'DSN Modifier',
       control: new FormControl(this.data.dsnModifier ?? 1, [Validators.required, Validators.min(0), Validators.max(100)]),
-      controlMeta: new ControlMetaNumber(),
+      controlMeta: new ControlMetaNumber('°'),
       // tooltip: 'Multiplier applied to the strength of the DSN'
     },
   } as InputFields;

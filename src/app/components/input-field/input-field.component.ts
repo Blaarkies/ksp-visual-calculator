@@ -20,6 +20,7 @@ export class InputFieldComponent extends BasicValueAccessor {
     | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
     | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week' = 'text';
   @Input() label: string;
+  @Input() suffix: string;
   @Input() errors: FormControlError;
 
   @Input() set formControl(value: FormControl) {
