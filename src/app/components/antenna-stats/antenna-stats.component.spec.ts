@@ -1,25 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { AntennaStatsComponent } from './antenna-stats.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 
-describe('AntennaStatsComponent', () => {
-  let component: AntennaStatsComponent;
-  let fixture: ComponentFixture<AntennaStatsComponent>;
+let componentType = AntennaStatsComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AntennaStatsComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AntennaStatsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    fixture.point.componentInstance.updateStats([]);
+
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

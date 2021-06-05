@@ -1,25 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SoiCircleComponent } from './soi-circle.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { ineeda } from 'ineeda';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
 
-describe('SoiCircleComponent', () => {
-  let component: SoiCircleComponent;
-  let fixture: ComponentFixture<SoiCircleComponent>;
+let componentType = SoiCircleComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ SoiCircleComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SoiCircleComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {body: ineeda<SpaceObject>()});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

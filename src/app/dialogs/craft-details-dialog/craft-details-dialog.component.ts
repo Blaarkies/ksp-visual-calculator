@@ -19,7 +19,6 @@ import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { AdvancedPlacement } from './advanced-placement';
-import { isNotNullOrUndefined } from 'codelyzer/util/isNotNullOrUndefined';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];

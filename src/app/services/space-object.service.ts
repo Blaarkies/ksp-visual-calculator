@@ -6,7 +6,6 @@ import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
 import { TransmissionLine } from '../common/domain/transmission-line';
 import { CameraService } from './camera.service';
-import { Vector2 } from '../common/domain/vector2';
 import { BehaviorSubject, concat } from 'rxjs';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
@@ -16,7 +15,6 @@ import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/c
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectContainerService } from './space-object-container.service';
-import { AdvancedPlacement } from '../dialogs/craft-details-dialog/advanced-placement';
 
 @Injectable({
   providedIn: 'root',

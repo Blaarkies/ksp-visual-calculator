@@ -5,14 +5,14 @@ import { Group } from '../../common/domain/group';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 
 export interface AntennaStats {
-  totalPowerRating: number
-  totalCost: number
-  totalMass: number
-  totalElectricityPMit: number
-  totalElectricityPS: number
-  totalTransmissionSpeed: number
-  relayBias: number
-  averageCombinabilityExponent: number
+  totalPowerRating: number;
+  totalCost: number;
+  totalMass: number;
+  totalElectricityPMit: number;
+  totalElectricityPS: number;
+  totalTransmissionSpeed: number;
+  relayBias: number;
+  averageCombinabilityExponent: number;
 }
 
 @Component({
@@ -22,13 +22,8 @@ export interface AntennaStats {
 })
 export class AntennaStatsComponent {
 
-  open: boolean;
   stats: AntennaStats;
   displayStats: LabeledOption<number | string>[];
-
-  toggle() {
-    this.open = !this.open;
-  }
 
   updateStats(antennaInputs: AntennaInput[]) {
     let relayPower = Antenna.combinedPower(antennaInputs.filter(a => a.selectedAntenna.relay)
