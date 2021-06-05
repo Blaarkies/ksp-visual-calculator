@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
@@ -9,11 +9,13 @@ import { Antenna } from '../../common/domain/antenna';
 import { takeUntil } from 'rxjs/operators';
 import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
+import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
 
 @Component({
   selector: 'cp-antenna-selector',
   templateUrl: './antenna-selector.component.html',
   styleUrls: ['./antenna-selector.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => AntennaSelectorComponent),
@@ -23,6 +25,7 @@ import { AntennaInput } from './antenna-input';
 export class AntennaSelectorComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
   private selectionOptions: LabeledOption<Antenna>[];
+
   @Input() set options(value: LabeledOption<Antenna>[]) {
     this.selectionOptions = value ?? [];
     this.refreshAvailableOptions();
@@ -31,13 +34,14 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   @Input() label: string;
   @Input() errors: FormControlError;
 
+  @ViewChild(AntennaStatsComponent, {static: true}) antennaStats: AntennaStatsComponent;
+
   isActive: boolean;
   icons = Icons;
 
   availableOptions: LabeledOption<Antenna>[];
   finalControl = new FormControl();
   antennaInputs: AntennaInput[] = [];
-  collectionStats: any;
 
   private unsubscribe$ = new Subject();
 
@@ -106,12 +110,6 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   }
 
   private updateCollectionStats(antennaInputs: AntennaInput[]) {
-    let totalAntennaeCount = antennaInputs.map(ai => ai.countControl.value).sum();
-    this.collectionStats = {
-      relayBias: antennaInputs.map(ai => (ai.selectedAntenna.relay ? 1 : 0) * ai.countControl.value)
-        .sum() / totalAntennaeCount,
-      summedPowerRating: antennaInputs.map(ai => ai.selectedAntenna.powerRating * ai.countControl.value)
-        .sum(),
-    };
+    this.antennaStats.updateStats(antennaInputs);
   }
 }

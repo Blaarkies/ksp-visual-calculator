@@ -31,9 +31,12 @@ Array.prototype.sum = function (this: Array<number>): number {
   return this.reduce((total, c) => total + c, 0);
 };
 
-Array.prototype.replace = function (this: Array<any>, stale: any, fresh: any): Array<any> {
+Array.prototype.replace = function (this: Array<any>, stale: any, fresh: any, addIfAbsent = false): Array<any> {
   let index = this.indexOf(stale);
-  this[index] = fresh;
+  (addIfAbsent && index === -1)
+    ? this.push(fresh)
+    : this[index] = fresh;
+
   return this;
 };
 

@@ -31,6 +31,26 @@ export class Vector2 {
     return this;
   }
 
+  addVector2Clone(other: Vector2): Vector2 {
+    return this.clone().addVector2(other);
+  }
+
+  subtract(x: number, y: number): Vector2 {
+    this.x -= x;
+    this.y -= y;
+    return this;
+  }
+
+  subtractVector2(other: Vector2): Vector2 {
+    this.x -= other.x;
+    this.y -= other.y;
+    return this;
+  }
+
+  subtractVector2Clone(other: Vector2): Vector2 {
+    return this.clone().subtractVector2(other);
+  }
+
   multiply(factor: number): Vector2 {
     this.x *= factor;
     this.y *= factor;
@@ -68,4 +88,13 @@ export class Vector2 {
   static fromDirection(angle: number, distance: number = 1): Vector2 {
     return new Vector2(Math.cos(angle) * distance, Math.sin(angle) * distance);
   }
+
+  toList(): number[] {
+    return [this.x, this.y];
+  }
+
+  static fromList(xy: number[]): Vector2 {
+    return new Vector2(xy[0], xy[1]);
+  }
+
 }

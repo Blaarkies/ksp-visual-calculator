@@ -19,6 +19,7 @@ import { MatSlider } from '@angular/material/slider';
 export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
   @Input() label: string;
+  @Input() suffix: string;
   @Input() errors: FormControlError;
 
   @Output() output = new EventEmitter<number>();

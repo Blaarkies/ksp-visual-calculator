@@ -25,15 +25,20 @@ export class Antenna {
       .sort((a, b) => b.powerRating - a.powerRating)
       .first()
       .powerRating;
-    let sumOfAntennaPowers = antennae.map(({item, count}) => item.powerRating * count).sum();
-    let averageCombinabilityExponent = antennae
-      .map(({item, count}) => item.powerRating * item.combinabilityExponent * count)
-      .sum() / sumOfAntennaPowers;
+    let {sumOfAntennaPowers, averageCombinabilityExponent} = this.getAverageCombinabilityExponent(antennae);
 
     let vesselPower = strongestAntennaPower
       * (sumOfAntennaPowers / strongestAntennaPower)
         .pow(averageCombinabilityExponent);
     return vesselPower;
+  }
+
+  static getAverageCombinabilityExponent(antennae: Group<Antenna>[]) {
+    let sumOfAntennaPowers = antennae.map(({item, count}) => item.powerRating * count).sum();
+    let averageCombinabilityExponent = antennae
+      .map(({item, count}) => item.powerRating * item.combinabilityExponent * count)
+      .sum() / sumOfAntennaPowers;
+    return {sumOfAntennaPowers, averageCombinabilityExponent};
   }
 
   static containsRelay(antennae: Group<Antenna>[]): boolean {

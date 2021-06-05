@@ -5,7 +5,8 @@ export class Icons {
   static Hamburger = 'menu';
   static Craft = 'flight';
   static Clear = 'clear';
-  static TrashX = 'delete_forever';
+  static Delete = 'delete_forever';
+  static DeleteAll = 'delete_sweep';
   static Planet = 'public';
   static External = 'launch';
   static Difficulty = 'settings';
@@ -24,5 +25,6 @@ export class Icons {
   static Congratulations = 'emoji_events';
   static DragIndicator = 'drag_indicator';
   static SourceCode = 'source';
+  static OpenDetails = 'menu_open';
 
 }

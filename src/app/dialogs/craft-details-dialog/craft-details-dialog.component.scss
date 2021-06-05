@@ -1,30 +1,47 @@
-.craft-details-form > cp-input-field-list {
-  --grid-col-gap: 40px;
+.craft-details-form {
 
-  overflow: hidden;
+  --grid-gap: 20px;
 
   display: grid;
-  gap: 20px var(--grid-col-gap);
-  grid-template-columns: auto auto;
-  grid-template-rows: max-content auto;
+  gap: var(--grid-gap);
+  grid-template-columns: min-content min-content auto;
   grid-template-areas:
-    'name antennae'
-    'type antennae';
+    'left middle right';
 
-  cp-antenna-selector {
-    grid-area: antennae;
+  .left-column {
+    grid-area: left;
+    width: min-content;
+    display: grid;
+    grid-auto-rows: max-content;
 
-    border-left: 1px solid #0003;
+    > cp-input-field-list {
+      display: grid;
+      gap: var(--grid-gap);
+    }
 
-    --half-col-gap: calc(var(--grid-col-gap) * .5);
-    padding-left: var(--half-col-gap);
-    margin-left: calc(var(--half-col-gap) * -1);
+    .invisible-expansion-panel {
+      width: max-content;
+      box-shadow: unset;
+      background: unset;
+
+      mat-expansion-panel-header {
+        padding: 8px 2px;
+        height: min-content;
+        border-radius: 8px;
+      }
+    }
   }
 
-  > *:not(cp-antenna-selector) {
-    grid-column: 1 / 2;
-  }
+  .middle-column {grid-area: middle;}
 
+  .right-column {
+    grid-area: right;
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
 }
 
 [mat-dialog-actions] {

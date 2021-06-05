@@ -6,7 +6,6 @@ import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
 import { TransmissionLine } from '../common/domain/transmission-line';
 import { CameraService } from './camera.service';
-import { Vector2 } from '../common/domain/vector2';
 import { BehaviorSubject, concat } from 'rxjs';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
@@ -15,6 +14,7 @@ import { filter, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
+import { SpaceObjectContainerService } from './space-object-container.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +23,13 @@ export class SpaceObjectService extends WithDestroy() {
 
   orbits$ = new BehaviorSubject<Orbit[]>(null);
   transmissionLines$ = new BehaviorSubject<TransmissionLine[]>(null);
-  celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
-  crafts$ = new BehaviorSubject<Craft[]>(null);
+  celestialBodies$ = this.spaceObjectContainerService.celestialBodies$;
+  crafts$ = this.spaceObjectContainerService.crafts$;
 
   constructor(private cameraService: CameraService,
               private setupService: SetupService,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private spaceObjectContainerService: SpaceObjectContainerService) {
     super();
 
     let setupPlanets$ = setupService.stockPlanets$
@@ -85,20 +86,22 @@ export class SpaceObjectService extends WithDestroy() {
     this.transmissionLines$.next(this.getFreshTransmissionLines());
   }
 
-  private addCraft(details: CraftDetails, location?: Vector2) {
+  private addCraft(details: CraftDetails) {
     let inverseScale = 1 / this.cameraService.scale;
-    location = location
+    let location = details.advancedPlacement?.location
       ?? this.cameraService.location.clone()
         .multiply(-inverseScale)
         .addVector2(this.cameraService.screenCenterOffset
           .multiply(inverseScale));
-    let craft = new Craft(details.name, details.craftType, details.antennae, this.celestialBodies$);
-    craft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(location));
+    let craft = new Craft(details.name, details.craftType, details.antennae);
+    let parent = this.spaceObjectContainerService.getSoiParent(location);
+    parent.draggableHandle.addChild(craft.draggableHandle);
+    craft.draggableHandle.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggableHandle));
     this.crafts$.next([...this.crafts$.value, craft]);
   }
 
-  addCraftToUniverse(details: CraftDetails, location?: Vector2) {
-    this.addCraft(details, location);
+  addCraftToUniverse(details: CraftDetails) {
+    this.addCraft(details);
     this.updateTransmissionLines();
 
     this.analyticsService.logEvent('Add craft', {
@@ -140,8 +143,13 @@ export class SpaceObjectService extends WithDestroy() {
   }
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
-    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae, this.celestialBodies$);
-    newCraft.draggableHandle.updateConstrainLocation(OrbitParameterData.fromVector2(oldCraft.location));
+    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
+    let parent = craftDetails.advancedPlacement.orbitParent ?? this.spaceObjectContainerService.getSoiParent(oldCraft.location);
+    parent.draggableHandle.replaceChild(oldCraft.draggableHandle, newCraft.draggableHandle);
+    newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(
+      craftDetails.advancedPlacement.location.toList() ?? oldCraft.location.toList(),
+      undefined,
+      parent.draggableHandle));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
     this.updateTransmissionLines();
 

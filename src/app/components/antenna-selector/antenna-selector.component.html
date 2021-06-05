@@ -1,29 +1,33 @@
-<div class="layout">
+<mat-tab-group mat-align-tabs="start">
+  <mat-tab label="Antennae">
 
-  <div *ngFor="let antennaInput of antennaInputs"
-       [id]="antennaInput.selectedAntenna.label"
-       class="selected-antenna">
+    <div class="antenna-selector-layout">
+      <div *ngFor="let antennaInput of antennaInputs"
+           [id]="antennaInput.selectedAntenna.label"
+           class="selected-antenna">
 
-    <cp-input-field label="Antenna Type"
-                    [formControl]="antennaInput.antennaControl"></cp-input-field>
+        <cp-input-field label="Antenna Type"
+                        [formControl]="antennaInput.antennaControl"></cp-input-field>
 
-    <cp-input-number label="Part Count"
-                     [formControl]="antennaInput.countControl"
-                     [errors]="antennaInput.countControl.touched && antennaInput.countControl.errors"
-                     (output)="userInputChange()"></cp-input-number>
+        <cp-input-number label="Part Count"
+                         [formControl]="antennaInput.countControl"
+                         [errors]="antennaInput.countControl.touched && antennaInput.countControl.errors"
+                         (output)="userInputChange()"></cp-input-number>
 
-    <button mat-icon-button (click)="removeAntenna(antennaInput)">
-      <mat-icon color="warn">{{icons.TrashX}}</mat-icon>
-    </button>
-  </div>
+        <button mat-icon-button (click)="removeAntenna(antennaInput)"
+                [matTooltip]="'Remove this Antenna'">
+          <mat-icon color="warn">{{icons.Delete}}</mat-icon>
+        </button>
+      </div>
 
-  <cp-input-select *ngIf="availableOptions.length"
-                   label="Antenna Type"
-                   [options]="availableOptions"
-                   [formControl]="finalControl"></cp-input-select>
+      <cp-input-select *ngIf="availableOptions.length"
+                       label="Antenna Type"
+                       [options]="availableOptions"
+                       [formControl]="finalControl"></cp-input-select>
+    </div>
+  </mat-tab>
 
-<!--  <div>-->
-<!--    <div>Relay Bias: {{collectionStats.relayBias | number:'.2-2'}}</div>-->
-<!--    <div>Total Power: {{collectionStats.summedPowerRating | number:'.0-0'}}</div>-->
-<!--  </div>-->
-</div>
+  <mat-tab label="Statistics">
+    <cp-antenna-stats></cp-antenna-stats>
+  </mat-tab>
+</mat-tab-group>
