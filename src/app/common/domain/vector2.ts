@@ -31,6 +31,10 @@ export class Vector2 {
     return this;
   }
 
+  addVector2Clone(other: Vector2): Vector2 {
+    return this.clone().addVector2(other);
+  }
+
   subtract(x: number, y: number): Vector2 {
     this.x -= x;
     this.y -= y;

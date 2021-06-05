@@ -16,6 +16,7 @@ import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/c
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectContainerService } from './space-object-container.service';
+import { AdvancedPlacement } from '../dialogs/craft-details-dialog/advanced-placement';
 
 @Injectable({
   providedIn: 'root',
@@ -87,9 +88,9 @@ export class SpaceObjectService extends WithDestroy() {
     this.transmissionLines$.next(this.getFreshTransmissionLines());
   }
 
-  private addCraft(details: CraftDetails, location?: Vector2) {
+  private addCraft(details: CraftDetails) {
     let inverseScale = 1 / this.cameraService.scale;
-    location = location
+    let location = details.advancedPlacement?.location
       ?? this.cameraService.location.clone()
         .multiply(-inverseScale)
         .addVector2(this.cameraService.screenCenterOffset
@@ -101,8 +102,8 @@ export class SpaceObjectService extends WithDestroy() {
     this.crafts$.next([...this.crafts$.value, craft]);
   }
 
-  addCraftToUniverse(details: CraftDetails, location?: Vector2) {
-    this.addCraft(details, location);
+  addCraftToUniverse(details: CraftDetails) {
+    this.addCraft(details);
     this.updateTransmissionLines();
 
     this.analyticsService.logEvent('Add craft', {
@@ -145,9 +146,12 @@ export class SpaceObjectService extends WithDestroy() {
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
     let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
-    let parent = this.spaceObjectContainerService.getSoiParent(oldCraft.location);
+    let parent = craftDetails.advancedPlacement.orbitParent ?? this.spaceObjectContainerService.getSoiParent(oldCraft.location);
     parent.draggableHandle.replaceChild(oldCraft.draggableHandle, newCraft.draggableHandle);
-    newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(oldCraft.location.toList(), undefined, parent.draggableHandle));
+    newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(
+      craftDetails.advancedPlacement.location.toList() ?? oldCraft.location.toList(),
+      undefined,
+      parent.draggableHandle));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
     this.updateTransmissionLines();
 

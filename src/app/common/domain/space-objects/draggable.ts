@@ -180,6 +180,6 @@ export class Draggable extends WithDestroy() {
   }
 
   replaceChild(stale: Draggable, fresh: Draggable) {
-    this.children.replace(stale, fresh);
+    this.children.replace(stale, fresh, true);
   }
 }

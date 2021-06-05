@@ -18,6 +18,8 @@ import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { AdvancedPlacement } from './advanced-placement';
+import { isNotNullOrUndefined } from 'codelyzer/util/isNotNullOrUndefined';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
@@ -97,10 +99,15 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   }
 
   submitCraftDetails() {
+    let advancedPlacement = Object.values(this.advancedForm.value).some(v => v === null)
+      ? undefined
+      : AdvancedPlacement.fromObject(this.advancedForm.value, 'deg->rad');
+
     let craftDetails = new CraftDetails(
       this.inputFields.name.control.value,
       this.inputFields.craftType.control.value,
-      this.inputFields.antennaSelection.control.value);
+      this.inputFields.antennaSelection.control.value,
+      advancedPlacement);
     this.dialogRef.close(craftDetails);
   }
 
@@ -113,7 +120,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       let value = formGroup.value;
       let inputsCount = [value.orbitParent, value.altitude, value.angle]
-        .map(v => v ? 1 : 0)
+        .map(v => v !== null ? 1 : 0)
         .sum();
 
       if (inputsCount.between(1, 2)) {

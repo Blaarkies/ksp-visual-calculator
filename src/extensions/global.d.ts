@@ -66,7 +66,7 @@ declare global {
 
     sum(this: Array<number>): number;
 
-    replace(this: Array<T>, stale: T, fresh: T): Array<T>;
+    replace(this: Array<T>, stale: T, fresh: T, addIfAbsent?: boolean): Array<T>;
 
     remove(this: Array<T>, stale: T): Array<T>;
 
