@@ -8,11 +8,22 @@
         [attr.y2]="scale * transmissionLine.nodes[1].location.y + transmissionLine.offsetVector.y"
   />
 
-  <line class="animate-data-travelling"
-        *ngIf="transmissionLine.strengthRelay"
+  <defs *ngIf="transmissionLine.strengthRelay">
+    <pattern id="pattern"
+             patternUnits="userSpaceOnUse"
+             width="10"
+             height="10"
+             [attr.patternTransform]="'rotate(' + (transmissionLine.angleDeg + 90) + ')'">
+      <line class="animate-data-travelling"
+            x1="0" y1="2.5" x2="10" y2="2.5"
+            [attr.stroke]="transmissionLine.colorRelay + 'A'"
+            stroke-width="5"></line>
+    </pattern>
+  </defs>
+
+  <line *ngIf="transmissionLine.strengthRelay"
         [attr.stroke-width]="3"
-        [attr.stroke-dasharray]="4"
-        [attr.stroke]="transmissionLine.colorRelay + 'A'"
+        [attr.stroke]="'url(#pattern)'"
         [attr.x1]="scale * transmissionLine.nodes[0].location.x - transmissionLine.offsetVector.x"
         [attr.y1]="scale * transmissionLine.nodes[0].location.y - transmissionLine.offsetVector.y"
         [attr.x2]="scale * transmissionLine.nodes[1].location.x - transmissionLine.offsetVector.x"

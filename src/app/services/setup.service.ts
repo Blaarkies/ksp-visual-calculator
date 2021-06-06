@@ -60,8 +60,8 @@ export class SetupService extends WithDestroy() {
         /*value*/ new SpaceObject(
           Math.log(b.equatorialRadius) * 4,
           b.name, b.imageUrl,
-          b.type === SpaceObjectType.Star ? 'noMove' : 'orbital',
-          SpaceObjectType.fromString(b.type),
+          b.type === SpaceObjectType.types.star ? 'noMove' : 'orbital',
+          SpaceObjectType.fromString(b.type as any),
           [],
           b.hasDsn,
           b.sphereOfInfluence,
@@ -81,7 +81,7 @@ export class SetupService extends WithDestroy() {
     let bodyToJsonMapEntries = Array.from(bodyToJsonMap.entries());
     let bodyOrbitMap = new Map<SpaceObject, Orbit>(
       bodyToJsonMapEntries
-        .filter(([cb]) => cb.type !== SpaceObjectType.Star)
+        .filter(([cb]) => cb.type !== SpaceObjectType.types.star)
         .map(([cb, so]) => [
           /*key  */so,
           /*value*/new Orbit(OrbitParameterData.fromRadius(cb.semiMajorAxis), cb.orbitLineColor),

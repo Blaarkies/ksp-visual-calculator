@@ -27,8 +27,10 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   private selectionOptions: LabeledOption<Antenna>[];
 
   @Input() set options(value: LabeledOption<Antenna>[]) {
-    this.selectionOptions = value ?? [];
+    let safeValue = value ?? [];
+    this.selectionOptions = safeValue;
     this.refreshAvailableOptions();
+    this.mapIcons = new Map<Antenna, string>(safeValue.map(a => [a.value, a.value.icon]));
   }
 
   @Input() label: string;
@@ -42,6 +44,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   availableOptions: LabeledOption<Antenna>[];
   finalControl = new FormControl();
   antennaInputs: AntennaInput[] = [];
+  mapIcons: Map<Antenna, string>;
 
   private unsubscribe$ = new Subject();
 

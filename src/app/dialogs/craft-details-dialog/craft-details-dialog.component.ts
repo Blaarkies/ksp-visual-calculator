@@ -59,12 +59,15 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   inputListAntenna = [this.inputFields.antennaSelection];
   inputFieldsList = Object.values(this.inputFields);
 
+  private orbitParentOptions = this.spaceObjectService.celestialBodies$.value
+    .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
   advancedInputFields = {
     orbitParent: {
       label: 'Orbit Parent',
       control: new FormControl(null),
-      controlMeta: new ControlMetaSelect(this.spaceObjectService.celestialBodies$.value
-        .map(cb => new LabeledOption<SpaceObject>(cb.label, cb))),
+      controlMeta: new ControlMetaSelect(
+        this.orbitParentOptions,
+        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
     },
     altitude: {
       label: 'Altitude',

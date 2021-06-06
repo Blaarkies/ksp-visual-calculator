@@ -18,10 +18,13 @@
       </button>
     </div>
 
-    <mat-option *ngFor="let option of filteredOptions"
-                [value]="option.value">
-      {{option.label}}
-    </mat-option>
+    <div class="option-container" *ngFor="let option of filteredOptions">
+      <mat-icon *ngIf="mapIcons?.get(option.value); let icon" color="accent">{{icon}}</mat-icon>
+      <mat-option [class.has-icon]="mapIcons?.get(option.value)"
+                  [value]="option.value">
+        {{option.label}}
+      </mat-option>
+    </div>
 
     <mat-option *ngIf="!filteredOptions?.length" disabled>No Options</mat-option>
   </mat-select>

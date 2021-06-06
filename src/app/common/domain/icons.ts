@@ -8,6 +8,7 @@ export class Icons {
   static Delete = 'delete_forever';
   static DeleteAll = 'delete_sweep';
   static Planet = 'public';
+  static Moon = 'mode_night';
   static External = 'launch';
   static Difficulty = 'settings';
   static Configure = 'settings';
@@ -26,5 +27,9 @@ export class Icons {
   static DragIndicator = 'drag_indicator';
   static SourceCode = 'source';
   static OpenDetails = 'menu_open';
+  static Construction = 'construction';
+  static Star = 'star';
+
+
 
 }

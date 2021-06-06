@@ -144,10 +144,10 @@ export class SpaceObjectService extends WithDestroy() {
 
   editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
     let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
-    let parent = craftDetails.advancedPlacement.orbitParent ?? this.spaceObjectContainerService.getSoiParent(oldCraft.location);
+    let parent = craftDetails.advancedPlacement?.orbitParent ?? this.spaceObjectContainerService.getSoiParent(oldCraft.location);
     parent.draggableHandle.replaceChild(oldCraft.draggableHandle, newCraft.draggableHandle);
     newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(
-      craftDetails.advancedPlacement.location.toList() ?? oldCraft.location.toList(),
+      craftDetails.advancedPlacement?.location?.toList() ?? oldCraft.location.toList(),
       undefined,
       parent.draggableHandle));
     this.crafts$.next(this.crafts$.value.replace(oldCraft, newCraft));
