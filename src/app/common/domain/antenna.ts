@@ -1,7 +1,18 @@
 import { Group } from './group';
 import { AntennaPart } from '../../services/json-interfaces/antenna-part';
+import { Icons } from './icons';
 
 export class Antenna {
+
+  get icon(): string {
+    let isConstructionPart = this.combinabilityExponent === 0 && this.transmissionSpeed === 0
+      || this.label.includes('Tracking Station');
+    return isConstructionPart
+      ? Icons.Construction
+      : this.relay
+        ? Icons.Relay
+        : Icons.Antenna;
+  }
 
   constructor(
     public label: string,

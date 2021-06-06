@@ -20,6 +20,7 @@
 
   <cp-input-select *ngSwitchCase="controlMetaTypes.Select"
                    [options]="$any(inputField.controlMeta).list"
+                   [mapIcons]="$any(inputField.controlMeta).mapIcons"
                    [label]="inputField.label"
                    [formControl]="inputField.control"
                    [errors]="inputField.control.touched && inputField.control.errors"></cp-input-select>

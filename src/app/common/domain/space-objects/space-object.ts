@@ -4,15 +4,36 @@ import { Group } from '../group';
 import { Vector2 } from '../vector2';
 import { LabeledOption } from '../input-fields/labeled-option';
 import { MoveType } from './move-type';
+import { Icons } from '../icons';
 
 export class SpaceObjectType {
 
-  static Star = 'star';
-  static Planet = 'planet';
-  static Moon = 'moon';
-  static Craft = 'craft';
+  get icon(): string {
+    return this === SpaceObjectType.Star
+      ? Icons.Star
+      : this === SpaceObjectType.Planet
+        ? Icons.Planet
+        : this === SpaceObjectType.Moon
+          ? Icons.Moon
+          : Icons.Craft;
+  }
 
-  private static All = [
+  static types = {
+    star: 'star',
+    planet: 'planet',
+    moon: 'moon',
+    craft: 'craft',
+  };
+
+  static Star = new SpaceObjectType(SpaceObjectType.types.star);
+  static Planet = new SpaceObjectType(SpaceObjectType.types.planet);
+  static Moon = new SpaceObjectType(SpaceObjectType.types.moon);
+  static Craft = new SpaceObjectType(SpaceObjectType.types.craft);
+
+  constructor(public name: string) {
+  }
+
+  private static All: SpaceObjectType[] = [
     SpaceObjectType.Star,
     SpaceObjectType.Planet,
     SpaceObjectType.Moon,
@@ -20,16 +41,18 @@ export class SpaceObjectType {
   ];
 
   // todo: use dedicated labels instead of re-using source code labels
-  static List = SpaceObjectType.All.map(a => new LabeledOption(a[0].toLocaleUpperCase() + a.slice(1), a));
+  static List = SpaceObjectType.All.map(sot =>
+    new LabeledOption(sot.name[0].toLocaleUpperCase() + sot.name.slice(1), sot));
 
-  static fromString(type: string) {
-    let match = SpaceObjectType.All.includes(type);
+  static fromString(type: 'star' | 'planet' | 'moon' | 'craft'): SpaceObjectType {
+    let match = SpaceObjectType.All.find(t => t.name === type);
     if (!match) {
       throw console.error(`${type} is not a valid SpaceObjectType`);
     }
 
-    return type;
+    return match;
   }
+
 }
 
 export class SpaceObject {
@@ -45,18 +68,6 @@ export class SpaceObject {
     return this.draggableHandle.location;
   }
 
-  constructor(public size: number,
-              label: string,
-              imageUrl: string,
-              moveType: MoveType,
-              public type: SpaceObjectType,
-              public antennae: Group<Antenna>[] = [],
-              public hasDsn?: boolean,
-              public sphereOfInfluence?: number,
-              public equatorialRadius?: number) {
-    this.draggableHandle = new Draggable(label, `url(${imageUrl}) 0 0`, moveType);
-  }
-
   get powerRatingTotal(): number {
     return Antenna.combinedPower(this.antennae);
   }
@@ -67,6 +78,18 @@ export class SpaceObject {
 
   get hasRelay(): boolean {
     return Antenna.containsRelay(this.antennae);
+  }
+
+  constructor(public size: number,
+              label: string,
+              imageUrl: string,
+              moveType: MoveType,
+              public type: SpaceObjectType,
+              public antennae: Group<Antenna>[] = [],
+              public hasDsn?: boolean,
+              public sphereOfInfluence?: number,
+              public equatorialRadius?: number) {
+    this.draggableHandle = new Draggable(label, `url(${imageUrl}) 0 0`, moveType);
   }
 
 }

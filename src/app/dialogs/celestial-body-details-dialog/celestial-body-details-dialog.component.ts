@@ -11,6 +11,7 @@ import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { Antenna } from '../../common/domain/antenna';
 import { SetupService } from '../../services/setup.service';
+import { Icons } from '../../common/domain/icons';
 
 export class CelestialBodyDetailsDialogData {
   forbiddenNames: string[];
@@ -25,6 +26,10 @@ export class CelestialBodyDetailsDialogData {
 })
 export class CelestialBodyDetailsDialogComponent {
 
+  private trackingStationOptions = this.setupService.availableAntennae$.value
+    .filter(a => a.label.includes('Tracking Station'))
+    .map(a => new LabeledOption<Antenna>(a.label, a))
+    .concat(new LabeledOption<Antenna>('None', null));
   inputFields = {
     name: {
       label: 'Name',
@@ -38,7 +43,9 @@ export class CelestialBodyDetailsDialogComponent {
     celestialBodyType: {
       label: 'Type',
       control: new FormControl(this.data.edit?.type ?? SpaceObjectType.Planet, Validators.required),
-      controlMeta: new ControlMetaSelect(SpaceObjectType.List),
+      controlMeta: new ControlMetaSelect(
+        SpaceObjectType.List,
+        new Map<SpaceObjectType, string>(SpaceObjectType.List.map(so => [so.value, so.value.icon]))),
     },
     size: {
       label: 'Size',
@@ -54,10 +61,9 @@ export class CelestialBodyDetailsDialogComponent {
     currentDsn: {
       label: 'Current Tracking Station',
       control: new FormControl(this.data.edit?.antennae[0]?.item),
-      controlMeta: new ControlMetaSelect(this.setupService.availableAntennae$.value
-        .filter(a => a.label.includes('Tracking Station'))
-        .map(a => new LabeledOption<Antenna>(a.label, a))
-        .concat(new LabeledOption<Antenna>('None', null))),
+      controlMeta: new ControlMetaSelect(
+        this.trackingStationOptions,
+        new Map<Antenna, string>(this.trackingStationOptions.map(a => [a.value, a.value?.icon ?? Icons.Delete]))),
       // tooltip: ''
     },
   } as InputFields;

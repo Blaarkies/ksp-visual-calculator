@@ -16,3 +16,19 @@
     background-color: #0003;
   }
 }
+
+.option-container {
+  position: relative;
+  display: grid;
+
+  mat-icon {
+    position: absolute;
+    align-self: center;
+    padding: 0 4px;
+  }
+
+  mat-option.has-icon {
+    padding-left: 36px;
+    padding-top: 2px;
+  }
+}

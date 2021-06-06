@@ -35,6 +35,8 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
       });
   }
 
+  @Input() mapIcons: Map<any, string>;
+
   @Input() label: string;
   @Input() errors: FormControlError;
 
