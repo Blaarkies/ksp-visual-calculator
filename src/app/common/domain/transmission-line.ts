@@ -30,6 +30,12 @@ export class TransmissionLine {
       this.nodes[1].location.y);
   }
 
+  get angleDeg(): number {
+    let radians = this.nodes[0].location.direction(
+      this.nodes[1].location);
+    return radians * 57.295779513;
+  }
+
   get colorTotal(): string {
     return this.memoizeColor(this.strengthTotal);
   }
