@@ -2,11 +2,13 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Inp
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
+import { CustomAnimation } from '../../common/domain/custom-animation';
 
 @Component({
   selector: 'cp-input-field',
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
+  animations: [CustomAnimation.animateFade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputFieldComponent),
@@ -20,6 +22,7 @@ export class InputFieldComponent extends BasicValueAccessor {
     | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
     | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week' = 'text';
   @Input() label: string;
+  @Input() hint: string;
   @Input() suffix: string;
   @Input() errors: FormControlError;
 

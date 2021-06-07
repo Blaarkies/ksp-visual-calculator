@@ -3,8 +3,8 @@ import { ControlMetaType } from './control-meta-type';
 
 export class ControlMetaToggle<T> extends ControlMeta {
 
-    constructor() {
-        super(ControlMetaType.Toggle);
+    constructor(public hint?: string) {
+        super(ControlMetaType.Toggle, hint);
     }
 
 }

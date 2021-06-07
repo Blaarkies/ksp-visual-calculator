@@ -18,12 +18,20 @@ export class AppComponent extends WithDestroy() implements OnInit {
 
   routes = UsableRoutes;
   pages: ActionOption[] = [
-    new ActionOption('Signal Check', Icons.PlanetSearch,
-      {route: UsableRoutes.SignalCheck}),
-    new ActionOption('Source Code - GitHub', Icons.SourceCode,
+    new ActionOption(
+      'Signal Check',
+      Icons.PlanetSearch,
+      {route: UsableRoutes.SignalCheck},
+      'Page that calculates CommNet ranges'),
+    new ActionOption(
+      'Source Code - GitHub',
+      Icons.SourceCode,
       {externalRoute: 'https://github.com/Blaarkies/ksp-commnet-planner'}),
-    new ActionOption('Blaarkies Hub', Icons.Blaarkies,
-      {externalRoute: 'https://blaarkies.com/'}),
+    new ActionOption(
+      'Blaarkies Hub',
+      Icons.Blaarkies,
+      {externalRoute: 'https://blaarkies.com/'},
+      'More tools made by Blaarkies'),
   ];
 
   constructor(private dialog: MatDialog,

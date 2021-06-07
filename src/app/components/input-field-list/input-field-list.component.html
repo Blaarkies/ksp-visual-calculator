@@ -4,16 +4,19 @@
   <cp-input-field *ngSwitchCase="controlMetaTypes.Input"
                   [type]="$any(inputField.controlMeta).inputType"
                   [label]="inputField.label"
+                  [hint]="inputField.controlMeta.hint"
                   [formControl]="inputField.control"
                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-field>
 
   <cp-input-text-area *ngSwitchCase="controlMetaTypes.FreeText"
                       [label]="inputField.label"
+                      [hint]="inputField.controlMeta.hint"
                       [formControl]="inputField.control"
                       [errors]="inputField.control.touched && inputField.control.errors"></cp-input-text-area>
 
   <cp-input-number *ngSwitchCase="controlMetaTypes.Number"
                    [label]="inputField.label"
+                   [hint]="inputField.controlMeta.hint"
                    [suffix]="$any(inputField.controlMeta).suffix"
                    [formControl]="inputField.control"
                    [errors]="inputField.control.touched && inputField.control.errors"></cp-input-number>
@@ -22,11 +25,13 @@
                    [options]="$any(inputField.controlMeta).list"
                    [mapIcons]="$any(inputField.controlMeta).mapIcons"
                    [label]="inputField.label"
+                   [hint]="inputField.controlMeta.hint"
                    [formControl]="inputField.control"
                    [errors]="inputField.control.touched && inputField.control.errors"></cp-input-select>
 
   <cp-input-toggle *ngSwitchCase="controlMetaTypes.Toggle"
                    [label]="inputField.label"
+                   [hint]="inputField.controlMeta.hint"
                    [formControl]="inputField.control"
                    [errors]="inputField.control.touched && inputField.control.errors"></cp-input-toggle>
 

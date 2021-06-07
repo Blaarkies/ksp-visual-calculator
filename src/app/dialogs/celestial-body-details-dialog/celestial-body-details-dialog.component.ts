@@ -45,26 +45,27 @@ export class CelestialBodyDetailsDialogComponent {
       control: new FormControl(this.data.edit?.type ?? SpaceObjectType.Planet, Validators.required),
       controlMeta: new ControlMetaSelect(
         SpaceObjectType.List,
-        new Map<SpaceObjectType, string>(SpaceObjectType.List.map(so => [so.value, so.value.icon]))),
+        new Map<SpaceObjectType, string>(SpaceObjectType.List.map(so => [so.value, so.value.icon])),
+        'Describes its role in the solar system'),
     },
     size: {
       label: 'Size',
       control: new FormControl(this.data.edit?.size.toFixed(2).toNumber() ?? 50,
         [Validators.required, Validators.min(1), Validators.max(100)]),
-      controlMeta: new ControlMetaNumber('°'),
+      controlMeta: new ControlMetaNumber('px'),
     },
     orbitColor: {
       label: 'Color',
       control: new FormControl(this.data.edit?.draggableHandle.orbit?.color ?? '#ff0000', [Validators.required]),
-      controlMeta: new ControlMetaInput('color'),
+      controlMeta: new ControlMetaInput('color', 'Color of orbital line'),
     },
     currentDsn: {
       label: 'Current Tracking Station',
       control: new FormControl(this.data.edit?.antennae[0]?.item),
       controlMeta: new ControlMetaSelect(
         this.trackingStationOptions,
-        new Map<Antenna, string>(this.trackingStationOptions.map(a => [a.value, a.value?.icon ?? Icons.Delete]))),
-      // tooltip: ''
+        new Map<Antenna, string>(this.trackingStationOptions.map(a => [a.value, a.value?.icon ?? Icons.Delete])),
+        'Ground relay station'),
     },
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);

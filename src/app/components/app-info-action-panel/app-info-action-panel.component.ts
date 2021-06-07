@@ -52,6 +52,7 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
               .subscribe(() => tutorialService.startFullTutorial());
           },
         },
+        undefined,
         !localStorage.getItem('ksp-commnet-planner-tutorial-viewed'),
         () => localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString())),
       new ActionOption('Privacy', Icons.Analytics, {
@@ -66,6 +67,7 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
               .subscribe();
           },
         },
+        'View privacy statement and settings',
         !localStorage.getItem('ksp-commnet-planner-privacy-viewed'),
         () => localStorage.setItem('ksp-commnet-planner-privacy-viewed', true.toString())),
       // new ActionOption('Account', Icons.AccountSettings, {
@@ -93,17 +95,18 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
         },
       }),
       new ActionOption('Buy me a Coffee', Icons.Coffee, {
-        action: () => {
-          analyticsService.logEvent('Call coffee dialog', {
-            category: EventLogs.Category.Coffee,
-          });
+          action: () => {
+            analyticsService.logEvent('Call coffee dialog', {
+              category: EventLogs.Category.Coffee,
+            });
 
-          dialog.open(BuyMeACoffeeDialogComponent)
-            .afterClosed()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe();
+            dialog.open(BuyMeACoffeeDialogComponent)
+              .afterClosed()
+              .pipe(takeUntil(this.destroy$))
+              .subscribe();
+          },
         },
-      }),
+        'A platform for supporting the developer'),
       new ActionOption('Feedback', Icons.Feedback, {
         action: () => {
           analyticsService.logEvent('Call feedback dialog', {

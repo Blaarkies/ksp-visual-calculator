@@ -7,6 +7,7 @@
          (blur)="isActive = false"
          (input)="userInputChange($any($event).currentTarget.value)"
   />
+  <mat-hint [@animateFade] *ngIf="value === null && hint">{{hint}}</mat-hint>
   <span matSuffix>{{suffix}}</span>
 </mat-form-field>
 

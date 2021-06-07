@@ -28,4 +28,5 @@
 
     <mat-option *ngIf="!filteredOptions?.length" disabled>No Options</mat-option>
   </mat-select>
+  <mat-hint [@animateFade] *ngIf="value === null && hint">{{hint}}</mat-hint>
 </mat-form-field>
