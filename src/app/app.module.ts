@@ -62,6 +62,7 @@ import { SoiCircleComponent } from './components/soi-circle/soi-circle.component
 import { AntennaStatsComponent } from './components/antenna-stats/antenna-stats.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { FocusJumpToPanelComponent } from './components/focus-jump-to-panel/focus-jump-to-panel.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +99,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ZoomIndicatorComponent,
     SoiCircleComponent,
     AntennaStatsComponent,
+    FocusJumpToPanelComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

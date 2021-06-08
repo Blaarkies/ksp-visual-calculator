@@ -30,6 +30,7 @@ export class Draggable extends WithDestroy() {
               public moveType: MoveType) {
     super();
     super.ngOnDestroy = () => {
+      // workaround, error NG2007: Class is using Angular features but is not decorated.
       super.ngOnDestroy();
       this.isHover$.complete();
     };

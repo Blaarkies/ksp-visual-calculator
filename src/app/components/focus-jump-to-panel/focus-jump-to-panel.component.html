@@ -1,0 +1,17 @@
+<div class="frame">
+
+  <div class="panel">
+
+    <button #button
+            mat-button
+            *ngFor="let item of list"
+            (click)="item.itemAction()"
+            [matTooltip]="item.label"
+            [matTooltipDisabled]="item.label.length < 8">
+      <div class="item-layout">
+        <mat-icon>{{item.icon}}</mat-icon>
+        <div>{{item.label}}</div>
+      </div>
+    </button>
+  </div>
+</div>

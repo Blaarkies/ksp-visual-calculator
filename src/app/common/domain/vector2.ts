@@ -1,7 +1,17 @@
 export class Vector2 {
 
+  static readonly zero = new Vector2(0, 0);
+
+  get length(): number {
+    return this.distance(Vector2.zero);
+  }
+
   constructor(public x: number = null,
               public y: number = null) {
+  }
+
+  static fromList(xy: number[]): Vector2 {
+    return new Vector2(xy[0], xy[1]);
   }
 
   set(xy: number[]): Vector2 {
@@ -91,10 +101,6 @@ export class Vector2 {
 
   toList(): number[] {
     return [this.x, this.y];
-  }
-
-  static fromList(xy: number[]): Vector2 {
-    return new Vector2(xy[0], xy[1]);
   }
 
 }
