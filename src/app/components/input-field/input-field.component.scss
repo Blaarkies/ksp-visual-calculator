@@ -1,3 +1,10 @@
 span {
   color: var(--color-text-muted);
 }
+
+.clear-button {
+  opacity: 0;
+  margin-left: 8px;
+  font-size: 1.4em !important; // overrides mat-button
+  transition: .25s ease-in;
+}
