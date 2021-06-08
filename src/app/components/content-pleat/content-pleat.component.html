@@ -1,0 +1,12 @@
+<mat-expansion-panel #panel
+                     class="invisible-panel peek-at-content"
+                     [expanded]="false">
+  <div [class.first-sentence-only]="!showContentAfterInit">
+    <ng-content></ng-content>
+  </div>
+  <div [@animateFade]
+       *ngIf="!panel.expanded"
+       class="fade-whiteground">
+    <span class="read-more" (click)="panel.open()">Read more...</span>
+  </div>
+</mat-expansion-panel>

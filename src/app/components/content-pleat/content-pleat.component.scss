@@ -1,0 +1,23 @@
+.invisible-panel {
+  box-shadow: unset !important;
+  background: unset !important;
+}
+
+.peek-at-content {
+  .mat-expansion-panel-content {
+    min-height: 22px !important;
+    visibility: visible !important;
+  }
+}
+
+.first-sentence-only {
+  height: 22px;
+}
+
+.fade-whiteground {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: linear-gradient(90deg, #0000, white 38px);
+  padding-left: 34px;
+}
