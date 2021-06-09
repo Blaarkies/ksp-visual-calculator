@@ -12,15 +12,16 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 export class ContentPleatComponent {
 
   showContentAfterInit: boolean;
+
   @ViewChild(MatExpansionPanel) panel: MatExpansionPanel;
 
-  open() {
-    this.panel.toggle();
-    // this.panel.open();
-  }
-
-
   constructor() {
+    // Images flash once on init. This blocks content until moments after
     setTimeout(() => this.showContentAfterInit = true, 500);
   }
+
+  open() {
+    this.panel.open();
+  }
+
 }

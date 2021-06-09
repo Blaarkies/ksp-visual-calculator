@@ -73,8 +73,8 @@ export class AppComponent extends WithDestroy() implements OnInit {
         title: 'First Visit?',
         descriptions: [
           'You can start the tutorial now, or if you prefer later, you can find it in the "Information" menu in the top right.',
-          'This is a tool to help players visualize their communication networks in Kerbal Space Program.',
-          'Players can plan the details around a CommNet before even launching their first rocket.',
+          'This is a tool to help players visualize their communication networks in Kerbal Space Program. Players can plan the details around a CommNet before even launching their first rocket.',
+          'There is an orange quick-help button on the top-left side that can explain more details.',
         ],
         okButtonText: 'Start Tutorial',
         cancelButtonText: 'Skip',

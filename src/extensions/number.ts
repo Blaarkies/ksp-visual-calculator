@@ -96,5 +96,5 @@ Number.prototype.toSi = function (this: number, decimals: number = 0): string {
     ? this
     : Math.floor(Math.log(this) / Math.log(1000));
   let number = parseFloat((this / Math.pow(1000, level)).toFixed(decimals));
-  return `${number}${siSuffixes[level]}`;
+  return `${number} ${siSuffixes[level]}`;
 };

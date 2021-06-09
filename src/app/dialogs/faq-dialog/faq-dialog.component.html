@@ -1,0 +1,57 @@
+<div class="title-layout">
+  <h1 mat-dialog-title>Frequently Asked Questions</h1>
+  <cp-input-field label="Search"
+                  hint="To find specific sections"
+                  [type]="'text'"
+                  [allowClear]="true"
+                  [formControl]="searchControl"></cp-input-field>
+</div>
+
+<div mat-dialog-content class="faq-layout">
+
+  <mat-progress-bar *ngIf="!columns"
+                    mode="indeterminate"
+                    color="primary"></mat-progress-bar>
+
+  <div class="column" *ngFor="let sections of columns">
+
+    <section *ngFor="let section of sections">
+      <h2>{{section.title}}</h2>
+      <p class="simple-explanation">{{section.simpleExplanation}}</p>
+
+      <cp-content-pleat>
+        <p class="advanced-explanation"
+           *ngFor="let explanationParts of section.advancedExplanations">
+          <ng-container *ngFor="let part of explanationParts">
+            <ng-container [ngSwitch]="part.type">
+              <span *ngSwitchCase="'span'">{{part.content}}</span>
+              <span *ngSwitchCase="'search'"
+                    class="read-more"
+                    (click)="searchFor(part.query)">
+              {{part.content}}
+            </span>
+              <span *ngSwitchCase="'image'"
+                    class="image-layout">
+                <span>{{part.content}}</span>
+                <img [style.height.px]="part.height"
+                     [src]="part.src"
+                     [alt]="part.alt"/>
+            </span>
+            </ng-container>
+          </ng-container>
+        </p>
+      </cp-content-pleat>
+    </section>
+
+  </div>
+
+</div>
+
+<div mat-dialog-actions>
+  <button class="ok-button"
+          color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>
