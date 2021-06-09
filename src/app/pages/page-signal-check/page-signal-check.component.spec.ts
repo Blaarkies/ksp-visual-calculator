@@ -1,8 +1,8 @@
-import { PageDistanceCheckComponent } from './page-distance-check.component';
+import { PageSignalCheckComponent } from './page-signal-check.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 
-let componentType = PageDistanceCheckComponent;
+let componentType = PageSignalCheckComponent;
 describe(componentType.name, () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));

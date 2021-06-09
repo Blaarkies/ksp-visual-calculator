@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
@@ -17,15 +17,17 @@ import {
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
+import { Icons } from '../../common/domain/icons';
+import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
 
 @Component({
-  selector: 'cp-page-distance-check',
-  templateUrl: './page-distance-check.component.html',
-  styleUrls: ['./page-distance-check.component.scss'],
+  selector: 'cp-page-signal-check',
+  templateUrl: './page-signal-check.component.html',
+  styleUrls: ['./page-signal-check.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [CustomAnimation.animateFade],
 })
-export class PageDistanceCheckComponent extends WithDestroy() {
+export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
 
   orbits$: Observable<Orbit[]>;
   transmissionLines$: Observable<TransmissionLine[]>;
@@ -34,6 +36,9 @@ export class PageDistanceCheckComponent extends WithDestroy() {
 
   spaceObjectTypes = SpaceObjectType;
   scaleToShowMoons = CameraService.scaleToShowMoons;
+
+  icons = Icons;
+  faqButtonLeft = 280;
 
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
@@ -101,6 +106,7 @@ export class PageDistanceCheckComponent extends WithDestroy() {
         forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
         edit: craft,
       } as CraftDetailsDialogData,
+      position: {left: '0px'}
     })
       .afterClosed()
       .pipe(
@@ -110,6 +116,24 @@ export class PageDistanceCheckComponent extends WithDestroy() {
         this.spaceObjectService.editCraft(craft, details);
         this.cdr.markForCheck();
       });
+  }
+
+  openFaq() {
+    this.analyticsService.logEvent('Open faq dialog', {
+      category: EventLogs.Category.Help,
+    });
+
+    this.dialog.open(FaqDialogComponent, {
+      data: {
+      } as FaqDialogData,
+      // position: {left: '10px'},
+    });
+  }
+
+  ngOnInit() {
+    this.faqButtonLeft = (document.querySelector('mat-expansion-panel.top-left') as HTMLElement).offsetWidth;
+
+    this.openFaq();
   }
 
 }

@@ -61,4 +61,12 @@
 
   <cp-focus-jump-to-panel></cp-focus-jump-to-panel>
 
+  <button [style.left.px]="faqButtonLeft"
+          class="faq-button"
+          mat-icon-button
+          color="accent"
+          (click)="openFaq()">
+    <mat-icon>{{icons.Help}}</mat-icon>
+  </button>
+
 </div>
