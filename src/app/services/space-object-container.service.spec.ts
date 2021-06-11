@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { SpaceObjectContainerService } from './space-object-container.service';
 
-describe('SpaceObjectContainerService', () => {
+describe(SpaceObjectContainerService.name, () => {
   let service: SpaceObjectContainerService;
 
   beforeEach(() => {

@@ -1,11 +1,9 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
 import { fromEvent } from 'rxjs';
-import { filter, finalize, map, take, takeUntil } from 'rxjs/operators';
+import { finalize, map, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { SpaceObjectContainerService } from '../../services/space-object-container.service';
-import { SpaceObjectService } from '../../services/space-object.service';
 
 @Component({
   selector: 'cp-camera',
@@ -29,8 +27,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   scaleToShowMoons = CameraService.scaleToShowMoons;
 
   constructor(private cdr: ChangeDetectorRef,
-              private cameraService: CameraService,
-              private spaceObjectService: SpaceObjectService) {
+              private cameraService: CameraService) {
     super();
   }
 

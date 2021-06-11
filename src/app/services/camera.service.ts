@@ -51,13 +51,13 @@ export class CameraService {
     return new Vector2(element.offsetWidth, element.offsetHeight);
   }
 
-  private _currentHoverObject: Draggable;
+  private hoverObject: Draggable;
   get currentHoverObject(): Draggable {
-    return this._currentHoverObject;
+    return this.hoverObject;
   }
 
   set currentHoverObject(value: Draggable) {
-    this._currentHoverObject = value;
+    this.hoverObject = value;
     if (value) {
       this.lastFocusObject = value;
     }
@@ -83,8 +83,8 @@ export class CameraService {
       return;
     }
     // zoom at hover objects, unless no object is currently hovered
-    let zoomAtLocation = this._currentHoverObject
-      ? this._currentHoverObject.location.clone().multiply(this.scale).addVector2(this.location)
+    let zoomAtLocation = this.hoverObject
+      ? this.hoverObject.location.clone().multiply(this.scale).addVector2(this.location)
       : mouseLocation;
     this.scale *= delta;
 

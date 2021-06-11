@@ -25,6 +25,7 @@
           <ng-container *ngFor="let part of explanationParts">
             <ng-container [ngSwitch]="part.type">
               <span *ngSwitchCase="'span'">{{part.content}}</span>
+              <code *ngSwitchCase="'code'">{{part.content}}</code>
               <span *ngSwitchCase="'search'"
                     class="read-more"
                     (click)="searchFor(part.query)">

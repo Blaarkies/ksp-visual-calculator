@@ -8,6 +8,7 @@ export class Icons {
   static Backspace = 'backspace';
   static Delete = 'delete_forever';
   static DeleteAll = 'delete_sweep';
+  static Flare = 'flare';
   static Planet = 'public';
   static Moon = 'mode_night';
   static External = 'launch';

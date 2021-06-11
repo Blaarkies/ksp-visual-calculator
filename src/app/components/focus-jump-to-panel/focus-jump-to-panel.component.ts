@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { SpaceObjectService } from '../../services/space-object.service';
 import { combineLatest, fromEvent } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
@@ -13,7 +13,7 @@ import { AnalyticsService, EventLogs } from '../../services/analytics.service';
   templateUrl: './focus-jump-to-panel.component.html',
   styleUrls: ['./focus-jump-to-panel.component.scss'],
 })
-export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit {
+export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, OnDestroy {
 
   list: { icon: string, label: string, itemAction: () => void, source: any }[];
 

@@ -1,25 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FaqDialogComponent } from './faq-dialog.component';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { HttpClient } from '@angular/common/http';
+import { ineeda } from 'ineeda';
+import { EMPTY } from 'rxjs';
 
-describe('FaqDialogComponent', () => {
-  let component: FaqDialogComponent;
-  let fixture: ComponentFixture<FaqDialogComponent>;
+let componentType = FaqDialogComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FaqDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FaqDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(HttpClient, ineeda<HttpClient>({get: url => EMPTY})));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

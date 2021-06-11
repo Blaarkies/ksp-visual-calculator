@@ -106,7 +106,6 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
         forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
         edit: craft,
       } as CraftDetailsDialogData,
-      position: {left: '0px'}
     })
       .afterClosed()
       .pipe(
@@ -124,16 +123,12 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
     });
 
     this.dialog.open(FaqDialogComponent, {
-      data: {
-      } as FaqDialogData,
-      // position: {left: '10px'},
+      data: {} as FaqDialogData,
     });
   }
 
   ngOnInit() {
-    this.faqButtonLeft = (document.querySelector('mat-expansion-panel.top-left') as HTMLElement).offsetWidth;
-
-    this.openFaq();
+    this.faqButtonLeft = (document.querySelector('mat-expansion-panel.top-left') as HTMLElement)?.offsetWidth;
   }
 
 }

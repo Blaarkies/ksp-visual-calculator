@@ -23,7 +23,7 @@
   },
   {
     "title": "Focus Jump-to Panel",
-    "simpleExplanation": "Quickly focus the camera onto a specific moon by selecting, or use keyboard shortcuts to cycle through them.",
+    "simpleExplanation": "Quickly focus the camera onto a specific moon by selecting it in the list, or use keyboard shortcuts to cycle through them.",
     "advancedExplanations": [
       [
         {
@@ -36,7 +36,7 @@
         },
         {
           "type": "span",
-          "content": " key to cycle forward to the next celestial body (or craft). Hold down the"
+          "content": " key to cycle forward to the next celestial body (or craft). Hold down the "
         },
         {
           "type": "code",
@@ -95,7 +95,7 @@
       [
         {
           "type": "image",
-          "content": "Measurement of a craft and its connection",
+          "content": "Measurements of a craft and its connection",
           "src": "assets/faq/signal-text.jpg",
           "alt": "An image of a craft with a connection to Kerbin",
           "height": 200
@@ -176,7 +176,7 @@
       [
         {
           "type": "span",
-          "content": "This allows us to drag the planet around it's own orbit, and any craft placed in its SOI will stick close to it. Upon dropping craft in a SOI, it is locked into a position relative to that celestial body."
+          "content": "This allows us to drag the planet around its own orbit, and any craft placed in its SOI will stick close to it. Upon dropping craft in a SOI, it is locked into a position relative to that celestial body."
         }
       ],
       [

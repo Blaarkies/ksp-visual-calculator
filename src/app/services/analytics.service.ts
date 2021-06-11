@@ -85,9 +85,12 @@ export class AnalyticsService {
     }
 
     this.logEvent(`Set tracking ${isTracking.toString('on')}`, {category: EventLogs.Category.Privacy});
-    this.analytics.setAnalyticsCollectionEnabled(isTracking);
-    this.isTracking = isTracking;
-    localStorage.setItem('ksp-commnet-planner-user-opted-out-of-tracking', (!isTracking).toString());
+    setTimeout(() => {
+      // Wait for previous event to finish sending before turning off
+      this.analytics.setAnalyticsCollectionEnabled(isTracking);
+      this.isTracking = isTracking;
+      localStorage.setItem('ksp-commnet-planner-user-opted-out-of-tracking', (!isTracking).toString());
+    });
   }
 
   logEvent(name: string, details?: any) {
