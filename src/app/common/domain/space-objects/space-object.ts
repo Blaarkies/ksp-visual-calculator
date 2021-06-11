@@ -10,7 +10,7 @@ export class SpaceObjectType {
 
   get icon(): string {
     return this === SpaceObjectType.Star
-      ? Icons.Star
+      ? Icons.Flare
       : this === SpaceObjectType.Planet
         ? Icons.Planet
         : this === SpaceObjectType.Moon

@@ -3,8 +3,8 @@ import { ControlMetaType } from './control-meta-type';
 
 export class ControlMetaFreeText<T> extends ControlMeta {
 
-  constructor() {
-    super(ControlMetaType.FreeText);
+  constructor(public hint?: string) {
+    super(ControlMetaType.FreeText, hint);
   }
 
 }

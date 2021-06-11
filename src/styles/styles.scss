@@ -31,6 +31,23 @@ body {
   overflow: visible;
 }
 
+.visible {
+  opacity: 1 !important;
+}
+
+.read-more {
+  color: var(--color-hyperlink-text);
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 4px;
+  margin: 0 -4px;
+  transition: .2s;
+
+  &:hover {
+    background-color: #00000007;
+  }
+}
+
 [mat-dialog-actions] {
   display: grid !important;
   grid-auto-flow: column;

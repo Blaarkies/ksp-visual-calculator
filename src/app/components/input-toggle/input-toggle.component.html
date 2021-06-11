@@ -15,6 +15,8 @@
                     (change)="userInputChange($event.checked)">
     {{label}}
   </mat-slide-toggle>
+
+  <mat-hint [@animateFade] *ngIf="value === null && hint">{{hint}}</mat-hint>
 </ng-container>
 
 <cp-validation-message [fieldName]="label" [errors]="errors"></cp-validation-message>

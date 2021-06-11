@@ -9,19 +9,21 @@
         <cp-input-field label="Antenna Type"
                         [formControl]="antennaInput.antennaControl"></cp-input-field>
 
-        <cp-input-number label="Part Count"
+        <cp-input-number [matTooltip]="'Defines how many of these antennae are on the craft'"
+                         label="Part Count"
                          [formControl]="antennaInput.countControl"
                          [errors]="antennaInput.countControl.touched && antennaInput.countControl.errors"
                          (output)="userInputChange()"></cp-input-number>
 
         <button mat-icon-button (click)="removeAntenna(antennaInput)"
-                [matTooltip]="'Remove this Antenna'">
+                [matTooltip]="'Remove this antenna'">
           <mat-icon color="warn">{{icons.Delete}}</mat-icon>
         </button>
       </div>
 
       <cp-input-select *ngIf="availableOptions.length"
                        label="Antenna Type"
+                       hint="Select an antenna to add"
                        [options]="availableOptions"
                        [mapIcons]="mapIcons"
                        [formControl]="finalControl"></cp-input-select>

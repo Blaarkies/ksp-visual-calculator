@@ -1,0 +1,66 @@
+.frame {
+  --width: 150px;
+  width: var(--width);
+  overflow-x: hidden;
+
+  --height: 290px;
+  height: var(--height);
+  overflow-y: hidden;
+
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  top: calc(50% - var(--height) * .5);
+
+  --border-radius: 16px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
+
+  --in-cubic-tf: cubic-bezier(0.55, 0.06, 0.68, 0.19); // In · Cubic
+  transition: .4s var(--in-cubic-tf);
+  --collapsed-width: 50px;
+  --frame-translate-left: var(--collapsed-width) - var(--width);
+  transform: translateX(calc(1 * var(--frame-translate-left)));
+
+  &:hover {
+    transform: translateX(0);
+  }
+
+  .panel {
+    transition: .4s var(--in-cubic-tf);
+    --panel-translate-right: var(--width) - var(--collapsed-width);
+    transform: translateX(calc(1 * var(--panel-translate-right)));
+
+    &:hover {
+      transform: translateX(0);
+    }
+
+    height: var(--height);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+
+    display: grid;
+    gap: 6px;
+
+    background-color: #6662;
+  }
+}
+
+.item-layout {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 10px;
+  align-items: center;
+
+  mat-icon {
+    color: var(--color-text-muted);
+  }
+
+  div {
+    font-size: 1.3em;
+    color: var(--color-text-muted);
+    text-overflow: ellipsis;
+  }
+}

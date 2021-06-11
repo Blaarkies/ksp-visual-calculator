@@ -29,6 +29,14 @@
         height: min-content;
         border-radius: 8px;
       }
+
+      .mat-expansion-panel-content {
+        cp-input-field-list {
+          display: grid;
+          align-items: start;
+          padding-bottom: 26px;
+        }
+      }
     }
   }
 

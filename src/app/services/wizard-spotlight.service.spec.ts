@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { WizardSpotlightService } from './wizard-spotlight.service';
 
-describe('WizardSpotlightService', () => {
+describe(WizardSpotlightService.name, () => {
   let service: WizardSpotlightService;
 
   beforeEach(() => {

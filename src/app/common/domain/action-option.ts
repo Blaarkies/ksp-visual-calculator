@@ -14,6 +14,7 @@ export class ActionOption {
   constructor(public label: string,
               public icon: string,
               public actionMeta: ActionMeta,
+              public tooltip?: string,
               public unread: boolean = false,
               onRead?: () => void) {
     this.type = ActionOptionType.fromActionMeta(actionMeta);

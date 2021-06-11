@@ -8,11 +8,13 @@ import { MatSelect } from '@angular/material/select';
 import { Icons } from '../../common/domain/icons';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+import { CustomAnimation } from '../../common/domain/custom-animation';
 
 @Component({
   selector: 'cp-input-select',
   templateUrl: './input-select.component.html',
   styleUrls: ['./input-select.component.scss'],
+  animations: [CustomAnimation.animateFade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputSelectComponent),
@@ -38,6 +40,7 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
   @Input() mapIcons: Map<any, string>;
 
   @Input() label: string;
+  @Input() hint: string;
   @Input() errors: FormControlError;
 
   @ViewChild(InputFieldComponent, {static: true}) searchRef: InputFieldComponent;

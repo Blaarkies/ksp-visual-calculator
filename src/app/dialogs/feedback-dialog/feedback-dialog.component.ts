@@ -36,7 +36,7 @@ export class FeedbackDialogComponent extends WithDestroy() {
     contact: {
       label: 'Contact Info (Optional)',
       control: new FormControl(),
-      controlMeta: new ControlMetaInput(),
+      controlMeta: new ControlMetaInput('text', 'If the feedback needs follow-up, I will try to contact you using this detail'),
     },
     feedback: {
       label: 'Feedback Message',

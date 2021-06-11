@@ -5,8 +5,10 @@ export class Icons {
   static Hamburger = 'menu';
   static Craft = 'flight';
   static Clear = 'clear';
+  static Backspace = 'backspace';
   static Delete = 'delete_forever';
   static DeleteAll = 'delete_sweep';
+  static Flare = 'flare';
   static Planet = 'public';
   static Moon = 'mode_night';
   static External = 'launch';
@@ -29,7 +31,6 @@ export class Icons {
   static OpenDetails = 'menu_open';
   static Construction = 'construction';
   static Star = 'star';
-
 
 
 }

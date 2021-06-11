@@ -26,9 +26,18 @@
   position: absolute;
   top: -40%;
   left: 0;
+  width: max-content;
 
   text-shadow: 0 0 1px black;
   background-color: #0009;
   border-radius: 10px;
   padding: 2px 6px;
+}
+
+
+.faq-button {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  margin-left: 2px;
 }

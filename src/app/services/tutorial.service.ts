@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
-import { delay, filter, mapTo, take, takeUntil } from 'rxjs/operators';
+import { delay, filter, finalize, mapTo, take, takeUntil } from 'rxjs/operators';
 import { AnalyticsService, EventLogs } from './analytics.service';
 
 @Injectable({
@@ -27,9 +27,10 @@ export class TutorialService {
     this.wizardSpotlightService
       .runSteps(compiledSteps)
       .pipe(
+        finalize(() => this.analyticsService
+          .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial})),
         takeUntil(this.stopTutorial$))
-      .subscribe(() => this.analyticsService
-        .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial}));
+      .subscribe();
   }
 
   private getCompiledSteps(): Observable<any>[] {
@@ -287,7 +288,7 @@ export class TutorialService {
       dialogTargetCallback: () => document.body,
       dialogMessages: [
         'That concludes the tutorial.',
-        'The universe is now you playground!'],
+        'The universe is now your playground!'],
       dialogIcon: Icons.Congratulations,
       stages: [
         {

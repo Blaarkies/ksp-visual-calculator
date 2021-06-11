@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
-import { PageDistanceCheckComponent } from './pages/page-distance-check/page-distance-check.component';
+import { PageSignalCheckComponent } from './pages/page-signal-check/page-signal-check.component';
 import { DraggableSpaceObjectComponent } from './components/draggable-space-object/draggable-space-object.component';
 import { OrbitLineComponent } from './components/orbit-line/orbit-line.component';
 import { TransmissionLineComponent } from './components/transmission-line/transmission-line.component';
@@ -62,11 +62,14 @@ import { SoiCircleComponent } from './components/soi-circle/soi-circle.component
 import { AntennaStatsComponent } from './components/antenna-stats/antenna-stats.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { FocusJumpToPanelComponent } from './components/focus-jump-to-panel/focus-jump-to-panel.component';
+import { FaqDialogComponent } from './dialogs/faq-dialog/faq-dialog.component';
+import { ContentPleatComponent } from './components/content-pleat/content-pleat.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageDistanceCheckComponent,
+    PageSignalCheckComponent,
     DraggableSpaceObjectComponent,
     OrbitLineComponent,
     TransmissionLineComponent,
@@ -98,6 +101,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ZoomIndicatorComponent,
     SoiCircleComponent,
     AntennaStatsComponent,
+    FocusJumpToPanelComponent,
+    FaqDialogComponent,
+    ContentPleatComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

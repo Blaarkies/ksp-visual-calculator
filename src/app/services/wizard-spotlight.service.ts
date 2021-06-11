@@ -115,9 +115,9 @@ export class WizardSpotlightService {
       .add(75, -150);
 
     if (topRight.x + 400 > document.body.offsetWidth
-      || topRight.y + 200 > document.body.offsetHeight) {
+      || topRight.y + 400 > document.body.offsetHeight) {
       return new Vector2(document.body.offsetWidth, document.body.offsetWidth)
-        .multiply(.5)
+        .multiply(.25)
         .add(50, -150);
     }
 

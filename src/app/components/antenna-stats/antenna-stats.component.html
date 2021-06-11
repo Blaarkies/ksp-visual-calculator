@@ -6,7 +6,8 @@
     <div>{{stat.value}}</div>
   </div>
 
-  <div class="label-and-value">
+  <div class="label-and-value"
+       [matTooltip]="'Indicates how much of the total signal power is derived from relay antennae'">
     <div>Relay Bias</div>
     <div class="number-line">
       <mat-progress-bar color="primary" [value]="(stats?.relayBias || 0) * 100"></mat-progress-bar>
@@ -14,7 +15,8 @@
     </div>
   </div>
 
-  <div class="label-and-value">
+  <div class="label-and-value"
+       [matTooltip]="'Indicates the diminishing returns from adding more antennae to this craft'">
     <div>Average Combinability Exponent</div>
     <div class="number-line">
       <mat-progress-bar color="primary" [value]="(stats?.averageCombinabilityExponent || 0) * 100"></mat-progress-bar>

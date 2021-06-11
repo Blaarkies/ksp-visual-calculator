@@ -2,11 +2,14 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Inp
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
+import { CustomAnimation } from '../../common/domain/custom-animation';
+import { Icons } from 'src/app/common/domain/icons';
 
 @Component({
   selector: 'cp-input-field',
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
+  animations: [CustomAnimation.animateFade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputFieldComponent),
@@ -20,7 +23,9 @@ export class InputFieldComponent extends BasicValueAccessor {
     | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
     | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week' = 'text';
   @Input() label: string;
+  @Input() hint: string;
   @Input() suffix: string;
+  @Input() allowClear: boolean;
   @Input() errors: FormControlError;
 
   @Input() set formControl(value: FormControl) {
@@ -33,6 +38,8 @@ export class InputFieldComponent extends BasicValueAccessor {
   @ViewChild('input', {static: true}) inputRef: ElementRef<HTMLInputElement>;
 
   isActive: boolean;
+
+  icons = Icons;
 
   constructor(private cdr: ChangeDetectorRef) {
     super();
@@ -71,4 +78,7 @@ export class InputFieldComponent extends BasicValueAccessor {
     this.formTouch.emit();
   }
 
+  clear() {
+    this.userInputChange(null);
+  }
 }

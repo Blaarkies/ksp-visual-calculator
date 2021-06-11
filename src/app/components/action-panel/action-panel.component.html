@@ -26,7 +26,7 @@
       <ng-container *ngFor="let option of options"
                     [ngSwitch]="option.type">
         <ng-template #button>
-          <div class="action-button">
+          <div class="action-button" [matTooltip]="option.tooltip">
             <span class="text-white">{{option.label}}</span>
             <span matBadgeColor="warn"
                   [matBadgeHidden]="!option.unread"

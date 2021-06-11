@@ -1,7 +1,9 @@
 <h1 mat-dialog-title>Game Difficulty</h1>
 
 <div mat-dialog-content class="game-difficulty-form">
-  <mat-button-toggle-group class="button-colors" (change)="buttonGroupChange($event.value)">
+  <mat-button-toggle-group class="button-colors"
+                           (change)="buttonGroupChange($event.value)"
+                           [matTooltip]="'This simulates the in-game difficulty setting'">
     <ng-container *ngFor="let setting of difficultySettings.List">
       <mat-button-toggle [value]="setting.value">{{setting.label}}</mat-button-toggle>
     </ng-container>

@@ -47,7 +47,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     craftType: {
       label: 'Type',
       control: new FormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
-      controlMeta: new ControlMetaSelect(CraftType.List),
+      controlMeta: new ControlMetaSelect(CraftType.List, undefined, 'Icon to represent this craft'),
     },
     antennaSelection: {
       label: 'Antennae Onboard',
@@ -67,17 +67,18 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       control: new FormControl(null),
       controlMeta: new ControlMetaSelect(
         this.orbitParentOptions,
-        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
+        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon])),
+        'Where to place this craft'),
     },
     altitude: {
       label: 'Altitude',
       control: new FormControl(null, [Validators.min(0)]),
-      controlMeta: new ControlMetaNumber('m'),
+      controlMeta: new ControlMetaNumber('m', 'Height above surface'),
     },
     angle: {
       label: 'Angle',
       control: new FormControl(null),
-      controlMeta: new ControlMetaNumber('°'),
+      controlMeta: new ControlMetaNumber('°', 'Starts on the right side, increase counter-clockwise'),
     },
   } as InputFields;
   advancedInputFieldsList = Object.values(this.advancedInputFields);

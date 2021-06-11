@@ -18,12 +18,20 @@ export class AppComponent extends WithDestroy() implements OnInit {
 
   routes = UsableRoutes;
   pages: ActionOption[] = [
-    new ActionOption('Signal Check', Icons.PlanetSearch,
-      {route: UsableRoutes.SignalCheck}),
-    new ActionOption('Source Code - GitHub', Icons.SourceCode,
+    new ActionOption(
+      'Signal Check',
+      Icons.PlanetSearch,
+      {route: UsableRoutes.SignalCheck},
+      'Page that calculates CommNet ranges'),
+    new ActionOption(
+      'Source Code - GitHub',
+      Icons.SourceCode,
       {externalRoute: 'https://github.com/Blaarkies/ksp-commnet-planner'}),
-    new ActionOption('Blaarkies Hub', Icons.Blaarkies,
-      {externalRoute: 'https://blaarkies.com/'}),
+    new ActionOption(
+      'Blaarkies Hub',
+      Icons.Blaarkies,
+      {externalRoute: 'https://blaarkies.com/'},
+      'More tools made by Blaarkies'),
   ];
 
   constructor(private dialog: MatDialog,
@@ -64,12 +72,13 @@ export class AppComponent extends WithDestroy() implements OnInit {
       data: {
         title: 'First Visit?',
         descriptions: [
-          'You can start the tutorial now, or if you prefer later, you can find it in the "Information" menu in the top right.',
-          'This is a tool to help players visualize their communication networks in Kerbal Space Program.',
-          'Players can plan the details around a CommNet before even launching their first rocket.',
+          'You can start the tutorial now, or if you prefer later, you can find it in the "Information" menu in the top-right.',
+          'This is a tool to help players visualize their communication networks in Kerbal Space Program. Players can plan the details around a CommNet before even launching their first rocket.',
+          'There is an orange quick-help button on the top-left side that can explain more details.',
         ],
         okButtonText: 'Start Tutorial',
         cancelButtonText: 'Skip',
+        focusOk: true,
       } as SimpleDialogData,
     })
       .afterClosed()

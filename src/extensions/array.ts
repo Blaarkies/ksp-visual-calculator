@@ -7,10 +7,10 @@ Array.prototype.shuffle = function (this: Array<any>): Array<any> {
     .map(pair => pair.value);
 };
 
-Array.prototype.sortByRelevance = function (this: Array<any>, callback: (item: any) => number): Array<any> {
+Array.prototype.sortByRelevance = function (this: Array<any>, callback: (item: any) => number, minimumRelevance = 1): Array<any> {
   return this
     .map(item => ({sort: callback(item), value: item}))
-    .filter(({sort}) => sort > 0)
+    .filter(({sort}) => sort >= minimumRelevance)
     .sort((a, b) => b.sort - a.sort)
     .map(pair => pair.value);
 };
