@@ -2,58 +2,8 @@ import { Draggable } from './draggable';
 import { Antenna } from '../antenna';
 import { Group } from '../group';
 import { Vector2 } from '../vector2';
-import { LabeledOption } from '../input-fields/labeled-option';
 import { MoveType } from './move-type';
-import { Icons } from '../icons';
-
-export class SpaceObjectType {
-
-  get icon(): string {
-    return this === SpaceObjectType.Star
-      ? Icons.Flare
-      : this === SpaceObjectType.Planet
-        ? Icons.Planet
-        : this === SpaceObjectType.Moon
-          ? Icons.Moon
-          : Icons.Craft;
-  }
-
-  static types = {
-    star: 'star',
-    planet: 'planet',
-    moon: 'moon',
-    craft: 'craft',
-  };
-
-  static Star = new SpaceObjectType(SpaceObjectType.types.star);
-  static Planet = new SpaceObjectType(SpaceObjectType.types.planet);
-  static Moon = new SpaceObjectType(SpaceObjectType.types.moon);
-  static Craft = new SpaceObjectType(SpaceObjectType.types.craft);
-
-  constructor(public name: string) {
-  }
-
-  private static All: SpaceObjectType[] = [
-    SpaceObjectType.Star,
-    SpaceObjectType.Planet,
-    SpaceObjectType.Moon,
-    SpaceObjectType.Craft,
-  ];
-
-  // todo: use dedicated labels instead of re-using source code labels
-  static List = SpaceObjectType.All.map(sot =>
-    new LabeledOption(sot.name[0].toLocaleUpperCase() + sot.name.slice(1), sot));
-
-  static fromString(type: 'star' | 'planet' | 'moon' | 'craft'): SpaceObjectType {
-    let match = SpaceObjectType.All.find(t => t.name === type);
-    if (!match) {
-      throw console.error(`${type} is not a valid SpaceObjectType`);
-    }
-
-    return match;
-  }
-
-}
+import { SpaceObjectType } from './space-object-type';
 
 export class SpaceObject {
 
@@ -90,6 +40,43 @@ export class SpaceObject {
               public sphereOfInfluence?: number,
               public equatorialRadius?: number) {
     this.draggableHandle = new Draggable(label, `url(${imageUrl}) 0 0`, moveType);
+  }
+
+  toJson(): {} {
+    return {
+      draggableHandle: this.draggableHandle.toJson(),
+      size: this.size,
+      type: this.type.name,
+      trackingStation: this.antennae[0]?.item?.label,
+      hasDsn: this.hasDsn,
+      sphereOfInfluence: this.sphereOfInfluence,
+      equatorialRadius: this.equatorialRadius,
+    };
+  }
+
+  static fromJson(json: any, getAntenna: (name) => Antenna): SpaceObject {
+    let dsnAntenna = getAntenna(json.trackingStation);
+    let antennae = dsnAntenna
+      ? [new Group<Antenna>(dsnAntenna)]
+      : [];
+
+    let object = new SpaceObject(
+      json.size,
+      json.draggableHandle.label,
+      '',
+      json.draggableHandle.moveType,
+      SpaceObjectType.fromString(json.type),
+      antennae,
+      json.hasDsn,
+      json.sphereOfInfluence,
+      json.equatorialRadius,
+    );
+
+    object.draggableHandle.imageUrl = json.draggableHandle.imageUrl;
+    object.draggableHandle.location = Vector2.fromList(json.draggableHandle.location);
+    object.draggableHandle.lastAttemptLocation = json.draggableHandle.lastAttemptLocation;
+
+    return object;
   }
 
 }

@@ -22,8 +22,21 @@ export class Draggable extends WithDestroy() {
 
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
-  private parent: Draggable;
+  private lastActivatedSoi: SpaceObject;
+  public parent: Draggable;
   public orbit: Orbit;
+
+  toJson(): {} {
+    return {
+      location: this.location.toList(),
+      lastAttemptLocation: this.lastAttemptLocation,
+      children: this.children?.map(d => d.label),
+      orbit: this.orbit?.toJson(),
+      label: this.label,
+      imageUrl: this.imageUrl,
+      moveType: this.moveType,
+    };
+  }
 
   constructor(public label: string,
               public imageUrl: string,
@@ -98,14 +111,13 @@ export class Draggable extends WithDestroy() {
       .forEach(d => d.updateConstrainLocation({
         xy: newCenter,
         r: d.parameterData.r,
-      }));
+      } as OrbitParameterData));
 
     this.children
       .filter(d => d.moveType === 'soiLock')
       .forEach(d => {
         let newLocation = d.constrainLocation(newCenter[0], newCenter[1]);
         d.location.set(newLocation);
-        d.updateChildren(newLocation);
       });
   }
 
@@ -148,11 +160,10 @@ export class Draggable extends WithDestroy() {
     this.lastActivatedSoi.draggableHandle.addChild(this);
 
     this.constrainLocation = LocationConstraints.soiLock(this.location, this.lastActivatedSoi.location);
+    this.parent = this.lastActivatedSoi.draggableHandle;
 
     this.lastActivatedSoi = undefined;
   }
-
-  private lastActivatedSoi: SpaceObject;
 
   private showSoiUnderCraft() {
     if (this.moveType !== 'soiLock') {
@@ -173,6 +184,7 @@ export class Draggable extends WithDestroy() {
     this.children = this.children
       .filter(d => d !== draggable)
       .concat(draggable);
+    draggable.parent = this;
   }
 
   removeChild(draggable: Draggable) {
@@ -182,5 +194,8 @@ export class Draggable extends WithDestroy() {
 
   replaceChild(stale: Draggable, fresh: Draggable) {
     this.children.replace(stale, fresh, true);
+    stale.parent = undefined;
+    fresh.parent = this;
   }
+
 }

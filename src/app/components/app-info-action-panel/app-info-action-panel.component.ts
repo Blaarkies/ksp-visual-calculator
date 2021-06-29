@@ -12,6 +12,8 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { TutorialService } from '../../services/tutorial.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
+import { SetupService } from '../../services/setup.service';
+import { SpaceObjectContainerService } from '../../services/space-object-container.service';
 
 @Component({
   selector: 'cp-app-info-action-panel',
@@ -25,7 +27,8 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
   constructor(snackBar: MatSnackBar,
               dialog: MatDialog,
               tutorialService: TutorialService,
-              analyticsService: AnalyticsService) {
+              analyticsService: AnalyticsService,
+              private spaceObjectContainerService: SpaceObjectContainerService) {
     super();
 
     this.infoOptions = [
@@ -128,4 +131,11 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
     ];
   }
 
+  printState() {
+    let out = this.spaceObjectContainerService.getState();
+
+    console.log('state', out);
+
+    localStorage.setItem('ksp-commnet-planner-last-state', out);
+  }
 }

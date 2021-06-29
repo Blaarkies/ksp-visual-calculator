@@ -2,8 +2,9 @@ import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
 import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
 import { Draggable } from '../common/domain/space-objects/draggable';
-import { SpaceObject, SpaceObjectType } from '../common/domain/space-objects/space-object';
+import { SpaceObject} from '../common/domain/space-objects/space-object';
 import { SpaceObjectContainerService } from './space-object-container.service';
+import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 
 let defaultScale = 5e-8;
 let defaultLocation = new Vector2(960, 540);

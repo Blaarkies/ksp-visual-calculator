@@ -70,5 +70,5 @@ export class Antenna {
       part.combinabilityExponent,
     );
   }
-
+  
 }

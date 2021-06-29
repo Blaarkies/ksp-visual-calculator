@@ -6,12 +6,13 @@ import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CelestialBodyDetails } from './celestial-body-details';
-import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
+import { SpaceObject} from '../../common/domain/space-objects/space-object';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { Antenna } from '../../common/domain/antenna';
 import { SetupService } from '../../services/setup.service';
 import { Icons } from '../../common/domain/icons';
+import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 
 export class CelestialBodyDetailsDialogData {
   forbiddenNames: string[];

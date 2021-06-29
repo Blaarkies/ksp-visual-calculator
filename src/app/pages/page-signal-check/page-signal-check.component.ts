@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
-import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
+import { SpaceObject} from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
@@ -19,6 +19,7 @@ import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
 import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
+import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 
 @Component({
   selector: 'cp-page-signal-check',

@@ -15,6 +15,39 @@ import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/c
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectContainerService } from './space-object-container.service';
+import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
+import { Vector2 } from '../common/domain/vector2';
+
+interface StateSpaceObject {
+  type: string;
+  draggableHandle: {
+    label: string;
+    orbit?: {
+      parameters: {
+        xy?: number[];
+        r?: number;
+        parent?: any;
+      };
+      color: string;
+      type: string;
+    };
+    addOrbit: Function;
+    parameterData: {};
+    updateConstrainLocation: Function;
+    setChildren: Function;
+    children: string[];
+    location: number[];
+  };
+}
+
+interface StateCraft {
+  location: number[];
+}
+
+interface StateSignalCheck {
+  celestialBodies: StateSpaceObject[];
+  craft: StateCraft[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +67,13 @@ export class SpaceObjectService extends WithDestroy() {
 
     let setupPlanets$ = setupService.stockPlanets$
       .pipe(tap(({listOrbits, celestialBodies}) => {
+        let lastState = localStorage.getItem('ksp-commnet-planner-last-state');
+        if (lastState) {
+          this.rebuildState(lastState);
+
+          return;
+        }
+
         this.orbits$.next(listOrbits);
         this.celestialBodies$.next(celestialBodies);
         this.crafts$.next([]);
@@ -57,8 +97,12 @@ export class SpaceObjectService extends WithDestroy() {
           // );
 
           // todo: hasDsn is removed. add default tracking station another way
-          this.celestialBodies$.value.find(cb => cb.hasDsn).antennae.push(
-            new Group<Antenna>(setupService.getAntenna('Tracking Station 1')));
+          let needsBasicDsn = this.celestialBodies$.value
+            .find(cb => cb.hasDsn && cb.antennae?.length === 0);
+          if (needsBasicDsn) {
+            needsBasicDsn.antennae.push(
+              new Group<Antenna>(setupService.getAntenna('Tracking Station 1')));
+          }
 
           this.updateTransmissionLines();
         }));
@@ -66,6 +110,69 @@ export class SpaceObjectService extends WithDestroy() {
     concat(setupPlanets$, setupCraft$)
       .pipe(takeUntil(this.destroy$))
       .subscribe();
+  }
+
+  private rebuildState(lastState: string) {
+    let state: StateSignalCheck = JSON.parse(lastState);
+    let {celestialBodies: jsonCelestialBodies, craft: jsonCraft} = state;
+
+    let antennaGetter = name => this.setupService.getAntenna(name);
+
+    let orbitsLabels = jsonCelestialBodies.filter(json => [
+      SpaceObjectType.types.planet,
+      SpaceObjectType.types.moon].includes(json.type))
+      .map(b => b.draggableHandle)
+      .map(draggable => {
+        let {parameters, color, type} = draggable.orbit;
+        let orbit = new Orbit(new OrbitParameterData(parameters.xy, parameters.r, parameters.parent), color);
+        orbit.type = SpaceObjectType.fromString(type);
+        return [draggable.label, orbit];
+      });
+    let orbitsLabelMap = new Map<string, Orbit>(orbitsLabels as []);
+    this.orbits$.next(orbitsLabels.map(([, orbit]) => orbit) as Orbit[]);
+
+    let bodies = jsonCelestialBodies.filter(json => [
+      SpaceObjectType.types.star,
+      SpaceObjectType.types.planet,
+      SpaceObjectType.types.moon].includes(json.type))
+      .map(b => [
+        SpaceObject.fromJson(b, antennaGetter),
+        b,
+      ]);
+
+    let craftJsonMap = new Map<Craft, StateCraft>(jsonCraft.map(json => [Craft.fromJson(json, antennaGetter), json]));
+    let craft = Array.from(craftJsonMap.keys());
+    let bodiesChildrenMap = new Map<string, SpaceObject>([
+      ...bodies.map(([b]: [SpaceObject]) => [b.label, b]),
+      ...craft.map(c => [c.label, c]),
+    ] as any);
+    bodies.forEach(([b, json]: [SpaceObject, StateSpaceObject]) => {
+      let matchingOrbit = orbitsLabelMap.get(json.draggableHandle.label);
+      if (matchingOrbit) {
+        b.draggableHandle.addOrbit(matchingOrbit);
+      } else {
+        b.draggableHandle.parameterData = new OrbitParameterData(json.draggableHandle.location);
+        b.draggableHandle.updateConstrainLocation(OrbitParameterData.fromJson(b.draggableHandle.parameterData));
+      }
+
+      b.draggableHandle.setChildren(
+        json.draggableHandle.children.map(c => bodiesChildrenMap.get(c)));
+
+      if (json.draggableHandle.orbit) {
+        let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
+        b.draggableHandle.updateConstrainLocation(parameters);
+      }
+    });
+    this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
+
+    craft.forEach(c => c.draggableHandle.updateConstrainLocation(
+      new OrbitParameterData(
+        craftJsonMap.get(c).location, // setChildren() above resets craft locations. get original location from json
+        undefined,
+        c.draggableHandle.parent)));
+    this.crafts$.next(craft);
+
+    this.transmissionLines$.next([]);
   }
 
   private static getIndexOfSameCombination = (parentItem, list) => list.findIndex(item => item.every(so => parentItem.includes(so)));

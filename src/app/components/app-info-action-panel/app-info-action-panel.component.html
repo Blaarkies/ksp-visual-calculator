@@ -2,3 +2,8 @@
                  location="top-right"
                  color="cosmic-blue"
                  [options]="infoOptions"></cp-action-panel>
+
+<div class="profile-icon"
+     (click)="$event.stopImmediatePropagation();
+printState()">●
+</div>

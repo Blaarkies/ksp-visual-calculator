@@ -26,4 +26,12 @@ export class SpaceObjectContainerService {
       .first();
   }
 
+  getState() {
+    let state = {
+      celestialBodies: this.celestialBodies$.value.map(b => b.toJson()),
+      craft: this.crafts$.value.map(b => b.toJson())
+    };
+    return JSON.stringify(state);
+  }
+
 }
