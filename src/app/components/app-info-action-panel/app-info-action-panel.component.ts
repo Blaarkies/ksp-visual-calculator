@@ -12,8 +12,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { TutorialService } from '../../services/tutorial.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { SetupService } from '../../services/setup.service';
-import { SpaceObjectContainerService } from '../../services/space-object-container.service';
+import { StateService } from '../../services/state.service';
 
 @Component({
   selector: 'cp-app-info-action-panel',
@@ -28,7 +27,7 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
               dialog: MatDialog,
               tutorialService: TutorialService,
               analyticsService: AnalyticsService,
-              private spaceObjectContainerService: SpaceObjectContainerService) {
+              private stateService: StateService) {
     super();
 
     this.infoOptions = [
@@ -132,7 +131,7 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
   }
 
   printState() {
-    let out = this.spaceObjectContainerService.getState();
+    let out = this.stateService.state;
 
     console.log('state', out);
 

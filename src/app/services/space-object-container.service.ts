@@ -9,9 +9,9 @@ import { Vector2 } from '../common/domain/vector2';
 })
 export class SpaceObjectContainerService {
 
+  // Removes the circular dependency from Craft <-> SpaceObjectService
   static instance: SpaceObjectContainerService;
 
-  // Removes the circular dependency from Craft <-> SpaceObjectService
   celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
   crafts$ = new BehaviorSubject<Craft[]>(null);
 
@@ -24,14 +24,6 @@ export class SpaceObjectContainerService {
       .filter(cb => !cb.sphereOfInfluence || location.distance(cb.location) <= cb.sphereOfInfluence)
       .sort((a, b) => a.location.distance(location) - b.location.distance(location))
       .first();
-  }
-
-  getState() {
-    let state = {
-      celestialBodies: this.celestialBodies$.value.map(b => b.toJson()),
-      craft: this.crafts$.value.map(b => b.toJson())
-    };
-    return JSON.stringify(state);
   }
 
 }

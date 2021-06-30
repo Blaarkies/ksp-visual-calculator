@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
-import { SpaceObject} from '../../common/domain/space-objects/space-object';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
@@ -20,6 +20,8 @@ import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
 import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import { StateService } from '../../services/state.service';
+import { UsableRoutes } from '../../usable-routes';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -44,8 +46,12 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              stateService: StateService) {
     super();
+
+    stateService.pageContext = UsableRoutes.SignalCheck;
+    stateService.loadState();
 
     this.orbits$ = this.spaceObjectService.orbits$;
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;
