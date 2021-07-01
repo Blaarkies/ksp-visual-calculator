@@ -26,8 +26,7 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
   constructor(snackBar: MatSnackBar,
               dialog: MatDialog,
               tutorialService: TutorialService,
-              analyticsService: AnalyticsService,
-              private stateService: StateService) {
+              analyticsService: AnalyticsService) {
     super();
 
     this.infoOptions = [
@@ -72,18 +71,6 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
         'View privacy statement and settings',
         !localStorage.getItem('ksp-commnet-planner-privacy-viewed'),
         () => localStorage.setItem('ksp-commnet-planner-privacy-viewed', true.toString())),
-      // new ActionOption('Account', Icons.AccountSettings, {
-      //   action: () => {
-      //     analyticsService.logEvent('Call account dialog', {
-      //       category: EventLogs.Category.Account,
-      //     });
-      //
-      //     dialog.open(AccountDialogComponent)
-      //       .afterClosed()
-      //       .pipe(takeUntil(this.destroy$))
-      //       .subscribe();
-      //   },
-      // }),
       new ActionOption('Credits', Icons.Credits, {
         action: () => {
           analyticsService.logEvent('Call Credits dialog', {
@@ -130,11 +117,4 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
     ];
   }
 
-  printState() {
-    let out = this.stateService.state;
-
-    console.log('state', out);
-
-    localStorage.setItem('ksp-commnet-planner-last-state', out);
-  }
 }

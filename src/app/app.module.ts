@@ -65,6 +65,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FocusJumpToPanelComponent } from './components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { FaqDialogComponent } from './dialogs/faq-dialog/faq-dialog.component';
 import { ContentPleatComponent } from './components/content-pleat/content-pleat.component';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -104,10 +107,13 @@ import { ContentPleatComponent } from './components/content-pleat/content-pleat.
     FocusJumpToPanelComponent,
     FaqDialogComponent,
     ContentPleatComponent,
+    UserProfileComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAnalyticsModule,
+    AngularFirestoreModule,
+    AngularFireAuthModule,
     DragDropModule,
     BrowserModule,
     BrowserAnimationsModule,

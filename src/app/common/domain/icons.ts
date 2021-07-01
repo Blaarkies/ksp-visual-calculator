@@ -31,6 +31,7 @@ export class Icons {
   static OpenDetails = 'menu_open';
   static Construction = 'construction';
   static Star = 'star';
+  static Guest = 'account_circle';
 
 
 }

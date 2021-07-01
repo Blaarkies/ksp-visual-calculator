@@ -1,7 +1,19 @@
 <h1 mat-dialog-title>Account Settings</h1>
 
 <div mat-dialog-content class="layout">
-  No details recorded to display
+  <ng-container *ngIf="authService.user$ | async as user">
+    <div class="name-and-logout-layout">
+      <span>{{user.displayName}}</span>
+      <button mat-flat-button
+              color="warn"
+              (click)="logout()">
+        Logout
+      </button>
+    </div>
+
+    <div>{{user.email}}</div>
+    <div>{{user.uid}}</div>
+  </ng-container>
 </div>
 
 <div mat-dialog-actions>

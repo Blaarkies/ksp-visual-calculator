@@ -7,6 +7,7 @@ import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { StateCraft } from './json-interfaces/state-craft';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectService } from './space-object.service';
+import { Uid } from '../common/uid';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +16,12 @@ export class StateService {
 
   pageContext: UsableRoutes.SignalCheck;
 
-  get state(): any {
+  get state(): StateSignalCheck {
     // todo: check pageContext to save correct properties
 
     let state: StateSignalCheck = {
+      name: Uid.new,
+      timestamp: new Date(),
       context: this.pageContext,
       version: APP_VERSION.split('.').map(t => t.toNumber()),
       settings: {
@@ -30,7 +33,7 @@ export class StateService {
         .map(b => b.toJson()) as StateCraft[],
     };
 
-    return JSON.stringify(state);
+    return state;
   }
 
   constructor(

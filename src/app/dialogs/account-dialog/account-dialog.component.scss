@@ -1,3 +1,9 @@
 .layout {
 
 }
+
+.name-and-logout-layout {
+  display: flex;
+  justify-content: space-between;
+  min-width: 300px;
+}

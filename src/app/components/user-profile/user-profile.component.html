@@ -1,0 +1,18 @@
+<ng-container *ngIf="authService.user$ | async as user; then authenticated else guest"></ng-container>
+
+<!-- User NOT logged in -->
+<ng-template #guest>
+  <button mat-icon-button (click)="authService.googleSignIn()">
+    <mat-icon>{{icons.Guest}}</mat-icon>
+  </button>
+</ng-template>
+
+
+<!-- User logged in -->
+<ng-template #authenticated>
+  <ng-container *ngIf="authService.user$ | async as user">
+    <button mat-icon-button (click)="openAccountDialog()">
+      <img class="profile-image" [attr.src]="user.photoURL"/>
+    </button>
+  </ng-container>
+</ng-template>
