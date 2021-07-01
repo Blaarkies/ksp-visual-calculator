@@ -68,6 +68,9 @@ import { ContentPleatComponent } from './components/content-pleat/content-pleat.
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { ManageStateDialogComponent } from './dialogs/manage-state-dialog/manage-state-dialog.component';
+import { StateDisplayComponent } from './components/state-display/state-display.component';
+import { StateEditNameRowComponent } from './dialogs/manage-state-dialog/state-edit-name-row/state-edit-name-row.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +111,9 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
     FaqDialogComponent,
     ContentPleatComponent,
     UserProfileComponent,
+    ManageStateDialogComponent,
+    StateDisplayComponent,
+    StateEditNameRowComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

@@ -1,0 +1,24 @@
+.layout {
+  padding-top: 10px;
+}
+
+.subtitle {
+  margin-top: -10px;
+  color: var(--color-text-muted);
+  font-style: italic;
+  padding-left: 12px;
+}
+
+.archive-layout {
+  padding: 20px 0;
+
+  display: grid;
+  gap: 20px;
+  grid-template-columns: max-content max-content auto;
+
+}
+
+.buttons-and-display-layout {
+  display: grid;
+  gap: 20px;
+}

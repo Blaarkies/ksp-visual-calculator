@@ -10,6 +10,8 @@ import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-sett
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
+import { ManageStateDialogComponent, ManageStateDialogData } from '../../dialogs/manage-state-dialog/manage-state-dialog.component';
+import { UsableRoutes } from '../../usable-routes';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
@@ -76,6 +78,19 @@ export class EditUniverseActionPanelComponent extends WithDestroy() {
               cdr.markForCheck();
               // todo: refresh universe, because 0 strength transmission lines are still visible
             });
+        },
+      }),
+      new ActionOption('Manage Save Games', Icons.Storage, {
+        action: () => {
+          analyticsService.logEvent('Call state dialog', {
+            category: EventLogs.Category.State,
+          });
+
+          dialog.open(ManageStateDialogComponent, {
+            data: {
+              context: UsableRoutes.SignalCheck,
+            } as ManageStateDialogData,
+          });
         },
       }),
     ];

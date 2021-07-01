@@ -8,6 +8,9 @@ import { StateCraft } from './json-interfaces/state-craft';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectService } from './space-object.service';
 import { Uid } from '../common/uid';
+import { DataService } from './data.service';
+import { StateGame } from './json-interfaces/state-game';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -37,9 +40,11 @@ export class StateService {
   }
 
   constructor(
+    private dataService: DataService,
     private setupService: SetupService,
     private spaceObjectContainerService: SpaceObjectContainerService,
     private spaceObjectService: SpaceObjectService,
+    private snackBar: MatSnackBar,
   ) {
   }
 
@@ -53,4 +58,25 @@ export class StateService {
     this.spaceObjectService.buildStockState();
   }
 
+  addStateToStore(state: StateGame) {
+    return this.dataService.write('states',
+      {
+        [state.name]: {
+          name: state.name,
+          context: state.context,
+          timestamp: state.timestamp,
+          version: state.version,
+          state: JSON.stringify(state),
+        },
+      },
+      {merge: true});
+  }
+
+  async removeStateFromStore(name: string): Promise<void> {
+    return this.dataService.delete('states', name)
+      .catch(error => {
+        this.snackBar.open(`Could not remove "${name}" from cloud storage`);
+        throw console.error(error);
+      });
+  }
 }

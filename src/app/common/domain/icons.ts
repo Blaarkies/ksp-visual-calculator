@@ -5,6 +5,9 @@ export class Icons {
   static Hamburger = 'menu';
   static Craft = 'flight';
   static Clear = 'clear';
+  static Cancel = Icons.Clear;
+  static Check = 'check';
+  static Edit = 'edit';
   static Backspace = 'backspace';
   static Delete = 'delete_forever';
   static DeleteAll = 'delete_sweep';
@@ -32,6 +35,6 @@ export class Icons {
   static Construction = 'construction';
   static Star = 'star';
   static Guest = 'account_circle';
-
+  static Storage = 'save';
 
 }

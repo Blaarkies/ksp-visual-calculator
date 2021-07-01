@@ -1,15 +1,7 @@
 import { StateCraft } from './state-craft';
-import { StateSpaceObject } from './state-space-object';
+import { StateGame } from './state-game';
 
 export interface StateSignalCheck extends StateGame {
-  celestialBodies: StateSpaceObject[];
   craft: StateCraft[];
 }
 
-export interface StateGame {
-  name: string;
-  timestamp: Date;
-  context: string;
-  version: number[];
-  settings: any;
-}

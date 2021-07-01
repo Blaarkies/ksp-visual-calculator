@@ -1,0 +1,58 @@
+<h1 mat-dialog-title>Manage Save Games</h1>
+<div class="subtitle">Only for {{contextTitle}} universes</div>
+
+<div mat-dialog-content class="layout">
+
+  <mat-tab-group mat-align-tabs="start">
+    <mat-tab label="Current">
+      <cp-state-display [state]="nowState"
+                        [context]="context"></cp-state-display>
+    </mat-tab>
+
+    <mat-tab label="Archive">
+
+      <div class="archive-layout">
+        <mat-selection-list #stateList [multiple]="false">
+          <mat-list-option *ngFor="let state of states$ | async"
+                           [value]="state"
+                           (keydown)="$event.stopPropagation()">
+            <cp-state-edit-name-row #editor
+                                    [state]="state"
+                                    [control]="editNameControl"
+                                    (editStart)="cancelOtherEditors(editor)"
+                                    (confirm)="editStateName($event.oldName, $event.state)">
+            </cp-state-edit-name-row>
+          </mat-list-option>
+        </mat-selection-list>
+
+        <ng-container *ngIf="stateList.selectedOptions.selected[0]?.value as selectedState">
+          <mat-divider vertical></mat-divider>
+
+          <div class="buttons-and-display-layout">
+            <div>
+              <button mat-button
+                      color="warn"
+                      (click)="removeState(selectedState)">Delete</button>
+              <button mat-stroked-button
+                      color="primary"
+                      (click)="loadState(selectedState)">Load State</button>
+            </div>
+
+            <cp-state-display [state]="selectedState"
+                              [context]="context"></cp-state-display>
+          </div>
+        </ng-container>
+      </div>
+
+    </mat-tab>
+  </mat-tab-group>
+
+</div>
+
+<div mat-dialog-actions>
+  <button color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>
