@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
 import { FormControl } from '@angular/forms';
-import { StateRow } from '../manage-state-dialog.component';
 import { InputFieldComponent } from '../../../components/input-field/input-field.component';
+import { StateRow } from '../state.row';
 
 @Component({
   selector: 'cp-state-edit-name-row',

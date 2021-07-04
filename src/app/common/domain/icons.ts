@@ -36,5 +36,14 @@ export class Icons {
   static Star = 'star';
   static Guest = 'account_circle';
   static Storage = 'save';
+  static File = 'description';
+  static Load = 'play_arrow';
+  static Upload = 'upload';
+  static Reset = 'rotate_left';
+  static Download = 'download';
+  static Email = 'email';
+  static Password = 'lock';
+  static Visible = 'visibility';
+  static Invisible = 'visibility_off';
 
 }

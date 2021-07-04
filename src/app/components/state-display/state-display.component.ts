@@ -3,8 +3,8 @@ import { StateGame } from '../../services/json-interfaces/state-game';
 import { UsableRoutes } from '../../usable-routes';
 import { StateSignalCheck } from '../../services/json-interfaces/state-signal-check';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
-import { StateRow } from '../../dialogs/manage-state-dialog/manage-state-dialog.component';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import { StateRow } from '../../dialogs/manage-state-dialog/state.row';
 
 @Component({
   selector: 'cp-state-display',
@@ -25,6 +25,8 @@ export class StateDisplayComponent {
     this.updateProperties();
   }
 
+  @Input() hiddenFields: string[] = [];
+
   properties: LabeledOption<string>[];
 
   private updateProperties() {
@@ -40,8 +42,8 @@ export class StateDisplayComponent {
     let daysSince = Math.round((new Date() - date) / (1000 * 60 * 60 * 24));
     let starName = contents.celestialBodies.find(cb => cb.type === SpaceObjectType.Star.name).draggableHandle.label;
     let properties = [
-      ['Name', state.name.slice(0, 10)],
-      ['Age', `${daysSince} day${daysSince !== 1 ? 's' : ''}`],
+      ['Name', state.name],
+      ['Last saved', `${daysSince} day${daysSince !== 1 ? 's' : ''} ago`],
       ['Star', starName],
       ['Celestial bodies', contents.celestialBodies.length.toString()],
     ];
@@ -52,21 +54,23 @@ export class StateDisplayComponent {
       let dsnPlanets = contents.celestialBodies
         .filter(cb => cb.trackingStation);
       let bestDsn = dsnPlanets
-          .sort((a, b) => a.trackingStation.slice(-1).toNumber()
-            - b.trackingStation.slice(-1).toNumber())
+          .sort((a, b) => b.trackingStation.slice(-1).toNumber()
+            - a.trackingStation.slice(-1).toNumber())
           [0]?.trackingStation
         || 'None';
 
       let newProperties = [
         ['Craft', contentsSC.craft.length.toString()],
         ['DSN', bestDsn],
-        ['DSN at', dsnPlanets.map(b => b.draggableHandle.label).join(', ').slice(0, 20)],
+        ['DSN at', dsnPlanets.map(b => b.draggableHandle.label).join(', ')],
       ];
 
       properties.push(...newProperties);
     }
 
-    this.properties = properties.map(([label, value]) => new LabeledOption(label, value));
+    this.properties = properties
+      .filter(([label]) => !this.hiddenFields.includes(label))
+      .map(([label, value]) => new LabeledOption(label, value));
   }
 
 }

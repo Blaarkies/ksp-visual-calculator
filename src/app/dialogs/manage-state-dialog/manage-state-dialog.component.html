@@ -1,12 +1,50 @@
 <h1 mat-dialog-title>Manage Save Games</h1>
-<div class="subtitle">Only for {{contextTitle}} universes</div>
+<!--<div class="subtitle">Only for {{contextTitle}} universes</div>-->
 
-<div mat-dialog-content class="layout">
+<div mat-dialog-content class="manage-state-layout">
 
-  <mat-tab-group mat-align-tabs="start">
+  <mat-tab-group mat-align-tabs="start" (drop)="$event.stopImmediatePropagation()">
     <mat-tab label="Current">
-      <cp-state-display [state]="nowState"
-                        [context]="context"></cp-state-display>
+      <div class="current-state-layout">
+        <div>
+          <cp-state-edit-name-row #editor
+                                  [state]="nowState"
+                                  [control]="editNameControl"
+                                  (editStart)="cancelOtherEditors(editor)"
+                                  (confirm)="editStateName($event.oldName, $event.state)">
+          </cp-state-edit-name-row>
+
+          <cp-state-display [hiddenFields]="['Name', 'Last saved']"
+                            [state]="nowState"
+                            [context]="context"></cp-state-display>
+        </div>
+
+        <div class="import-and-new-state">
+          <div class="file-drop"
+               [matTooltip]="'Drag and drop JSON files here to import'"
+               cpFileDrop
+               [fileTypeWhitelist]="['application/json']"
+               (fileDrop)="importFile($event)">
+            <mat-icon>{{icons.Upload}}</mat-icon>
+            <div>Import</div>
+          </div>
+
+          <div class="load-and-delete-buttons-layout">
+            <button mat-stroked-button
+                    [matTooltip]="'Export to JSON file'"
+                    (click)="exportState(nowState)">
+              <mat-icon>{{icons.Download}}</mat-icon>
+            </button>
+            <button mat-stroked-button
+                    [matTooltip]="'Start a new game'"
+                    (click)="newState()">
+              <mat-icon color="accent">{{icons.Reset}}</mat-icon>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
     </mat-tab>
 
     <mat-tab label="Archive">
@@ -29,13 +67,22 @@
           <mat-divider vertical></mat-divider>
 
           <div class="buttons-and-display-layout">
-            <div>
-              <button mat-button
-                      color="warn"
-                      (click)="removeState(selectedState)">Delete</button>
+            <div class="load-and-delete-buttons-layout">
               <button mat-stroked-button
-                      color="primary"
-                      (click)="loadState(selectedState)">Load State</button>
+                      [matTooltip]="'Load this game'"
+                      (click)="loadState(selectedState)">
+                <mat-icon color="primary">{{icons.Load}}</mat-icon>
+              </button>
+              <button mat-stroked-button
+                      [matTooltip]="'Export to JSON file'"
+                      (click)="exportState(selectedState)">
+                <mat-icon>{{icons.Download}}</mat-icon>
+              </button>
+              <button mat-icon-button
+                      [matTooltip]="'Delete this game'"
+                      (click)="removeState(selectedState)">
+                <mat-icon color="warn">{{icons.Delete}}</mat-icon>
+              </button>
             </div>
 
             <cp-state-display [state]="selectedState"

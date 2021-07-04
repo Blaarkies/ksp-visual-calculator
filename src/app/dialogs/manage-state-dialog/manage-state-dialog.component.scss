@@ -1,5 +1,15 @@
-.layout {
+.manage-state-layout {
   padding-top: 10px;
+
+  mat-tab-group {
+    .mat-tab-body-content {
+      overflow: unset !important;
+    }
+
+    mat-tab-header {
+      margin-bottom: 10px;
+    }
+  }
 }
 
 .subtitle {
@@ -10,15 +20,55 @@
 }
 
 .archive-layout {
-  padding: 20px 0;
-
   display: grid;
   gap: 20px;
-  grid-template-columns: max-content max-content auto;
+  grid-auto-flow: column;
 
+  mat-error {
+    position: absolute;
+    z-index: 1;
+    bottom: -34px;
+    background: linear-gradient(0deg, transparent, white 50%);
+    padding-bottom: 16px;
+  }
+
+  mat-selection-list {
+    overflow-y: auto;
+    max-height: 400px;
+  }
 }
 
 .buttons-and-display-layout {
   display: grid;
+  grid-template-rows: max-content;
   gap: 20px;
+}
+
+.current-state-layout {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 80px;
+
+  .import-and-new-state {
+    display: grid;
+    gap: 10px;
+    justify-items: end;
+    grid-auto-rows: max-content;
+  }
+}
+
+.load-and-delete-buttons-layout {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
+  gap: 10px;
+}
+
+.file-drop {
+  border: 2px dotted #0006;
+  border-radius: 20px;
+  padding: 20px;
+  width: 100%;
+  text-align: center;
 }

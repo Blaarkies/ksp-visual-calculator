@@ -11,21 +11,39 @@ import { Uid } from '../common/uid';
 import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, zip } from 'rxjs';
+import { StateRow } from '../dialogs/manage-state-dialog/state.row';
+import { StateEntry } from '../dialogs/manage-state-dialog/state.entry';
+import { delay, filter, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StateService {
 
-  pageContext: UsableRoutes.SignalCheck;
+  private name: string;
+
+  private _pageContext: UsableRoutes.SignalCheck;
+  set pageContext(value: UsableRoutes.SignalCheck) {
+    this._pageContext = value;
+    this.name = undefined;
+  }
+
+  get earlyState(): Observable<StateSignalCheck> {
+    return zip(this.setupService.stockPlanets$,
+      this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
+      .pipe(
+        delay(0),
+        map(() => this.state));
+  }
 
   get state(): StateSignalCheck {
     // todo: check pageContext to save correct properties
 
     let state: StateSignalCheck = {
-      name: Uid.new,
+      name: this.name || Uid.new,
       timestamp: new Date(),
-      context: this.pageContext,
+      context: this._pageContext,
       version: APP_VERSION.split('.').map(t => t.toNumber()),
       settings: {
         difficulty: this.setupService.difficultySetting,
@@ -36,7 +54,19 @@ export class StateService {
         .map(b => b.toJson()) as StateCraft[],
     };
 
+    this.name = state.name;
+
     return state;
+  }
+
+  get stateRow(): StateRow {
+    let state = this.state;
+    return new StateRow({
+      name: state.name,
+      timestamp: {seconds: state.timestamp.getTime() * .001},
+      version: state.version,
+      state: JSON.stringify(state),
+    });
   }
 
   constructor(
@@ -48,14 +78,13 @@ export class StateService {
   ) {
   }
 
-  loadState() {
-    let lastState = localStorage.getItem('ksp-commnet-planner-last-state');
-    if (lastState) {
-      this.spaceObjectService.buildState(lastState);
-      return;
+  loadState(state?: string) {
+    if (state) {
+      this.name = JSON.parse(state).name;
+      this.spaceObjectService.buildState(state);
+    } else {
+      this.spaceObjectService.buildStockState();
     }
-
-    this.spaceObjectService.buildStockState();
   }
 
   addStateToStore(state: StateGame) {
@@ -79,4 +108,18 @@ export class StateService {
         throw console.error(error);
       });
   }
+
+  getStates(): Observable<StateEntry[]> {
+    return this.dataService.readAll<StateEntry>('states');
+  }
+
+  getStatesInContext(): Observable<StateEntry[]> {
+    return this.getStates()
+      .pipe(map(states => states.filter(s => s.context === this._pageContext)));
+  }
+
+  importState(stateString: string) {
+    this.loadState(stateString);
+  }
+
 }

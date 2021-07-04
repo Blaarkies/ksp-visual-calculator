@@ -71,6 +71,7 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { ManageStateDialogComponent } from './dialogs/manage-state-dialog/manage-state-dialog.component';
 import { StateDisplayComponent } from './components/state-display/state-display.component';
 import { StateEditNameRowComponent } from './dialogs/manage-state-dialog/state-edit-name-row/state-edit-name-row.component';
+import { FileDropDirective } from './directives/file-drop.directive';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { StateEditNameRowComponent } from './dialogs/manage-state-dialog/state-e
     ManageStateDialogComponent,
     StateDisplayComponent,
     StateEditNameRowComponent,
+    FileDropDirective,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
