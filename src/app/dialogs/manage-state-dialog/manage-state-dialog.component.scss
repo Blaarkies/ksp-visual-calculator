@@ -57,18 +57,44 @@
   }
 }
 
-.load-and-delete-buttons-layout {
+.save-game-action-buttons-layout {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   align-items: center;
   gap: 10px;
+
+  mat-icon {
+    color: var(--color-text-muted);
+  }
 }
 
 .file-drop {
   border: 2px dotted #0006;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 20px;
   width: 100%;
   text-align: center;
+
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+
+  mat-icon {
+    color: var(--color-text-muted);
+  }
+}
+
+.empty-state-archive {
+  padding: 20px 0;
+  display: grid;
+  justify-items: center;
+
+  mat-icon {
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+    font-size: 4em;
+    height: unset;
+    width: unset;
+  }
 }

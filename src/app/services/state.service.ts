@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, zip } from 'rxjs';
 import { StateRow } from '../dialogs/manage-state-dialog/state.row';
 import { StateEntry } from '../dialogs/manage-state-dialog/state.entry';
-import { delay, filter, map } from 'rxjs/operators';
+import { delay, filter, map, take } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +33,7 @@ export class StateService {
     return zip(this.setupService.stockPlanets$,
       this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
       .pipe(
+        take(1),
         delay(0),
         map(() => this.state));
   }
@@ -84,10 +85,11 @@ export class StateService {
       this.spaceObjectService.buildState(state);
     } else {
       this.spaceObjectService.buildStockState();
+      this.name = Uid.new;
     }
   }
 
-  addStateToStore(state: StateGame) {
+  addStateToStore(state: StateGame): Promise<void> {
     return this.dataService.write('states',
       {
         [state.name]: {
@@ -115,11 +117,27 @@ export class StateService {
 
   getStatesInContext(): Observable<StateEntry[]> {
     return this.getStates()
-      .pipe(map(states => states.filter(s => s.context === this._pageContext)));
+      .pipe(
+        map(states => states.filter(s => s.context === this._pageContext)
+          .sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)));
   }
 
   importState(stateString: string) {
     this.loadState(stateString);
   }
 
+  saveState(state: StateRow): Promise<void> {
+    return this.addStateToStore(state.toUpdatedStateGame());
+  }
+
+  renameCurrentState(name: string) {
+    this.name = name;
+  }
+
+  getTimelessState(state: StateSignalCheck): StateSignalCheck {
+    let safeToChange = JSON.stringify(state);
+    let reparsed: StateSignalCheck = JSON.parse(safeToChange);
+    reparsed.timestamp = undefined;
+    return reparsed;
+  }
 }

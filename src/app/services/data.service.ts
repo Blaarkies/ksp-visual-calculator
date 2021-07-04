@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, SetOptions } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
@@ -48,7 +48,7 @@ export class DataService {
     }
   }
 
-  readAll<T>(table: 'users' | 'states', options: GetOptions = {}) {
+  readAll<T>(table: 'users' | 'states', options: GetOptions = {}): Observable<T[]> {
     let userUid = this.userId$.value;
     return this.afs.doc<T>(`${table}/${userUid}`)
       .get(options)

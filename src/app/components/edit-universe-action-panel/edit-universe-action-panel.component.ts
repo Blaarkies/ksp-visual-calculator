@@ -3,7 +3,7 @@ import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { SpaceObjectService } from '../../services/space-object.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
@@ -97,7 +97,7 @@ export class EditUniverseActionPanelComponent extends WithDestroy() {
           },
         }, undefined, false, undefined,
         {
-          unavailable$: authService.user$.pipe(map(user => user === null)),
+          unavailable$: authService.user$.pipe(map(user => user === null), startWith(true)),
           tooltip: 'Save games are only available when signed in',
           action: () => {
             analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});

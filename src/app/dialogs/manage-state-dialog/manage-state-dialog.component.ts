@@ -1,12 +1,11 @@
 import { Component, Inject, QueryList, ViewChildren, ViewEncapsulation } from '@angular/core';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsableRoutes } from '../../usable-routes';
 import { StateService } from '../../services/state.service';
 import { Icons } from '../../common/domain/icons';
 import { FormControl, Validators } from '@angular/forms';
 import { CommonValidators } from '../../common/validators/common-validators';
-import { StateGame } from '../../services/json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
 import { Observable } from 'rxjs';
@@ -29,12 +28,13 @@ export class ManageStateDialogComponent extends WithDestroy() {
   context: UsableRoutes = this.data.context;
   contextTitle = 'signal check';
   nowState: StateRow;
-  states$ = this.getStates();
+  states$ = this.getStates().pipe(startWith([]));
 
   icons = Icons;
   editNameControl = new FormControl('', [Validators.required, Validators.max(60)]);
 
   @ViewChildren(StateEditNameRowComponent) editors: QueryList<StateEditNameRowComponent>;
+  // todo: make archive list auto-select first entry
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ManageStateDialogData,
               private stateService: StateService,
@@ -45,22 +45,13 @@ export class ManageStateDialogComponent extends WithDestroy() {
   }
 
   async editStateName(oldName: string, state: StateRow) {
-    let parsedState: StateGame = JSON.parse(state.state);
-    parsedState.name = state.name;
-    parsedState.timestamp = new Date();
-
-    await this.stateService.addStateToStore(parsedState)
-      .then(() => {
-        this.snackBar.open(`Saved "${state.name}" to cloud storage`);
-
-        return this.stateService.removeStateFromStore(oldName);
-      })
-      .then(() => new Promise(resolve => setTimeout(resolve, 2e3)))
-      .then(() => this.snackBar.open(`Removed "${oldName}" from cloud storage`))
+    await this.stateService.addStateToStore(state.toUpdatedStateGame())
+      .then(() => this.stateService.removeStateFromStore(oldName))
       .catch(error => {
-        this.snackBar.open(`Could not rename "${state.name}"`);
-        throw console.error(error);
-      });
+        this.snackBar.open(`Could not rename "${oldName}"`);
+        throw error;
+      })
+      .then(() => this.snackBar.open(`Renamed "${oldName}" to "${state.name}"`));
   }
 
   cancelOtherEditors(editor: StateEditNameRowComponent) {
@@ -77,7 +68,7 @@ export class ManageStateDialogComponent extends WithDestroy() {
         takeUntil(this.destroy$))
       .subscribe(() => {
         this.snackBar.open(`Removed "${selectedState.name}" from cloud storage`);
-        this.states$ = this.getStates();
+        this.updateStates();
       });
   }
 
@@ -121,4 +112,29 @@ export class ManageStateDialogComponent extends WithDestroy() {
       this.nowState = this.stateService.stateRow;
     }
   }
+
+  async uploadFileSelected(event: any) {
+    await this.importFile(event.target.files);
+  }
+
+  async archiveState(state: StateRow) {
+    await this.stateService.saveState(state)
+      .catch(error => {
+        this.snackBar.open(`Could not save "${state.name}"`);
+        throw error;
+      });
+    this.snackBar.open(`"${state.name}" has been saved`);
+    this.updateStates();
+  }
+
+  private updateStates() {
+    this.states$ = this.getStates();
+  }
+
+  async editCurrentStateName(oldName: string, state: StateRow) {
+    await this.editStateName(oldName, state);
+    this.stateService.renameCurrentState(state.name);
+    this.updateStates();
+  }
+
 }

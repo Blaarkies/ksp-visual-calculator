@@ -1,10 +1,14 @@
 <ng-container *ngIf="authService.user$ | async as user; else noUser">
-  <h1 mat-dialog-title>Account Settings</h1>
+  <h1 mat-dialog-title>Account Details</h1>
 
-  <div mat-dialog-content class="layout">
-    <div>Name: {{user.displayName}}</div>
+  <div mat-dialog-content class="details-layout">
+    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/guest-account.png'"/>
 
-    <div>Email: {{user.email}}</div>
+    <div>
+      <div>Name: {{user.displayName}}</div>
+
+      <div>Email: {{user.email}}</div>
+    </div>
   </div>
 
   <div mat-dialog-actions>
