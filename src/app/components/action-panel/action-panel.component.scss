@@ -76,6 +76,13 @@ mat-expansion-panel-header {
   &:hover {
     background-color: #0002;
   }
+
+  &.unavailable {
+    background-color: #aaa3;
+    * {
+      color: #fffa;
+    }
+  }
 }
 
 .route-wrap {
@@ -107,10 +114,11 @@ mat-expansion-panel-header {
 
 .notify-badge {
   padding-left: 16px;
-  animation: kf-animate-fade-in 4s linear infinite forwards;
+  margin-right: 18px;
+  animation: kf-animate-opacity-wobble 4s linear infinite forwards;
 }
 
-@keyframes kf-animate-fade-in {
+@keyframes kf-animate-opacity-wobble {
   0% {opacity: 0}
   25% {opacity: 1}
   45% {opacity: 1}

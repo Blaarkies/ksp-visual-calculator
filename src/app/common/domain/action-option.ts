@@ -1,8 +1,18 @@
+import { Observable } from 'rxjs';
+
 class ActionMeta {
 
   action?: () => void;
   route?: string;
   externalRoute?: string;
+
+}
+
+class UnavailableMeta {
+
+  unavailable$?: Observable<boolean>;
+  tooltip?: string;
+  action?: () => void;
 
 }
 
@@ -16,7 +26,8 @@ export class ActionOption {
               public actionMeta: ActionMeta,
               public tooltip?: string,
               public unread: boolean = false,
-              onRead?: () => void) {
+              onRead?: () => void,
+              public unavailableMeta?: UnavailableMeta) {
     this.type = ActionOptionType.fromActionMeta(actionMeta);
     this.readNotification = () => {
       this.unread = false;

@@ -3,3 +3,7 @@
   height: 32px;
   border: 2px solid #fff7;
 }
+
+.animate-flashing {
+    animation: kf-animate-fade-in 1.1s infinite alternate ease-out;
+}

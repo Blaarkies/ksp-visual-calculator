@@ -31,7 +31,7 @@ export class DataService {
   write(table: 'users' | 'states',
         fields: {},
         options: SetOptions = {}): Promise<void> {
-    this.checkUserLogin();
+    this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`)
       .set(fields, options);
@@ -42,9 +42,9 @@ export class DataService {
       .update({[field]: FieldValue.delete()});
   }
 
-  private checkUserLogin() {
+  private checkUserSignIn() {
     if (!this.userId$.value) {
-      throw console.error('No user logged in, cannot use database without user authentication.');
+      throw console.error('No user signed in, cannot use database without user authentication.');
     }
   }
 
@@ -52,7 +52,7 @@ export class DataService {
     let userUid = this.userId$.value;
     return this.afs.doc<T>(`${table}/${userUid}`)
       .get(options)
-      .pipe(map(ref => Object.values(ref.data())));
+      .pipe(map(ref => Object.values(ref.data() ?? {} as T)));
   }
 
 }

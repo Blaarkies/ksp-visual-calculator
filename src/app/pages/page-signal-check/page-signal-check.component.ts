@@ -22,6 +22,7 @@ import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateService } from '../../services/state.service';
 import { UsableRoutes } from '../../usable-routes';
+import { DataService } from '../../services/data.service';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -47,7 +48,8 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
-              stateService: StateService) {
+              private dataService: DataService,
+              private stateService: StateService) {
     super();
 
     stateService.pageContext = UsableRoutes.SignalCheck;
