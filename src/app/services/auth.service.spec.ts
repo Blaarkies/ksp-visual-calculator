@@ -1,16 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-
+import { MockBuilder, MockService } from 'ng-mocks';
+import { AppModule } from '../app.module';
 import { AuthService } from './auth.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+let serviceType = AuthService;
+describe(serviceType.name, () => {
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
-  });
+  beforeEach(() => MockBuilder(serviceType).mock(AppModule));
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    let service = MockService(serviceType);
+    expect(service).toBeDefined();
   });
+
 });

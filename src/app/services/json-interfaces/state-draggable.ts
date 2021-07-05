@@ -1,3 +1,4 @@
+// tslint:disable:ban-types
 export interface StateDraggable {
     label: string;
     orbit?: {

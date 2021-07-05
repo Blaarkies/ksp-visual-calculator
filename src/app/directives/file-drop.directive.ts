@@ -17,6 +17,7 @@ export class FileDropDirective {
   constructor(private snackBar: MatSnackBar) {
   }
 
+  // tslint:disable:no-unused-variable
   @HostBinding('class.file-drop') private classMain = true;
   @HostBinding('class.file-drop-over') private classOver = false;
   @HostBinding('class.file-drop-leave') private classLeave = false;

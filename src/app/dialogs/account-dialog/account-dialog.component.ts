@@ -4,8 +4,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Icons } from '../../common/domain/icons';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, EMPTY, from, merge, Observable, of, Subject } from 'rxjs';
-import { catchError, finalize, mapTo, startWith, take, takeUntil, timeout } from 'rxjs/operators';
+import { EMPTY, from, Observable, of, Subject } from 'rxjs';
+import { catchError, finalize, mapTo, mergeAll, startWith, take, takeUntil, timeout } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 
@@ -48,7 +48,7 @@ export class AccountDialogComponent extends WithDestroy() {
     from(this.authService.emailSignIn(email, password))
       .pipe(
         catchError(error => {
-          let {code, message} = error;
+          let {code} = error;
 
           if (code === AuthErrorCode.WrongPassword) {
             let emailPasswordIncorrect = `Email/Password incorrect`;
@@ -82,12 +82,14 @@ export class AccountDialogComponent extends WithDestroy() {
   }
 
   private setErrorMessageUntilInput(message: string) {
-    this.emailSignInError$ = merge(this.controlEmail.valueChanges, this.controlPassword.valueChanges)
+    this.emailSignInError$ = of(this.controlEmail.valueChanges, this.controlPassword.valueChanges)
       .pipe(
+        mergeAll(),
         timeout(10e3),
-        catchError(() => of('')), // timeout throws error
         take(1),
+        mapTo(''),
         startWith(message),
+        catchError(() => of('')), // timeout throws error
         takeUntil(this.destroy$));
   }
 
@@ -99,7 +101,7 @@ export class AccountDialogComponent extends WithDestroy() {
     from(this.authService.resetPassword(email))
       .pipe(
         catchError(error => {
-          let {code, message} = error;
+          let {code} = error;
           if (code === AuthErrorCode.WrongEmail) {
             this.snackBar.open(`Could not send password reset email`);
             return EMPTY;

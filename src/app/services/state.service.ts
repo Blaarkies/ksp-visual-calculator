@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { interval, Observable, Subject, zip } from 'rxjs';
 import { StateRow } from '../dialogs/manage-state-dialog/state.row';
 import { StateEntry } from '../dialogs/manage-state-dialog/state.entry';
-import { delay, filter, map, sampleTime, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import { delay, filter, map, take, takeUntil, tap } from 'rxjs/operators';
 import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
 
 @Injectable({
@@ -25,9 +25,9 @@ export class StateService {
   private name: string;
   private autoSaveUnsubscribe$ = new Subject();
 
-  private _pageContext: UsableRoutes.SignalCheck;
+  private context: UsableRoutes.SignalCheck;
   set pageContext(value: UsableRoutes.SignalCheck) {
-    this._pageContext = value;
+    this.context = value;
     this.name = undefined;
   }
 
@@ -46,7 +46,7 @@ export class StateService {
     let state: StateSignalCheck = {
       name: this.name || Uid.new,
       timestamp: new Date(),
-      context: this._pageContext,
+      context: this.context,
       version: APP_VERSION.split('.').map(t => t.toNumber()),
       settings: {
         difficulty: this.setupService.difficultySetting,
@@ -87,11 +87,11 @@ export class StateService {
     interval(10e3)
       .pipe(
         filter(() => {
-          let state = this.state;
-          delete state.timestamp;
-          let newState = JSON.stringify(state);
-          let hasChanged = oldState && oldState !== newState;
-          oldState = newState;
+          let newState = this.state;
+          delete newState.timestamp;
+          let newStateString = JSON.stringify(newState);
+          let hasChanged = oldState && oldState !== newStateString;
+          oldState = newStateString;
           return hasChanged;
         }),
         tap(() => this.saveState(this.stateRow)),
@@ -140,7 +140,7 @@ export class StateService {
   getStatesInContext(): Observable<StateEntry[]> {
     return this.getStates()
       .pipe(
-        map(states => states.filter(s => s.context === this._pageContext)
+        map(states => states.filter(s => s.context === this.context)
           .sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)));
   }
 

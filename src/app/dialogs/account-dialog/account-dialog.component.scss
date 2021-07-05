@@ -28,16 +28,26 @@
 .sign-in-layout {
   display: grid;
   gap: 20px;
+
+  .promote-sign-in {
+    color: var(--color-text-muted);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.4em;
+  }
 }
 
 .app-image {
   height: 100px;
-  margin-bottom: 20px;
   justify-self: center;
 }
 
 .email-inputs-container {
   display: grid;
+  width: max-content;
+  margin: auto;
 }
 
 .link {

@@ -45,4 +45,5 @@ export class StateEditNameRowComponent {
   cancelEdit() {
     this.isEditMode = false;
   }
+
 }

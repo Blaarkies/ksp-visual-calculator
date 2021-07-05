@@ -13,15 +13,15 @@ import { StateRow } from '../../dialogs/manage-state-dialog/state.row';
 })
 export class StateDisplayComponent {
 
-  private _state: StateRow;
+  private stateRow: StateRow;
   @Input() set state(value: StateRow) {
-    this._state = value;
+    this.stateRow = value;
     this.updateProperties();
   }
 
-  private _context: UsableRoutes;
+  private contextType: UsableRoutes;
   @Input() set context(value: UsableRoutes) {
-    this._context = value;
+    this.contextType = value;
     this.updateProperties();
   }
 
@@ -30,16 +30,15 @@ export class StateDisplayComponent {
   properties: LabeledOption<string>[];
 
   private updateProperties() {
-    if (!this._state || !this._context) {
+    if (!this.stateRow || !this.contextType) {
       return;
     }
 
-    let state = this._state;
+    let state = this.stateRow;
     let contents = JSON.parse(state.state) as StateGame;
 
     let date = new Date(state.timestamp);
-    // @ts-ignore
-    let daysSince = Math.round((new Date() - date) / (1000 * 60 * 60 * 24));
+    let daysSince = Math.round((Number(new Date()) - Number(date)) / (1000 * 60 * 60 * 24));
     let starName = contents.celestialBodies.find(cb => cb.type === SpaceObjectType.Star.name).draggableHandle.label;
     let properties = [
       ['Name', state.name],
@@ -48,7 +47,7 @@ export class StateDisplayComponent {
       ['Celestial bodies', contents.celestialBodies.length.toString()],
     ];
 
-    if (this._context === UsableRoutes.SignalCheck) {
+    if (this.contextType === UsableRoutes.SignalCheck) {
       let contentsSC = contents as StateSignalCheck;
 
       let dsnPlanets = contents.celestialBodies

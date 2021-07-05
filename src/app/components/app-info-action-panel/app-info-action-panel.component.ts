@@ -12,7 +12,6 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { TutorialService } from '../../services/tutorial.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { StateService } from '../../services/state.service';
 
 @Component({
   selector: 'cp-app-info-action-panel',

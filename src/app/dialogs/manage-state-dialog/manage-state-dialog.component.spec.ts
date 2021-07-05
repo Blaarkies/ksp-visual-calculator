@@ -1,25 +1,27 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ManageStateDialogComponent, ManageStateDialogData } from './manage-state-dialog.component';
+import { ineeda } from 'ineeda';
+import { UsableRoutes } from '../../usable-routes';
+import { StateService } from '../../services/state.service';
+import { EMPTY } from 'rxjs';
 
-import { ManageStateDialogComponent } from './manage-state-dialog.component';
+let componentType = ManageStateDialogComponent;
+describe(componentType.name, () => {
 
-describe('ManageStateDialogComponent', () => {
-  let component: ManageStateDialogComponent;
-  let fixture: ComponentFixture<ManageStateDialogComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ManageStateDialogComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ManageStateDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(MatDialogRef)
+    .mock(MAT_DIALOG_DATA, ineeda<ManageStateDialogData>({
+      context: UsableRoutes.SignalCheck,
+    }))
+    .mock(StateService, ineeda<StateService>({getStates: () => EMPTY})),
+  );
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

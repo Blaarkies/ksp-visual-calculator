@@ -6,7 +6,6 @@ import { Antenna } from '../antenna';
 import { Group } from '../group';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
 import { SpaceObjectType } from './space-object-type';
-import { OrbitParameterData } from './orbit-parameter-data';
 
 export class Craft extends SpaceObject {
 
