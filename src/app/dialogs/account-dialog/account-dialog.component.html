@@ -63,20 +63,25 @@
 
     <div class="sign-in-button-email-container">
       <button mat-stroked-button
+              class="button-loader"
               (click)="signInWithEmailAddress()"
+              [disabled]="controlEmail.invalid || controlPassword.invalid"
               [matTooltip]="'If you do not have an account, this will create one'">
         <mat-icon>{{icons.Email}}</mat-icon>
         <span>Sign in with email address</span>
+        <mat-progress-bar [@animateFade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
       </button>
-      <mat-error *ngIf="emailSignInError">{{emailSignInError}}</mat-error>
+      <mat-error [@animateFade] *ngIf="emailSignInError$ | async as errorMessage">{{errorMessage}}</mat-error>
     </div>
 
     <mat-divider></mat-divider>
 
     <button mat-stroked-button
-            (click)="authService.googleSignIn()">
+            class="button-loader"
+            (click)="signInWithGoogle()">
       <img class="google-g-logo" src="assets/logos/logo-google-g.svg"/>
       <span>Sign in with Google</span>
+      <mat-progress-bar [@animateFade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
     </button>
 
   </div>

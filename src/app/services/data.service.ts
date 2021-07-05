@@ -19,7 +19,7 @@ export interface User {
 })
 export class DataService {
 
-  userId$ = new BehaviorSubject<string>(undefined);
+  private userId$ = new BehaviorSubject<string>(undefined);
 
   constructor(private afs: AngularFirestore) {
   }
@@ -38,6 +38,8 @@ export class DataService {
   }
 
   delete(table: 'users' | 'states', field: string): Promise<void> {
+    this.checkUserSignIn();
+
     return this.afs.doc(`${table}/${this.userId$.value}`)
       .update({[field]: FieldValue.delete()});
   }
@@ -49,10 +51,15 @@ export class DataService {
   }
 
   readAll<T>(table: 'users' | 'states', options: GetOptions = {}): Observable<T[]> {
+    this.checkUserSignIn();
+
     let userUid = this.userId$.value;
     return this.afs.doc<T>(`${table}/${userUid}`)
       .get(options)
       .pipe(map(ref => Object.values(ref.data() ?? {} as T)));
   }
 
+  updateUserId(uid: string) {
+    this.userId$.next(uid);
+  }
 }

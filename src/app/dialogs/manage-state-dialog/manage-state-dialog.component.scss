@@ -1,5 +1,6 @@
 .manage-state-layout {
   padding-top: 10px;
+  min-width: 500px; // tabs leave ghost images of file-drop when changing
 
   mat-tab-group {
     .mat-tab-body-content {
@@ -49,6 +50,13 @@
   grid-auto-flow: column;
   gap: 80px;
 
+  .name-row-layout {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: baseline;
+    gap: 20px;
+  }
+
   .import-and-new-state {
     display: grid;
     gap: 10px;
@@ -62,6 +70,7 @@
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   align-items: center;
+  justify-content: end;
   gap: 10px;
 
   mat-icon {
@@ -97,4 +106,28 @@
     height: unset;
     width: unset;
   }
+}
+
+.button-loader {
+  position: relative;
+
+  mat-progress-bar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+}
+
+.link {
+  justify-self: end;
+  text-decoration: none;
+  color: var(--color-hyperlink-text);
+
+  min-width: 0;
+  border-radius: 10px;
+  padding: 0 4px;
+  margin: 0;
+  line-height: unset;
+  font-weight: 400;
+  font-size: 1em;
 }

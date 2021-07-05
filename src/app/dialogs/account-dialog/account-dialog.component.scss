@@ -67,6 +67,14 @@
   }
 }
 
+.button-loader {
+  mat-progress-bar {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+}
+
 .google-g-logo {
   margin-right: 6px;
   height: 1.5em;

@@ -3,11 +3,11 @@ import firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable, of, zip } from 'rxjs';
 import { Router } from '@angular/router';
-import { filter, map, mapTo, switchMap, switchMapTo, take, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { DataService, User } from './data.service';
 import { StateService } from './state.service';
-import UserCredential = firebase.auth.UserCredential;
 import { MatSnackBar } from '@angular/material/snack-bar';
+import UserCredential = firebase.auth.UserCredential;
 
 @Injectable({
   providedIn: 'root',
@@ -19,14 +19,14 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth,
               private router: Router,
               private dataService: DataService,
-              stateService: StateService,
-              snackBar: MatSnackBar) {
+              private stateService: StateService,
+              private snackBar: MatSnackBar) {
     this.user$ = afAuth.authState
       .pipe(
+        tap(user => this.dataService.updateUserId(user?.uid)),
         switchMap(user => user
           ? this.dataService.getRef<User>(`users/${user.uid}`).valueChanges()
-          : of(null)),
-        tap(user => this.dataService.userId$.next(user?.uid)));
+          : of(null)));
 
     stateService.earlyState
       .pipe(
@@ -51,9 +51,9 @@ export class AuthService {
           }
         }),
         filter(([shouldLoad]) => !!shouldLoad),
-        tap(([shouldLoad, states]) => {
+        switchMap(([shouldLoad, states]) => {
           let newestState = states[0];
-          stateService.loadState(newestState.state);
+          return stateService.loadState(newestState.state);
         }),
       )
       .subscribe();
@@ -63,14 +63,16 @@ export class AuthService {
     const provider = new firebase.auth.GoogleAuthProvider();
     const credential = await this.afAuth.signInWithPopup(provider);
     await this.updateUserData(credential.user);
+    await this.loadUserLastSaveGame();
   }
 
   async signOut() {
     await this.afAuth.signOut();
     await this.router.navigate(['/']);
+    await this.stateService.loadState().pipe(take(1)).toPromise();
   }
 
-  private updateUserData(user): Promise<void> {
+  private async updateUserData(user): Promise<void> {
     const data = {
       uid: user.uid,
       email: user.email,
@@ -82,21 +84,34 @@ export class AuthService {
   }
 
   async emailSignIn(email: string, password: string): Promise<UserCredential> {
-    return await this.afAuth
-      .signInWithEmailAndPassword(email, password);
+    let credential = await this.afAuth.signInWithEmailAndPassword(email, password);
+    await this.loadUserLastSaveGame();
+    return credential;
   }
 
   async emailSignUp(email: string, password: string): Promise<UserCredential> {
-    return await this.afAuth
-      .createUserWithEmailAndPassword(email, password)
-      .then(credential => this.updateUserData(credential.user).then(() => credential));
+    let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+    await this.updateUserData(credential.user);
+    return credential;
   }
 
-  async resetPassword(email: string) {
+  async resetPassword(email: string): Promise<void> {
     if (!email) {
       return;
     }
 
     return await this.afAuth.sendPasswordResetEmail(email);
+  }
+
+  private async loadUserLastSaveGame(): Promise<void> {
+    await this.user$.pipe(take(1)).toPromise();
+
+    let states = await this.stateService.getStatesInContext()
+      .pipe(take(1))
+      .toPromise();
+    let newestState = states[0];
+    await this.stateService.loadState(newestState?.state).pipe(take(1)).toPromise();
+    // todo: add snackbar queue service to stop message overriding each other
+    this.snackBar.open(`Loading latest save game "${newestState.name}"`);
   }
 }

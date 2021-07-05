@@ -10,6 +10,7 @@ export class ErrorMessageTranscriber {
     ['maxlength', (name, meta) => `${name} must be shorter than ${meta.requiredLength} characters`],
     ['duplicateString', (name, meta) => `${name} must be unique`],
     ['email', (name, meta) => `${name} is not valid`],
+    ['minlength', (name, meta) => `${name} length must be at least ${meta.requiredLength}`],
   ]);
 
   getReadableMessage(fieldName: string, value: FormControlError): string {

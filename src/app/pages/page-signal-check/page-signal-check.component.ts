@@ -53,7 +53,7 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
     super();
 
     stateService.pageContext = UsableRoutes.SignalCheck;
-    stateService.loadState();
+    stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 
     this.orbits$ = this.spaceObjectService.orbits$;
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;

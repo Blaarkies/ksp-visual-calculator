@@ -6,11 +6,11 @@ import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
 import { TransmissionLine } from '../common/domain/transmission-line';
 import { CameraService } from './camera.service';
-import { BehaviorSubject, concat, zip } from 'rxjs';
+import { BehaviorSubject, concat, Observable, zip } from 'rxjs';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { CraftDetails } from '../dialogs/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
-import { filter, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, mapTo, take, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../dialogs/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
@@ -37,22 +37,24 @@ export class SpaceObjectService extends WithDestroy() {
     super();
   }
 
-  private runWhenStockAssetsReady(callback?: ({listOrbits, celestialBodies, antennae}) => void) {
+  private runWhenStockAssetsReady(callback?: ({listOrbits, celestialBodies, antennae}) => void)
+    : Observable<void> {
     let stockPlanets$ = this.setupService.stockPlanets$;
 
     let stockAntennae$ = this.setupService.availableAntennae$
       .pipe(filter(a => !!a.length));
 
-    zip(stockPlanets$, stockAntennae$)
+    return zip(stockPlanets$, stockAntennae$)
       .pipe(
         take(1),
-        takeUntil(this.destroy$))
-      .subscribe(([{listOrbits, celestialBodies}, antennae]) =>
-        callback && callback({listOrbits, celestialBodies, antennae}));
+        tap(([{listOrbits, celestialBodies}, antennae]) =>
+          callback && callback({listOrbits, celestialBodies, antennae})),
+        mapTo(void 0),
+        takeUntil(this.destroy$));
   }
 
-  buildStockState() {
-    this.runWhenStockAssetsReady(({listOrbits, celestialBodies, antennae}) => {
+  buildStockState(): Observable<void> {
+    return this.runWhenStockAssetsReady(({listOrbits, celestialBodies, antennae}) => {
       this.orbits$.next(listOrbits);
       this.celestialBodies$.next(celestialBodies);
       this.crafts$.next([]);
@@ -70,7 +72,7 @@ export class SpaceObjectService extends WithDestroy() {
     });
   }
 
-  buildState(lastState: string) {
+  buildState(lastState: string): Observable<void> {
     let parseState = () => {
       let state: StateSignalCheck = JSON.parse(lastState);
       let {celestialBodies: jsonCelestialBodies, craft: jsonCraft} = state;
@@ -132,7 +134,7 @@ export class SpaceObjectService extends WithDestroy() {
       this.updateTransmissionLines();
     };
 
-    this.runWhenStockAssetsReady(() => parseState());
+    return this.runWhenStockAssetsReady(() => parseState());
   }
 
   private static getIndexOfSameCombination = (parentItem, list) => list.findIndex(item => item.every(so => parentItem.includes(so)));

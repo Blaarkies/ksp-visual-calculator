@@ -5,6 +5,8 @@ export interface StateGame {
   timestamp: Date;
   context: string;
   version: number[];
-  settings: any;
+  settings: {
+    difficulty: {};
+  };
   celestialBodies: StateSpaceObject[];
 }

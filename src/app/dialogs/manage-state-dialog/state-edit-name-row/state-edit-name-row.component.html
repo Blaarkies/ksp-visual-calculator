@@ -20,6 +20,7 @@
       <div class="yes-no-buttons">
         <button mat-icon-button
                 (click)="$event.stopImmediatePropagation(); confirmEdit(state)"
+                [disabled]="control.invalid"
                 [matTooltip]="'Confirm name change'">
           <mat-icon color="primary">{{icons.Check}}</mat-icon>
         </button>
