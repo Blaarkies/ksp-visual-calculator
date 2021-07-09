@@ -11,11 +11,13 @@ import { Uid } from '../common/uid';
 import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { interval, Observable, Subject, zip } from 'rxjs';
+import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
 import { StateRow } from '../dialogs/manage-state-dialog/state.row';
 import { StateEntry } from '../dialogs/manage-state-dialog/state.entry';
-import { delay, filter, map, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap } from 'rxjs/operators';
 import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
+import { AccountDialogComponent } from '../dialogs/account-dialog/account-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +26,8 @@ export class StateService {
 
   private name: string;
   private autoSaveUnsubscribe$ = new Subject();
-
   private context: UsableRoutes.SignalCheck;
+
   set pageContext(value: UsableRoutes.SignalCheck) {
     this.context = value;
     this.name = undefined;
@@ -36,6 +38,11 @@ export class StateService {
       this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
       .pipe(
         take(1),
+        delay(0),
+        // todo: StateService should be independent of the specifics in the universe (crafts$ might not exist in other universe types)
+        switchMap(() => of(this.spaceObjectContainerService.celestialBodies$, this.spaceObjectContainerService.crafts$)),
+        combineAll(),
+        filter(([a, b]) => !!a && !!b),
         delay(0),
         map(() => this.state));
   }
@@ -72,20 +79,20 @@ export class StateService {
     });
   }
 
-  constructor(
-    private dataService: DataService,
-    private setupService: SetupService,
-    private spaceObjectContainerService: SpaceObjectContainerService,
-    private spaceObjectService: SpaceObjectService,
-    private snackBar: MatSnackBar,
-  ) {
+  constructor(private dataService: DataService,
+              private setupService: SetupService,
+              private spaceObjectContainerService: SpaceObjectContainerService,
+              private spaceObjectService: SpaceObjectService,
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog) {
   }
 
   loadState(state?: string): Observable<void> {
     let oldState: string;
     this.autoSaveUnsubscribe$.next();
-    interval(10e3)
+    this.earlyState
       .pipe(
+        switchMap(() => interval(10e3)),
         filter(() => {
           let newState = this.state;
           delete newState.timestamp;
@@ -94,7 +101,14 @@ export class StateService {
           oldState = newStateString;
           return hasChanged;
         }),
-        tap(() => this.saveState(this.stateRow)),
+        switchMap(() => from(this.saveState(this.stateRow))
+          .pipe(
+            catchError(() => this.snackBar.open(`Cannot save changes without an account`, 'Sign In', {duration: 15e3})
+              .onAction()
+              .pipe(
+                tap(() => this.dialog.open(AccountDialogComponent)),
+                switchMapTo(EMPTY), // stop this iteration of the stream here
+                takeUntil(this.autoSaveUnsubscribe$))))),
         tap(() => this.snackBar.open(`Saved changes to "${this.name}"`)),
         takeUntil(this.autoSaveUnsubscribe$))
       .subscribe();
@@ -134,7 +148,7 @@ export class StateService {
   }
 
   getStates(): Observable<StateEntry[]> {
-    return this.dataService.readAll<StateEntry>('states');
+    return from(this.dataService.readAll<StateEntry>('states'));
   }
 
   getStatesInContext(): Observable<StateEntry[]> {
@@ -148,7 +162,7 @@ export class StateService {
     await this.loadState(stateString).pipe(take(1)).toPromise();
   }
 
-  saveState(state: StateRow): Promise<void> {
+  async saveState(state: StateRow): Promise<void> {
     return this.addStateToStore(state.toUpdatedStateGame());
   }
 

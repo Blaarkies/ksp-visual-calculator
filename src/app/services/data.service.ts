@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, SetOptions } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
 import GetOptions = firebase.firestore.GetOptions;
@@ -28,38 +28,40 @@ export class DataService {
     return this.afs.doc<T>(path);
   }
 
-  write(table: 'users' | 'states',
+  async write(table: 'users' | 'states',
         fields: {},
         options: SetOptions = {}): Promise<void> {
-    this.checkUserSignIn();
+    await this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`)
       .set(fields, options);
   }
 
-  delete(table: 'users' | 'states', field: string): Promise<void> {
-    this.checkUserSignIn();
+  async delete(table: 'users' | 'states', field: string): Promise<void> {
+    await this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`)
       .update({[field]: FieldValue.delete()});
   }
 
-  private checkUserSignIn() {
-    if (!this.userId$.value) {
-      throw console.error('No user signed in, cannot use database without user authentication.');
-    }
+  private checkUserSignIn(): Promise<void> {
+    return new Promise((resolve, reject) => this.userId$.value
+      ? resolve()
+      : reject('No user signed in, cannot use database without user authentication.'));
   }
 
-  readAll<T>(table: 'users' | 'states', options: GetOptions = {}): Observable<T[]> {
-    this.checkUserSignIn();
+  async readAll<T>(table: 'users' | 'states', options: GetOptions = {}): Promise<T[]> {
+    await this.checkUserSignIn();
 
     let userUid = this.userId$.value;
     return this.afs.doc<T>(`${table}/${userUid}`)
       .get(options)
-      .pipe(map(ref => Object.values(ref.data() ?? {} as T)));
+      .pipe(map(ref => Object.values(ref.data() ?? {} as T)), take(1))
+      .toPromise();
   }
 
   updateUserId(uid: string) {
     this.userId$.next(uid);
   }
+
 }

@@ -92,6 +92,7 @@ export class AuthService {
   async emailSignUp(email: string, password: string): Promise<UserCredential> {
     let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
     await this.updateUserData(credential.user);
+    // todo: check that current "tutorial" game is saved
     return credential;
   }
 

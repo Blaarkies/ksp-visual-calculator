@@ -1,4 +1,5 @@
 import { StateGame } from '../../services/json-interfaces/state-game';
+import { version as APP_VERSION } from '../../../../package.json';
 
 export class StateRow {
 
@@ -18,6 +19,7 @@ export class StateRow {
     let parsedState: StateGame = JSON.parse(this.state);
     parsedState.name = this.name;
     parsedState.timestamp = new Date();
+    parsedState.version = APP_VERSION.split('.').map(t => t.toNumber());
     return parsedState;
   }
 }
