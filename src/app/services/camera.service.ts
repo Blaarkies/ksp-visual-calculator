@@ -2,7 +2,7 @@ import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
 import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
 import { Draggable } from '../common/domain/space-objects/draggable';
-import { SpaceObject} from '../common/domain/space-objects/space-object';
+import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 
@@ -43,16 +43,15 @@ export class CameraService {
   }
 
   get screenCenterOffset(): Vector2 {
-    let element = this.cameraController.nativeElement;
-    return new Vector2(element.offsetWidth * .5, element.offsetHeight * .5);
+    return new Vector2(window.innerWidth, window.innerHeight).multiply(.5);
   }
 
   get screenSize(): Vector2 {
-    let element = this.cameraController.nativeElement;
-    return new Vector2(element.offsetWidth, element.offsetHeight);
+    return new Vector2(window.innerWidth, window.innerHeight);
   }
 
   private hoverObject: Draggable;
+
   get currentHoverObject(): Draggable {
     return this.hoverObject;
   }
@@ -95,17 +94,19 @@ export class CameraService {
     this.location.addVector2(shift);
   }
 
-  focusAt(newLocation: Vector2, type: SpaceObjectType) {
-    this.scale = this.getScaleForFocus(newLocation, type);
+  focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
+    this.scale = zoomIn
+      ? CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .999)
+      : this.getScaleForFocus(newLocation, type);
 
     this.location = newLocation.clone()
       .multiply(-this.scale)
       .addVector2(this.screenCenterOffset);
   }
 
-  focusSpaceObject(spaceObject: SpaceObject) {
+  focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
     this.lastFocusObject = spaceObject.draggableHandle;
-    this.focusAt(spaceObject.location, spaceObject.type);
+    this.focusAt(spaceObject.location, spaceObject.type, zoomIn);
   }
 
   private getScaleForFocus(location: Vector2, type: SpaceObjectType) {

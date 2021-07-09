@@ -3,7 +3,7 @@ import { of, Subject, timer } from 'rxjs';
 import { mapTo, switchMap } from 'rxjs/operators';
 
 @Directive({
-  selector: '[cpMousehover]',
+  selector: '[cpMouseHover]',
 })
 export class MouseHoverDirective implements OnDestroy {
 
@@ -20,11 +20,11 @@ export class MouseHoverDirective implements OnDestroy {
       .subscribe(hover => this.hoverChange.emit(hover));
   }
 
-  @HostListener('mouseenter') mouseover() {
+  @HostListener('mouseenter') mouseOver() {
     this.hoverTrigger$.next(true);
   }
 
-  @HostListener('mouseleave') mouseleave() {
+  @HostListener('mouseleave') mouseLeave() {
     this.hoverTrigger$.next(false);
   }
 

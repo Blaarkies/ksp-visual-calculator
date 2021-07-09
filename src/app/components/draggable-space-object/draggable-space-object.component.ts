@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
-import { Subject } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, finalize, map, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
@@ -19,7 +19,8 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
   @Input() spaceObject: SpaceObject;
   @Input() scale: number;
 
-  @Output() dragSpaceObject = new EventEmitter<MouseEvent>();
+  @Output() dragSpaceObject = new EventEmitter<PointerEvent>();
+  @Output() focusObject = new EventEmitter<PointerEvent>();
   @Output() editSpaceObject = new EventEmitter<void>();
 
   buttonHover$ = new Subject<boolean>();

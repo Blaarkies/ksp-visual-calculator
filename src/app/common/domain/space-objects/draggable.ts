@@ -1,4 +1,4 @@
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent, Observable, Subject } from 'rxjs';
 import { filter, finalize, map, takeUntil, throttleTime } from 'rxjs/operators';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
@@ -55,38 +55,59 @@ export class Draggable extends WithDestroy() {
     draggables.forEach(so => so.parent = this);
   }
 
-  startDrag(event: MouseEvent,
+  startDrag(event: PointerEvent,
             screen: HTMLDivElement,
             updateCallback: () => void = () => void 0,
             camera?: CameraComponent) {
-    screen.style.cursor = 'grabbing';
-    this.isGrabbing = true;
-
     if (this.moveType === 'soiLock') {
       this.constrainLocation = LocationConstraints.anyMove(this.location.toList());
     }
 
     updateCallback();
 
-    fromEvent(screen, 'mousemove')
-      .pipe(
-        throttleTime(25),
-        // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
-        filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
-        map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
-        map(pair => camera
-          ? [pair[0] / camera.scale, pair[1] / camera.scale]
-          : pair),
-        finalize(() => {
-          screen.style.cursor = 'unset';
-          this.isGrabbing = false;
-          this.placeCraftInSoiLock();
-          updateCallback();
-        }),
-        takeUntil(fromEvent(screen, 'mouseleave')),
-        takeUntil(fromEvent(event.target, 'mouseup')),
-        takeUntil(fromEvent(screen, 'mouseup')),
-        takeUntil(this.destroy$))
+    let pointerStream: Observable<number[]>;
+
+    if (event.pointerType === 'mouse') {
+      screen.style.cursor = 'grabbing';
+      this.isGrabbing = true;
+
+      pointerStream = fromEvent(screen, 'mousemove')
+        .pipe(
+          throttleTime(25),
+          // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+          filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
+          map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
+          finalize(() => {
+            screen.style.cursor = 'unset';
+            this.isGrabbing = false;
+          }),
+          takeUntil(fromEvent(screen, 'mouseleave')),
+          takeUntil(fromEvent(event.target, 'mouseup')),
+          takeUntil(fromEvent(screen, 'mouseup')));
+
+    } else if (event.pointerType === 'touch') {
+      pointerStream = fromEvent(screen, 'touchmove')
+        .pipe(
+          throttleTime(33),
+          filter((touch: TouchEvent) => touch.changedTouches.length === 1),
+          map((touchEvent: TouchEvent) => {
+            let touch = touchEvent.touches[0];
+            return [touch.pageX - camera.location.x, touch.pageY - camera.location.y];
+          }),
+          takeUntil(fromEvent(screen, 'touchcancel')),
+          takeUntil(fromEvent(event.target, 'touchend')),
+          takeUntil(fromEvent(screen, 'touchend')));
+    }
+
+    pointerStream.pipe(
+      map(pair => camera
+        ? [pair[0] / camera.scale, pair[1] / camera.scale]
+        : pair),
+      finalize(() => {
+        this.placeCraftInSoiLock();
+        updateCallback();
+      }),
+      takeUntil(this.destroy$))
       .subscribe(xy => {
         this.lastAttemptLocation = xy;
         this.setNewLocation(xy);
