@@ -93,40 +93,82 @@ export class WizardSpotlightService {
     let dialogTarget = stepDetails.dialogTargetCallback();
     let markerTarget = stepDetails.markerTargetCallback && stepDetails.markerTargetCallback();
 
-    let targetDimensions = dialogTarget.getBoundingClientRect();
-    let popupScreenLocation = this.getValidPopupScreenLocation(targetDimensions);
+    let targetDimensions: DOMRect = dialogTarget.getBoundingClientRect();
 
     let wizardMarker = stepDetails.markerTargetCallback
       && this.createPopup(WizardMarkerComponent, markerTarget, {
         type: stepDetails.markerType,
       } as WizardMarker);
-    let wizardMessage = this.createPopup(WizardMessageComponent, document.body, {
-      title: stepDetails.dialogTitle,
-      messages: stepDetails.dialogMessages,
-      icon: stepDetails.dialogIcon,
-      location: popupScreenLocation,
-      stopTutorial: this.stopTutorial$,
-    } as WizardMessage);
+    let wizardMessage: ComponentRef<WizardMessageComponent> =
+      this.createPopup(WizardMessageComponent, document.body, {
+        title: stepDetails.dialogTitle,
+        messages: stepDetails.dialogMessages,
+        icon: stepDetails.dialogIcon,
+        location: new Vector2(targetDimensions.left, targetDimensions.top).add(50, 50),
+        stopTutorial: this.stopTutorial$,
+      } as WizardMessage);
+
+    setTimeout(() => this.placeDialogInScreen(wizardMessage));
+
     return [wizardMarker, wizardMessage].filter(comp => comp);
-  }
-
-  private getValidPopupScreenLocation(targetDimensions: DOMRect) {
-    let topRight = new Vector2(targetDimensions.right, targetDimensions.top)
-      .add(75, -150);
-
-    if (topRight.x + 400 > document.body.offsetWidth
-      || topRight.y + 400 > document.body.offsetHeight) {
-      return new Vector2(document.body.offsetWidth, document.body.offsetWidth)
-        .multiply(.25)
-        .add(50, -150);
-    }
-
-    return topRight;
   }
 
   runSteps(steps: Observable<any>[]): Observable<void> {
     return concat(...steps)
       .pipe(takeUntil(this.stopTutorial$));
+  }
+
+  private placeDialogInScreen(dialog: ComponentRef<WizardMessageComponent>) {
+    let dims: DOMRect = dialog.instance.self.nativeElement.getBoundingClientRect();
+    let padding = 8;
+    let minX = padding;
+    let minY = padding;
+    let maxX = -padding + window.innerWidth;
+    let maxY = -padding + window.innerHeight;
+
+    let isInBounds = dims.left >= minX
+      && dims.top >= minY
+      && dims.right <= maxX
+      && dims.bottom <= maxY;
+
+    if (isInBounds) {
+      return;
+    }
+
+    let corners = [
+      {
+        // top-left
+        location: new Vector2(0, 0),
+        resultFunction: (size: Vector2) => new Vector2(minX, minY),
+      },
+      {
+        // top-right
+        location: new Vector2(maxX, 0),
+        resultFunction: (size: Vector2) => new Vector2(maxX, minY).subtract(size.x, 0),
+      },
+      {
+        // bottom-left
+        location: new Vector2(0, maxY),
+        resultFunction: (size: Vector2) => new Vector2(minX, maxY).subtract(0, size.y),
+      },
+      {
+        // bottom-right
+        location: new Vector2(maxX, maxY),
+        resultFunction: (size: Vector2) => new Vector2(maxX, maxY).subtract(size.x, size.y),
+      },
+    ];
+
+    let size = new Vector2(dims.width, dims.height);
+    let center = new Vector2(dims.left, dims.top).addVector2(size.clone().multiply(.5));
+    let nearCorner = corners
+      .map(c => ({
+        distance: c.location.distance(center),
+        resultFunction: c.resultFunction,
+      }))
+      .sort((a, b) => b.distance - a.distance)
+      .first();
+
+    dialog.instance.location = nearCorner.resultFunction(size);
   }
 
 }

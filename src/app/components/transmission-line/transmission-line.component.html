@@ -9,7 +9,7 @@
   />
 
   <defs *ngIf="transmissionLine.strengthRelay">
-    <pattern id="pattern"
+    <pattern [attr.id]="'pattern' + transmissionLine.id"
              patternUnits="userSpaceOnUse"
              width="10"
              height="10"
@@ -23,7 +23,7 @@
 
   <line *ngIf="transmissionLine.strengthRelay"
         [attr.stroke-width]="3"
-        [attr.stroke]="'url(#pattern)'"
+        [attr.stroke]="'url(#pattern' + transmissionLine.id + ')'"
         [attr.x1]="scale * transmissionLine.nodes[0].location.x - transmissionLine.offsetVector.x"
         [attr.y1]="scale * transmissionLine.nodes[0].location.y - transmissionLine.offsetVector.y"
         [attr.x2]="scale * transmissionLine.nodes[1].location.x - transmissionLine.offsetVector.x"

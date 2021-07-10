@@ -32,7 +32,7 @@ export class WizardMessageComponent implements WizardMessage {
 
   icons = Icons;
 
-  constructor(private self: ElementRef) {
+  constructor(public self: ElementRef) {
   }
 
   cancelWizard() {

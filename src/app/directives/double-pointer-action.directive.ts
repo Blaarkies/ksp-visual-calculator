@@ -16,7 +16,7 @@ export class DoublePointerActionDirective implements OnDestroy {
       .pipe(
         scan((acc, value) => {
           let now = Date.now();
-          acc.isDoubleAction = (now - acc.lastTime) < 500;
+          acc.isDoubleAction = (now - acc.lastTime) < 300;
           acc.lastTime = now;
           acc.lastEvent = value;
           return acc;

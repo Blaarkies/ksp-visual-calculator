@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
-import { delay, filter, finalize, mapTo, take, takeUntil } from 'rxjs/operators';
+import { delay, filter, finalize, map, mapTo, scan, skip, take, takeUntil } from 'rxjs/operators';
 import { AnalyticsService, EventLogs } from './analytics.service';
+import { Vector2 } from '../common/domain/vector2';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +28,9 @@ export class TutorialService {
     this.wizardSpotlightService
       .runSteps(compiledSteps)
       .pipe(
-        finalize(() => this.analyticsService
+        finalize(() =>
+        // this will count even if tutorial was cancelled
+          this.analyticsService
           .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial})),
         takeUntil(this.stopTutorial$))
       .subscribe();
@@ -46,7 +49,7 @@ export class TutorialService {
       dialogMessages: [
         'This is a planet, it can be dragged around its orbit.',
         'Moons and spacecraft can also be moved.',
-        'Left-click and hold on the planet to move it around.'],
+        'Left-click (or tap) and hold the planet to move it around.'],
       dialogIcon: Icons.Planet,
       stages: [
         {
@@ -68,8 +71,25 @@ export class TutorialService {
           callback: (input: { eve, attachPoint }) => of(input),
         },
         {
-          callback: (input: { eve, attachPoint }) => fromEvent(input.attachPoint, 'mouseup')
-            .pipe(take(1), mapTo(input)),
+          callback: (input: { eve, attachPoint: HTMLElement }) => interval(500)
+            .pipe(
+              map(() => {
+                let location = input.attachPoint.getBoundingClientRect();
+                return new Vector2(location.left, location.top);
+              }),
+              scan((acc, v) => {
+                  acc.isMoved = acc.firstLocation.distance(v) > 150;
+                  return acc;
+                },
+                {
+                  firstLocation: new Vector2(input.attachPoint.getBoundingClientRect().left,
+                    input.attachPoint.getBoundingClientRect().top),
+                  isMoved: false,
+                }),
+              skip(1),
+              filter(({isMoved}) => isMoved),
+              take(1),
+              mapTo(input)),
         },
         {
           callback: (input: { eve, attachPoint }) => defer(() => {
@@ -86,17 +106,40 @@ export class TutorialService {
       dialogTitle: 'Camera',
       dialogTargetCallback: () => this.selectObjectInDom('kerbol').firstChild,
       dialogMessages: [
-        'The camera can be moved around to see other parts of the Kerbol system.',
-        'Right-click and hold in the universe to pan the camera around.'],
+        'The camera can be moved around to view other parts of the Kerbol system.',
+        'Right-click and hold in the universe to pan the camera around.',
+        'On touch screens, swipe with two fingers to move the camera.'],
       dialogIcon: Icons.Camera,
       stages: [
         {
           isDialogStage: true,
-          callback: input => of(input),
+          callback: () => defer(() => {
+            let attachPoint = this.selectObjectInDom('eve').firstChild.firstChild as HTMLElement;
+            if (!attachPoint) {
+              console.error('Expected draggable element to contain an image element.');
+            }
+            return of({attachPoint});
+          }),
         },
         {
-          callback: input => fromEvent(document.body, 'mouseup')
-            .pipe(take(1), mapTo(input)),
+          callback: input => interval(500)
+            .pipe(
+              map(() => {
+                let location = input.attachPoint.getBoundingClientRect();
+                return new Vector2(location.left, location.top);
+              }),
+              scan((acc, v) => {
+                  acc.isMoved = acc.firstLocation.distance(v) > 150;
+                  return acc;
+                },
+                {
+                  firstLocation: new Vector2(input.attachPoint.getBoundingClientRect().left,
+                    input.attachPoint.getBoundingClientRect().top),
+                  isMoved: false,
+                }),
+              skip(1),
+              filter(({isMoved}) => isMoved),
+              take(1), mapTo(input)),
         },
       ],
     } as StepDetails;
@@ -107,6 +150,7 @@ export class TutorialService {
       dialogMessages: [
         'Some planets have moons, but you have to zoom in to see them.',
         'Point the mouse cursor at Kerbin, then scroll in/out with the mouse wheel, to zoom in/out.',
+        'On touch screens you can pinch with two fingers to zoom in/out, or double-tap on Kerbin to zoom in.',
         'Zoom in until you can see the moons of Kerbin.'],
       dialogIcon: Icons.ZoomIn,
       stages: [
@@ -129,7 +173,7 @@ export class TutorialService {
           callback: (input: { kerbin, attachPoint }) => of(input),
         },
         {
-          callback: (input: { kerbin, attachPoint }) => fromEvent(document.body, 'wheel').pipe(
+          callback: (input: { kerbin, attachPoint }) => interval(500).pipe(
             filter(() => !!this.selectObjectInDom('mun or minmus')),
             take(1),
             delay(1000),
@@ -239,8 +283,24 @@ export class TutorialService {
           }),
         },
         {
-          callback: (input: { lastCraft }) => fromEvent(input.lastCraft, 'mouseup')
-            .pipe(take(1), mapTo(input)),
+          callback: (input: { lastCraft }) => interval(500)
+            .pipe(
+              map(() => {
+                let location = input.lastCraft.getBoundingClientRect();
+                return new Vector2(location.left, location.top);
+              }),
+              scan((acc, v) => {
+                  acc.isMoved = acc.firstLocation.distance(v) > 150;
+                  return acc;
+                },
+                {
+                  firstLocation: new Vector2(input.lastCraft.getBoundingClientRect().left,
+                    input.lastCraft.getBoundingClientRect().top),
+                  isMoved: false,
+                }),
+              skip(1),
+              filter(({isMoved}) => isMoved),
+              take(1), mapTo(input)),
         },
         {
           callback: (input: { lastCraft }) => defer(() => {
@@ -296,7 +356,7 @@ export class TutorialService {
           callback: input => of(input),
         },
         {
-          callback: input => fromEvent(document.body, 'mousedown').pipe(
+          callback: input => timer(15e3).pipe(
             take(1),
             mapTo(input)),
         },

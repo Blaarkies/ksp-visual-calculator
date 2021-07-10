@@ -127,9 +127,12 @@ export class TransmissionLine {
     return signalStrength;
   }
 
+  id: string;
+
   constructor(public nodes: SpaceObject[],
               /*todo: use a better reference to an up to date difficulty setting*/
               private setupService: SetupService) {
+    this.id = Math.random().toString().slice(2);
   }
 
 
