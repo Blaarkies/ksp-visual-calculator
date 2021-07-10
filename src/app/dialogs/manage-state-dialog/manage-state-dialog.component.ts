@@ -14,6 +14,7 @@ import { StateRow } from './state.row';
 import { StateEntry } from './state.entry';
 import { MatSelectionList } from '@angular/material/list';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 
 export class ManageStateDialogData {
   context: UsableRoutes;
@@ -51,7 +52,8 @@ export class ManageStateDialogComponent extends WithDestroy() {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ManageStateDialogData,
               private stateService: StateService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private analyticsService: AnalyticsService) {
     super();
 
     this.nowState = stateService.stateRow;
@@ -77,10 +79,15 @@ export class ManageStateDialogComponent extends WithDestroy() {
       this.stateService.renameCurrentState(state.name);
       this.nowState = this.stateService.stateRow;
     }
+
+    this.analyticsService.logEvent('Edit state name', {
+      category: EventLogs.Category.State,
+    });
   }
 
   cancelOtherEditors(editor: StateEditNameRowComponent) {
-    this.editors.filter(e => e !== editor)
+    this.editors
+      .filter(e => e !== editor)
       .forEach(e => e.cancelEdit());
   }
 
@@ -98,6 +105,10 @@ export class ManageStateDialogComponent extends WithDestroy() {
         this.newState(true);
         this.updateStates();
       });
+
+    this.analyticsService.logEvent('Removed state', {
+      category: EventLogs.Category.State,
+    });
   }
 
   private getStates(): Observable<StateRow[]> {
@@ -113,6 +124,10 @@ export class ManageStateDialogComponent extends WithDestroy() {
   }
 
   loadState(selectedState: StateRow) {
+    this.analyticsService.logEvent('Load state', {
+      category: EventLogs.Category.State,
+    });
+
     this.buttonLoaders.load$.next(true);
     return this.stateService.loadState(selectedState.state)
       .pipe(
@@ -125,6 +140,12 @@ export class ManageStateDialogComponent extends WithDestroy() {
   }
 
   newState(noMessage: boolean = false) {
+    if (!noMessage) {
+      this.analyticsService.logEvent('Load state', {
+        category: EventLogs.Category.State,
+      });
+    }
+
     this.buttonLoaders.new$.next(true);
     this.stateService.loadState()
       .pipe(
@@ -157,6 +178,10 @@ export class ManageStateDialogComponent extends WithDestroy() {
         takeUntil(this.destroy$))
       .subscribe(show => this.buttonLoaders.export$.next(show));
     this.snackBar.open(`Exported "${selectedState.name}" to JSON file`);
+
+    this.analyticsService.logEvent('Export state', {
+      category: EventLogs.Category.State,
+    });
   }
 
   async importFile(files: any) {
@@ -172,10 +197,18 @@ export class ManageStateDialogComponent extends WithDestroy() {
       this.buttonLoaders.import$.next(false);
       this.snackBar.open(`Imported "${this.nowState.name}"`);
     }
+
+    this.analyticsService.logEvent('Import state', {
+      category: EventLogs.Category.State,
+    });
   }
 
   async uploadFileSelected(event: any) {
     await this.importFile(event.target.files);
+
+    this.analyticsService.logEvent('Import via button', {
+      category: EventLogs.Category.State,
+    });
   }
 
   async archiveState(state: StateRow) {
@@ -188,6 +221,10 @@ export class ManageStateDialogComponent extends WithDestroy() {
       .finally(() => this.buttonLoaders.save$.next(false));
     this.snackBar.open(`"${state.name}" has been saved`);
     this.updateStates();
+
+    this.analyticsService.logEvent('Save state', {
+      category: EventLogs.Category.State,
+    });
   }
 
   private updateStates() {
