@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, SetOptions } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
@@ -29,8 +29,8 @@ export class DataService {
   }
 
   async write(table: 'users' | 'states',
-        fields: {},
-        options: SetOptions = {}): Promise<void> {
+              fields: {},
+              options: SetOptions = {}): Promise<void> {
     await this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`)

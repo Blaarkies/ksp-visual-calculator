@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
 import { fromEvent } from 'rxjs';
-import { filter, finalize, map, sampleTime, scan, skip, takeUntil, throttleTime } from 'rxjs/operators';
+import { filter, finalize, map, sampleTime, scan, skip, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
 
@@ -81,7 +81,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         scan((acc, touch: TouchEvent) => {
           let locations = Array.from(touch.touches)
             .map(t => new Vector2(t.clientX, t.clientY));
-          let meanLocation = locations.reduce((acc, v) => acc.addVector2(v), new Vector2())
+          let meanLocation = locations.reduce((sum, v) => sum.addVector2(v), new Vector2())
             .multiply(1 / locations.length);
           let touchMeanDistance = locations.map(v => v.distance(meanLocation)).sum() / locations.length;
 

@@ -158,8 +158,8 @@ export class WizardSpotlightService {
       },
     ];
 
-    let size = new Vector2(dims.width, dims.height);
-    let center = new Vector2(dims.left, dims.top).addVector2(size.clone().multiply(.5));
+    let elementSize = new Vector2(dims.width, dims.height);
+    let center = new Vector2(dims.left, dims.top).addVector2(elementSize.clone().multiply(.5));
     let nearCorner = corners
       .map(c => ({
         distance: c.location.distance(center),
@@ -168,7 +168,7 @@ export class WizardSpotlightService {
       .sort((a, b) => b.distance - a.distance)
       .first();
 
-    dialog.instance.location = nearCorner.resultFunction(size);
+    dialog.instance.location = nearCorner.resultFunction(elementSize);
   }
 
 }

@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
-import { fromEvent, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
-import { filter, finalize, map, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
