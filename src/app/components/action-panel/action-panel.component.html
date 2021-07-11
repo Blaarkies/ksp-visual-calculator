@@ -10,11 +10,15 @@
       <button mat-icon-button #menuButton>
         <mat-icon>{{startIcon}}</mat-icon>
       </button>
+
       <span>{{startTitle}}</span>
+
       <span class="notify-badge"
             matBadgeColor="warn"
             [matBadgeHidden]="!unreadCount"
             [matBadge]="unreadCount"></span>
+
+      <ng-content></ng-content>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -26,13 +30,29 @@
       <ng-container *ngFor="let option of options"
                     [ngSwitch]="option.type">
         <ng-template #button>
-          <div class="action-button" [matTooltip]="option.tooltip">
-            <span class="text-white">{{option.label}}</span>
-            <span matBadgeColor="warn"
-                  [matBadgeHidden]="!option.unread"
-                  matBadge="!"></span>
-            <mat-icon>{{option.icon}}</mat-icon>
-          </div>
+          <ng-container *ngIf="option.unavailableMeta?.unavailable$ | async;
+                               else normal">
+            <div class="action-button unavailable"
+                 [matTooltip]="option.unavailableMeta.tooltip"
+                 (click)="$event.stopPropagation(); option.unavailableMeta.action()">
+              <span class="text-white">{{option.label}}</span>
+              <span matBadgeColor="warn"
+                    [matBadgeHidden]="!option.unread"
+                    matBadge="!"></span>
+              <mat-icon>{{option.icon}}</mat-icon>
+            </div>
+          </ng-container>
+
+          <ng-template #normal>
+            <div class="action-button"
+                 [matTooltip]="option.tooltip">
+              <span class="text-white">{{option.label}}</span>
+              <span matBadgeColor="warn"
+                    [matBadgeHidden]="!option.unread"
+                    matBadge="!"></span>
+              <mat-icon>{{option.icon}}</mat-icon>
+            </div>
+          </ng-template>
         </ng-template>
 
         <mat-list-option *ngSwitchCase="actionTypes.Action"

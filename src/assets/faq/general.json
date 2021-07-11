@@ -57,6 +57,12 @@
       ],
       [
         {
+          "type": "span",
+          "content": "Double-click on a planet, moon, or craft to focus them. On touch screens, double-tap will also zoom in on them."
+        }
+      ],
+      [
+        {
           "type": "image",
           "content": "Icons representing focusable objects",
           "src": "assets/faq/focus-jumpto-panel.jpg",
@@ -196,6 +202,26 @@
       ]
     ],
     "tags": "soi lock bubble relative move drag"
+  },
+  {
+    "title": "Camera",
+    "simpleExplanation": "Move and zoom the camera around the universe with these controls:",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "Zoom in/out by scrolling the mouse wheel, or by pinching the touch screen with two or more fingers."
+        }
+      ],
+      [
+        {
+          "type": "span",
+          "content": "Pan the camera around by right-click dragging the universe, or by swiping the touch screen with two or more fingers."
+        }
+      ]
+    ],
+    "tags": "scale size view see pan camera zoom control"
   }
+
 ]
 

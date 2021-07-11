@@ -1,0 +1,40 @@
+<div class="list-row">
+  <div class="name">
+    <span *ngIf="!isEditMode; else edit">{{state.name}}</span>
+    <ng-template #edit>
+      <cp-input-field class="edit-name-input"
+                      (click)="$event.stopImmediatePropagation()"
+                      label="Name"
+                      [formControl]="control"
+                      [errors]="control.errors">
+      </cp-input-field>
+    </ng-template>
+
+    <button *ngIf="!isEditMode; else accept"
+            mat-icon-button
+            (click)="$event.stopImmediatePropagation(); startEdit(state)"
+            [matTooltip]="'Edit the name of this save game'">
+      <mat-icon>{{icons.Edit}}</mat-icon>
+    </button>
+    <ng-template #accept>
+      <div class="yes-no-buttons">
+        <button mat-icon-button
+                (click)="$event.stopImmediatePropagation(); confirmEdit(state)"
+                [disabled]="control.invalid"
+                [matTooltip]="'Confirm name change'">
+          <mat-icon color="primary">{{icons.Check}}</mat-icon>
+        </button>
+        <button mat-icon-button
+                (click)="$event.stopImmediatePropagation(); cancelEdit()"
+                [matTooltip]="'Cancel name changes'">
+          <mat-icon color="accent">{{icons.Cancel}}</mat-icon>
+        </button>
+      </div>
+    </ng-template>
+  </div>
+
+  <div class="meta">
+    <span>{{state.timestamp}}</span>
+    <span>{{state.version}}</span>
+  </div>
+</div>

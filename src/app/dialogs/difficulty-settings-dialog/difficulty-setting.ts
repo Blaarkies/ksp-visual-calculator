@@ -21,4 +21,7 @@ export class DifficultySetting {
 
   static List = DifficultySetting.All.map(ct => new LabeledOption(ct.label, ct));
 
+  static fromObject(difficulty: any): DifficultySetting {
+    return new DifficultySetting(difficulty.label, difficulty.rangeModifier, difficulty.dsnModifier);
+  }
 }

@@ -16,4 +16,15 @@ export class OrbitParameterData {
     return new OrbitParameterData([location.x, location.y], null);
   }
 
+  toJson(): {} {
+    return {
+      xy: this.xy,
+      r: this.r,
+      parent: this.parent?.label,
+    };
+  }
+
+  static fromJson(json: any) {
+    return new OrbitParameterData(json.xy, json.r, json.parent);
+  }
 }

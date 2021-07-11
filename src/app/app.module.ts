@@ -65,6 +65,15 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FocusJumpToPanelComponent } from './components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { FaqDialogComponent } from './dialogs/faq-dialog/faq-dialog.component';
 import { ContentPleatComponent } from './components/content-pleat/content-pleat.component';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { ManageStateDialogComponent } from './dialogs/manage-state-dialog/manage-state-dialog.component';
+import { StateDisplayComponent } from './components/state-display/state-display.component';
+import { StateEditNameRowComponent } from './dialogs/manage-state-dialog/state-edit-name-row/state-edit-name-row.component';
+import { FileDropDirective } from './directives/file-drop.directive';
+import { AccountDetailsComponent } from './components/account-details/account-details.component';
+import { DoublePointerActionDirective } from './directives/double-pointer-action.directive';
 
 @NgModule({
   declarations: [
@@ -104,10 +113,19 @@ import { ContentPleatComponent } from './components/content-pleat/content-pleat.
     FocusJumpToPanelComponent,
     FaqDialogComponent,
     ContentPleatComponent,
+    UserProfileComponent,
+    ManageStateDialogComponent,
+    StateDisplayComponent,
+    StateEditNameRowComponent,
+    FileDropDirective,
+    AccountDetailsComponent,
+    DoublePointerActionDirective,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAnalyticsModule,
+    AngularFirestoreModule,
+    AngularFireAuthModule,
     DragDropModule,
     BrowserModule,
     BrowserAnimationsModule,

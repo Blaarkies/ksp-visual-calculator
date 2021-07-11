@@ -96,4 +96,5 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
     activeButton.ripple.launch({centered: true});
   }
+
 }

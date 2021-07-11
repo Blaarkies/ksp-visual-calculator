@@ -5,6 +5,8 @@ import { Vector2 } from './vector2';
 
 export class TransmissionLine {
 
+  id: string;
+
   get textLocation(): Vector2 {
     return this.memoizeTextLocation(
       this.nodes[0].location.x,
@@ -130,7 +132,7 @@ export class TransmissionLine {
   constructor(public nodes: SpaceObject[],
               /*todo: use a better reference to an up to date difficulty setting*/
               private setupService: SetupService) {
+    this.id = Math.random().toString().slice(2);
   }
-
 
 }

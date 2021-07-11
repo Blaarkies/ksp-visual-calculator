@@ -18,6 +18,7 @@ class Category {
   static Route = 'route';
   static Help = 'help';
   static Camera = 'camera';
+  static State = 'state';
 }
 
 class Sanitize {

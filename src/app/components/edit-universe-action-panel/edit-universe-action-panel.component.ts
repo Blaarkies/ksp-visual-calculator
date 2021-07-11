@@ -3,13 +3,17 @@ import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { SpaceObjectService } from '../../services/space-object.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DifficultySettingsDialogComponent } from '../../dialogs/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
+import { ManageStateDialogComponent, ManageStateDialogData } from '../../dialogs/manage-state-dialog/manage-state-dialog.component';
+import { UsableRoutes } from '../../usable-routes';
+import { AuthService } from '../../services/auth.service';
+import { AccountDialogComponent } from '../../dialogs/account-dialog/account-dialog.component';
 
 @Component({
   selector: 'cp-edit-universe-action-panel',
@@ -25,7 +29,8 @@ export class EditUniverseActionPanelComponent extends WithDestroy() {
               setupService: SetupService,
               cdr: ChangeDetectorRef,
               snackBar: MatSnackBar,
-              analyticsService: AnalyticsService) {
+              analyticsService: AnalyticsService,
+              authService: AuthService) {
     super();
 
     this.actions = [
@@ -78,6 +83,29 @@ export class EditUniverseActionPanelComponent extends WithDestroy() {
             });
         },
       }),
+      new ActionOption('Manage Save Games', Icons.Storage, {
+          action: () => {
+            analyticsService.logEvent('Call state dialog', {
+              category: EventLogs.Category.State,
+            });
+
+            dialog.open(ManageStateDialogComponent, {
+              data: {
+                context: UsableRoutes.SignalCheck,
+              } as ManageStateDialogData,
+            });
+          },
+        }, undefined, false, undefined,
+        {
+          unavailable$: authService.user$.pipe(map(user => user === null), startWith(true)),
+          tooltip: 'Save games are only available when signed in',
+          action: () => {
+            analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
+
+            dialog.open(AccountDialogComponent);
+          },
+        },
+      ),
     ];
   }
 

@@ -70,18 +70,6 @@ export class AppInfoActionPanelComponent extends WithDestroy() {
         'View privacy statement and settings',
         !localStorage.getItem('ksp-commnet-planner-privacy-viewed'),
         () => localStorage.setItem('ksp-commnet-planner-privacy-viewed', true.toString())),
-      // new ActionOption('Account', Icons.AccountSettings, {
-      //   action: () => {
-      //     analyticsService.logEvent('Call account dialog', {
-      //       category: EventLogs.Category.Account,
-      //     });
-      //
-      //     dialog.open(AccountDialogComponent)
-      //       .afterClosed()
-      //       .pipe(takeUntil(this.destroy$))
-      //       .subscribe();
-      //   },
-      // }),
       new ActionOption('Credits', Icons.Credits, {
         action: () => {
           analyticsService.logEvent('Call Credits dialog', {

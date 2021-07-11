@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
-import { SpaceObject, SpaceObjectType } from '../../common/domain/space-objects/space-object';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
@@ -19,6 +19,9 @@ import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
 import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
+import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import { StateService } from '../../services/state.service';
+import { UsableRoutes } from '../../usable-routes';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -43,8 +46,13 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              stateService: StateService,
+              private cameraService: CameraService) {
     super();
+
+    stateService.pageContext = UsableRoutes.SignalCheck;
+    stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 
     this.orbits$ = this.spaceObjectService.orbits$;
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;
@@ -52,11 +60,12 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
     this.crafts$ = this.spaceObjectService.crafts$;
   }
 
-  startBodyDrag(body: SpaceObject, event: MouseEvent, screen: HTMLDivElement, camera?: CameraComponent) {
+  startBodyDrag(body: SpaceObject, event: PointerEvent, screen: HTMLDivElement, camera?: CameraComponent) {
     body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
 
     this.analyticsService.logEvent('Drag body', {
       category: EventLogs.Category.CelestialBody,
+      touch: event.pointerType === 'touch',
       details: {
         label: EventLogs.Sanitize.anonymize(body.label),
       },
@@ -131,4 +140,14 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
     this.faqButtonLeft = (document.querySelector('mat-expansion-panel.top-left') as HTMLElement)?.offsetWidth;
   }
 
+  focusBody(body: SpaceObject, event: PointerEvent) {
+    this.cameraService.focusSpaceObject(body, event.pointerType === 'touch');
+
+    this.analyticsService.logEvent(
+      `Focus body with double tap or click`, {
+        category: EventLogs.Category.Camera,
+        touch: event.pointerType === 'touch',
+        body: EventLogs.Sanitize.anonymize(body.label),
+      });
+  }
 }

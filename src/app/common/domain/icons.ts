@@ -5,6 +5,9 @@ export class Icons {
   static Hamburger = 'menu';
   static Craft = 'flight';
   static Clear = 'clear';
+  static Cancel = Icons.Clear;
+  static Check = 'check';
+  static Edit = 'edit';
   static Backspace = 'backspace';
   static Delete = 'delete_forever';
   static DeleteAll = 'delete_sweep';
@@ -31,6 +34,16 @@ export class Icons {
   static OpenDetails = 'menu_open';
   static Construction = 'construction';
   static Star = 'star';
-
+  static Guest = 'account_circle';
+  static Storage = 'save';
+  static File = 'description';
+  static Load = 'play_arrow';
+  static Upload = 'upload';
+  static Reset = 'rotate_left';
+  static Download = 'download';
+  static Email = 'email';
+  static Password = 'lock';
+  static Visible = 'visibility';
+  static Invisible = 'visibility_off';
 
 }

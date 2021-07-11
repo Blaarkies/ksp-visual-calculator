@@ -2,10 +2,11 @@ import * as antennaPartsJson from 'src/assets/stock/antenna-parts.json';
 import { Antenna } from './antenna';
 import { AntennaPart } from '../../services/json-interfaces/antenna-part';
 import { TransmissionLine } from './transmission-line';
-import { SpaceObject, SpaceObjectType } from './space-objects/space-object';
+import { SpaceObject} from './space-objects/space-object';
 import { Group } from './group';
 import { SetupService } from '../../services/setup.service';
 import { DifficultySetting } from '../../dialogs/difficulty-settings-dialog/difficulty-setting';
+import { SpaceObjectType } from './space-objects/space-object-type';
 
 interface SignalScenario {
   label: string;

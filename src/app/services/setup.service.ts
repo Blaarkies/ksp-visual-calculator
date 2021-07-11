@@ -4,13 +4,14 @@ import { AntennaPart } from './json-interfaces/antenna-part';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Antenna } from '../common/domain/antenna';
 import { CelestialBody, KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
-import { SpaceObject, SpaceObjectType } from '../common/domain/space-objects/space-object';
+import { SpaceObject} from '../common/domain/space-objects/space-object';
 import { Orbit } from '../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { map, takeUntil } from 'rxjs/operators';
 import { LabeledOption } from '../common/domain/input-fields/labeled-option';
 import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
 import { WithDestroy } from '../common/with-destroy';
+import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 
 @Injectable({
   providedIn: 'root',
@@ -94,7 +95,8 @@ export class SetupService extends WithDestroy() {
     // Done setup, call first location init
     bodyToJsonMapEntries
       .find(([, so]) => so.type === SpaceObjectType.Star)[1]
-      .draggableHandle.updateConstrainLocation({xy: [0, 0]});
+      .draggableHandle
+      .updateConstrainLocation({xy: [0, 0]} as OrbitParameterData);
     let listOrbits = Array.from(bodyOrbitMap.values());
     let celestialBodies = bodyToJsonMapEntries.map(([, so]) => so);
 

@@ -24,6 +24,7 @@
                                  [spaceObject]="body"
                                  [scale]="camera.scale"
                                  (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
+                                 (focusObject)="focusBody(body, $event)"
                                  (editSpaceObject)="editCelestialBody(body)">
         <div class="div-as-image"
              draggable="false"
@@ -41,6 +42,7 @@
                                [spaceObject]="craft"
                                [scale]="camera.scale"
                                (dragSpaceObject)="startBodyDrag(craft, $event, screen, camera)"
+                               (focusObject)="focusBody(craft, $event)"
                                (editSpaceObject)="editCraft(craft)">
       <div class="craft-icon-sprite-image"
            draggable="false"

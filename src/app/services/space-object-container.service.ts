@@ -9,9 +9,9 @@ import { Vector2 } from '../common/domain/vector2';
 })
 export class SpaceObjectContainerService {
 
+  // Removes the circular dependency from Craft <-> SpaceObjectService
   static instance: SpaceObjectContainerService;
 
-  // Removes the circular dependency from Craft <-> SpaceObjectService
   celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
   crafts$ = new BehaviorSubject<Craft[]>(null);
 

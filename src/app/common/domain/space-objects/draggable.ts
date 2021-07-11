@@ -1,4 +1,4 @@
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent, Observable, Subject } from 'rxjs';
 import { filter, finalize, map, takeUntil, throttleTime } from 'rxjs/operators';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
@@ -22,8 +22,21 @@ export class Draggable extends WithDestroy() {
 
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
-  private parent: Draggable;
+  private lastActivatedSoi: SpaceObject;
+  public parent: Draggable;
   public orbit: Orbit;
+
+  toJson(): {} {
+    return {
+      location: this.location.toList(),
+      lastAttemptLocation: this.lastAttemptLocation,
+      children: this.children?.map(d => d.label),
+      orbit: this.orbit?.toJson(),
+      label: this.label,
+      imageUrl: this.imageUrl,
+      moveType: this.moveType,
+    };
+  }
 
   constructor(public label: string,
               public imageUrl: string,
@@ -42,38 +55,59 @@ export class Draggable extends WithDestroy() {
     draggables.forEach(so => so.parent = this);
   }
 
-  startDrag(event: MouseEvent,
+  startDrag(event: PointerEvent,
             screen: HTMLDivElement,
             updateCallback: () => void = () => void 0,
             camera?: CameraComponent) {
-    screen.style.cursor = 'grabbing';
-    this.isGrabbing = true;
-
     if (this.moveType === 'soiLock') {
       this.constrainLocation = LocationConstraints.anyMove(this.location.toList());
     }
 
     updateCallback();
 
-    fromEvent(screen, 'mousemove')
-      .pipe(
-        throttleTime(25),
-        // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
-        filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
-        map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
-        map(pair => camera
-          ? [pair[0] / camera.scale, pair[1] / camera.scale]
-          : pair),
-        finalize(() => {
-          screen.style.cursor = 'unset';
-          this.isGrabbing = false;
-          this.placeCraftInSoiLock();
-          updateCallback();
-        }),
-        takeUntil(fromEvent(screen, 'mouseleave')),
-        takeUntil(fromEvent(event.target, 'mouseup')),
-        takeUntil(fromEvent(screen, 'mouseup')),
-        takeUntil(this.destroy$))
+    let pointerStream: Observable<number[]>;
+
+    if (event.pointerType === 'mouse') {
+      screen.style.cursor = 'grabbing';
+      this.isGrabbing = true;
+
+      pointerStream = fromEvent(screen, 'mousemove')
+        .pipe(
+          throttleTime(25),
+          // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+          filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
+          map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
+          finalize(() => {
+            screen.style.cursor = 'unset';
+            this.isGrabbing = false;
+          }),
+          takeUntil(fromEvent(screen, 'mouseleave')),
+          takeUntil(fromEvent(event.target, 'mouseup')),
+          takeUntil(fromEvent(screen, 'mouseup')));
+
+    } else if (event.pointerType === 'touch') {
+      pointerStream = fromEvent(screen, 'touchmove')
+        .pipe(
+          throttleTime(33),
+          filter((touch: TouchEvent) => touch.changedTouches.length === 1),
+          map((touchEvent: TouchEvent) => {
+            let touch = touchEvent.touches[0];
+            return [touch.pageX - camera.location.x, touch.pageY - camera.location.y];
+          }),
+          takeUntil(fromEvent(screen, 'touchcancel')),
+          takeUntil(fromEvent(event.target, 'touchend')),
+          takeUntil(fromEvent(screen, 'touchend')));
+    }
+
+    pointerStream.pipe(
+      map(pair => camera
+        ? [pair[0] / camera.scale, pair[1] / camera.scale]
+        : pair),
+      finalize(() => {
+        this.placeCraftInSoiLock();
+        updateCallback();
+      }),
+      takeUntil(this.destroy$))
       .subscribe(xy => {
         this.lastAttemptLocation = xy;
         this.setNewLocation(xy);
@@ -98,14 +132,13 @@ export class Draggable extends WithDestroy() {
       .forEach(d => d.updateConstrainLocation({
         xy: newCenter,
         r: d.parameterData.r,
-      }));
+      } as OrbitParameterData));
 
     this.children
       .filter(d => d.moveType === 'soiLock')
       .forEach(d => {
         let newLocation = d.constrainLocation(newCenter[0], newCenter[1]);
         d.location.set(newLocation);
-        d.updateChildren(newLocation);
       });
   }
 
@@ -148,11 +181,10 @@ export class Draggable extends WithDestroy() {
     this.lastActivatedSoi.draggableHandle.addChild(this);
 
     this.constrainLocation = LocationConstraints.soiLock(this.location, this.lastActivatedSoi.location);
+    this.parent = this.lastActivatedSoi.draggableHandle;
 
     this.lastActivatedSoi = undefined;
   }
-
-  private lastActivatedSoi: SpaceObject;
 
   private showSoiUnderCraft() {
     if (this.moveType !== 'soiLock') {
@@ -173,6 +205,7 @@ export class Draggable extends WithDestroy() {
     this.children = this.children
       .filter(d => d !== draggable)
       .concat(draggable);
+    draggable.parent = this;
   }
 
   removeChild(draggable: Draggable) {
@@ -182,5 +215,8 @@ export class Draggable extends WithDestroy() {
 
   replaceChild(stale: Draggable, fresh: Draggable) {
     this.children.replace(stale, fresh, true);
+    stale.parent = undefined;
+    fresh.parent = this;
   }
+
 }

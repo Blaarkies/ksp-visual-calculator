@@ -1,0 +1,98 @@
+<ng-container *ngIf="authService.user$ | async as user; else noUser">
+  <h1 mat-dialog-title>Account Details</h1>
+
+  <div mat-dialog-content class="details-layout">
+    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/guest-account.png'"/>
+
+    <div>
+      <div>Name: {{user.displayName}}</div>
+
+      <div>Email: {{user.email}}</div>
+    </div>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-flat-button
+            color="warn"
+            (click)="logout()">
+      Sign Out
+    </button>
+
+    <button color="primary"
+            mat-stroked-button
+            mat-dialog-close>
+      Ok
+    </button>
+  </div>
+
+</ng-container>
+
+<ng-template #noUser>
+  <h1 mat-dialog-title>Sign In</h1>
+
+  <div mat-dialog-content class="sign-in-layout">
+    <img class="app-image" src="assets/logos/ksp-visual-calculator.png"/>
+
+    <div class="promote-sign-in">
+      <div>Signing in accesses save game features</div>
+      <ul>
+        <li>Continue where you left off</li>
+        <li>Manage multiple save games</li>
+        <li>Load your save games from multiple devices</li>
+        <li>Import/Export save games to share with friends</li>
+      </ul>
+    </div>
+
+    <div class="email-inputs-container">
+      <div class="input-container">
+        <mat-icon>{{icons.Email}}</mat-icon>
+        <cp-input-field label="Email Address"
+                        [formControl]="controlEmail"
+                        [errors]="controlEmail.dirty && controlEmail.errors"></cp-input-field>
+      </div>
+
+      <div class="input-container">
+        <mat-icon>{{icons.Password}}</mat-icon>
+        <cp-input-field label="Password"
+                        [type]="passwordVisible ? 'text' : 'password'"
+                        [formControl]="controlPassword"
+                        [errors]="controlPassword.dirty && controlPassword.errors"></cp-input-field>
+        <button mat-icon-button
+                (click)="passwordVisible = !passwordVisible">
+          <mat-icon>{{passwordVisible ? icons.Visible : icons.Invisible}}</mat-icon>
+        </button>
+      </div>
+
+      <button mat-button
+              class="forgot-password link"
+              [disabled]="controlEmail.invalid"
+              (click)="forgotPassword()">
+        Forgot password?
+      </button>
+    </div>
+
+    <div class="sign-in-button-email-container">
+      <button mat-stroked-button
+              class="button-loader"
+              (click)="signInWithEmailAddress()"
+              [disabled]="controlEmail.invalid || controlPassword.invalid"
+              [matTooltip]="'If you do not have an account, this will create one'">
+        <mat-icon>{{icons.Email}}</mat-icon>
+        <span>Sign in with email address</span>
+        <mat-progress-bar [@animateFade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
+      </button>
+      <mat-error [@animateFade] *ngIf="emailSignInError$ | async as errorMessage">{{errorMessage}}</mat-error>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <button mat-stroked-button
+            class="button-loader"
+            (click)="signInWithGoogle()">
+      <img class="google-g-logo" src="assets/logos/google-g.svg"/>
+      <span>Sign in with Google</span>
+      <mat-progress-bar [@animateFade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
+    </button>
+
+  </div>
+</ng-template>

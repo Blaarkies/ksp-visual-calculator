@@ -11,6 +11,8 @@
 }
 
 .faq-layout {
+  box-shadow: inset 0 0 6px 2px #0002;
+
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px 60px;

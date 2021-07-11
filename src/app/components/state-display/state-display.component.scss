@@ -1,0 +1,17 @@
+.layout {
+  display: grid;
+}
+
+.property-line {
+  padding: 4px 0;
+
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #0002;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}

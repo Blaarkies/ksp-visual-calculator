@@ -5,8 +5,10 @@ import { ActionOption } from './common/domain/action-option';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './dialogs/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
+import { Observable } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'cp-root',
@@ -35,46 +37,57 @@ export class AppComponent extends WithDestroy() implements OnInit {
   ];
 
   constructor(private dialog: MatDialog,
-              private tutorialService: TutorialService) {
+              private tutorialService: TutorialService,
+              private snackBar: MatSnackBar) {
     super();
   }
 
   ngOnInit() {
+    let showFirstVisitDialog = () => {
+      if (!localStorage.getItem('ksp-commnet-planner-first-visit')) {
+        localStorage.setItem('ksp-commnet-planner-first-visit', true.toString());
+        this.triggerFirstVisitDialog();
+      }
+    };
+
     // x912:y528 , minimum screen size to use the app
     if (window.innerWidth < 912
       || window.innerHeight < 528) {
-      this.triggerUnsupportedScreenSizeDialog();
+      this.triggerUnsupportedScreenSizeDialog()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => showFirstVisitDialog());
       return;
     }
 
-    if (!localStorage.getItem('ksp-commnet-planner-first-visit')) {
-      localStorage.setItem('ksp-commnet-planner-first-visit', true.toString());
-      this.triggerFirstVisitDialog();
-    }
+    showFirstVisitDialog();
   }
 
-  private triggerUnsupportedScreenSizeDialog() {
-    this.dialog.open(SimpleDialogComponent, {
+  private triggerUnsupportedScreenSizeDialog(): Observable<void> {
+    return this.dialog.open(SimpleDialogComponent, {
+      disableClose: true,
       data: {
-        title: 'Unsupported Screen Size',
+        title: 'Beta Support for Device',
         descriptions: [
-          'The detected screen size is too small to use without visual issues.',
-          'Currently, only computer monitors, and mouse input (as opposed to touch screen input) is supported.',
+          'The detected screen size indicates a mobile device.',
+          'Touch screen control is in beta support currently, and some features may not function as intended.',
+          'Please provide feedback if you find issues. The feedback form can be found under the "Information" menu -> "Feedback"',
         ],
         okButtonText: 'Continue',
         cancelButtonText: null,
       } as SimpleDialogData,
-    });
+    })
+      .afterClosed();
   }
 
   private triggerFirstVisitDialog() {
     this.dialog.open(SimpleDialogComponent, {
+      disableClose: true,
       data: {
         title: 'First Visit?',
         descriptions: [
-          'You can start the tutorial now, or if you prefer later, you can find it in the "Information" menu in the top-right.',
+          'There is an orange quick-help button in the top-left corner that can explain the control scheme.',
+          'You can start a detailed tutorial now, or if you prefer later, you can find it in the "Information" menu in the top-right corner.',
           'This is a tool to help players visualize their communication networks in Kerbal Space Program. Players can plan the details around a CommNet before even launching their first rocket.',
-          'There is an orange quick-help button on the top-left side that can explain more details.',
         ],
         okButtonText: 'Start Tutorial',
         cancelButtonText: 'Skip',
@@ -83,6 +96,11 @@ export class AppComponent extends WithDestroy() implements OnInit {
     })
       .afterClosed()
       .pipe(
+        tap(ok => {
+          if (!ok) {
+            this.snackBar.open('Check out the control scheme by clicking the orange help button', null, {duration: 15e3});
+          }
+        }),
         filter(ok => ok),
         takeUntil(this.destroy$))
       .subscribe(() => this.tutorialService.startFullTutorial());

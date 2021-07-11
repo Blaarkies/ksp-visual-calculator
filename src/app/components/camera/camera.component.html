@@ -4,7 +4,8 @@
      [style.background-position-y.px]="location.y * .2"
      [style.background-size.px]="3e3 * scale.pow(.1)"
      (wheel)="updateScale($event)"
-     (mousedown)="startMove($event, cameraController)"
+     (mousedown)="mouseDown($event, cameraController)"
+     (touchstart)="touchStart($event, cameraController)"
      (contextmenu)="$event.shiftKey || $event.preventDefault()">
 
   <div #screenSpace

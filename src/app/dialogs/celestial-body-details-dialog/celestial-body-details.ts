@@ -1,5 +1,5 @@
-import { SpaceObjectType } from '../../common/domain/space-objects/space-object';
 import { Antenna } from '../../common/domain/antenna';
+import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 
 export class CelestialBodyDetails {
 

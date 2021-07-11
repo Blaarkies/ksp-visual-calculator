@@ -4,7 +4,7 @@ import { LabeledOption } from '../input-fields/labeled-option';
 export class CraftType {
 
   constructor(public icon: string,
-              private label: string,
+              public label: string,
               public iconLocation) {
   }
 
@@ -32,6 +32,14 @@ export class CraftType {
 
   static List = CraftType.All.map(ct => new LabeledOption(ct.label, ct));
 
+  static fromString(type: string) {
+    let match = CraftType.All.find(t => t.label === type);
+    if (!match) {
+      throw console.error(`${type} is not a valid CraftType`);
+    }
+
+    return match;
+  }
 }
 
 // Hi-res images

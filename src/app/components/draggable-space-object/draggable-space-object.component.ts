@@ -5,6 +5,7 @@ import { CameraService } from '../../services/camera.service';
 import { filter, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { Icons } from '../../common/domain/icons';
 
 @Component({
   selector: 'cp-draggable-space-object',
@@ -18,10 +19,13 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
   @Input() spaceObject: SpaceObject;
   @Input() scale: number;
 
-  @Output() dragSpaceObject = new EventEmitter<MouseEvent>();
+  @Output() dragSpaceObject = new EventEmitter<PointerEvent>();
+  @Output() focusObject = new EventEmitter<PointerEvent>();
   @Output() editSpaceObject = new EventEmitter<void>();
 
   buttonHover$ = new Subject<boolean>();
+
+  icons = Icons;
 
   constructor(cameraService: CameraService) {
     super();

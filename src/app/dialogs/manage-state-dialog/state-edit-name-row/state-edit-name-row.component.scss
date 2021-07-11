@@ -1,0 +1,40 @@
+.list-row {
+  padding: 6px !important;
+
+  display: grid;
+
+  .name {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      margin: -12px;
+      color: var(--color-icon-muted);
+      transition: .3s ease-in-out;
+
+      &:hover {
+        background-color: #0002;
+      }
+    }
+
+    .edit-name-input {
+
+    }
+
+    .yes-no-buttons {
+      button {
+        margin: 0 !important;
+      }
+    }
+  }
+
+  .meta {
+    font-size: .8em;
+    color: var(--color-text-muted);
+    padding-left: 12px;
+
+    display: flex;
+    gap: 40px;
+    justify-content: space-between;
+  }
+}
