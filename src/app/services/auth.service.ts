@@ -3,7 +3,7 @@ import firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable, of, zip } from 'rxjs';
 import { Router } from '@angular/router';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { filter, map, scan, skip, startWith, switchMap, switchMapTo, take, tap } from 'rxjs/operators';
 import { DataService, User } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -42,8 +42,8 @@ export class AuthService {
 
           let newState = JSON.stringify(stateService.getTimelessState(stateService.state));
           if (earlyState !== newState) {
-            return snackBar.open('Latest save game found, discard current changes and load that one?',
-              'Discard Changes', {duration: 10e3})
+            return snackBar.open(`Latest save game found, discard current changes and load "${states[0]?.name}"?`,
+              'Discard Changes', {duration: 15e3})
               .afterDismissed()
               .pipe(map(value => [value.dismissedByAction, states]));
           } else {
@@ -70,6 +70,7 @@ export class AuthService {
     await this.afAuth.signOut();
     await this.router.navigate(['/']);
     await this.stateService.loadState().pipe(take(1)).toPromise();
+    this.stateService.setStateRecord();
   }
 
   private async updateUserData(user): Promise<void> {
@@ -111,6 +112,18 @@ export class AuthService {
       .pipe(take(1))
       .toPromise();
     let newestState = states[0];
+
+    if (this.stateService.stateIsUnsaved) {
+      let {dismissedByAction} = await this.snackBar
+        .open(`Latest save game found, discard current changes and load "${newestState?.name}"?`,
+        'Discard Changes', {duration: 15e3})
+        .afterDismissed()
+        .toPromise();
+      if (!dismissedByAction) {
+        return;
+      }
+    }
+
     await this.stateService.loadState(newestState?.state).pipe(take(1)).toPromise();
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);

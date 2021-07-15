@@ -31,7 +31,7 @@ export class AccountDetailsComponent extends WithDestroy() {
     super();
   }
 
-  logout() {
+  actionSignOut() {
     this.authService.signOut()
       .then(() => {
         this.snackBar.open('Signed out');

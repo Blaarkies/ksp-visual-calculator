@@ -211,7 +211,7 @@ export class ManageStateDialogComponent extends WithDestroy() {
     });
   }
 
-  async archiveState(state: StateRow) {
+  async saveState(state: StateRow) {
     this.buttonLoaders.save$.next(true);
     await this.stateService.saveState(state)
       .catch(error => {

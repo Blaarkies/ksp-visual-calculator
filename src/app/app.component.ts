@@ -5,10 +5,12 @@ import { ActionOption } from './common/domain/action-option';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './dialogs/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
-import { filter, takeUntil, tap } from 'rxjs/operators';
+import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from './services/auth.service';
+import { AccountDialogComponent } from './dialogs/account-dialog/account-dialog.component';
 
 @Component({
   selector: 'cp-root',
@@ -38,8 +40,17 @@ export class AppComponent extends WithDestroy() implements OnInit {
 
   constructor(private dialog: MatDialog,
               private tutorialService: TutorialService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private authService: AuthService) {
     super();
+
+    this.authService
+      .user$
+      .pipe(
+        filter(user => user === null),
+        take(1),
+        takeUntil(this.destroy$))
+      .subscribe(() => this.dialog.open(AccountDialogComponent));
   }
 
   ngOnInit() {
