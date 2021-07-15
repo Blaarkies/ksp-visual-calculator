@@ -74,6 +74,7 @@ import { StateEditNameRowComponent } from './dialogs/manage-state-dialog/state-e
 import { FileDropDirective } from './directives/file-drop.directive';
 import { AccountDetailsComponent } from './components/account-details/account-details.component';
 import { DoublePointerActionDirective } from './directives/double-pointer-action.directive';
+import { HudComponent } from './components/hud/hud.component';
 
 @NgModule({
   declarations: [
@@ -120,6 +121,7 @@ import { DoublePointerActionDirective } from './directives/double-pointer-action
     FileDropDirective,
     AccountDetailsComponent,
     DoublePointerActionDirective,
+    HudComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

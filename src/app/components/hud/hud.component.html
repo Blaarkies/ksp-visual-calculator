@@ -1,0 +1,39 @@
+<div class="hud-layout">
+
+  <cp-action-panel class="navigation"
+                   startTitle="KSP CommNet Planner"
+                   [options]="navigationOptions"></cp-action-panel>
+
+  <button class="faq" mat-icon-button color="accent" (click)="openFaq()">
+    <mat-icon>{{icons.Help}}</mat-icon>
+  </button>
+
+  <cp-action-panel class="information"
+                   startTitle="Information"
+                   location="top-right"
+                   color="cosmic-blue"
+                   [options]="infoOptions">
+    <div class="profile-icon">
+      <cp-user-profile></cp-user-profile>
+    </div>
+  </cp-action-panel>
+
+
+  <cp-zoom-indicator class="zoom no-mouse"
+                     [zoomLimits]="cameraZoomLimits"
+                     [cameraScale]="scale"
+                     [moonScale]="scaleToShowMoons"></cp-zoom-indicator>
+
+
+  <cp-focus-jump-to-panel class="focus"></cp-focus-jump-to-panel>
+
+  <cp-action-panel class="context"
+                   *ngIf="contextPanel$ | async as details"
+                   [startTitle]="details.startTitle"
+                   location="bottom-left"
+                   [color]="details.color || 'orange'"
+                   [startIcon]="details.startIcon || 'menu_open'"
+                   [options]="details.options">
+  </cp-action-panel>
+
+</div>

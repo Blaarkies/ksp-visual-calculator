@@ -3,6 +3,9 @@ import { Icons } from '../../common/domain/icons';
 import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 
+export type ActionPanelColors = 'green' | 'orange' | 'cosmic-blue';
+export type Locations = 'top-left' | 'bottom-left' | 'top-right';
+
 @Component({
   selector: 'cp-action-panel',
   templateUrl: './action-panel.component.html',
@@ -11,12 +14,13 @@ import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 })
 export class ActionPanelComponent {
 
-  @Input() color: 'green' | 'orange' | 'cosmic-blue' = 'green';
-  @Input() location: 'top-left' | 'bottom-left' | 'top-right' = 'top-left';
-  @Input() startIcon = Icons.Hamburger;
+  @Input() color: ActionPanelColors = 'green';
+  @Input() location: Locations = 'top-left';
+  @Input() startIcon: Icons = Icons.Hamburger;
   @Input() startTitle?: string;
 
   private actionOptions: ActionOption[];
+
   get options(): ActionOption[] {
     return this.actionOptions;
   }

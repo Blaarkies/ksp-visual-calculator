@@ -1,0 +1,37 @@
+.hud-layout {
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: max-content auto max-content;
+  grid-template-rows: max-content max-content auto max-content;
+
+  grid-template-areas:
+'nav     faq    info'
+'zoom    zoom   zoom'
+'focus   .      .'
+'context .      clippy';
+}
+
+.navigation {grid-area: nav;}
+
+.faq {grid-area: faq;}
+
+.information {grid-area: info;}
+
+.zoom {grid-area: zoom;}
+
+.focus {grid-area: focus;}
+
+.context {grid-area: context;}
+
+//.clippy {grid-area: clippy}
+
+.no-mouse {
+  pointer-events: none;
+}
+
+.profile-icon {
+  border-radius: 100px;
+  position: absolute;
+  right: 6px;
+}

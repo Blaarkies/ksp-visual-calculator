@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
@@ -18,10 +18,10 @@ import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
-import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateService } from '../../services/state.service';
 import { UsableRoutes } from '../../usable-routes';
+import { HudService } from '../../services/hud.service';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -30,7 +30,7 @@ import { UsableRoutes } from '../../usable-routes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [CustomAnimation.animateFade],
 })
-export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
+export class PageSignalCheckComponent extends WithDestroy() {
 
   orbits$: Observable<Orbit[]>;
   transmissionLines$: Observable<TransmissionLine[]>;
@@ -41,16 +41,17 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
   scaleToShowMoons = CameraService.scaleToShowMoons;
 
   icons = Icons;
-  faqButtonLeft = 280;
 
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               stateService: StateService,
+              hudService: HudService,
               private cameraService: CameraService) {
     super();
 
+    hudService.pageContext = UsableRoutes.SignalCheck;
     stateService.pageContext = UsableRoutes.SignalCheck;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 
@@ -126,20 +127,6 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
       });
   }
 
-  openFaq() {
-    this.analyticsService.logEvent('Open faq dialog', {
-      category: EventLogs.Category.Help,
-    });
-
-    this.dialog.open(FaqDialogComponent, {
-      data: {} as FaqDialogData,
-    });
-  }
-
-  ngOnInit() {
-    this.faqButtonLeft = (document.querySelector('mat-expansion-panel.top-left') as HTMLElement)?.offsetWidth;
-  }
-
   focusBody(body: SpaceObject, event: PointerEvent) {
     this.cameraService.focusSpaceObject(body, event.pointerType === 'touch');
 
@@ -150,4 +137,5 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
         body: EventLogs.Sanitize.anonymize(body.label),
       });
   }
+
 }
