@@ -1,0 +1,5 @@
+<h3 *ngIf="data.title">{{data.title}}</h3>
+
+<cp-action-list [options]="data.actionOptions"
+                [justifyRight]="true"
+                (action)="bottomSheetRef.dismiss()"></cp-action-list>

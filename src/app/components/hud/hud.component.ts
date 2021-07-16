@@ -9,12 +9,22 @@ import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { Observable } from 'rxjs';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { map, take } from 'rxjs/operators';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ActionBottomSheetComponent, ActionBottomSheetData } from '../../dialogs/list-bottom-sheet/action-bottom-sheet.component';
 
 export class ActionPanelDetails {
   startTitle?: string;
   color: ActionPanelColors;
   startIcon: Icons;
   options: ActionOption[];
+}
+
+export class ActionPanelTypes {
+  static General = 'general';
+  static Information = 'information';
+  static Context = 'context';
 }
 
 @Component({
@@ -31,7 +41,9 @@ export class HudComponent extends WithDestroy() {
     return this.hudService.contextPanel$.asObservable();
   }
 
+  isHandset$: Observable<boolean>;
   icons = Icons;
+  panelTypes = ActionPanelTypes;
   cameraZoomLimits = CameraService.zoomLimits;
   scaleToShowMoons = CameraService.scaleToShowMoons;
 
@@ -42,11 +54,19 @@ export class HudComponent extends WithDestroy() {
   constructor(private hudService: HudService,
               private analyticsService: AnalyticsService,
               private dialog: MatDialog,
-              private cameraService: CameraService) {
+              private cameraService: CameraService,
+              breakpointObserver: BreakpointObserver,
+              private bottomSheet: MatBottomSheet) {
     super();
 
     this.navigationOptions = hudService.navigationOptions;
     this.infoOptions = hudService.infoOptions;
+
+    this.isHandset$ = breakpointObserver.observe([
+      '(max-width: 600px)',
+      '(max-height: 800px)',
+    ])
+      .pipe(map(bp => bp.matches));
   }
 
   openFaq() {
@@ -59,5 +79,37 @@ export class HudComponent extends WithDestroy() {
     });
   }
 
+
+  async openBottomSheet(panelType: string) {
+    switch (panelType) {
+      case ActionPanelTypes.General:
+        return this.bottomSheet.open(ActionBottomSheetComponent, {
+          data: {
+            title: 'KSP Visual Calculator',
+            actionOptions: this.navigationOptions,
+          } as ActionBottomSheetData,
+          panelClass: ['bottom-sheet-panel', 'green'],
+        });
+      case ActionPanelTypes.Information:
+        return this.bottomSheet.open(ActionBottomSheetComponent, {
+          data: {
+            title: 'Information',
+            actionOptions: this.infoOptions,
+          } as ActionBottomSheetData,
+          panelClass: ['bottom-sheet-panel', 'cosmic-blue'],
+        });
+      case ActionPanelTypes.Context:
+        let panel = await this.contextPanel$.pipe(take(1)).toPromise();
+        return this.bottomSheet.open(ActionBottomSheetComponent, {
+          data: {
+            title: panel.startTitle,
+            actionOptions: panel.options,
+          } as ActionBottomSheetData,
+          panelClass: ['bottom-sheet-panel', 'orange'],
+        });
+      default:
+        throw console.error(`No bottom-sheet defined for "${panelType}"`);
+    }
+  }
 
 }

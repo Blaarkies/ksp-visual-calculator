@@ -75,6 +75,9 @@ import { FileDropDirective } from './directives/file-drop.directive';
 import { AccountDetailsComponent } from './components/account-details/account-details.component';
 import { DoublePointerActionDirective } from './directives/double-pointer-action.directive';
 import { HudComponent } from './components/hud/hud.component';
+import { ActionBottomSheetComponent } from './dialogs/list-bottom-sheet/action-bottom-sheet.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { ActionListComponent } from './components/action-list/action-list.component';
 
 @NgModule({
   declarations: [
@@ -122,6 +125,8 @@ import { HudComponent } from './components/hud/hud.component';
     AccountDetailsComponent,
     DoublePointerActionDirective,
     HudComponent,
+    ActionBottomSheetComponent,
+    ActionListComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
@@ -155,6 +160,7 @@ import { HudComponent } from './components/hud/hud.component';
     MatTooltipModule,
     MatTabsModule,
     MatProgressBarModule,
+    MatBottomSheetModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

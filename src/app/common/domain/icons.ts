@@ -23,6 +23,7 @@ export class Icons {
   static Coffee = 'emoji_food_beverage';
   static Feedback = 'comment';
   static Help = 'help';
+  static Info = 'info';
   static Camera = 'videocam';
   static Antenna = 'settings_input_antenna';
   static ZoomIn = 'zoom_in';
@@ -45,5 +46,6 @@ export class Icons {
   static Password = 'lock';
   static Visible = 'visibility';
   static Invisible = 'visibility_off';
+  static Home = 'home';
 
 }

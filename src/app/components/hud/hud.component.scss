@@ -35,3 +35,61 @@
   position: absolute;
   right: 6px;
 }
+
+.handset-layout {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: max-content max-content auto max-content;
+  grid-template-areas:
+'faq    profile'
+'focus  .'
+'focus  .'
+'clippy fab-buttons';
+
+  gap: 10px;
+
+  .faq {
+    grid-area: faq;
+    margin: 4px;
+    & mat-icon {
+      font-size: 2em;
+    }
+  }
+
+  .profile {
+    grid-area: profile;
+    margin: 4px;
+  }
+
+  .zoom {
+    grid-column: 1 / 3;
+    grid-row: 2;
+  }
+
+  .fab-buttons {
+    padding: 20px;
+    grid-area: fab-buttons;
+    justify-self: end;
+
+    display: flex;
+    gap: 10px;
+
+    & > button {
+      color: white;
+    }
+
+    .green {
+      background-color: var(--color-background-panel-green);
+    }
+
+    .cosmic-blue {
+      background-color: var(--color-background-panel-cosmic-blue);
+    }
+
+    .orange {
+      background-color: var(--color-background-panel-orange);
+    }
+  }
+
+}

@@ -1,0 +1,23 @@
+h3 {
+  margin: 12px 12px 0 !important;
+}
+
+.bottom-sheet-panel {
+  padding: 0;
+
+  * {
+    color: white !important;
+  }
+
+  &.green {
+    background-color: var(--color-background-panel-green);
+  }
+
+  &.orange {
+    background-color: var(--color-background-panel-orange);
+  }
+
+  &.cosmic-blue {
+    background-color: var(--color-background-panel-cosmic-blue);
+  }
+}

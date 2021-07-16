@@ -1,7 +1,10 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Icons } from '../../common/domain/icons';
-import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { ActionOption } from '../../common/domain/action-option';
+import { MatExpansionPanel } from '@angular/material/expansion';
+import { fromEvent } from 'rxjs';
+import { take, takeUntil } from 'rxjs/operators';
+import { WithDestroy } from '../../common/with-destroy';
 
 export type ActionPanelColors = 'green' | 'orange' | 'cosmic-blue';
 export type Locations = 'top-left' | 'bottom-left' | 'top-right';
@@ -12,49 +15,26 @@ export type Locations = 'top-left' | 'bottom-left' | 'top-right';
   styleUrls: ['./action-panel.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ActionPanelComponent {
+export class ActionPanelComponent extends WithDestroy() {
 
   @Input() color: ActionPanelColors = 'green';
   @Input() location: Locations = 'top-left';
   @Input() startIcon: Icons = Icons.Hamburger;
   @Input() startTitle?: string;
-
-  private actionOptions: ActionOption[];
-
-  get options(): ActionOption[] {
-    return this.actionOptions;
-  }
-
-  @Input() set options(value: ActionOption[]) {
-    this.actionOptions = value ?? [];
-    this.unreadCount = this.actionOptions.count(ao => ao.unread);
-  }
+  @Input() options: ActionOption[];
 
   icons = Icons;
-  actionTypes = ActionOptionType;
   unreadCount: number;
 
-  constructor(private analyticsService: AnalyticsService) {
+  constructor() {
+    super();
   }
 
-  updateUnreads(option: ActionOption) {
-    option.readNotification();
-    this.unreadCount = this.actionOptions.count(ao => ao.unread);
-  }
-
-  logExternalLink(externalRoute: string) {
-    this.analyticsService.logEvent('Routed to external link', {
-      category: EventLogs.Category.Route,
-      link: externalRoute,
-      external: true,
-    });
-  }
-
-  logRoute(route: string) {
-    this.analyticsService.logEvent('Routed to page', {
-      category: EventLogs.Category.Route,
-      link: route,
-      external: false,
-    });
+  listenClickAway(expander: MatExpansionPanel) {
+    fromEvent(window, 'pointerup')
+      .pipe(
+        take(1),
+        takeUntil(this.destroy$))
+      .subscribe(() => expander.close());
   }
 }
