@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormControlError } from '../../common/domain/input-fields/form-control-error';
+import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 
 export class ErrorMessageTranscriber {
 

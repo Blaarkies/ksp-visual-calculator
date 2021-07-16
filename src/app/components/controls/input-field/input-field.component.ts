@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewChild } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
-import { FormControlError } from '../../common/domain/input-fields/form-control-error';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
+import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
+import { CustomAnimation } from '../../../common/domain/custom-animation';
 import { Icons } from 'src/app/common/domain/icons';
 
 @Component({

@@ -3,14 +3,14 @@ import { UsableRoutes } from './usable-routes';
 import { Icons } from './common/domain/icons';
 import { ActionOption } from './common/domain/action-option';
 import { MatDialog } from '@angular/material/dialog';
-import { SimpleDialogComponent, SimpleDialogData } from './dialogs/simple-dialog/simple-dialog.component';
+import { SimpleDialogComponent, SimpleDialogData } from './overlays/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
 import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 import { Observable } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './services/auth.service';
-import { AccountDialogComponent } from './dialogs/account-dialog/account-dialog.component';
+import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
 
 @Component({
   selector: 'cp-root',

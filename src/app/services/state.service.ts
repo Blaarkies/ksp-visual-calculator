@@ -12,11 +12,11 @@ import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
-import { StateRow } from '../dialogs/manage-state-dialog/state.row';
-import { StateEntry } from '../dialogs/manage-state-dialog/state.entry';
+import { StateRow } from '../overlays/manage-state-dialog/state.row';
+import { StateEntry } from '../overlays/manage-state-dialog/state.entry';
 import { catchError, combineAll, delay, filter, finalize, map, sampleTime, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
-import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
-import { AccountDialogComponent } from '../dialogs/account-dialog/account-dialog.component';
+import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
+import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({

@@ -1,6 +1,6 @@
 import { InputTextAreaComponent } from './input-text-area.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../../app.module';
 
 let componentType = InputTextAreaComponent;
 describe(componentType.name, () => {

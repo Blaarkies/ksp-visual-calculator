@@ -7,13 +7,13 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { CameraComponent } from '../../components/camera/camera.component';
 import { SpaceObjectService } from '../../services/space-object.service';
 import { Observable } from 'rxjs';
-import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
+import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../overlays/craft-details-dialog/craft-details-dialog.component';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData,
-} from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
+} from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';

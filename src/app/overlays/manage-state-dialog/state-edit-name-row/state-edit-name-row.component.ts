@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
 import { FormControl } from '@angular/forms';
-import { InputFieldComponent } from '../../../components/input-field/input-field.component';
+import { InputFieldComponent } from '../../../components/controls/input-field/input-field.component';
 import { StateRow } from '../state.row';
 
 @Component({

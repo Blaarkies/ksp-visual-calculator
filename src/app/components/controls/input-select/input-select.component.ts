@@ -1,14 +1,14 @@
 import { Component, ElementRef, forwardRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
-import { FormControlError } from '../../common/domain/input-fields/form-control-error';
+import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
+import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { InputFieldComponent } from '../input-field/input-field.component';
-import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { MatSelect } from '@angular/material/select';
-import { Icons } from '../../common/domain/icons';
+import { Icons } from '../../../common/domain/icons';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { CustomAnimation } from '../../../common/domain/custom-animation';
 
 @Component({
   selector: 'cp-input-select',

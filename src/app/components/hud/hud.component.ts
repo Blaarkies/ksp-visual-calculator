@@ -3,7 +3,7 @@ import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { HudService } from '../../services/hud.service';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
-import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
+import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
@@ -12,7 +12,7 @@ import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { map, take } from 'rxjs/operators';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { ActionBottomSheetComponent, ActionBottomSheetData } from '../../dialogs/list-bottom-sheet/action-bottom-sheet.component';
+import { ActionBottomSheetComponent, ActionBottomSheetData } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
 
 export class ActionPanelDetails {
   startTitle?: string;

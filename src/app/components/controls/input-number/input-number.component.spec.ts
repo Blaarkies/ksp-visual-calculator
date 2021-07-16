@@ -1,6 +1,6 @@
 import { InputNumberComponent } from './input-number.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../../app.module';
 import { InputFieldComponent } from '../input-field/input-field.component';
 
 let componentType = InputNumberComponent;

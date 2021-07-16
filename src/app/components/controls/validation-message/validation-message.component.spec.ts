@@ -1,6 +1,6 @@
 import { ValidationMessageComponent } from './validation-message.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../../app.module';
 
 let componentType = ValidationMessageComponent;
 describe(componentType.name, () => {

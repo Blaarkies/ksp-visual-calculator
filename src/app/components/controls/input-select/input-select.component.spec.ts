@@ -1,6 +1,6 @@
 import { InputSelectComponent } from './input-select.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../../app.module';
 
 let componentType = InputSelectComponent;
 describe(componentType.name, () => {

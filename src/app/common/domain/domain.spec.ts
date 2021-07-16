@@ -5,7 +5,7 @@ import { TransmissionLine } from './transmission-line';
 import { SpaceObject} from './space-objects/space-object';
 import { Group } from './group';
 import { SetupService } from '../../services/setup.service';
-import { DifficultySetting } from '../../dialogs/difficulty-settings-dialog/difficulty-setting';
+import { DifficultySetting } from '../../overlays/difficulty-settings-dialog/difficulty-setting';
 import { SpaceObjectType } from './space-objects/space-object-type';
 
 interface SignalScenario {

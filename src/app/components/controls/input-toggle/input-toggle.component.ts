@@ -1,10 +1,10 @@
 import { Component, forwardRef, Input, ViewChild } from '@angular/core';
-import { FormControlError } from '../../common/domain/input-fields/form-control-error';
+import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
+import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { CustomAnimation } from '../../../common/domain/custom-animation';
 
 @Component({
     selector: 'cp-input-toggle',

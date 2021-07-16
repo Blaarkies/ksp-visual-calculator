@@ -1,8 +1,8 @@
-import { InputFieldComponent } from './input-field.component';
+import { InputFieldListComponent } from './input-field-list.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
-import { AppModule } from '../../app.module';
+import { AppModule } from '../../../app.module';
 
-let componentType = InputFieldComponent;
+let componentType = InputFieldListComponent;
 describe(componentType.name, () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
