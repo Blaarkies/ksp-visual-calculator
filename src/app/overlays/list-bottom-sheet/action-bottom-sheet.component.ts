@@ -3,7 +3,8 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bott
 import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
 
 export class ActionBottomSheetData {
-  title: string;
+  startIcon: string;
+  startTitle: string;
   actionOptions: ActionOption[];
 }
 

@@ -74,22 +74,6 @@
 
     display: flex;
     gap: 10px;
-
-    & > button {
-      color: white;
-    }
-
-    .green {
-      background-color: var(--color-background-panel-green);
-    }
-
-    .cosmic-blue {
-      background-color: var(--color-background-panel-cosmic-blue);
-    }
-
-    .orange {
-      background-color: var(--color-background-panel-orange);
-    }
   }
 
 }

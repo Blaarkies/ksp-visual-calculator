@@ -7,27 +7,29 @@
   <ng-container *ngTemplateOutlet="focus"></ng-container>
 
   <div class="fab-buttons">
-    <button mat-fab
-            class="green mat-elevation-z1"
-            [matTooltip]="'General'"
-            (click)="openBottomSheet(panelTypes.General)">
-      <mat-icon>{{icons.Home}}</mat-icon>
-    </button>
+    <cp-action-fab color="green"
+                   tooltip="General"
+                   [icon]="icons.Home"
+                   [actionGroupType]="actionGroupTypes.General"
+                   [options]="navigationOptions"
+                   (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
 
-    <button mat-fab
-            class="cosmic-blue mat-elevation-z1"
-            [matTooltip]="'Information'"
-            (click)="openBottomSheet(panelTypes.Information)">
-      <mat-icon>{{icons.Info}}</mat-icon>
-    </button>
 
-    <button *ngIf="contextPanel$ | async as details"
-            mat-fab
-            class="orange mat-elevation-z1"
-            [matTooltip]="details.startTitle"
-            (click)="openBottomSheet(panelTypes.Context)">
-      <mat-icon>{{icons.Edit}}</mat-icon>
-    </button>
+    <cp-action-fab color="cosmic-blue"
+                   tooltip="Information"
+                   [icon]="icons.Info"
+                   [actionGroupType]="actionGroupTypes.Information"
+                   [options]="infoOptions"
+                   (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
+
+
+    <cp-action-fab *ngIf="contextPanel$ | async as details"
+                   color="orange"
+                   [tooltip]="details.startTitle"
+                   [icon]="icons.Edit"
+                   [actionGroupType]="actionGroupTypes.Context"
+                   [options]="details.options"
+                   (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
   </div>
 
 </div>

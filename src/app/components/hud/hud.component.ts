@@ -7,11 +7,11 @@ import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq
 import { MatDialog } from '@angular/material/dialog';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { map, take } from 'rxjs/operators';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ActionBottomSheetComponent, ActionBottomSheetData } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
 
 export class ActionPanelDetails {
@@ -21,7 +21,7 @@ export class ActionPanelDetails {
   options: ActionOption[];
 }
 
-export class ActionPanelTypes {
+export class ActionGroupType {
   static General = 'general';
   static Information = 'information';
   static Context = 'context';
@@ -43,7 +43,7 @@ export class HudComponent extends WithDestroy() {
 
   isHandset$: Observable<boolean>;
   icons = Icons;
-  panelTypes = ActionPanelTypes;
+  actionGroupTypes = ActionGroupType;
   cameraZoomLimits = CameraService.zoomLimits;
   scaleToShowMoons = CameraService.scaleToShowMoons;
 
@@ -78,38 +78,45 @@ export class HudComponent extends WithDestroy() {
       data: {} as FaqDialogData,
     });
   }
-
-
-  async openBottomSheet(panelType: string) {
-    switch (panelType) {
-      case ActionPanelTypes.General:
-        return this.bottomSheet.open(ActionBottomSheetComponent, {
+  
+  async openBottomSheet(group: ActionGroupType, updateUnreadCountCallback: () => void) {
+    let result: MatBottomSheetRef;
+    switch (group) {
+      case ActionGroupType.General:
+        result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
-            title: 'KSP Visual Calculator',
+            startTitle: 'KSP Visual Calculator',
             actionOptions: this.navigationOptions,
           } as ActionBottomSheetData,
           panelClass: ['bottom-sheet-panel', 'green'],
         });
-      case ActionPanelTypes.Information:
-        return this.bottomSheet.open(ActionBottomSheetComponent, {
+        break;
+      case ActionGroupType.Information:
+        result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
-            title: 'Information',
+            startTitle: 'Information',
             actionOptions: this.infoOptions,
           } as ActionBottomSheetData,
           panelClass: ['bottom-sheet-panel', 'cosmic-blue'],
         });
-      case ActionPanelTypes.Context:
+        break;
+      case ActionGroupType.Context:
         let panel = await this.contextPanel$.pipe(take(1)).toPromise();
-        return this.bottomSheet.open(ActionBottomSheetComponent, {
+        result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
-            title: panel.startTitle,
+            startTitle: panel.startTitle,
             actionOptions: panel.options,
           } as ActionBottomSheetData,
           panelClass: ['bottom-sheet-panel', 'orange'],
-        });
+        }).afterDismissed().toPromise();
+        break;
       default:
-        throw console.error(`No bottom-sheet defined for "${panelType}"`);
+        throw console.error(`No bottom-sheet defined for "${group}"`);
     }
+
+    await result?.afterDismissed()?.toPromise();
+
+    updateUnreadCountCallback();
   }
 
 }
