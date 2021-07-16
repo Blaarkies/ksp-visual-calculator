@@ -78,7 +78,7 @@ export class HudComponent extends WithDestroy() {
       data: {} as FaqDialogData,
     });
   }
-  
+
   async openBottomSheet(group: ActionGroupType, updateUnreadCountCallback: () => void) {
     let result: MatBottomSheetRef;
     switch (group) {

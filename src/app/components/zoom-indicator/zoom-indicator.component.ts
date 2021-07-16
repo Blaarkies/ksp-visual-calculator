@@ -14,7 +14,7 @@ export class ZoomIndicatorComponent implements OnDestroy {
     let ratio = value / this.range;
     ratio = this.transformToLinear(ratio);
 
-    this.zoomPoint = ratio * this.lineLength;
+    this.zoomPoint = ratio * 100;
     this.zoomChange$.next();
   }
 
@@ -25,8 +25,8 @@ export class ZoomIndicatorComponent implements OnDestroy {
     let moonsRatio = this.transformToLinear(CameraService.scaleToShowMoons / this.range) + .01;
     let planetsRatio = moonsRatio * .5;
     this.positions = {
-      planets: planetsRatio * this.lineLength,
-      moons: moonsRatio * this.lineLength,
+      planets: planetsRatio * 100,
+      moons: moonsRatio * 100,
     };
   }
 
@@ -35,7 +35,6 @@ export class ZoomIndicatorComponent implements OnDestroy {
   zoomPoint: number;
   positions: { planets, moons };
   show = false;
-  lineLength = 800;
 
   private limits: number[];
   private range: number;
