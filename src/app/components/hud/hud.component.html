@@ -24,6 +24,7 @@
 
 
     <cp-action-fab *ngIf="contextPanel$ | async as details"
+                   id="context-fab"
                    color="orange"
                    [tooltip]="details.startTitle"
                    [icon]="icons.Edit"
@@ -55,6 +56,7 @@
     <ng-container *ngTemplateOutlet="focus"></ng-container>
 
     <cp-action-panel class="context"
+                     id="context-panel"
                      *ngIf="contextPanel$ | async as details"
                      [startTitle]="details.startTitle"
                      location="bottom-left"

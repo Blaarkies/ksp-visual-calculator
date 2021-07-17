@@ -196,7 +196,7 @@ export class TutorialService {
     let editUniverse = {
       dialogTitle: 'Adding Spacecraft',
       dialogTargetCallback: () => document.querySelector(
-        'cp-action-panel[ng-reflect-start-title="Edit Universe"] button[mat-icon-button], cp-action-fab[ng-reflect-tooltip="Edit Universe"] button'),
+        'cp-action-panel#context-panel button[mat-icon-button], cp-action-fab#context-fab button'),
       dialogMessages: [
         'This universe can be configured here.',
         'Click "New Craft" to add your own spacecraft.'],
@@ -205,7 +205,7 @@ export class TutorialService {
         {
           callback: input => defer(() => {
             let openEditOptionsButton = document.querySelector(
-              'cp-action-panel[ng-reflect-start-title="Edit Universe"] button[mat-icon-button], cp-action-fab[ng-reflect-tooltip="Edit Universe"] button');
+              'cp-action-panel#context-panel button[mat-icon-button], cp-action-fab#context-fab button');
             (openEditOptionsButton as HTMLButtonElement).click();
             return timer(500).pipe(mapTo(input));
           }),
@@ -218,7 +218,7 @@ export class TutorialService {
           callback: input => defer(() => {
             // todo: re-use markerTargetCallback() instead
             let matListOptions = document.querySelectorAll(
-              'cp-action-panel[ng-reflect-start-title="Edit Universe"] mat-list-option, cp-action-list mat-list-option');
+              'cp-action-panel#context-panel mat-list-option, cp-action-list mat-list-option');
             let target = Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
             return fromEvent(target, 'click').pipe(
               take(1), mapTo(input));
@@ -227,7 +227,7 @@ export class TutorialService {
       ],
       markerTargetCallback: () => {
         let matListOptions = document.querySelectorAll(
-          'cp-action-panel[ng-reflect-start-title="Edit Universe"] mat-list-option, cp-action-list mat-list-option');
+          'cp-action-panel#context-panel mat-list-option, cp-action-list mat-list-option');
         return Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
       },
       markerType: 'pane',
