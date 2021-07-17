@@ -13,6 +13,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { map, take } from 'rxjs/operators';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ActionBottomSheetComponent, ActionBottomSheetData } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
+import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -76,6 +77,7 @@ export class HudComponent extends WithDestroy() {
 
     this.dialog.open(FaqDialogComponent, {
       data: {} as FaqDialogData,
+      backdropClass: GlobalStyleClass.MobileFriendly,
     });
   }
 

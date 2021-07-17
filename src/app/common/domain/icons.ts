@@ -22,7 +22,7 @@ export class Icons {
   static Credits = 'theater_comedy';
   static Coffee = 'emoji_food_beverage';
   static Feedback = 'comment';
-  static Help = 'help';
+  static Help = 'help_outline';
   static Info = 'info';
   static Camera = 'videocam';
   static Antenna = 'settings_input_antenna';

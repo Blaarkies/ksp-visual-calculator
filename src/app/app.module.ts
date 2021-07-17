@@ -77,6 +77,7 @@ import { ActionListComponent } from './components/action-list/action-list.compon
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../environments/environment';
 import { ActionFabComponent } from './components/hud/action-fab/action-fab.component';
+import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-section.component';
 
 @NgModule({
   declarations: [
@@ -125,6 +126,7 @@ import { ActionFabComponent } from './components/hud/action-fab/action-fab.compo
     ActionBottomSheetComponent,
     ActionListComponent,
     ActionFabComponent,
+    FaqSectionComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

@@ -131,3 +131,33 @@
   font-weight: 400;
   font-size: 1em;
 }
+
+@media screen and (max-width: 700px) {
+  .manage-state-layout {
+    min-width: unset;
+
+    .current-state-layout {
+      grid-auto-flow: row;
+      gap: 10px;
+
+      .import-and-new-state {
+        justify-self: center;
+      }
+    }
+
+    .archive-layout {
+      grid-auto-flow: row;
+
+      mat-selection-list {
+        grid-row: 2;
+      }
+    }
+  }
+}
+
+// landscape mobile cuts off the dialog action buttons
+@media screen and (max-height: 500px) {
+  .manage-state-layout {
+    box-shadow: inset 0 0 6px 2px #0002;
+  }
+}

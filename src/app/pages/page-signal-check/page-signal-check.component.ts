@@ -22,6 +22,7 @@ import { SpaceObjectType } from '../../common/domain/space-objects/space-object-
 import { StateService } from '../../services/state.service';
 import { UsableRoutes } from '../../usable-routes';
 import { HudService } from '../../services/hud.service';
+import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -116,6 +117,7 @@ export class PageSignalCheckComponent extends WithDestroy() {
         forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
         edit: craft,
       } as CraftDetailsDialogData,
+      backdropClass: GlobalStyleClass.MobileFriendly,
     })
       .afterClosed()
       .pipe(

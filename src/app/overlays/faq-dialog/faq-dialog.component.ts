@@ -1,26 +1,12 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { WithDestroy } from '../../common/with-destroy';
 import { debounceTime, map, publishReplay, refCount, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { of, zip } from 'rxjs';
+import { Observable, of, zip } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-
-class Explanation {
-  type: 'span' | 'code' | 'search' | 'image';
-  content: string;
-  query?: string;
-  src?: string;
-  alt?: string;
-  height?: number;
-}
-
-class Section {
-  title: string;
-  simpleExplanation: string;
-  advancedExplanations: Explanation[][];
-  tags: string;
-}
+import { Section } from './faq-section/faq-section.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 export class FaqDialogData {
   sections: Section[];
@@ -37,9 +23,19 @@ export class FaqDialogComponent extends WithDestroy() {
   searchControl = new FormControl();
   columns: Section[][];
 
+  allSections: Section[]; // single list, for handset
+  isHandset$: Observable<boolean>
+
   constructor(@Inject(MAT_DIALOG_DATA) public data: FaqDialogData,
-              http: HttpClient) {
+              http: HttpClient,
+              breakpointObserver: BreakpointObserver) {
     super();
+
+    this.isHandset$ = breakpointObserver.observe([
+      '(max-width: 1000px)',
+      '(max-height: 800px)',
+    ])
+      .pipe(map(bp => bp.matches));
 
     let sections$ = http.get<Section[]>('assets/faq/general.json')
       .pipe(
@@ -56,11 +52,13 @@ export class FaqDialogComponent extends WithDestroy() {
             ? sections.shuffle()
             : this.getSortedSections(sections, query);
         }),
-        tap(sections =>
+        tap(sections => {
+          this.allSections = sections;
           this.columns = sections.reduce((sum, c, i) => {
             sum[i % 2].push(c);
             return sum;
-          }, [[], [], []])),
+          }, [[], [], []]);
+        }),
         takeUntil(this.destroy$))
       .subscribe();
   }

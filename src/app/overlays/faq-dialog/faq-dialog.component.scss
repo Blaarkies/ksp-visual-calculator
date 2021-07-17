@@ -14,8 +14,8 @@
   box-shadow: inset 0 0 6px 2px #0002;
 
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 60px;
+  grid-template-columns: 50% 50%;
+  gap: 10px;
 
   mat-progress-bar {
     grid-column: 1/3;
@@ -27,32 +27,12 @@
   .column {
     display: grid;
     grid-auto-rows: max-content;
+    grid-auto-columns: 100%;
     align-items: start;
     gap: 20px;
+    width: calc(100% - 40px);
   }
 }
-
-.simple-explanation {
-}
-
-.advanced-explanation {
-
-}
-
-.image-layout {
-  display: grid;
-  justify-items: center;
-
-  span {
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-
-  img {
-    border-radius: 10px;
-  }
-}
-
 
 .invisible-panel {
   box-shadow: unset !important;
@@ -61,4 +41,28 @@
 
 .ok-button {
   justify-self: end;
+}
+
+@media screen and (max-width: 1000px),
+screen and (max-height: 800px) {
+  .title-layout {
+    grid-template-columns: max-content;
+    gap: unset;
+    margin-bottom: 20px;
+
+    cp-input-field {
+      justify-self: unset;
+    }
+  }
+
+  .faq-layout {
+    grid-template-columns: 100%;
+  }
+}
+
+// landscape mobile cuts off the dialog action buttons
+@media screen and (max-height: 500px) {
+  .faq-layout {
+    max-height: 180px;
+  }
 }

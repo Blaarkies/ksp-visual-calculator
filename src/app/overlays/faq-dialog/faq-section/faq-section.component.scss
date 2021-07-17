@@ -1,0 +1,13 @@
+.image-layout {
+  display: grid;
+  justify-items: center;
+
+  span {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  img {
+    border-radius: 10px;
+  }
+}

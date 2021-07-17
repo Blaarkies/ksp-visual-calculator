@@ -43,3 +43,9 @@
   }
 
 }
+
+@media screen and (max-width: 600px) {
+  .game-difficulty-form > cp-input-field-list {
+    grid-template-columns: auto;
+  }
+}

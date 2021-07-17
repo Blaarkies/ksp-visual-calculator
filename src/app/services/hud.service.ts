@@ -1,5 +1,5 @@
 import { ApplicationRef, ChangeDetectorRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
@@ -21,6 +21,7 @@ import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialo
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
 import { TutorialService } from './tutorial.service';
+import { GlobalStyleClass } from '../common/GlobalStyleClass';
 
 @Injectable({
   providedIn: 'root',
@@ -148,7 +149,7 @@ export class HudService {
             category: EventLogs.Category.Feedback,
           });
 
-          this.dialog.open(FeedbackDialogComponent)
+          this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})
             .afterClosed()
             .pipe(
               filter(ok => ok),
@@ -175,6 +176,7 @@ export class HudService {
             data: {
               forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
             } as CraftDetailsDialogData,
+            backdropClass: GlobalStyleClass.MobileFriendly,
           })
             .afterClosed()
             .pipe(
@@ -224,6 +226,7 @@ export class HudService {
               data: {
                 context: UsableRoutes.SignalCheck,
               } as ManageStateDialogData,
+              backdropClass: GlobalStyleClass.MobileFriendly,
             });
           },
         }, undefined, false, undefined,

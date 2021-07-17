@@ -17,3 +17,13 @@
     }
   }
 }
+
+// landscape mobile cuts off the dialog action buttons
+@media screen and (max-height: 500px) {
+  .feedback-layout {
+    box-shadow: inset 0 0 6px 2px #0002;
+    overflow-y: auto;
+    min-width: 100%;
+    max-height: 260px;
+  }
+}

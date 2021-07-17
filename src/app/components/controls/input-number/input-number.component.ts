@@ -1,9 +1,9 @@
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, NgControl, ValidationErrors } from '@angular/forms';
-import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { MatSlider } from '@angular/material/slider';
+import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
+import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 
 @Component({
   selector: 'cp-input-number',
@@ -14,13 +14,7 @@ import { MatSlider } from '@angular/material/slider';
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputNumberComponent),
     multi: true,
-  },
-    // {provide: NG_VALIDATORS,
-    //   useExisting: forwardRef(() => InputNumberComponent),
-    //   multi: true}
-  ],
-// {provide: NG_VALIDATORS, useExisting: InputNumberComponent, multi: true}
-// {provide: NG_ASYNC_VALIDATORS, useExisting: InputNumberComponent, multi: true}
+  }],
 })
 export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
@@ -36,19 +30,9 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
 
   isActive: boolean;
 
-  @Input() formControl: AbstractControl;
-
   constructor(private cdr: ChangeDetectorRef) {
     super();
-
-    console.log(this.formControl);
   }
-
-  // validate(control: AbstractControl): ValidationErrors | null {
-  //   console.log(control);
-  //   return { 'custom': true };
-  // }
-
 
   writeValue(value: any) {
     this.value = value;
@@ -80,8 +64,6 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.formControl);
-
     this.inputRef.inputRef.nativeElement.autocomplete = 'off';
     this.inputRef.inputRef.nativeElement.oninput = (event: Event & any) => {
       if (event.target.value.toNumber().isNaN()

@@ -13,38 +13,18 @@
                     mode="indeterminate"
                     color="primary"></mat-progress-bar>
 
-  <div class="column" *ngFor="let sections of columns">
-
-    <section *ngFor="let section of sections">
-      <h2>{{section.title}}</h2>
-      <p class="simple-explanation">{{section.simpleExplanation}}</p>
-
-      <cp-content-pleat>
-        <p class="advanced-explanation"
-           *ngFor="let explanationParts of section.advancedExplanations">
-          <ng-container *ngFor="let part of explanationParts">
-            <ng-container [ngSwitch]="part.type">
-              <span *ngSwitchCase="'span'">{{part.content}}</span>
-              <code *ngSwitchCase="'code'">{{part.content}}</code>
-              <span *ngSwitchCase="'search'"
-                    class="read-more"
-                    (click)="searchFor(part.query)">
-              {{part.content}}
-            </span>
-              <span *ngSwitchCase="'image'"
-                    class="image-layout">
-                <span>{{part.content}}</span>
-                <img [style.height.px]="part.height"
-                     [src]="part.src"
-                     [alt]="part.alt"/>
-            </span>
-            </ng-container>
-          </ng-container>
-        </p>
-      </cp-content-pleat>
-    </section>
-
-  </div>
+  <ng-container *ngIf="isHandset$ | async; else desktopScreen">
+    <cp-faq-section *ngFor="let section of allSections"
+                    [section]="section"
+                    (search)="searchFor($event)"></cp-faq-section>
+  </ng-container>
+  <ng-template #desktopScreen>
+    <div class="column" *ngFor="let sections of columns">
+      <cp-faq-section *ngFor="let section of sections"
+                      [section]="section"
+                      (search)="searchFor($event)"></cp-faq-section>
+    </div>
+  </ng-template>
 
 </div>
 

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'cp-account-dialog',
@@ -7,8 +6,4 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['./account-dialog.component.scss'],
 })
 export class AccountDialogComponent {
-
-  constructor(public dialogRef: MatDialogRef<AccountDialogComponent>) {
-  }
-
 }
