@@ -11,14 +11,12 @@ mat-expansion-panel-header {
   width: max-content;
   height: max-content;
 
-  z-index: 1;
-
   &.green {
-    background-color: var(--color-background-panel-green);
+    background-color: var(--color-background-panel-green-opaque);
   }
 
   &.orange {
-    background-color: var(--color-background-panel-orange);
+    background-color: var(--color-background-panel-orange-opaque);
   }
 
   &.cosmic-blue {
@@ -35,15 +33,11 @@ mat-expansion-panel-header {
   &.bottom-left {
     border-radius: 0 !important;
     border-top-right-radius: var(--panel-rounding) !important;
-    position: absolute;
-    bottom: 0;
   }
 
   &.top-right {
     border-radius: 0 !important;
     border-bottom-left-radius: var(--panel-rounding) !important;
-    position: absolute;
-    right: 0;
   }
 }
 
@@ -57,59 +51,12 @@ mat-expansion-panel-header {
   filter: blur(10px);
 }
 
-.action-button {
-  height: 100%;
-  display: grid;
-  gap: 10px;
-  grid-auto-flow: column;
-  align-items: center;
-
-  padding: 0 20px !important;
-
-  mat-icon {
-    color: white;
-    justify-self: end;
-  }
-
-  transition: .25s ease-out;
-
-  &:hover {
-    background-color: #0002;
-  }
-
-  &.unavailable {
-    background-color: #aaa3;
-    * {
-      color: #fffa;
-    }
-  }
-}
-
-.route-wrap {
-  height: 100%;
-  outline: none !important;
-}
-
 .toolbar-text {
   color: white !important; // expansion-panel forces gray color here
 }
 
 .mat-expansion-panel-body {
   padding: unset !important; // remove extra padding
-}
-
-.mat-list-text {
-  height: 100%;
-  padding: 0 !important;
-}
-
-.mat-list-item-content {
-  padding: 0 !important;
-}
-
-.anchor-invisible {
-  height: 100%;
-  text-decoration: none;
 }
 
 .notify-badge {

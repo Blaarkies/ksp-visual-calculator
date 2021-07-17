@@ -1,5 +1,10 @@
 .app-layout {
   height: 100%;
+
+  cp-hud {
+    justify-self: start;
+    width: 100%;
+  }
 }
 
 .toolbar {

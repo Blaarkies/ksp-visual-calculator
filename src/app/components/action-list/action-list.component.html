@@ -1,0 +1,60 @@
+<mat-selection-list [multiple]="false"
+                    [class.right-justified]="justifyRight">
+
+  <ng-container *ngFor="let option of options"
+                [ngSwitch]="option.type">
+    <ng-template #button>
+      <ng-container *ngIf="option.unavailableMeta?.unavailable$ | async;
+                               else normal">
+        <div class="action-button unavailable"
+             [matTooltip]="option.unavailableMeta.tooltip"
+             (click)="$event.stopPropagation(); option.unavailableMeta.action()">
+          <span class="text-white">{{option.label}}</span>
+          <span matBadgeColor="warn"
+                [matBadgeHidden]="!option.unread"
+                matBadge="!"></span>
+          <mat-icon>{{option.icon}}</mat-icon>
+        </div>
+      </ng-container>
+
+      <ng-template #normal>
+        <div class="action-button"
+             [matTooltip]="option.tooltip">
+          <span class="text-white">{{option.label}}</span>
+          <span matBadgeColor="warn"
+                [matBadgeHidden]="!option.unread"
+                matBadge="!"></span>
+          <mat-icon>{{option.icon}}</mat-icon>
+        </div>
+      </ng-template>
+    </ng-template>
+
+    <mat-list-option *ngSwitchCase="actionTypes.Action"
+                     [value]="option"
+                     (click)="action.emit();
+                                  option.actionMeta.action();
+                                  updateUnreads(option)">
+      <ng-container *ngTemplateOutlet="button"></ng-container>
+    </mat-list-option>
+
+    <mat-list-option *ngSwitchCase="actionTypes.Route"
+                     [value]="option"
+                     (click)="action.emit();
+                                  updateUnreads(option);
+                                  logRoute(option.actionMeta.route)"
+                     routerLink="/{{option.actionMeta.route}}">
+      <ng-container *ngTemplateOutlet="button"></ng-container>
+    </mat-list-option>
+
+    <mat-list-option *ngSwitchCase="actionTypes.ExternalRoute"
+                     [value]="option"
+                     (click)="action.emit();
+                                  updateUnreads(option);
+                                  logExternalLink(option.actionMeta.externalRoute)">
+      <a class="anchor-invisible" [href]="option.actionMeta.externalRoute">
+        <ng-container *ngTemplateOutlet="button"></ng-container>
+      </a>
+    </mat-list-option>
+
+  </ng-container>
+</mat-selection-list>

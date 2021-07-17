@@ -26,7 +26,7 @@ export class StepDetails {
 })
 export class WizardSpotlightService {
 
-  private stopTutorial$ = new Subject();
+  stopTutorial$ = new Subject<boolean>();
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private applicationRef: ApplicationRef,
@@ -58,7 +58,7 @@ export class WizardSpotlightService {
     componentRef.destroy();
   }
 
-  compileStep(stepDetails: StepDetails): Observable<any> {
+  compileStep(stepDetails: StepDetails, isLastStep?: boolean): Observable<any> {
     let allDestroyables = [];
     let compiledStep = from(stepDetails.stages)
       .pipe(
@@ -70,7 +70,7 @@ export class WizardSpotlightService {
               // open dialog, and save component refs for later cleanup
               stageOutput = stageOutput.pipe(
                 tap(() => {
-                  let destroyables = this.setupDialog(stepDetails);
+                  let destroyables = this.setupDialog(stepDetails, isLastStep);
                   allDestroyables.push(...destroyables);
                 }));
             }
@@ -89,7 +89,7 @@ export class WizardSpotlightService {
     return compiledStep;
   }
 
-  private setupDialog(stepDetails: StepDetails): ComponentRef<any>[] {
+  private setupDialog(stepDetails: StepDetails, isLastStep: boolean): ComponentRef<any>[] {
     let dialogTarget = stepDetails.dialogTargetCallback();
     let markerTarget = stepDetails.markerTargetCallback && stepDetails.markerTargetCallback();
 
@@ -105,7 +105,8 @@ export class WizardSpotlightService {
         messages: stepDetails.dialogMessages,
         icon: stepDetails.dialogIcon,
         location: new Vector2(targetDimensions.left, targetDimensions.top).add(50, 50),
-        stopTutorial: this.stopTutorial$,
+        stopTutorial$: this.stopTutorial$,
+        isLastStep,
       } as WizardMessage);
 
     setTimeout(() => this.placeDialogInScreen(wizardMessage));
@@ -113,7 +114,7 @@ export class WizardSpotlightService {
     return [wizardMarker, wizardMessage].filter(comp => comp);
   }
 
-  runSteps(steps: Observable<any>[]): Observable<void> {
+  runSteps(steps: Observable<any>[]): Observable<boolean> {
     return concat(...steps)
       .pipe(takeUntil(this.stopTutorial$));
   }

@@ -23,9 +23,6 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     return this.cameraService?.location ?? new Vector2();
   }
 
-  cameraZoomLimits = CameraService.zoomLimits;
-  scaleToShowMoons = CameraService.scaleToShowMoons;
-
   constructor(private cdr: ChangeDetectorRef,
               private cameraService: CameraService) {
     super();

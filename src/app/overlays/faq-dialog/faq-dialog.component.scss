@@ -1,0 +1,68 @@
+.title-layout {
+  display: grid;
+  grid-template-columns: max-content auto;
+  gap: 40px;
+  align-items: start;
+
+  cp-input-field {
+    margin-top: -14px;
+    justify-self: end;
+  }
+}
+
+.faq-layout {
+  box-shadow: inset 0 0 6px 2px #0002;
+
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 10px;
+
+  mat-progress-bar {
+    grid-column: 1/3;
+    width: calc(100% - 80px);
+    justify-self: center;
+    margin: 40px;
+  }
+
+  .column {
+    display: grid;
+    grid-auto-rows: max-content;
+    grid-auto-columns: 100%;
+    align-items: start;
+    gap: 20px;
+    width: calc(100% - 40px);
+  }
+}
+
+.invisible-panel {
+  box-shadow: unset !important;
+  background: unset !important;
+}
+
+.ok-button {
+  justify-self: end;
+}
+
+@media screen and (max-width: 1000px),
+screen and (max-height: 800px) {
+  .title-layout {
+    grid-template-columns: max-content;
+    gap: unset;
+    margin-bottom: 20px;
+
+    cp-input-field {
+      justify-self: unset;
+    }
+  }
+
+  .faq-layout {
+    grid-template-columns: 100%;
+  }
+}
+
+// landscape mobile cuts off the dialog action buttons
+@media screen and (max-height: 500px) {
+  .faq-layout {
+    max-height: 180px;
+  }
+}

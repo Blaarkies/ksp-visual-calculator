@@ -89,3 +89,13 @@
   margin-right: 6px;
   height: 1.5em;
 }
+
+[mat-dialog-actions] {
+  grid-template-columns: auto max-content;
+}
+
+.description {
+  width: 13em;
+  padding: 16px 0;
+  justify-self: end;
+}

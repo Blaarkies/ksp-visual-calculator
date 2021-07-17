@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Icons } from '../../common/domain/icons';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AccountDialogComponent } from '../../dialogs/account-dialog/account-dialog.component';
+import { AccountDialogComponent } from '../../overlays/account-dialog/account-dialog.component';
 import { takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 

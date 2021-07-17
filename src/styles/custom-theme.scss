@@ -52,11 +52,23 @@ $cp-theme: mat-light-theme((
 @include angular-material-theme($cp-theme);
 
 :root {
+  --green: 119, 184, 46;
+  --orange: 242, 65, 0;
+  --cosmic-blue: 63, 81, 181;
+
+  --color-background-panel-green-opaque: rgb(var(--green));
+  --color-background-panel-orange-opaque: rgb(var(--orange));
+  --color-background-panel-cosmic-blue-opaque: rgb(var(--cosmic-blue));
+  --color-background-panel-green: rgba(var(--green), .75);
+  --color-background-panel-orange: rgba(var(--orange), .75);
+  --color-background-panel-cosmic-blue: rgba(var(--cosmic-blue), .75);
+  --color-background-panel-green-glass: rgba(var(--green), .5);
+  --color-background-panel-orange-glass: rgba(var(--orange), .5);
+  --color-background-panel-cosmic-blue-glass: rgba(var(--cosmic-blue), .5);
+
   --color-primary-text: #{map-get($cp-primary, 700)};
-  --color-background-panel-green: #77b82e;
-  --color-background-panel-orange: #f24100;
-  --color-background-panel-cosmic-blue: #3f51b557;
   --color-hyperlink-text: #263dc1;
   --color-icon-muted: #666;
+
 }
 

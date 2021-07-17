@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Craft } from '../../common/domain/space-objects/craft';
@@ -7,21 +7,22 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { CameraComponent } from '../../components/camera/camera.component';
 import { SpaceObjectService } from '../../services/space-object.service';
 import { Observable } from 'rxjs';
-import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../dialogs/craft-details-dialog/craft-details-dialog.component';
+import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../../overlays/craft-details-dialog/craft-details-dialog.component';
 import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData,
-} from '../../dialogs/celestial-body-details-dialog/celestial-body-details-dialog.component';
+} from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
-import { FaqDialogComponent, FaqDialogData } from '../../dialogs/faq-dialog/faq-dialog.component';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateService } from '../../services/state.service';
 import { UsableRoutes } from '../../usable-routes';
+import { HudService } from '../../services/hud.service';
+import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -30,7 +31,7 @@ import { UsableRoutes } from '../../usable-routes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [CustomAnimation.animateFade],
 })
-export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
+export class PageSignalCheckComponent extends WithDestroy() {
 
   orbits$: Observable<Orbit[]>;
   transmissionLines$: Observable<TransmissionLine[]>;
@@ -41,16 +42,17 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
   scaleToShowMoons = CameraService.scaleToShowMoons;
 
   icons = Icons;
-  faqButtonLeft = 280;
 
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               stateService: StateService,
+              hudService: HudService,
               private cameraService: CameraService) {
     super();
 
+    hudService.pageContext = UsableRoutes.SignalCheck;
     stateService.pageContext = UsableRoutes.SignalCheck;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 
@@ -94,6 +96,7 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
         forbiddenNames: this.spaceObjectService.celestialBodies$.value.map(c => c.label),
         edit: body,
       } as CelestialBodyDetailsDialogData,
+      backdropClass: GlobalStyleClass.MobileFriendly,
     })
       .afterClosed()
       .pipe(
@@ -115,6 +118,7 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
         forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
         edit: craft,
       } as CraftDetailsDialogData,
+      backdropClass: GlobalStyleClass.MobileFriendly,
     })
       .afterClosed()
       .pipe(
@@ -124,20 +128,6 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
         this.spaceObjectService.editCraft(craft, details);
         this.cdr.markForCheck();
       });
-  }
-
-  openFaq() {
-    this.analyticsService.logEvent('Open faq dialog', {
-      category: EventLogs.Category.Help,
-    });
-
-    this.dialog.open(FaqDialogComponent, {
-      data: {} as FaqDialogData,
-    });
-  }
-
-  ngOnInit() {
-    this.faqButtonLeft = (document.querySelector('mat-expansion-panel.top-left') as HTMLElement)?.offsetWidth;
   }
 
   focusBody(body: SpaceObject, event: PointerEvent) {
@@ -150,4 +140,5 @@ export class PageSignalCheckComponent extends WithDestroy() implements OnInit {
         body: EventLogs.Sanitize.anonymize(body.label),
       });
   }
+
 }

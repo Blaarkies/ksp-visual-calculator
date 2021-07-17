@@ -1,0 +1,38 @@
+<div class="title-layout">
+  <h1 mat-dialog-title>Frequently Asked Questions</h1>
+  <cp-input-field label="Search"
+                  hint="To find specific sections"
+                  [type]="'text'"
+                  [allowClear]="true"
+                  [formControl]="searchControl"></cp-input-field>
+</div>
+
+<div mat-dialog-content class="faq-layout">
+
+  <mat-progress-bar *ngIf="!columns"
+                    mode="indeterminate"
+                    color="primary"></mat-progress-bar>
+
+  <ng-container *ngIf="isHandset$ | async; else desktopScreen">
+    <cp-faq-section *ngFor="let section of allSections"
+                    [section]="section"
+                    (search)="searchFor($event)"></cp-faq-section>
+  </ng-container>
+  <ng-template #desktopScreen>
+    <div class="column" *ngFor="let sections of columns">
+      <cp-faq-section *ngFor="let section of sections"
+                      [section]="section"
+                      (search)="searchFor($event)"></cp-faq-section>
+    </div>
+  </ng-template>
+
+</div>
+
+<div mat-dialog-actions>
+  <button class="ok-button"
+          color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>

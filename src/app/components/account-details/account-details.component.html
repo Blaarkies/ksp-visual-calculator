@@ -14,7 +14,7 @@
   <div mat-dialog-actions>
     <button mat-flat-button
             color="warn"
-            (click)="logout()">
+            (click)="actionSignOut()">
       Sign Out
     </button>
 
@@ -31,7 +31,7 @@
   <h1 mat-dialog-title>Sign In</h1>
 
   <div mat-dialog-content class="sign-in-layout">
-    <img class="app-image" src="assets/logos/ksp-visual-calculator.png"/>
+    <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png"/>
 
     <div class="promote-sign-in">
       <div>Signing in accesses save game features</div>
@@ -94,5 +94,15 @@
       <mat-progress-bar [@animateFade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
     </button>
 
+    <mat-divider></mat-divider>
+  </div>
+
+  <div mat-dialog-actions>
+    <span class="text-mute description">Sign in later with the profile icon in the top-right corner</span>
+    <button mat-stroked-button
+            mat-dialog-close
+            color="primary">
+      Later
+    </button>
   </div>
 </ng-template>

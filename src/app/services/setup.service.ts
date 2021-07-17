@@ -9,7 +9,7 @@ import { Orbit } from '../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { map, takeUntil } from 'rxjs/operators';
 import { LabeledOption } from '../common/domain/input-fields/labeled-option';
-import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
+import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 

@@ -1,0 +1,90 @@
+<div *ngIf="isHandset$ | async; else desktopScreen"
+     class="handset-layout">
+
+  <ng-container *ngTemplateOutlet="faqButton"></ng-container>
+  <ng-container *ngTemplateOutlet="profile"></ng-container>
+  <ng-container *ngTemplateOutlet="zoom"></ng-container>
+  <ng-container *ngTemplateOutlet="focus"></ng-container>
+
+  <div class="fab-buttons">
+    <cp-action-fab color="green"
+                   tooltip="General"
+                   [icon]="icons.Home"
+                   [actionGroupType]="actionGroupTypes.General"
+                   [options]="navigationOptions"
+                   (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
+
+
+    <cp-action-fab color="cosmic-blue"
+                   tooltip="Information"
+                   [icon]="icons.Info"
+                   [actionGroupType]="actionGroupTypes.Information"
+                   [options]="infoOptions"
+                   (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
+
+
+    <cp-action-fab *ngIf="contextPanel$ | async as details"
+                   color="orange"
+                   [tooltip]="details.startTitle"
+                   [icon]="icons.Edit"
+                   [actionGroupType]="actionGroupTypes.Context"
+                   [options]="details.options"
+                   (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
+  </div>
+
+</div>
+
+<ng-template #desktopScreen>
+  <div class="hud-layout">
+
+    <cp-action-panel class="navigation"
+                     startTitle="KSP Visual Calculator"
+                     [options]="navigationOptions"></cp-action-panel>
+
+    <ng-container *ngTemplateOutlet="faqButton"></ng-container>
+
+    <cp-action-panel class="information"
+                     startTitle="Information"
+                     location="top-right"
+                     color="cosmic-blue"
+                     [options]="infoOptions">
+      <ng-container *ngTemplateOutlet="profile"></ng-container>
+    </cp-action-panel>
+
+    <ng-container *ngTemplateOutlet="zoom"></ng-container>
+    <ng-container *ngTemplateOutlet="focus"></ng-container>
+
+    <cp-action-panel class="context"
+                     *ngIf="contextPanel$ | async as details"
+                     [startTitle]="details.startTitle"
+                     location="bottom-left"
+                     [color]="details.color || 'orange'"
+                     [startIcon]="details.startIcon || 'menu_open'"
+                     [options]="details.options">
+    </cp-action-panel>
+
+  </div>
+</ng-template>
+
+<ng-template #profile>
+  <div class="profile profile-icon">
+    <cp-user-profile></cp-user-profile>
+  </div>
+</ng-template>
+
+<ng-template #faqButton>
+  <button class="faq" mat-mini-fab color="accent" (click)="openFaq()">
+    <mat-icon>{{icons.Help}}</mat-icon>
+  </button>
+</ng-template>
+
+<ng-template #zoom>
+  <cp-zoom-indicator class="zoom no-mouse"
+                     [zoomLimits]="cameraZoomLimits"
+                     [cameraScale]="scale"
+                     [moonScale]="scaleToShowMoons"></cp-zoom-indicator>
+</ng-template>
+
+<ng-template #focus>
+  <cp-focus-jump-to-panel class="focus"></cp-focus-jump-to-panel>
+</ng-template>

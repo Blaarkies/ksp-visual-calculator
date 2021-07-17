@@ -1,0 +1,117 @@
+.hud-layout {
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: max-content max-content auto max-content;
+  grid-template-rows: minmax(200px, max-content) 1fr auto max-content;
+  grid-template-areas:
+'nav     faq zoom info'
+'focus   .   .    .'
+'context .   .    clippy';
+
+  .zoom {
+    max-width: 800px;
+    margin: 20px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .hud-layout {
+    grid-template-columns: max-content auto max-content;
+    grid-template-rows: max-content max-content 1fr auto max-content;
+    grid-template-areas:
+'nav     faq  info'
+'zoom    zoom zoom'
+'focus   .    .'
+'context .    clippy';
+
+    .zoom {
+      max-width: 600px;
+    }
+  }
+}
+
+.navigation {grid-area: nav;}
+
+.faq {
+  grid-area: faq;
+  color: white;
+  margin: 4px;
+
+  mat-icon {
+    transform: scale(1.6);
+  }
+}
+
+.information {grid-area: info;}
+
+.zoom {
+  grid-area: zoom;
+  justify-self: center;
+  width: 100%;
+}
+
+.focus {
+  grid-area: focus;
+}
+
+.context {grid-area: context;}
+
+//.clippy {grid-area: clippy}
+
+.no-mouse {
+  pointer-events: none;
+}
+
+.profile-icon {
+  border-radius: 100px;
+  position: absolute;
+  right: 6px;
+}
+
+.handset-layout {
+  height: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: max-content max-content auto max-content;
+  grid-template-areas:
+'faq    profile'
+'zoom   zoom'
+'focus  focus'
+'clippy fab-buttons';
+
+  .faq {
+    grid-area: faq;
+  }
+
+  .profile {
+    grid-area: profile;
+    margin: 4px;
+  }
+
+  .zoom {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    margin: 0 10px 20px 20px;
+  }
+
+  .fab-buttons {
+    padding: 20px;
+    grid-area: fab-buttons;
+    justify-self: end;
+
+    display: flex;
+    gap: 10px;
+  }
+}
+
+@media screen and (max-height: 500px) {
+  .handset-layout {
+    .fab-buttons {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      flex-direction: column;
+    }
+  }
+}

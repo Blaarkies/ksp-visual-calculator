@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 import { StateDisplayComponent } from './state-display.component';
 
-describe('StateDisplayComponent', () => {
-  let component: StateDisplayComponent;
-  let fixture: ComponentFixture<StateDisplayComponent>;
+let componentType = StateDisplayComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ StateDisplayComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StateDisplayComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

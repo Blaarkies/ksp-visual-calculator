@@ -1,0 +1,50 @@
+.right-justified .action-button {
+  justify-items: end;
+}
+
+.action-button {
+  padding: 0 20px !important;
+  height: 100%;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto max-content max-content;
+  align-items: center;
+
+  [matbadge] {
+    margin: 0 4px;
+  }
+
+  mat-icon {
+    color: white;
+    justify-self: end;
+  }
+
+  transition: .25s ease-out;
+
+  &:hover {
+    background-color: #0002;
+  }
+
+  &.unavailable {
+    background-color: #aaa3;
+
+    * {
+      color: #fffa;
+    }
+  }
+}
+
+.anchor-invisible {
+  height: 100%;
+  text-decoration: none;
+}
+
+// override material, let content touch sides
+.mat-list-text {
+  height: 100%;
+  padding: 0 !important;
+}
+
+.mat-list-item-content {
+  padding: 0 !important;
+}

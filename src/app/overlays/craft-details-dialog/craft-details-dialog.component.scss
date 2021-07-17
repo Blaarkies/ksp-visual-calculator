@@ -1,0 +1,92 @@
+.craft-details-form {
+  --grid-gap: 20px;
+
+  display: grid;
+  gap: var(--grid-gap);
+  grid-template-columns: min-content min-content auto;
+  grid-template-areas:
+    'left middle right';
+
+  .left-column {
+    grid-area: left;
+    width: min-content;
+    display: grid;
+    grid-auto-rows: max-content;
+
+    > cp-input-field-list {
+      display: grid;
+      gap: var(--grid-gap);
+    }
+
+    .invisible-expansion-panel {
+      width: max-content;
+      box-shadow: unset;
+      background: unset;
+
+      mat-expansion-panel-header {
+        padding: 8px 2px;
+        height: min-content;
+        border-radius: 8px;
+      }
+
+      .mat-expansion-panel-content {
+        cp-input-field-list {
+          display: grid;
+          align-items: start;
+          padding-bottom: 26px;
+        }
+      }
+    }
+  }
+
+  .middle-column {grid-area: middle;}
+
+  .right-column {
+    grid-area: right;
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+}
+
+.fix-button-order[mat-dialog-actions] {
+  grid-template-columns: max-content auto max-content;
+
+  .justify-right {
+    justify-self: end !important; // to override style.scss [mat-dialog-actions]
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .craft-details-form {
+    gap: unset;
+    grid-template-areas:
+    'left'
+    'right';
+
+    .left-column {
+      > cp-input-field-list {
+        grid-template-columns: max-content max-content;
+      }
+
+      .mat-expansion-panel-content cp-input-field-list {
+        grid-template-columns: max-content max-content;
+      }
+    }
+
+    .middle-column {
+      display: none;
+    }
+  }
+}
+
+// landscape mobile cuts off the dialog action buttons
+@media screen and (max-height: 500px) {
+  .craft-details-form {
+    box-shadow: inset 0 0 6px 2px #0002;
+    overflow-y: auto;
+    max-height: 260px;
+  }
+}

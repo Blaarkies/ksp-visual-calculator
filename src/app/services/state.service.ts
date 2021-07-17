@@ -12,11 +12,11 @@ import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
-import { StateRow } from '../dialogs/manage-state-dialog/state.row';
-import { StateEntry } from '../dialogs/manage-state-dialog/state.entry';
-import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap } from 'rxjs/operators';
-import { DifficultySetting } from '../dialogs/difficulty-settings-dialog/difficulty-setting';
-import { AccountDialogComponent } from '../dialogs/account-dialog/account-dialog.component';
+import { StateRow } from '../overlays/manage-state-dialog/state.row';
+import { StateEntry } from '../overlays/manage-state-dialog/state.entry';
+import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
+import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Injectable({
@@ -27,6 +27,16 @@ export class StateService {
   private name: string;
   private autoSaveUnsubscribe$ = new Subject();
   private context: UsableRoutes.SignalCheck;
+
+  private lastStateRecord: string;
+
+  setStateRecord() {
+    this.lastStateRecord = JSON.stringify(this.state);
+  }
+
+  get stateIsUnsaved(): boolean {
+    return this.lastStateRecord !== JSON.stringify(this.state);
+  }
 
   set pageContext(value: UsableRoutes.SignalCheck) {
     this.context = value;
@@ -89,18 +99,21 @@ export class StateService {
 
   loadState(state?: string): Observable<void> {
     let oldState: string;
+    let setAndCompareState = () => {
+      let newState = this.state;
+      delete newState.timestamp;
+      let newStateString = JSON.stringify(newState);
+      let hasChanged = oldState && oldState !== newStateString;
+      oldState = newStateString;
+      return hasChanged;
+    };
+
     this.autoSaveUnsubscribe$.next();
     this.earlyState
       .pipe(
+        tap(setAndCompareState),
         switchMap(() => interval(10e3)),
-        filter(() => {
-          let newState = this.state;
-          delete newState.timestamp;
-          let newStateString = JSON.stringify(newState);
-          let hasChanged = oldState && oldState !== newStateString;
-          oldState = newStateString;
-          return hasChanged;
-        }),
+        filter(setAndCompareState),
         switchMap(() => from(this.saveState(this.stateRow))
           .pipe(
             catchError(() => this.snackBar.open(`Cannot save changes without an account`, 'Sign In', {duration: 15e3})
@@ -109,20 +122,24 @@ export class StateService {
                 tap(() => this.dialog.open(AccountDialogComponent)),
                 switchMapTo(EMPTY), // stop this iteration of the stream here
                 takeUntil(this.autoSaveUnsubscribe$))))),
+        throttleTime(30e3),
         tap(() => this.snackBar.open(`Saved changes to "${this.name}"`)),
         takeUntil(this.autoSaveUnsubscribe$))
       .subscribe();
 
+    let buildStateResult: Observable<void>;
     if (state) {
       let parsedState: StateGame = JSON.parse(state);
       this.name = parsedState.name;
       this.setupService.difficultySetting = DifficultySetting.fromObject(parsedState.settings.difficulty);
-      return this.spaceObjectService.buildState(state);
+      buildStateResult = this.spaceObjectService.buildState(state);
     } else {
       this.name = Uid.new;
       this.setupService.difficultySetting = DifficultySetting.normal;
-      return this.spaceObjectService.buildStockState();
+      buildStateResult = this.spaceObjectService.buildStockState();
     }
+
+    return buildStateResult.pipe(tap(() => this.setStateRecord()));
   }
 
   addStateToStore(state: StateGame): Promise<void> {

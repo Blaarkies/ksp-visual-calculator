@@ -1,0 +1,13 @@
+<button mat-fab
+        class="mat-elevation-z1"
+        [ngClass]="color"
+        [matTooltip]="tooltip"
+        (click)="actionButton()">
+  <mat-icon>{{icon}}</mat-icon>
+
+  <span class="animate-badge"
+        matBadgeColor="warn"
+        [matBadgeHidden]="!unreadCount"
+        [matBadge]="unreadCount"></span>
+
+</button>

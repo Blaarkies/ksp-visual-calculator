@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
-import { delay, filter, finalize, map, mapTo, scan, skip, take, takeUntil } from 'rxjs/operators';
+import { delay, filter, map, mapTo, scan, skip, take, takeUntil } from 'rxjs/operators';
 import { AnalyticsService, EventLogs } from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
 
@@ -11,7 +11,7 @@ import { Vector2 } from '../common/domain/vector2';
 })
 export class TutorialService {
 
-  stopTutorial$ = new Subject();
+  resetTutorial$ = new Subject<boolean>();
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
               private analyticsService: AnalyticsService) {
@@ -22,29 +22,32 @@ export class TutorialService {
       category: EventLogs.Category.Tutorial,
     });
 
-    this.stopTutorial$.next();
+    this.resetTutorial$.next();
     let compiledSteps = this.getCompiledSteps();
 
     this.wizardSpotlightService
-      .runSteps(compiledSteps)
+      .stopTutorial$
       .pipe(
-        finalize(() =>
-        // this will count even if tutorial was cancelled
-          this.analyticsService
-          .logEvent('Finish tutorial', {category: EventLogs.Category.Tutorial})),
-        takeUntil(this.stopTutorial$))
+        take(1),
+        takeUntil(this.resetTutorial$))
+      .subscribe(didFinish => this.analyticsService
+        .logEvent(`${didFinish ? 'Finish' : 'Cancel'} tutorial`, {category: EventLogs.Category.Tutorial}));
+
+    this.wizardSpotlightService
+      .runSteps(compiledSteps)
+      .pipe(takeUntil(this.resetTutorial$))
       .subscribe();
   }
 
   private getCompiledSteps(): Observable<any>[] {
     let stepDetails = this.getStepDetails();
 
-    return stepDetails.map(detail => this.wizardSpotlightService.compileStep(detail));
+    return stepDetails.map((detail, i, a) => this.wizardSpotlightService.compileStep(detail, i === a.length - 1));
   }
 
   private getStepDetails(): StepDetails[] {
     let dragPlanet = {
-      dialogTitle: 'Planets',
+      dialogTitle: 'Dragging Planets',
       dialogTargetCallback: () => this.selectObjectInDom('eve').firstChild,
       dialogMessages: [
         'This is a planet, it can be dragged around its orbit.',
@@ -103,7 +106,7 @@ export class TutorialService {
     } as StepDetails;
 
     let moveCamera = {
-      dialogTitle: 'Camera',
+      dialogTitle: 'Moving The Camera',
       dialogTargetCallback: () => this.selectObjectInDom('kerbol').firstChild,
       dialogMessages: [
         'The camera can be moved around to view other parts of the Kerbol system.',
@@ -145,7 +148,7 @@ export class TutorialService {
     } as StepDetails;
 
     let zoomCamera = {
-      dialogTitle: 'Moons',
+      dialogTitle: 'Zooming In',
       dialogTargetCallback: () => this.selectObjectInDom('kerbin').firstChild,
       dialogMessages: [
         'Some planets have moons, but you have to zoom in to see them.',
@@ -191,8 +194,9 @@ export class TutorialService {
     } as StepDetails;
 
     let editUniverse = {
-      dialogTitle: 'Spacecraft',
-      dialogTargetCallback: () => document.querySelector('cp-edit-universe-action-panel mat-expansion-panel mat-list-option'),
+      dialogTitle: 'Adding Spacecraft',
+      dialogTargetCallback: () => document.querySelector(
+        'cp-action-panel[ng-reflect-start-title="Edit Universe"] button[mat-icon-button], cp-action-fab[ng-reflect-tooltip="Edit Universe"] button'),
       dialogMessages: [
         'This universe can be configured here.',
         'Click "New Craft" to add your own spacecraft.'],
@@ -200,8 +204,9 @@ export class TutorialService {
       stages: [
         {
           callback: input => defer(() => {
-            let addCraftButton = document.querySelector('cp-edit-universe-action-panel button[mat-icon-button]');
-            (addCraftButton as HTMLButtonElement).click();
+            let openEditOptionsButton = document.querySelector(
+              'cp-action-panel[ng-reflect-start-title="Edit Universe"] button[mat-icon-button], cp-action-fab[ng-reflect-tooltip="Edit Universe"] button');
+            (openEditOptionsButton as HTMLButtonElement).click();
             return timer(500).pipe(mapTo(input));
           }),
         },
@@ -212,7 +217,8 @@ export class TutorialService {
         {
           callback: input => defer(() => {
             // todo: re-use markerTargetCallback() instead
-            let matListOptions = document.querySelectorAll('cp-edit-universe-action-panel mat-list-option');
+            let matListOptions = document.querySelectorAll(
+              'cp-action-panel[ng-reflect-start-title="Edit Universe"] mat-list-option, cp-action-list mat-list-option');
             let target = Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
             return fromEvent(target, 'click').pipe(
               take(1), mapTo(input));
@@ -220,15 +226,16 @@ export class TutorialService {
         },
       ],
       markerTargetCallback: () => {
-        let matListOptions = document.querySelectorAll('cp-edit-universe-action-panel mat-list-option');
+        let matListOptions = document.querySelectorAll(
+          'cp-action-panel[ng-reflect-start-title="Edit Universe"] mat-list-option, cp-action-list mat-list-option');
         return Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
       },
       markerType: 'pane',
     } as StepDetails;
 
     let addCraft = {
-      dialogTitle: 'Antenna Types',
-      dialogTargetCallback: () => document.querySelector('mat-dialog-container'),
+      dialogTitle: 'Selecting Antenna Types',
+      dialogTargetCallback: () => document.querySelector('cp-action-panel, cp-action-fab'),
       dialogMessages: [
         'Spacecraft can be added and configured here.',
         'Remember to select a communications antenna for this spacecraft.',
@@ -260,7 +267,7 @@ export class TutorialService {
     } as StepDetails;
 
     let communicationLines = {
-      dialogTitle: 'Communication lines',
+      dialogTitle: 'Changing Communication lines',
       dialogTargetCallback: () => {
         let crafts = document.querySelectorAll('.craft-icon-sprite-image');
         return crafts[crafts.length - 1];
@@ -317,7 +324,7 @@ export class TutorialService {
     } as StepDetails;
 
     let relaySatellites = {
-      dialogTitle: 'Signal Relay',
+      dialogTitle: 'Relaying Signals',
       dialogTargetCallback: () => document.querySelector('.craft-icon-sprite-image'),
       dialogMessages: [
         'Some antenna types can relay a weak connection back to Kerbin.',

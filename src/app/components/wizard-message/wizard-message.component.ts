@@ -8,7 +8,7 @@ export interface WizardMessage {
   messages: string[];
   icon: string;
   location: Vector2;
-  stopTutorial: Subject<void>;
+  stopTutorial$: Subject<boolean>;
 }
 
 @Component({
@@ -28,7 +28,8 @@ export class WizardMessageComponent implements WizardMessage {
     hostStyle.top = `${value.y}px`;
   }
 
-  @Input() stopTutorial: Subject<void>;
+  @Input() stopTutorial$: Subject<boolean>;
+  @Input() isLastStep: boolean;
 
   icons = Icons;
 
@@ -36,7 +37,10 @@ export class WizardMessageComponent implements WizardMessage {
   }
 
   cancelWizard() {
-    this.stopTutorial.next();
+    this.stopTutorial$.next(false);
   }
 
+  finishWizard() {
+    this.stopTutorial$.next(true);
+  }
 }

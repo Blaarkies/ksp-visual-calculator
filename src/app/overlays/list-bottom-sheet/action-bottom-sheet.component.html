@@ -1,0 +1,5 @@
+<h3>{{data.startTitle}}</h3>
+
+<cp-action-list [options]="data.actionOptions"
+                [justifyRight]="true"
+                (action)="bottomSheetRef.dismiss()"></cp-action-list>

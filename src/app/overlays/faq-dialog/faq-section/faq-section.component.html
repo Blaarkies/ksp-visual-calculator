@@ -1,0 +1,27 @@
+<section>
+  <h2>{{section.title}}</h2>
+  <p>{{section.simpleExplanation}}</p>
+
+  <cp-content-pleat>
+    <p *ngFor="let explanationParts of section.advancedExplanations">
+      <ng-container *ngFor="let part of explanationParts">
+        <ng-container [ngSwitch]="part.type">
+          <span *ngSwitchCase="'span'">{{part.content}}</span>
+          <code *ngSwitchCase="'code'">{{part.content}}</code>
+          <span *ngSwitchCase="'search'"
+                class="read-more"
+                (click)="search.emit(part.query)">
+              {{part.content}}
+            </span>
+          <span *ngSwitchCase="'image'"
+                class="image-layout">
+                <span>{{part.content}}</span>
+                <img [style.height.px]="part.height"
+                     [src]="part.src"
+                     [alt]="part.alt"/>
+            </span>
+        </ng-container>
+      </ng-container>
+    </p>
+  </cp-content-pleat>
+</section>

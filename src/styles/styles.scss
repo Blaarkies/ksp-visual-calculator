@@ -29,6 +29,10 @@ body {
   color: white;
 }
 
+.text-mute {
+  color: var(--color-text-muted);
+}
+
 .overflow-visible {
   overflow: visible;
 }
@@ -117,4 +121,15 @@ body {
 @keyframes kf-animate-fade-in {
   from {opacity: 0}
   to {opacity: 1}
+}
+
+@media screen and (max-width: 1000px) {
+  .cdk-overlay-backdrop.mobile-friendly + .cdk-global-overlay-wrapper {
+    align-items: start !important;
+
+    .cdk-overlay-pane {
+      max-width: unset !important;
+      width: 100%;
+    }
+  }
 }
