@@ -1,5 +1,5 @@
-import { ApplicationRef, ChangeDetectorRef, Injectable } from '@angular/core';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { ApplicationRef, Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';

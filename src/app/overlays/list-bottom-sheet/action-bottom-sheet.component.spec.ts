@@ -1,25 +1,23 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
+import { ActionBottomSheetComponent, ActionBottomSheetData } from './action-bottom-sheet.component';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import { ineeda } from 'ineeda';
 
-import { ActionBottomSheetComponent } from './action-bottom-sheet.component';
+let componentType = ActionBottomSheetComponent;
+describe('ActionBottomSheetComponent' /*componentType.name*/, () => {
 
-describe('ActionBottomSheetComponent', () => {
-  let component: ActionBottomSheetComponent;
-  let fixture: ComponentFixture<ActionBottomSheetComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ActionBottomSheetComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ActionBottomSheetComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(MatBottomSheetRef)
+    .mock(MAT_BOTTOM_SHEET_DATA, ineeda<ActionBottomSheetData>({
+      startTitle: '',
+      actionOptions: [],
+    })));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

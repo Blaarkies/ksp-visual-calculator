@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { WithDestroy } from '../../common/with-destroy';
 import { debounceTime, map, publishReplay, refCount, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -24,7 +24,7 @@ export class FaqDialogComponent extends WithDestroy() {
   columns: Section[][];
 
   allSections: Section[]; // single list, for handset
-  isHandset$: Observable<boolean>
+  isHandset$: Observable<boolean>;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FaqDialogData,
               http: HttpClient,

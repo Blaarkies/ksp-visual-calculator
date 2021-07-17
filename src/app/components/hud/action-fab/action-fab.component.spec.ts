@@ -1,25 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MockBuilder, MockRender } from 'ng-mocks';
 import { ActionFabComponent } from './action-fab.component';
+import { AppModule } from '../../../app.module';
 
-describe('ActionFabComponent', () => {
-  let component: ActionFabComponent;
-  let fixture: ComponentFixture<ActionFabComponent>;
+let componentType = ActionFabComponent;
+describe('ActionFabComponent' /*componentType.name*/, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ ActionFabComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ActionFabComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {options: []});
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

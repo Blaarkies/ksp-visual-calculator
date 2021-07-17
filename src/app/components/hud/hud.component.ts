@@ -7,7 +7,7 @@ import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq
 import { MatDialog } from '@angular/material/dialog';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { map, take } from 'rxjs/operators';

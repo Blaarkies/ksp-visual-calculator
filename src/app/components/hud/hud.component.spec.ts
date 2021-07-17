@@ -1,25 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../../app.module';
 import { HudComponent } from './hud.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { ineeda } from 'ineeda';
+import { of } from 'rxjs';
+import { HudService } from '../../services/hud.service';
 
-describe('HudComponent', () => {
-  let component: HudComponent;
-  let fixture: ComponentFixture<HudComponent>;
+let componentType = HudComponent;
+describe(componentType.name, () => {
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ HudComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HudComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(BreakpointObserver, ineeda<BreakpointObserver>({
+      observe: () => of(),
+    }))
+    .mock(HudService, ineeda<HudService>({
+      contextPanel$: {
+        asObservable: () => 0
+      } as any,
+    })));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType);
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

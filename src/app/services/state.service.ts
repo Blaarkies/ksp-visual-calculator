@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
 import { StateRow } from '../overlays/manage-state-dialog/state.row';
 import { StateEntry } from '../overlays/manage-state-dialog/state.entry';
-import { catchError, combineAll, delay, filter, finalize, map, sampleTime, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';

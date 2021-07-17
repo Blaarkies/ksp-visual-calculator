@@ -1,25 +1,20 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { FaqSectionComponent, Section } from './faq-section.component';
+import { AppModule } from '../../../app.module';
 
-import { FaqSectionComponent } from './faq-section.component';
+let componentType = FaqSectionComponent;
+describe(componentType.name, () => {
 
-describe('FaqSectionComponent', () => {
-  let component: FaqSectionComponent;
-  let fixture: ComponentFixture<FaqSectionComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FaqSectionComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(FaqSectionComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    let fixture = MockRender(componentType, {
+      section: {
+        title: '',
+        simpleExplanation: '',
+      } as Section,
+    });
+    expect(fixture.point.componentInstance).toBeDefined();
   });
+
 });

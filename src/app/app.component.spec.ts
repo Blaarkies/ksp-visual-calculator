@@ -3,7 +3,8 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from './app.module';
 import { MatDialog } from '@angular/material/dialog';
 import { ineeda } from 'ineeda';
-import { EMPTY } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
+import { AuthService } from './services/auth.service';
 
 let componentType = AppComponent;
 describe(componentType.name, () => {
@@ -14,7 +15,8 @@ describe(componentType.name, () => {
       open: () => ({
         afterClosed: () => EMPTY,
       }),
-    } as any)));
+    } as any))
+    .mock(AuthService, ineeda<AuthService>({user$: of(null)})));
 
   it('should create', () => {
     let fixture = MockRender(componentType);
