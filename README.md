@@ -1,6 +1,6 @@
-# KSP CommNet Planner
+# KSP Visual Calculator
 
-[Demo](https://ksp-commnet-planner.blaarkies.com)
+[Demo](https://ksp-visual-calculator.blaarkies.com)
 
 ## A tool for Kerbal Space Program
 

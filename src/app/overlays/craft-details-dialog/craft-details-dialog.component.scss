@@ -51,7 +51,7 @@
   align-items: center;
 }
 
-[mat-dialog-actions] {
+.fix-button-order[mat-dialog-actions] {
   grid-template-columns: max-content auto max-content;
 
   .justify-right {

@@ -12,11 +12,11 @@ mat-expansion-panel-header {
   height: max-content;
 
   &.green {
-    background-color: var(--color-background-panel-green);
+    background-color: var(--color-background-panel-green-opaque);
   }
 
   &.orange {
-    background-color: var(--color-background-panel-orange);
+    background-color: var(--color-background-panel-orange-opaque);
   }
 
   &.cosmic-blue {

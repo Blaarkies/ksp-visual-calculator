@@ -1,5 +1,5 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
@@ -66,7 +66,7 @@ export class HudService {
       new ActionOption(
         'Source Code - GitHub',
         Icons.SourceCode,
-        {externalRoute: 'https://github.com/Blaarkies/ksp-commnet-planner'}),
+        {externalRoute: 'https://github.com/Blaarkies/ksp-visual-calculator'}),
       new ActionOption(
         'Blaarkies Hub',
         Icons.Blaarkies,
@@ -188,15 +188,15 @@ export class HudService {
             });
         },
       }),
-      new ActionOption('New Celestial Body', Icons.Planet, {
-        action: () => {
-          this.analyticsService.logEvent('Call new celestial body dialog', {
-            category: EventLogs.Category.CelestialBody,
-          });
-
-          this.snackBar.open('Adding moons, planets, and stars are coming soon!');
-        },
-      }),
+      new ActionOption('New Celestial Body', Icons.Planet, {action: () => void 0}, undefined, false, undefined,
+        {
+          unavailable$: of(true),
+          tooltip: 'Adding moons, planets, and stars are coming soon!',
+          action: () => {
+            this.analyticsService.logEvent('Call new celestial body dialog', {category: EventLogs.Category.CelestialBody});
+            this.snackBar.open('Adding moons, planets, and stars are coming soon!');
+          },
+        }),
       new ActionOption('Difficulty Settings', Icons.Difficulty, {
         action: () => {
           this.analyticsService.logEvent('Call difficulty settings dialog', {

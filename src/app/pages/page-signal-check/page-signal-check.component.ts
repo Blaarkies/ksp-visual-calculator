@@ -96,6 +96,7 @@ export class PageSignalCheckComponent extends WithDestroy() {
         forbiddenNames: this.spaceObjectService.celestialBodies$.value.map(c => c.label),
         edit: body,
       } as CelestialBodyDetailsDialogData,
+      backdropClass: GlobalStyleClass.MobileFriendly,
     })
       .afterClosed()
       .pipe(

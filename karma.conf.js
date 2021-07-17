@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/ksp-commnet-planner'),
+      dir: require('path').join(__dirname, './coverage/ksp-visual-calculator'),
       subdir: '.',
       reporters: [
         {type: 'html'},
