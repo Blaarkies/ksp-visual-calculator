@@ -196,7 +196,7 @@ export class TutorialService {
     let editUniverse = {
       dialogTitle: 'Adding Spacecraft',
       dialogTargetCallback: () => document.querySelector(
-        'cp-action-panel#context-panel button[mat-icon-button], cp-action-fab#context-fab button'),
+        'cp-action-panel#context-panel, cp-action-fab#context-fab button'),
       dialogMessages: [
         'This universe can be configured here.',
         'Click "New Craft" to add your own spacecraft.'],
@@ -216,7 +216,6 @@ export class TutorialService {
         },
         {
           callback: input => defer(() => {
-            // todo: re-use markerTargetCallback() instead
             let matListOptions = document.querySelectorAll(
               'cp-action-panel#context-panel mat-list-option, cp-action-list mat-list-option');
             let target = Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
