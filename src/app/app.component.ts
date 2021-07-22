@@ -59,6 +59,9 @@ export class AppComponent extends WithDestroy() implements OnInit {
           null, {duration: 15e3})),
         filter(ok => ok),
         takeUntil(this.destroy$))
-      .subscribe(() => this.tutorialService.startFullTutorial());
+      .subscribe(() => {
+        localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString());
+        this.tutorialService.startFullTutorial();
+      });
   }
 }
