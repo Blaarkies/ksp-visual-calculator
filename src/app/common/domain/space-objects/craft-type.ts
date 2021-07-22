@@ -35,7 +35,7 @@ export class CraftType {
   static fromString(type: string) {
     let match = CraftType.All.find(t => t.label === type);
     if (!match) {
-      throw console.error(`${type} is not a valid CraftType`);
+      throw new Error(`${type} is not a valid CraftType`);
     }
 
     return match;
