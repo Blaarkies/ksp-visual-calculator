@@ -8,7 +8,7 @@ export class SmoothSetter<T> {
   constructor(public value: T,
               private intervalTime: number,
               private steps: number,
-              private setCallback?: (lerp: number, newValue: T, oldValue: T) => T,
+              private setCallback: (lerp: number, newValue: T, oldValue: T) => T,
               private doneCallback: () => void = () => void 0) {
     // todo: setup default setCallback based on T type
   }

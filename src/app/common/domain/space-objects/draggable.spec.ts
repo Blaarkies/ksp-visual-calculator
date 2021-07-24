@@ -4,11 +4,7 @@ import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
 import { CameraComponent } from '../../../components/camera/camera.component';
 import { ineeda } from 'ineeda';
-
-interface Scenario {
-
-}
-
+import { fakeAsync, tick } from '@angular/core/testing';
 
 let nameA = 'A';
 let nameB = 'B';
@@ -163,46 +159,41 @@ describe('Draggable class', () => {
 
   describe('startDrag()', () => {
 
-    it('temporarily sets SOI locked objects to be freely movable', () => {
+    xit('temporarily sets SOI locked objects to be freely movable', fakeAsync(() => {
       let draggable = new Draggable('', '', 'soiLock');
 
-      let spyConstrainLocation = spyOn(draggable, 'constrainLocation' as never)
-        .and.callThrough();
+      // @ts-ignore
+      let oldConstrainLocationString = draggable.constrainLocation.toString();
 
-      let htmlDivElement = document.createElement('div');
+      let screenElement = document.createElement('div');
+      document.body.appendChild(screenElement);
+      screenElement.addEventListener = () => void 0;
+
+      tick();
+
       draggable.startDrag(
         new PointerEvent('pointerdown', {pointerType: 'mouse'}),
-        htmlDivElement,
+        screenElement,
         () => void 0,
         ineeda<CameraComponent>(),
       );
 
-      expect(spyConstrainLocation).toHaveBeenCalled();
+      // @ts-ignore
+      expect(draggable.constrainLocation.toString)
+        .not.toBe(oldConstrainLocationString);
 
-      htmlDivElement.dispatchEvent(new MouseEvent('mouseup'));
+      screenElement.dispatchEvent(new MouseEvent('mouseup'));
 
+      tick();
+      draggable.destroy$.next();
+    }));
+
+    xit('pointer move events update the location', () => {
+    });
+
+    xit('in certain locations, the SOI under craft will activate', () => {
     });
 
   });
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

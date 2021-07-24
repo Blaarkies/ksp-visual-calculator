@@ -14,6 +14,10 @@ export class Vector2 {
     return new Vector2(xy[0], xy[1]);
   }
 
+  static fromDirection(angle: number, distance: number = 1): Vector2 {
+    return new Vector2(Math.cos(angle) * distance, Math.sin(angle) * distance);
+  }
+
   set(xy: number[]): Vector2 {
     [this.x, this.y] = xy;
     return this;
@@ -93,10 +97,6 @@ export class Vector2 {
 
   direction(other: Vector2): number {
     return Math.atan2(other.y - this.y, other.x - this.x);
-  }
-
-  static fromDirection(angle: number, distance: number = 1): Vector2 {
-    return new Vector2(Math.cos(angle) * distance, Math.sin(angle) * distance);
   }
 
   toList(): number[] {

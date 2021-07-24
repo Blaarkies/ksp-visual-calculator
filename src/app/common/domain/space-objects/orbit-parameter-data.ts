@@ -1,4 +1,3 @@
-import { Vector2 } from '../vector2';
 import { Draggable } from './draggable';
 
 export class OrbitParameterData {
@@ -10,10 +9,6 @@ export class OrbitParameterData {
 
   static fromRadius(r: number) {
     return new OrbitParameterData([], r);
-  }
-
-  static fromVector2(location: Vector2) {
-    return new OrbitParameterData([location.x, location.y], null);
   }
 
   toJson(): {} {

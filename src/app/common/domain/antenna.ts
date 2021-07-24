@@ -14,17 +14,16 @@ export class Antenna {
         : Icons.Antenna;
   }
 
-  constructor(
-    public label: string,
-    public cost: number,
-    public mass: number,
-    public electricityPMit: number,
-    public electricityPS: number,
-    public transmissionSpeed: number,
-    public relay: boolean,
-    public tier: number,
-    public powerRating: number,
-    public combinabilityExponent: number) {
+  constructor(public label: string,
+              public cost: number,
+              public mass: number,
+              public electricityPMit: number,
+              public electricityPS: number,
+              public transmissionSpeed: number,
+              public relay: boolean,
+              public tier: number,
+              public powerRating: number,
+              public combinabilityExponent: number) {
   }
 
   static combinedPower(antennae: Group<Antenna>[]): number {
