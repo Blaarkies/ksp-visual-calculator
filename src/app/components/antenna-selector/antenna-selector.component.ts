@@ -51,10 +51,9 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   constructor() {
     super();
     this.finalControl.valueChanges
-      .pipe(
-        takeUntil(this.unsubscribe$))
-      .subscribe((val: Antenna) => {
-        this.antennaInputs.push(new AntennaInput(val));
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((value: Antenna) => {
+        this.antennaInputs.push(new AntennaInput(value));
         this.userInputChange();
         this.finalControl.reset(null, {emitEvent: false});
         this.refreshAvailableOptions();
@@ -62,7 +61,6 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   }
 
   writeValue(value: Group<Antenna>[]) {
-    // this.inputRef.nativeElement.value = value;
     this.value = value;
     if (!this.antennaInputs.length && value) {
       this.antennaInputs = value.map(({item, count}) => new AntennaInput(item, count));
@@ -80,7 +78,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   }
 
   setDisabledState(isDisabled: boolean) {
-    // this.inputRef.nativeElement.disabled = isDisabled;
+    this.disabled = isDisabled;
   }
 
   userInputChange() {

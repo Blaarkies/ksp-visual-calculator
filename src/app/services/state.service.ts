@@ -98,6 +98,7 @@ export class StateService {
   }
 
   loadState(state?: string): Observable<void> {
+    // todo: use npm i `shrink-string` for 70% shorter strings
     let oldState: string;
     let setAndCompareState = () => {
       let newState = this.state;

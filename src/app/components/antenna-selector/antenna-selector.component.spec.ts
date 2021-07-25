@@ -5,9 +5,11 @@ import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { ineeda } from 'ineeda';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { fakeAsync, tick } from '@angular/core/testing';
+import { Common } from '../../common/common';
 
 let componentType = AntennaSelectorComponent;
-describe(componentType.name, () => {
+describe('AntennaSelectorComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
@@ -16,7 +18,30 @@ describe(componentType.name, () => {
     expect(fixture.point.componentInstance).toBeDefined();
   });
 
-  it('when writeValue() with list, this.antennaInputs should match', () => {
+  let defaultOptions = [1, 2, 3].map(n =>
+    new LabeledOption(n.toString(), ineeda<Antenna>({label: n.toString()})));
+
+  it('constructor(), should have availableOptions setup', () => {
+    let fixture = MockRender(componentType, {options: defaultOptions});
+    let component = fixture.point.componentInstance;
+
+    expect(component.availableOptions.length).toBe(3);
+    expect(component.availableOptions[2].value.label).toBe('3');
+  });
+
+  it('finalControl set value should value to antennaInputs', () => {
+    let fixture = MockRender(componentType, {options: defaultOptions});
+    let component = fixture.point.componentInstance;
+
+    expect(component.antennaInputs.length).toBe(0);
+    component.finalControl.setValue(defaultOptions[1]);
+
+    expect(component.antennaInputs.length).toBe(1);
+    let newAntennaInput = component.antennaInputs[0].selectedAntenna;
+    expect(newAntennaInput.label).toBe(defaultOptions[1].label);
+  });
+
+  it('writeValue() with list, antennaInputs should match', () => {
     let fixture = MockRender(componentType);
     let component = fixture.componentInstance;
 
@@ -28,7 +53,7 @@ describe(componentType.name, () => {
       .toBeTrue();
   });
 
-  it('when removeAntenna(), this.antennaInputs does not contain mockAntenna', () => {
+  it('removeAntenna(), antennaInputs does not contain mockAntenna', () => {
     let fixture = MockRender(componentType);
     let component = fixture.componentInstance;
     let mockAntennaA = ineeda<Antenna>({label: 'A'});
@@ -59,4 +84,29 @@ describe(componentType.name, () => {
       .toBeTrue();
   });
 
+  it('setDisabledState(), sets all children as disabled', fakeAsync(() => {
+    let fixture = MockRender(componentType, {options: defaultOptions});
+    let component = fixture.point.componentInstance;
+    component.writeValue([new Group(defaultOptions[2].value)]);
+
+    fixture.detectChanges();
+    tick();
+
+    let getChildren = () => Array.from(
+      fixture.debugElement.nativeElement.querySelectorAll(
+        'cp-input-field, cp-input-number, button, cp-input-select'),
+    ) as HTMLElement[];
+
+    let allEnabled = !getChildren().some(c => Common.isNgDisabled(c));
+    expect(allEnabled).toBeTrue();
+
+    component.setDisabledState(true);
+    fixture.detectChanges();
+    tick();
+
+    fixture.detectChanges();
+
+    let allDisabled = getChildren().every(c => Common.isNgDisabled(c));
+    expect(allDisabled).toBeTrue();
+  }));
 });

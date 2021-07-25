@@ -3,17 +3,7 @@ import { AntennaInput } from '../antenna-selector/antenna-input';
 import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
-
-export interface AntennaStats {
-  totalPowerRating: number;
-  totalCost: number;
-  totalMass: number;
-  totalElectricityPMit: number;
-  totalElectricityPS: number;
-  totalTransmissionSpeed: number;
-  relayBias: number;
-  averageCombinabilityExponent: number;
-}
+import { AntennaStats } from './antenna-stats';
 
 @Component({
   selector: 'cp-antenna-stats',

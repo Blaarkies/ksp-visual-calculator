@@ -38,7 +38,6 @@ export class InputFieldComponent extends BasicValueAccessor {
   @ViewChild('input', {static: true}) inputRef: ElementRef<HTMLInputElement>;
 
   isActive: boolean;
-
   icons = Icons;
 
   constructor(private cdr: ChangeDetectorRef) {

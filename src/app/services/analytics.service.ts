@@ -70,7 +70,6 @@ export class AnalyticsService {
     this.setupAnalytics();
   }
 
-
   private setupAnalytics() {
     firebase.apps.length
       ? firebase.app()
