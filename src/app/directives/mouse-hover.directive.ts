@@ -15,8 +15,8 @@ export class MouseHoverDirective implements OnDestroy {
     this.hoverTrigger$
       .pipe(
         switchMap(hover => hover
-          ? of(hover)
-          : timer(1000).pipe(mapTo(hover))))
+          ? of(true)
+          : timer(1000).pipe(mapTo(false))))
       .subscribe(hover => this.hoverChange.emit(hover));
   }
 

@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 
 let componentType = CraftDetailsDialogComponent;
-describe(componentType.name, () => {
+describe('CraftDetailsDialogComponent', () => {
 
   beforeEach(() => MockBuilder(componentType)
     .mock(AppModule)

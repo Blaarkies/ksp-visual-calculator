@@ -79,6 +79,12 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
 
   setDisabledState(isDisabled: boolean) {
     this.disabled = isDisabled;
+    this.antennaInputs
+      .map(ai => ai.countControl)
+      .concat(this.finalControl)
+      .forEach(control => isDisabled
+        ? control.disable({emitEvent: false})
+        : control.enable());
   }
 
   userInputChange() {

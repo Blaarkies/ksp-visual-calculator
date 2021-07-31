@@ -1,17 +1,33 @@
-import { MockBuilder, MockRender } from 'ng-mocks';
+import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
-import { ineeda } from 'ineeda';
-import { Orbit } from '../../common/domain/space-objects/orbit';
 import { UserProfileComponent } from './user-profile.component';
+import { AnalyticsService } from '../../services/analytics.service';
+import createSpy = jasmine.createSpy;
+import { MatDialog } from '@angular/material/dialog';
+import { of } from 'rxjs';
 
 let componentType = UserProfileComponent;
-describe(componentType.name, () => {
+describe('UserProfileComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
-    let fixture = MockRender(componentType, {orbit: ineeda<Orbit>()});
+    let fixture = MockRender(componentType);
     expect(fixture.point.componentInstance).toBeDefined();
+  });
+
+  it('openAccountDialog() should call dialog.open', () => {
+    let spyLogEvent = MockInstance(AnalyticsService, 'logEvent', createSpy());
+    let spyOpen = MockInstance(MatDialog, 'open', createSpy().and
+      .returnValue({afterClosed: () => of(0)}));
+
+    let fixture = MockRender(componentType);
+    let component = fixture.point.componentInstance;
+
+    component.openAccountDialog();
+
+    expect(spyLogEvent).toHaveBeenCalled();
+    expect(spyOpen).toHaveBeenCalled();
   });
 
 });

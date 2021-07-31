@@ -35,8 +35,8 @@ export class ActionGroupType {
 })
 export class HudComponent extends WithDestroy() {
 
-  navigationOptions: ActionOption[];
-  infoOptions: ActionOption[];
+  navigationOptions = this.hudService.navigationOptions;
+  infoOptions = this.hudService.infoOptions;
 
   get contextPanel$(): Observable<ActionPanelDetails> {
     return this.hudService.contextPanel$.asObservable();
@@ -59,9 +59,6 @@ export class HudComponent extends WithDestroy() {
               breakpointObserver: BreakpointObserver,
               private bottomSheet: MatBottomSheet) {
     super();
-
-    this.navigationOptions = hudService.navigationOptions;
-    this.infoOptions = hudService.infoOptions;
 
     this.isHandset$ = breakpointObserver.observe([
       '(max-width: 600px)',
@@ -110,10 +107,10 @@ export class HudComponent extends WithDestroy() {
             actionOptions: panel.options,
           } as ActionBottomSheetData,
           panelClass: ['bottom-sheet-panel', 'orange'],
-        }).afterDismissed().toPromise();
+        });
         break;
       default:
-        throw console.error(`No bottom-sheet defined for "${group}"`);
+        throw new Error(`No bottom-sheet defined for "${group}"`);
     }
 
     await result?.afterDismissed()?.toPromise();

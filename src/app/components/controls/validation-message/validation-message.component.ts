@@ -1,16 +1,16 @@
 import { Component, Input } from '@angular/core';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 
-export class ErrorMessageTranscriber {
+class ErrorMessageTranscriber {
 
   private static messageTypes = new Map<string, (name: string, meta: any) => string>([
     ['required', (name, meta) => `${name} is required`],
     ['min', (name, meta) => `${name} must be at least ${meta.min}`],
     ['max', (name, meta) => `${name} must be less than ${meta.max}`],
+    ['minlength', (name, meta) => `${name} length must be at least ${meta.requiredLength}`],
     ['maxlength', (name, meta) => `${name} must be shorter than ${meta.requiredLength} characters`],
     ['duplicateString', (name, meta) => `${name} must be unique`],
     ['email', (name, meta) => `${name} is not valid`],
-    ['minlength', (name, meta) => `${name} length must be at least ${meta.requiredLength}`],
   ]);
 
   getReadableMessage(fieldName: string, value: FormControlError): string {
@@ -47,6 +47,5 @@ export class ValidationMessageComponent {
 
   message: string;
   private errorMessageTranscriber = new ErrorMessageTranscriber();
-
 
 }

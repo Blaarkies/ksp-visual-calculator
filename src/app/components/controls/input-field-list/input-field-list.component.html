@@ -15,9 +15,8 @@
                       [errors]="inputField.control.touched && inputField.control.errors"></cp-input-text-area>
 
   <cp-input-number *ngSwitchCase="controlMetaTypes.Number"
+                   [controlMeta]="inputField.controlMeta"
                    [label]="inputField.label"
-                   [hint]="inputField.controlMeta.hint"
-                   [suffix]="$any(inputField.controlMeta).suffix"
                    [formControl]="inputField.control"
                    [errors]="inputField.control.touched && inputField.control.errors"></cp-input-number>
 

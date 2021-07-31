@@ -18,8 +18,7 @@ import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-va
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { fromEvent, Subject } from 'rxjs';
-import { filter, map, takeUntil, tap } from 'rxjs/operators';
-import { ControlMeta } from '../../../common/domain/input-fields/control-meta';
+import { filter, map, takeUntil } from 'rxjs/operators';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
 
 @Component({
@@ -125,8 +124,8 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
     let valueChecks = {
       fromEmptyToFill: value => this.value === undefined && value !== '',
       fromFillToEmpty: value => this.value?.toString().length > value.length,
-      fromShorterString: value => value.length <= this.min.toString().length
-        && value.length <= this.max.toString().length,
+      fromShorterString: value => value.length <= Math.max(
+        this.min.toString().length, this.max.toString().length),
     };
 
     fromEvent(nativeInput, 'input', {capture: true})
@@ -143,8 +142,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
 
           let numberValue = value.toNumber();
           return numberValue.isNaN()
-            || numberValue < this.min
-            || numberValue > this.max;
+            || !numberValue.between(this.min, this.max);
         }),
         takeUntil(this.unsubscribe$))
       .subscribe(([event]: [InputEvent]) => {
@@ -181,6 +179,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
     let scaledNumber = this.max.lerp(this.min, concreteRatio).toInt();
     this.value = scaledNumber;
     this.inputRef.writeValue(scaledNumber);
+
     this.onChange && this.onChange(scaledNumber);
     this.output.emit(scaledNumber);
     window.requestAnimationFrame(() => this.cdr.markForCheck());

@@ -5,7 +5,7 @@ import { ineeda } from 'ineeda';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 
 let componentType = OrbitLineComponent;
-describe(componentType.name, () => {
+describe('OrbitLineComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 

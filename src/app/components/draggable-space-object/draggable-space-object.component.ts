@@ -29,7 +29,7 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
 
   constructor(cameraService: CameraService) {
     super();
-    // tell camera service that any zoom at action should focus on this object
+    // tell camera service that any zoomAt action should focus on this object
     this.buttonHover$
       .pipe(
         filter(hoverOn => {

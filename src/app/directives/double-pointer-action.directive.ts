@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, HostListener, OnDestroy, Output } from '@angular/core';
 import { Subject } from 'rxjs';
-import { filter, scan } from 'rxjs/operators';
+import { filter, scan, skip } from 'rxjs/operators';
 
 @Directive({
   selector: '[cpDoublePointerAction]',
@@ -16,11 +16,13 @@ export class DoublePointerActionDirective implements OnDestroy {
       .pipe(
         scan((acc, value) => {
           let now = Date.now();
-          acc.isDoubleAction = (now - acc.lastTime) < 300;
+          acc.isDoubleAction = (now - acc.lastTime) < 300
+            && !acc.isDoubleAction;
           acc.lastTime = now;
           acc.lastEvent = value;
           return acc;
-        }, {lastTime: Date.now(), isDoubleAction: false, lastEvent: null}),
+        }, {lastTime: Date.now(), isDoubleAction: true, lastEvent: null}),
+        skip(1),
         filter(({isDoubleAction}) => isDoubleAction))
       .subscribe(({lastEvent}) => this.doubleAction.emit(lastEvent));
   }

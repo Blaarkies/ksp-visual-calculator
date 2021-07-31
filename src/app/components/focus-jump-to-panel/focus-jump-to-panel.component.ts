@@ -8,6 +8,13 @@ import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { MatButton } from '@angular/material/button';
 import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 
+interface FocusItem {
+  icon: string;
+  label: string;
+  itemAction: () => void;
+  source: any;
+}
+
 @Component({
   selector: 'cp-focus-jump-to-panel',
   templateUrl: './focus-jump-to-panel.component.html',
@@ -15,7 +22,7 @@ import { AnalyticsService, EventLogs } from '../../services/analytics.service';
 })
 export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, OnDestroy {
 
-  list: { icon: string, label: string, itemAction: () => void, source: any }[];
+  list: FocusItem[];
 
   @ViewChildren('button') buttons: QueryList<MatButton>;
 
@@ -27,7 +34,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
     let focusablesChange$ = combineLatest([
       spaceObjectService.crafts$,
       spaceObjectService.celestialBodies$])
-      .pipe(filter(values => !values.some(v => v === null))); // filter null marbles out);
+      .pipe(filter(values => !values.some(v => v === null))); // filter null items out
 
     focusablesChange$
       .pipe(takeUntil(this.destroy$))
@@ -54,6 +61,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
         take(1),
         takeUntil(this.destroy$))
       .subscribe(values => {
+        // todo: modded/renamed universes might no longer have 'Kerbin'
         let kerbin = values.flatMap().find(so => so.label === 'Kerbin');
         cameraService.focusSpaceObject(kerbin);
       });
