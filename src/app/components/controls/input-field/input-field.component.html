@@ -1,14 +1,17 @@
-<mat-form-field>
+<mat-form-field class="input-field-component transition"
+                [class.disabled]="disabled"
+                [class.error-blink]="errorBlink$ | async">
   <mat-label>{{label}}</mat-label>
   <input #input
          matInput
          [type]="type"
          (focus)="isActive = true; touch()"
-         (blur)="isActive = false"
-         (input)="userInputChange($any($event).currentTarget.value)"
-  />
-  <mat-hint [@animateFade] *ngIf="hint && (value === null || value === '')">{{hint}}</mat-hint>
-  <span [@animateFade] *ngIf="suffix !== null" matSuffix>{{suffix}}</span>
+         (blur)="isActive = false"/>
+  <mat-hint [@animateFade]
+            *ngIf="hint && (value === null || value === '')">{{hint}}</mat-hint>
+  <span [@animateFade]
+        *ngIf="suffix !== null"
+        matSuffix>{{suffix}}</span>
   <button *ngIf="allowClear"
           class="clear-button"
           [class.visible]="value !== null && value !== ''"

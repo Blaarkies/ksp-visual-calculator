@@ -1,9 +1,26 @@
-import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
+import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { MatSlider } from '@angular/material/slider';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { fromEvent, Subject } from 'rxjs';
+import { filter, map, takeUntil, tap } from 'rxjs/operators';
+import { ControlMeta } from '../../../common/domain/input-fields/control-meta';
+import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
 
 @Component({
   selector: 'cp-input-number',
@@ -16,28 +33,53 @@ import { FormControlError } from '../../../common/domain/input-fields/form-contr
     multi: true,
   }],
 })
-export class InputNumberComponent extends BasicValueAccessor implements OnInit {
+export class InputNumberComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
   @Input() label: string;
   @Input() hint: string;
   @Input() suffix: string;
   @Input() errors: FormControlError;
 
+  @Input() min: number = 0;
+  @Input() max: number = 100;
+  @Input() factor: number = 2;
+
+  @Input() set controlMeta(value: ControlMetaNumber) {
+    Object.entries(value).forEach(([k, v]) => this[k] = v);
+  }
+
+  @Input() set formControl(value: FormControl) {
+    this.setDisabledState(value?.disabled);
+  }
+
   @Output() output = new EventEmitter<number>();
 
   @ViewChild('input', {static: true}) inputRef: InputFieldComponent;
   @ViewChild('slider', {static: true}) sliderRef: MatSlider;
+  @ViewChild('menuTrigger', {static: true}) menuTriggerRef: MatMenuTrigger;
 
-  isActive: boolean;
+  private isActive: boolean;
+  private unsubscribe$ = new Subject();
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef,
+              private self: ElementRef) {
     super();
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   writeValue(value: any) {
     this.value = value;
     this.inputRef.writeValue(value);
-    this.sliderRef.value = value;
+
+    let minMaxDifference = this.max - this.min;
+    this.sliderRef.value = (((this.value - this.min) / minMaxDifference))
+      .pow(1 / this.factor)
+      .let(v => v * 100)
+      .toInt();
   }
 
   registerOnChange(fn: (value: any) => any) {
@@ -49,8 +91,12 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
   }
 
   setDisabledState(isDisabled: boolean) {
-    // this.inputRef.nativeElement.disabled = isDisabled;
+    this.disabled = isDisabled;
+    this.inputRef.setDisabledState(isDisabled);
     this.sliderRef.setDisabledState(isDisabled);
+    this.menuTriggerRef.menu && this.menuTriggerRef.closeMenu();
+
+    this.self.nativeElement.style.pointerEvents = isDisabled ? 'none' : 'auto';
   }
 
   userInputChange(value: number) {
@@ -60,36 +106,83 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit {
   }
 
   focus() {
-    // this.inputRef.nativeElement.focus();
+    if (this.disabled) {
+      return;
+    }
+    this.menuTriggerRef.menu && this.menuTriggerRef.openMenu();
+    this.inputRef.focus();
+    this.isActive = true;
   }
 
   ngOnInit() {
-    this.inputRef.inputRef.nativeElement.autocomplete = 'off';
-    this.inputRef.inputRef.nativeElement.oninput = (event: Event & any) => {
-      if (event.target.value.toNumber().isNaN()
-        // || formControl.validators fail
-      ) {
-        event.preventDefault();
-      }
+    if (this.max < this.min) {
+      throw new Error(`InputNumberComponent expects max[${this.max}] to be greater than min[${this.min}]`);
+    }
+
+    let nativeInput = this.inputRef.inputRef.nativeElement;
+    nativeInput.autocomplete = 'off';
+
+    let valueChecks = {
+      fromEmptyToFill: value => this.value === undefined && value !== '',
+      fromFillToEmpty: value => this.value?.toString().length > value.length,
+      fromShorterString: value => value.length <= this.min.toString().length
+        && value.length <= this.max.toString().length,
     };
 
-    this.sliderRef.min = 1;
+    fromEvent(nativeInput, 'input', {capture: true})
+      .pipe(
+        map((event: InputEvent) => [event, (event.target as any).value]),
+        filter(([, value]) => {
+          if (valueChecks.fromEmptyToFill(value) && valueChecks.fromShorterString(value)) {
+            return false;
+          }
+
+          if (valueChecks.fromFillToEmpty(value) && valueChecks.fromShorterString(value)) {
+            return false;
+          }
+
+          let numberValue = value.toNumber();
+          return numberValue.isNaN()
+            || numberValue < this.min
+            || numberValue > this.max;
+        }),
+        takeUntil(this.unsubscribe$))
+      .subscribe(([event]: [InputEvent]) => {
+        event.stopImmediatePropagation();
+        nativeInput.value = this.value?.toString() ?? '';
+        this.inputRef.blinkError();
+      });
+
+    this.sliderRef.min = 0;
+    this.sliderRef.max = 100;
   }
 
   inputChange(value: string) {
     let numberValue = value.toNumber();
-    this.value = numberValue;
-    this.sliderRef.value = this.value.pow(1 / 1.1).toInt();
+    if (numberValue.isNaN()) {
+      this.value = undefined;
+      this.sliderRef.value = 0;
+    } else {
+      this.value = numberValue;
+
+      let minMaxDifference = this.max - this.min;
+      this.sliderRef.value = (((this.value - this.min) / minMaxDifference))
+        .pow(1 / this.factor)
+        .let(v => v * 100)
+        .toInt();
+    }
+
     this.onChange && this.onChange(this.value);
     this.output.emit(this.value);
   }
 
   sliderChange(value: number) {
-    let scaledNumber = value.pow(1.1).toInt();
+    let concreteRatio = (value * .01).pow(this.factor);
+    let scaledNumber = this.max.lerp(this.min, concreteRatio).toInt();
     this.value = scaledNumber;
     this.inputRef.writeValue(scaledNumber);
-    this.onChange && this.onChange(value);
-    this.output.emit(value);
+    this.onChange && this.onChange(scaledNumber);
+    this.output.emit(scaledNumber);
     window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 }

@@ -1,21 +1,24 @@
 <div class="layout">
 
-  <mat-menu class="slider-popup" #popup="matMenu" yPosition="above">
+  <mat-menu class="slider-popup"
+            #popup="matMenu"
+            yPosition="above">
     <mat-slider #slider
                 color="primary"
                 (input)="sliderChange($event.value)"></mat-slider>
   </mat-menu>
 
   <cp-input-field #input
+                  [matMenuTriggerFor]="popup"
+                  #menuTrigger="matMenuTrigger"
                   class="no-spinner-arrows"
                   type="number"
                   [label]="label"
                   [hint]="hint"
                   [suffix]="suffix"
                   [errors]="errors"
-                  [matMenuTriggerFor]="popup"
                   (output)="inputChange($event)"
-                  (formTouch)="onTouched && onTouched(true)"
-  ></cp-input-field>
+                  (formTouch)="onTouched && onTouched(true)">
+  </cp-input-field>
 
 </div>
