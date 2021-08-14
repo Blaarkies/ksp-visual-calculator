@@ -114,7 +114,10 @@ export class SpaceObjectService extends WithDestroy() {
         }
 
         b.draggableHandle.setChildren(
-          json.draggableHandle.children.map(c => bodiesChildrenMap.get(c)));
+          json.draggableHandle.children
+            .map(c => bodiesChildrenMap.get(c))
+            // fix:v1.1.1:craft draggables were not removed from parent draggable
+            .filter(c => c !== undefined));
 
         if (json.draggableHandle.orbit) {
           let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
@@ -242,6 +245,7 @@ export class SpaceObjectService extends WithDestroy() {
   }
 
   removeCraft(existing: Craft) {
+    existing.draggableHandle.parent.removeChild(existing.draggableHandle);
     this.crafts$.next(this.crafts$.value.remove(existing));
     this.updateTransmissionLines();
 
