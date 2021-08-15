@@ -2,7 +2,7 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { StateDisplayComponent } from './state-display.component';
 import { ineeda } from 'ineeda';
-import { StateRow } from '../../overlays/manage-state-dialog/state.row';
+import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import { UsableRoutes } from '../../usable-routes';
 import * as savegameJson from 'src/test-resources/ksp-cp-savegame.json';
 import arrayContaining = jasmine.arrayContaining;

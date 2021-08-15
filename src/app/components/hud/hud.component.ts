@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { HudService } from '../../services/hud.service';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { AnalyticsService} from '../../services/analytics.service';
 import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CameraService } from '../../services/camera.service';
@@ -14,6 +14,7 @@ import { map, take } from 'rxjs/operators';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ActionBottomSheetComponent, ActionBottomSheetData } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
 import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { EventLogs } from '../../services/event-logs';
 
 export class ActionPanelDetails {
   startTitle?: string;

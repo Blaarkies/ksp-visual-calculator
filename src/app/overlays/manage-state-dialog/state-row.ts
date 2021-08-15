@@ -22,4 +22,5 @@ export class StateRow {
     parsedState.version = APP_VERSION.split('.').map(t => t.toNumber());
     return parsedState;
   }
+
 }

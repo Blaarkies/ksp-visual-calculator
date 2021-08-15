@@ -12,13 +12,14 @@ import { CraftDetails } from '../overlays/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
 import { filter, mapTo, take, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../overlays/celestial-body-details-dialog/celestial-body-details';
-import { AnalyticsService, EventLogs } from './analytics.service';
+import { AnalyticsService} from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { StateSignalCheck } from './json-interfaces/state-signal-check';
 import { StateCraft } from './json-interfaces/state-craft';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
+import { EventLogs } from './event-logs';
 
 @Injectable({
   providedIn: 'root',

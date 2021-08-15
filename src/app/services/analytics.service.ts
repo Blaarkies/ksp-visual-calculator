@@ -3,49 +3,12 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import firebase from 'firebase/app';
 import 'firebase/analytics';
+import { EventLogs } from './event-logs';
 import Analytics = firebase.analytics.Analytics;
 
-class Category {
-  static Tutorial = 'tutorial';
-  static Craft = 'craft';
-  static CelestialBody = 'celestialbody';
-  static Privacy = 'privacy';
-  static Account = 'account';
-  static Credits = 'credits';
-  static Coffee = 'coffee';
-  static Feedback = 'feedback';
-  static Difficulty = 'difficulty';
-  static Route = 'route';
-  static Help = 'help';
-  static Camera = 'camera';
-  static State = 'state';
-}
-
-class Sanitize {
-
-  static Anonymized = '** anonymized **';
-
-  // todo: consider global replace instead of specific cases
-  static anonymize(label: string): string {
-    return Sanitize.stockWords.some(w => w.like(label))
-      ? label
-      : EventLogs.Sanitize.Anonymized;
-  }
-
-  private static stockWords = ['Kerbol', 'Moho', 'Eve', 'Gilly', 'Kerbin', 'Mun', 'Minmus', 'Duna', 'Ike', 'Dres', 'Jool', 'Laythe', 'Vall',
-    'Tylo', 'Bop', 'Pol', 'Eeloo',
-    'Communotron 16', 'Communotron 16-S', 'Communotron DTS-M1', 'Communotron HG-55', 'Communotron 88-88', 'HG-5 High Gain Antenna',
-    'RA-2 Relay Antenna', 'RA-15 Relay Antenna', 'RA-100 Relay Antenna', 'Tracking Station 1', 'Tracking Station 2', 'Tracking Station 3',
-    'Internal', 'Probodobodyne Experiment Control Station', 'Communotron Ground HG-48',
-    'Untitled Space Craft',
-  ];
-
-}
-
-export class EventLogs {
-  static Category = Category;
-  static Sanitize = Sanitize;
-}
+let localStorageKeys = {
+  doNotTrack: 'ksp-commnet-planner-user-opted-out-of-tracking',
+};
 
 @Injectable({
   providedIn: 'root',
@@ -56,7 +19,7 @@ export class AnalyticsService {
   isTracking: boolean;
 
   constructor() {
-    let optedOut = localStorage.getItem('ksp-commnet-planner-user-opted-out-of-tracking');
+    let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
     if (optedOut?.toBoolean()) {
       this.isTracking = false;
       this.analytics = {
@@ -89,7 +52,7 @@ export class AnalyticsService {
       // Wait for previous event to finish sending before turning off
       this.analytics.setAnalyticsCollectionEnabled(isTracking);
       this.isTracking = isTracking;
-      localStorage.setItem('ksp-commnet-planner-user-opted-out-of-tracking', (!isTracking).toString());
+      localStorage.setItem(localStorageKeys.doNotTrack, (!isTracking).toString());
     });
   }
 
@@ -98,10 +61,13 @@ export class AnalyticsService {
       ...this.flattenObject(details),
       environment: environment.production ? 'prod' : 'dev',
     };
-    this.analytics.logEvent(name, newDetails);
+    newDetails.environment === 'prod'
+      ? this.analytics.logEvent(name, newDetails)
+      : console.info('%c analytics.logEvent', name, newDetails,
+        'color: #afc');
   }
 
-  private flattenObject(object: {} | null, parentKey = '') {
+  private flattenObject(object: {} | null, parentKey = ''): {} {
     const keyPrefix = parentKey ? parentKey + '_' : '';
     return !object // don't traverse null values
       ? object

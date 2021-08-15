@@ -5,7 +5,7 @@ export class CraftType {
 
   constructor(public icon: string,
               public label: string,
-              public iconLocation) {
+              public iconLocation: Vector2) {
   }
 
   static Debris = new CraftType('debris', 'Debris', new Vector2(65 * 15, 65));

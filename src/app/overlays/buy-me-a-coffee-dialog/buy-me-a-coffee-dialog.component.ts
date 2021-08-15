@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { AnalyticsService} from '../../services/analytics.service';
+import { EventLogs } from '../../services/event-logs';
 
 @Component({
   selector: 'cp-buy-me-a-coffee-dialog',

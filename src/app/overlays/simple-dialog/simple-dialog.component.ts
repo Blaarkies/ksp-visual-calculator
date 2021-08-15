@@ -4,8 +4,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class SimpleDialogData {
   title: string;
   descriptions: string[];
-  cancelButtonText: string;
-  okButtonText: string;
+  cancelButtonText?: string;
+  okButtonText?: string;
 }
 
 @Component({

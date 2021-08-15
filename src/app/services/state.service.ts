@@ -12,8 +12,8 @@ import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
-import { StateRow } from '../overlays/manage-state-dialog/state.row';
-import { StateEntry } from '../overlays/manage-state-dialog/state.entry';
+import { StateRow } from '../overlays/manage-state-dialog/state-row';
+import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
@@ -193,5 +193,15 @@ export class StateService {
     let reparsed: StateSignalCheck = JSON.parse(safeToChange);
     reparsed.timestamp = undefined;
     return reparsed;
+  }
+
+  async renameState(oldName: string, state: StateRow): Promise<any> {
+    return this.addStateToStore(state.toUpdatedStateGame())
+      .then(() => this.removeStateFromStore(oldName))
+      .catch(error => {
+        this.snackBar.open(`Could not rename "${oldName}"`);
+        throw error;
+      })
+      .then(() => this.snackBar.open(`Renamed "${oldName}" to "${state.name}"`));
   }
 }

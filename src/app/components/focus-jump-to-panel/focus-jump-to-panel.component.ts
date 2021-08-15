@@ -6,7 +6,8 @@ import { filter, take, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { MatButton } from '@angular/material/button';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { AnalyticsService} from '../../services/analytics.service';
+import { EventLogs } from '../../services/event-logs';
 
 interface FocusItem {
   icon: string;

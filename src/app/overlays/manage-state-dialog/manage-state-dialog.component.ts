@@ -10,11 +10,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
 import { Observable, of, Subject } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
-import { StateRow } from './state.row';
-import { StateEntry } from './state.entry';
+import { StateRow } from './state-row';
+import { StateEntry } from './state-entry';
 import { MatSelectionList } from '@angular/material/list';
 import { CustomAnimation } from '../../common/domain/custom-animation';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { AnalyticsService} from '../../services/analytics.service';
+import { EventLogs } from '../../services/event-logs';
 
 export class ManageStateDialogData {
   context: UsableRoutes;
@@ -67,14 +68,11 @@ export class ManageStateDialogComponent extends WithDestroy() {
 
   async editStateName(oldName: string, state: StateRow) {
     this.buttonLoaders.edit$.next(true);
-    await this.stateService.addStateToStore(state.toUpdatedStateGame())
-      .then(() => this.stateService.removeStateFromStore(oldName))
-      .catch(error => {
-        this.snackBar.open(`Could not rename "${oldName}"`);
-        throw error;
-      })
-      .then(() => this.snackBar.open(`Renamed "${oldName}" to "${state.name}"`))
+
+    await this.stateService.renameState(oldName, state)
       .finally(() => this.buttonLoaders.edit$.next(false));
+
+    // if the current loaded state is the one being renamed, then update nowState as well
     if (this.nowState.name === oldName) {
       this.stateService.renameCurrentState(state.name);
       this.nowState = this.stateService.stateRow;
@@ -115,7 +113,8 @@ export class ManageStateDialogComponent extends WithDestroy() {
     return this.stateService.getStates()
       .pipe(
         tap(stateEntries => this.editNameControl = new FormControl('', [
-          Validators.required, Validators.max(60),
+          Validators.required,
+          Validators.max(60),
           CommonValidators.uniqueString(stateEntries.map(s => s.name))])),
         map((stateEntries: StateEntry[]) => stateEntries
           .filter(entry => entry.context === this.context)
@@ -129,7 +128,7 @@ export class ManageStateDialogComponent extends WithDestroy() {
     });
 
     this.buttonLoaders.load$.next(true);
-    return this.stateService.loadState(selectedState.state)
+    this.stateService.loadState(selectedState.state)
       .pipe(
         finalize(() => this.buttonLoaders.load$.next(false)),
         takeUntil(this.destroy$))
@@ -165,7 +164,7 @@ export class ManageStateDialogComponent extends WithDestroy() {
     let sJson = selectedState.state;
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
-    element.setAttribute('download', `ksp-cp-savegame- ${selectedState.name}.json`);
+    element.setAttribute('download', `ksp-vc-savegame-${selectedState.name}.json`);
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click();
@@ -246,4 +245,5 @@ export class ManageStateDialogComponent extends WithDestroy() {
   triggerImport() {
     this.fileUploadInput.nativeElement.click();
   }
+
 }

@@ -3,8 +3,9 @@ import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service'
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
 import { delay, filter, map, mapTo, scan, skip, take, takeUntil } from 'rxjs/operators';
-import { AnalyticsService, EventLogs } from './analytics.service';
+import { AnalyticsService} from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
+import { EventLogs } from './event-logs';
 
 @Injectable({
   providedIn: 'root',

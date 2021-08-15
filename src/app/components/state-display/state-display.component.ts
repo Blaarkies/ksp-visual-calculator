@@ -4,7 +4,7 @@ import { UsableRoutes } from '../../usable-routes';
 import { StateSignalCheck } from '../../services/json-interfaces/state-signal-check';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
-import { StateRow } from '../../overlays/manage-state-dialog/state.row';
+import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 
 @Component({
   selector: 'cp-state-display',

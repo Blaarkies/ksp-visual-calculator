@@ -14,7 +14,7 @@ import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData,
 } from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { AnalyticsService} from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
@@ -23,6 +23,7 @@ import { StateService } from '../../services/state.service';
 import { UsableRoutes } from '../../usable-routes';
 import { HudService } from '../../services/hud.service';
 import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { EventLogs } from '../../services/event-logs';
 
 @Component({
   selector: 'cp-page-signal-check',
@@ -47,8 +48,8 @@ export class PageSignalCheckComponent extends WithDestroy() {
               private spaceObjectService: SpaceObjectService,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
-              stateService: StateService,
               hudService: HudService,
+              stateService: StateService,
               private cameraService: CameraService) {
     super();
 
@@ -62,7 +63,7 @@ export class PageSignalCheckComponent extends WithDestroy() {
     this.crafts$ = this.spaceObjectService.crafts$;
   }
 
-  startBodyDrag(body: SpaceObject, event: PointerEvent, screen: HTMLDivElement, camera?: CameraComponent) {
+  startBodyDrag(body: SpaceObject, event: PointerEvent, screen: HTMLDivElement, camera: CameraComponent) {
     body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
 
     this.analyticsService.logEvent('Drag body', {

@@ -100,7 +100,7 @@ describe('InputSelectComponent', () => {
   });
 
   it('clearSearch() should clear input and results', () => {
-    let fixture = MockRender(componentType);
+    let fixture = MockRender(componentType, {options});
     let component = fixture.point.componentInstance;
 
     spyOn(component.searchRef, 'writeValue');
