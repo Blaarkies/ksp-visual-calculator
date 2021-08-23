@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { environment } from 'src/environments/environment';
 import firebase from 'firebase/app';
 import 'firebase/analytics';
@@ -63,8 +62,9 @@ export class AnalyticsService {
     };
     newDetails.environment === 'prod'
       ? this.analytics.logEvent(name, newDetails)
-      : console.info('%c analytics.logEvent', name, newDetails,
-        'color: #afc');
+      // tslint:disable-next-line:no-console
+      : console.info('%c analytics.logEvent()', 'color: #9ff',
+        name, newDetails);
   }
 
   private flattenObject(object: {} | null, parentKey = ''): {} {

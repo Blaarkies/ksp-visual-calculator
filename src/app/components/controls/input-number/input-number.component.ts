@@ -39,9 +39,9 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
   @Input() suffix: string;
   @Input() errors: FormControlError;
 
-  @Input() min: number = 0;
-  @Input() max: number = 100;
-  @Input() factor: number = 2;
+  @Input() min = 0;
+  @Input() max = 100;
+  @Input() factor = 2;
 
   @Input() set controlMeta(value: ControlMetaNumber) {
     Object.entries(value).forEach(([k, v]) => this[k] = v);
@@ -57,6 +57,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
   @ViewChild('slider', {static: true}) sliderRef: MatSlider;
   @ViewChild('menuTrigger', {static: true}) menuTriggerRef: MatMenuTrigger;
 
+  // tslint:disable-next-line:no-unused-variable
   private isActive: boolean;
   private unsubscribe$ = new Subject();
 

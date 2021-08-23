@@ -77,6 +77,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       controlMeta: {
         type: ControlMetaType.Number,
         min: 0,
+        max: 126123,
         suffix: 'm',
         hint: 'Height above surface',
       } as ControlMetaNumber,

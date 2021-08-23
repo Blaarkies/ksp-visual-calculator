@@ -42,10 +42,10 @@ describe('AccountDetailsComponent', () => {
     };
 
     let getSignInWithEmailButton = (fixture: MockedComponentFixture<AccountDetailsComponent, AccountDetailsComponent>,
-                                    buttonText: string) => Array.from(
+                                    buttonTextQuery: string) => Array.from(
       fixture.debugElement.nativeElement.querySelectorAll('button'))
       .find((e: HTMLButtonElement) =>
-        e.innerText.includes(buttonText)) as HTMLButtonElement;
+        e.innerText.includes(buttonTextQuery)) as HTMLButtonElement;
 
     let getButtonDisabled = (signInEmailButton: HTMLButtonElement) =>
       signInEmailButton.attributes['ng-reflect-disabled']

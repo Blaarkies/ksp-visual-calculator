@@ -5,11 +5,10 @@ import { AdvancedPlacement } from './advanced-placement';
 
 export class CraftDetails {
 
-  constructor(
-    public name: string,
-    public craftType: CraftType,
-    public antennae: Group<Antenna>[],
-    public advancedPlacement?: AdvancedPlacement) {
+  constructor(public name: string,
+              public craftType: CraftType,
+              public antennae: Group<Antenna>[],
+              public advancedPlacement?: AdvancedPlacement) {
   }
 
 }

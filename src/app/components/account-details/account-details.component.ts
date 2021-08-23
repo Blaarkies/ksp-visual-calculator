@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
@@ -15,7 +15,7 @@ import { AuthErrorCode } from './auth-error-code';
   styleUrls: ['./account-details.component.scss'],
   animations: [CustomAnimation.animateFade],
 })
-export class AccountDetailsComponent extends WithDestroy() {
+export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
 
   controlEmail = new FormControl(null, [Validators.required, Validators.email]);
   controlPassword = new FormControl(null, [Validators.required, Validators.minLength(6)]);

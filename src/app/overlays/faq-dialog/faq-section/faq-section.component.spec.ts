@@ -1,4 +1,4 @@
-import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
+import { MockBuilder, MockRender } from 'ng-mocks';
 import { FaqSectionComponent, Section } from './faq-section.component';
 import { AppModule } from '../../../app.module';
 

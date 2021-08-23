@@ -7,6 +7,10 @@ import { DataService } from './data.service';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 import createSpy = jasmine.createSpy;
 import objectContaining = jasmine.objectContaining;
 
@@ -18,6 +22,7 @@ describe('AuthService', () => {
     .mock(DataService, {
       getRef: () => ({
         valueChanges: () => of({}),
+        set: () => Promise.resolve(),
       }) as any,
     })
     .mock(StateService, {
@@ -53,7 +58,7 @@ describe('AuthService', () => {
     MockInstance(StateService, 'earlyState', of({
       name: 'test-early-name',
     } as any));
-    MockInstance(StateService, 'getTimelessState', (state) =>
+    MockInstance(StateService, 'getTimestamplessState', (state) =>
       (state?.name === 'test-early-name')
         ? state
         : ({name: 'test-timeless-name'}) as any,
@@ -65,11 +70,121 @@ describe('AuthService', () => {
         afterDismissed: () => of({}),
       }));
 
-    let fixture = MockRender(serviceType);
-    let service = fixture.point.componentInstance;
+    MockRender(serviceType);
     tick();
 
     expect(spyOpen).toHaveBeenCalled();
   }));
+
+  it('googleSignIn() should call loadUserLastSaveGame()', async () => {
+    spyOn(firebase.auth, 'GoogleAuthProvider');
+    let spySignInWithPopup = MockInstance(AngularFireAuth, 'signInWithPopup', createSpy()
+      .and.returnValue({user: {}}));
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+    spyOn(service as any, 'loadUserLastSaveGame');
+
+    await service.googleSignIn();
+
+    expect(spySignInWithPopup).toHaveBeenCalled();
+    expect((service as any).loadUserLastSaveGame).toHaveBeenCalled();
+  });
+
+  it('signOut() should signOut user and refresh state', async () => {
+    let spySignOut = MockInstance(AngularFireAuth, 'signOut', createSpy());
+    let spyNavigate = MockInstance(Router, 'navigate', createSpy());
+    let spyLoadState = MockInstance(StateService, 'loadState', createSpy()
+      .and.returnValue(of(0)));
+    let spySetStateRecord = MockInstance(StateService, 'setStateRecord', createSpy());
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+
+    await service.signOut();
+
+    expect(spySignOut).toHaveBeenCalled();
+    expect(spyNavigate).toHaveBeenCalled();
+    expect(spyLoadState).toHaveBeenCalled();
+    expect(spySetStateRecord).toHaveBeenCalled();
+  });
+
+  it('emailSignIn() should attempt to signIn with email and password', async () => {
+    let spySignInWithEmailAndPassword = MockInstance(AngularFireAuth, 'signInWithEmailAndPassword', createSpy());
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+
+    await service.emailSignIn('in.space@test.com', 'plain-text-password');
+
+    expect(spySignInWithEmailAndPassword).toHaveBeenCalled();
+  });
+
+  it('emailSignUp() should attempt to signIn with email and password', async () => {
+    let spyCreateUserWithEmailAndPassword = MockInstance(AngularFireAuth, 'createUserWithEmailAndPassword', createSpy()
+      .and.returnValue({user: {}}));
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+
+    await service.emailSignUp('in.space@test.com', 'plain-text-password');
+
+    expect(spyCreateUserWithEmailAndPassword).toHaveBeenCalled();
+  });
+
+  it('resetPassword() should call sendPasswordResetEmail', async () => {
+    let spySendPasswordResetEmail = MockInstance(AngularFireAuth, 'sendPasswordResetEmail', createSpy());
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+
+    await service.resetPassword('in.space@test.com');
+
+    expect(spySendPasswordResetEmail).toHaveBeenCalled();
+  });
+
+  it('when current state is saved, loadUserLastSaveGame() should load state of user savegame', async () => {
+    MockInstance(StateService, 'getStatesInContext', createSpy()
+      .and.returnValue(of([{
+        name: 'test-name',
+        state: 'test-state',
+      } as StateEntry])));
+    MockInstance(StateService, 'stateIsUnsaved', false);
+    let spyLoadState = MockInstance(StateService, 'loadState', createSpy()
+      .and.returnValue(of(0)));
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+    let serviceAsAny = service as any;
+
+    await serviceAsAny.loadUserLastSaveGame();
+
+    expect(spyLoadState).toHaveBeenCalledWith('test-state');
+  });
+
+  it('when current state is unsaved, loadUserLastSaveGame() should load state of user savegame', async () => {
+    MockInstance(StateService, 'getStatesInContext', createSpy()
+      .and.returnValue(of([{
+        name: 'test-name',
+        state: 'test-state',
+      } as StateEntry])));
+    MockInstance(StateService, 'stateIsUnsaved', true);
+    MockInstance(MatSnackBar, 'open', createSpy()
+      .and.returnValue({
+        afterDismissed: () => of({
+          dismissedByAction: false,
+        }),
+      }));
+    let spyLoadState = MockInstance(StateService, 'loadState', createSpy()
+      .and.returnValue(of(0)));
+
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+    let serviceAsAny = service as any;
+
+    await serviceAsAny.loadUserLastSaveGame();
+
+    !expect(spyLoadState).toHaveBeenCalled();
+  });
 
 });

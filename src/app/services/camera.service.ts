@@ -88,13 +88,13 @@ export class CameraService {
       : mouseLocation;
     this.scale *= delta;
 
-    let worldLocation = zoomAtLocation.add(-this.location.x, -this.location.y);
+    let worldLocation = zoomAtLocation.subtractVector2(this.location);
     let shift = worldLocation.multiply(-(delta - 1));
 
     this.location.addVector2(shift);
   }
 
-  focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
+  private focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
     this.scale = zoomIn
       ? CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .999)
       : this.getScaleForFocus(newLocation, type);

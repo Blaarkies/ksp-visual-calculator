@@ -5,14 +5,6 @@ import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { ineeda } from 'ineeda';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
-import { fakeAsync, tick } from '@angular/core/testing';
-import { Common } from '../../common/common';
-import { AntennaInput } from './antenna-input';
-import { FormControl } from '@angular/forms';
-import { InputSelectComponent } from '../controls/input-select/input-select.component';
-import { InputFieldComponent } from '../controls/input-field/input-field.component';
-import { InputNumberComponent } from '../controls/input-number/input-number.component';
-import { MatTabsModule } from '@angular/material/tabs';
 
 let componentType = AntennaSelectorComponent;
 describe('AntennaSelectorComponent', () => {

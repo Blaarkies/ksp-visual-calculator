@@ -3,7 +3,6 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../../app.module';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { MatMenuModule } from '@angular/material/menu';
-import { fakeAsync, tick } from '@angular/core/testing';
 
 let componentType = InputNumberComponent;
 describe('InputNumberComponent', () => {

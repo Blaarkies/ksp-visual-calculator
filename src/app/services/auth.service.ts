@@ -30,7 +30,7 @@ export class AuthService {
 
     stateService.earlyState
       .pipe(
-        map(state => JSON.stringify(stateService.getTimelessState(state))),
+        map(state => JSON.stringify(stateService.getTimestamplessState(state))),
         switchMap(state => zip(of(state), this.user$)),
         take(1),
         filter(([state, user]) => user !== null),
@@ -40,7 +40,7 @@ export class AuthService {
             return zip(of(false), of(states));
           }
 
-          let newState = JSON.stringify(stateService.getTimelessState(stateService.state));
+          let newState = JSON.stringify(stateService.getTimestamplessState(stateService.state));
           if (earlyState !== newState) {
             return snackBar.open(`Latest save game found, discard current changes and load "${states[0]?.name}"?`,
               'Discard Changes', {duration: 15e3})
@@ -116,7 +116,7 @@ export class AuthService {
     if (this.stateService.stateIsUnsaved) {
       let {dismissedByAction} = await this.snackBar
         .open(`Latest save game found, discard current changes and load "${newestState?.name}"?`,
-        'Discard Changes', {duration: 15e3})
+          'Discard Changes', {duration: 15e3})
         .afterDismissed()
         .toPromise();
       if (!dismissedByAction) {

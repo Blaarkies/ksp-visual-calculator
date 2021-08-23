@@ -55,7 +55,6 @@ describe('InputFieldListComponent', () => {
         },
       ] as InputField[],
     });
-    let component = fixture.point.componentInstance;
 
     let inputs = Array.from(
       fixture.debugElement.nativeElement.querySelectorAll(

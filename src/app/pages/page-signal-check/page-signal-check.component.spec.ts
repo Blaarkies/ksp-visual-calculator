@@ -42,8 +42,7 @@ describe('PageSignalCheckComponent', () => {
     let spyStateLoadState = MockInstance(StateService, 'loadState', createSpy()
       .and.returnValue(of(0)));
 
-    let fixture = MockRender(componentType);
-    let component = fixture.point.componentInstance;
+    MockRender(componentType);
 
     expect(spyHudContext).toHaveBeenCalled();
     expect(spyStateContext).toHaveBeenCalled();

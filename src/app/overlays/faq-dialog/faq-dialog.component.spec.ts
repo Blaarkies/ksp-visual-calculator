@@ -47,6 +47,7 @@ describe('FaqDialogComponent', () => {
 
 });
 
+/* tslint:disable:object-literal-key-quotes */
 let jsonData: Section[] = [
   {
     'title': 'test-title',

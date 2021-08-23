@@ -2,7 +2,7 @@ import { Uid } from './uid';
 import { WithDestroy } from './with-destroy';
 import { Subject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { fakeAsync } from '@angular/core/testing';
 
 describe('Uid class', () => {
 

@@ -28,8 +28,7 @@ describe('FeedbackDialogComponent', () => {
         onAction: () => of(void 0),
       })));
 
-    let fixture = MockRender(componentType);
-    let component = fixture.point.componentInstance;
+    MockRender(componentType);
 
     expect(spyOpen).toHaveBeenCalled();
   });
@@ -43,9 +42,7 @@ describe('FeedbackDialogComponent', () => {
         onAction: () => of(void 0),
       })));
 
-    let fixture = MockRender(componentType);
-    let component = fixture.point.componentInstance;
-
+    MockRender(componentType);
     expect(spySetActive).toHaveBeenCalledWith(true);
   });
 

@@ -26,7 +26,7 @@ export class StateService {
 
   private name: string;
   private autoSaveUnsubscribe$ = new Subject();
-  private context: UsableRoutes.SignalCheck;
+  private context: UsableRoutes;
 
   private lastStateRecord: string;
 
@@ -38,13 +38,14 @@ export class StateService {
     return this.lastStateRecord !== JSON.stringify(this.state);
   }
 
-  set pageContext(value: UsableRoutes.SignalCheck) {
+  set pageContext(value: UsableRoutes) {
     this.context = value;
     this.name = undefined;
   }
 
   get earlyState(): Observable<StateSignalCheck> {
-    return zip(this.setupService.stockPlanets$,
+    return zip(
+      this.setupService.stockPlanets$,
       this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
       .pipe(
         take(1),
@@ -81,10 +82,11 @@ export class StateService {
 
   get stateRow(): StateRow {
     let state = this.state;
+    let {name, timestamp, version} = state;
     return new StateRow({
-      name: state.name,
-      timestamp: {seconds: state.timestamp.getTime() * .001},
-      version: state.version,
+      name,
+      timestamp: {seconds: timestamp.getTime() * .001},
+      version,
       state: JSON.stringify(state),
     });
   }
@@ -161,7 +163,7 @@ export class StateService {
     return this.dataService.delete('states', name)
       .catch(error => {
         this.snackBar.open(`Could not remove "${name}" from cloud storage`);
-        throw console.error(error);
+        throw new Error(error);
       });
   }
 
@@ -188,7 +190,7 @@ export class StateService {
     this.name = name;
   }
 
-  getTimelessState(state: StateSignalCheck): StateSignalCheck {
+  getTimestamplessState(state: StateSignalCheck): StateSignalCheck {
     let safeToChange = JSON.stringify(state);
     let reparsed: StateSignalCheck = JSON.parse(safeToChange);
     reparsed.timestamp = undefined;
@@ -204,4 +206,5 @@ export class StateService {
       })
       .then(() => this.snackBar.open(`Renamed "${oldName}" to "${state.name}"`));
   }
+
 }
