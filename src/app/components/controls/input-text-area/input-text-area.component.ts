@@ -43,6 +43,7 @@ export class InputTextAreaComponent extends BasicValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
+    this.disabled = isDisabled;
     this.textarea.nativeElement.disabled = isDisabled;
   }
 

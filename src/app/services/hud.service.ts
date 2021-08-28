@@ -4,7 +4,7 @@ import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
 import { Icons } from '../common/domain/icons';
-import { AnalyticsService, EventLogs } from './analytics.service';
+import { AnalyticsService } from './analytics.service';
 import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../overlays/craft-details-dialog/craft-details-dialog.component';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
@@ -22,6 +22,7 @@ import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/
 import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
 import { TutorialService } from './tutorial.service';
 import { GlobalStyleClass } from '../common/GlobalStyleClass';
+import { EventLogs } from './event-logs';
 
 @Injectable({
   providedIn: 'root',

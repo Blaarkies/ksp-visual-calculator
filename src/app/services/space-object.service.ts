@@ -12,13 +12,14 @@ import { CraftDetails } from '../overlays/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
 import { filter, mapTo, take, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../overlays/celestial-body-details-dialog/celestial-body-details';
-import { AnalyticsService, EventLogs } from './analytics.service';
+import { AnalyticsService} from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { StateSignalCheck } from './json-interfaces/state-signal-check';
 import { StateCraft } from './json-interfaces/state-craft';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
+import { EventLogs } from './event-logs';
 
 @Injectable({
   providedIn: 'root',
@@ -114,7 +115,10 @@ export class SpaceObjectService extends WithDestroy() {
         }
 
         b.draggableHandle.setChildren(
-          json.draggableHandle.children.map(c => bodiesChildrenMap.get(c)));
+          json.draggableHandle.children
+            .map(c => bodiesChildrenMap.get(c))
+            // fix:v1.1.1:craft draggables were not removed from parent draggable
+            .filter(c => c !== undefined));
 
         if (json.draggableHandle.orbit) {
           let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
@@ -144,7 +148,7 @@ export class SpaceObjectService extends WithDestroy() {
       .filter(so => so.antennae?.length)
       .joinSelf()
       .distinct(SpaceObjectService.getIndexOfSameCombination)
-      .distinct(SpaceObjectService.getIndexOfSameCombination) // opposing permutations are still similar as combinations
+      .distinct(SpaceObjectService.getIndexOfSameCombination) // run again, opposing permutations are still similar as combinations
       .map(pair => // leave existing transmission lines here so that visuals do not flicker
         this.transmissionLines$.value.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new TransmissionLine(pair, this.setupService))
@@ -242,6 +246,7 @@ export class SpaceObjectService extends WithDestroy() {
   }
 
   removeCraft(existing: Craft) {
+    existing.draggableHandle.parent.removeChild(existing.draggableHandle);
     this.crafts$.next(this.crafts$.value.remove(existing));
     this.updateTransmissionLines();
 

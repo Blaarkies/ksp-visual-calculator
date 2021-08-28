@@ -46,7 +46,7 @@ export class LocationConstraints {
       case 'orbital':
         return LocationConstraints.circularMove(data.xy, data.r);
       default:
-        console.error(`${moveType} is not a valid moveType`);
+        throw new Error(`${moveType} is not a valid moveType`);
     }
   }
 

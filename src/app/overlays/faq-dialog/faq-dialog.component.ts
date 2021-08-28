@@ -47,11 +47,9 @@ export class FaqDialogComponent extends WithDestroy() {
         debounceTime(250),
         startWith(''),
         switchMap(query => zip(of(query), sections$)),
-        map(([query, sections]) => {
-          return [null, undefined, ''].includes(query)
-            ? sections.shuffle()
-            : this.getSortedSections(sections, query);
-        }),
+        map(([query, sections]) => [null, undefined, ''].includes(query)
+          ? sections.shuffle()
+          : this.getSortedSections(sections, query)),
         tap(sections => {
           this.allSections = sections;
           this.columns = sections.reduce((sum, c, i) => {
@@ -65,10 +63,10 @@ export class FaqDialogComponent extends WithDestroy() {
 
   private getSortedSections(sections, query) {
     return sections.sortByRelevance((s: Section) =>
-      s.title.relevanceScore(query) * 3
-      + s.simpleExplanation.relevanceScore(query) * 2
-      + JSON.stringify(s.advancedExplanations).relevanceScore(query)
-      + s.tags.relevanceScore(query),
+        s.title.relevanceScore(query) * 3
+        + s.simpleExplanation.relevanceScore(query) * 2
+        + JSON.stringify(s.advancedExplanations).relevanceScore(query)
+        + s.tags.relevanceScore(query),
       0);
   }
 

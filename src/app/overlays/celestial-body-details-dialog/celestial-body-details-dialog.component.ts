@@ -6,7 +6,7 @@ import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CelestialBodyDetails } from './celestial-body-details';
-import { SpaceObject} from '../../common/domain/space-objects/space-object';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { Antenna } from '../../common/domain/antenna';
@@ -51,9 +51,11 @@ export class CelestialBodyDetailsDialogComponent {
     },
     size: {
       label: 'Size',
-      control: new FormControl(this.data.edit?.size.toFixed(2).toNumber() ?? 50,
-        [Validators.required, Validators.min(1), Validators.max(100)]),
-      controlMeta: new ControlMetaNumber('px'),
+      control: new FormControl(this.data.edit?.size.toFixed(2).toNumber() ?? 40, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(100)]),
+      controlMeta: new ControlMetaNumber(20, 80, 3, 'px'),
     },
     orbitColor: {
       label: 'Color',

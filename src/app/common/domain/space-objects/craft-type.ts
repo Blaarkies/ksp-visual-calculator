@@ -5,7 +5,7 @@ export class CraftType {
 
   constructor(public icon: string,
               public label: string,
-              public iconLocation) {
+              public iconLocation: Vector2) {
   }
 
   static Debris = new CraftType('debris', 'Debris', new Vector2(65 * 15, 65));
@@ -35,7 +35,7 @@ export class CraftType {
   static fromString(type: string) {
     let match = CraftType.All.find(t => t.label === type);
     if (!match) {
-      throw console.error(`${type} is not a valid CraftType`);
+      throw new Error(`${type} is not a valid CraftType`);
     }
 
     return match;

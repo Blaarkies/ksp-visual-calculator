@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
@@ -7,6 +7,7 @@ import { EMPTY, from, Observable, of, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { catchError, finalize, mapTo, mergeAll, startWith, take, takeUntil, timeout } from 'rxjs/operators';
+import { AuthErrorCode } from './auth-error-code';
 
 @Component({
   selector: 'cp-account-details',
@@ -14,9 +15,8 @@ import { catchError, finalize, mapTo, mergeAll, startWith, take, takeUntil, time
   styleUrls: ['./account-details.component.scss'],
   animations: [CustomAnimation.animateFade],
 })
-export class AccountDetailsComponent extends WithDestroy() {
+export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
 
-  icons = Icons;
   controlEmail = new FormControl(null, [Validators.required, Validators.email]);
   controlPassword = new FormControl(null, [Validators.required, Validators.minLength(6)]);
   passwordVisible = false;
@@ -26,12 +26,20 @@ export class AccountDetailsComponent extends WithDestroy() {
 
   @Output() signOut = new EventEmitter();
 
+  icons = Icons;
+
   constructor(private snackBar: MatSnackBar,
               public authService: AuthService) {
     super();
   }
 
-  actionSignOut() {
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.signingInWithEmail$.complete();
+    this.signingInWithGoogle$.complete();
+  }
+
+  async actionSignOut() {
     this.authService.signOut()
       .then(() => {
         this.snackBar.open('Signed out');
@@ -117,10 +125,4 @@ export class AccountDetailsComponent extends WithDestroy() {
     await this.authService.googleSignIn();
     this.signingInWithGoogle$.next(false);
   }
-}
-
-export class AuthErrorCode {
-  static WrongPassword = 'auth/wrong-password';
-  static WrongEmail = 'auth/user-not-found';
-  static TooManyRequests = 'auth/too-many-requests';
 }

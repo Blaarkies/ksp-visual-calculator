@@ -54,7 +54,7 @@ export class ActionOptionType {
         : actionMeta.externalRoute !== undefined ? ActionOptionType.ExternalRoute
           : null;
     if (!typeDetermined) {
-      console.error(`ActionOptionType for ${JSON.stringify(actionMeta)} could not be determined`);
+      throw new Error(`ActionOptionType for ${JSON.stringify(actionMeta)} could not be determined`);
     }
     return typeDetermined;
   }

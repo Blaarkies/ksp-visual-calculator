@@ -5,7 +5,7 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bott
 import { ineeda } from 'ineeda';
 
 let componentType = ActionBottomSheetComponent;
-describe('ActionBottomSheetComponent' /*componentType.name*/, () => {
+describe('ActionBottomSheetComponent', () => {
 
   beforeEach(() => MockBuilder(componentType)
     .mock(AppModule)

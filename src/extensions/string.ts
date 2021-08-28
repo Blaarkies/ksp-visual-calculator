@@ -46,6 +46,9 @@ String.prototype.relevanceScore = function (this: string, search: string): numbe
 };
 
 String.prototype.toNumber = function (this: String): number {
+  if (this === '' || this === undefined || this === null) {
+    return Number.NaN;
+  }
   return Number(this);
 };
 

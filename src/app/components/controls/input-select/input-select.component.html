@@ -3,7 +3,8 @@
   <mat-select (selectionChange)="userInputChange($event.value)"
               (opened)="inputRef.focus()"
               (closed)="clearSearch(inputRef)"
-              [multiple]="false">
+              [multiple]="false"
+              [disabled]="disabled">
     <div class="search-box overlap-container" #searchBox>
       <cp-input-field #inputRef
                       label="Search"

@@ -9,14 +9,17 @@
         <cp-input-field label="Antenna Type"
                         [formControl]="antennaInput.antennaControl"></cp-input-field>
 
-        <cp-input-number [matTooltip]="'Defines how many of these antennae are on the craft'"
-                         label="Part Count"
+        <cp-input-number label="Part Count"
+                         [min]="1"
+                         [matTooltip]="'Defines how many of these antennae are on the craft'"
                          [formControl]="antennaInput.countControl"
                          [errors]="antennaInput.countControl.touched && antennaInput.countControl.errors"
                          (output)="userInputChange()"></cp-input-number>
 
-        <button mat-icon-button (click)="removeAntenna(antennaInput)"
-                [matTooltip]="'Remove this antenna'">
+        <button mat-icon-button
+                [matTooltip]="'Remove this antenna'"
+                (click)="removeAntenna(antennaInput)"
+                [disabled]="disabled">
           <mat-icon color="warn">{{icons.Delete}}</mat-icon>
         </button>
       </div>

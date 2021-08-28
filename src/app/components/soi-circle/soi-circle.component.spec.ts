@@ -5,7 +5,7 @@ import { ineeda } from 'ineeda';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 
 let componentType = SoiCircleComponent;
-describe(componentType.name, () => {
+describe('SoiCircleComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 

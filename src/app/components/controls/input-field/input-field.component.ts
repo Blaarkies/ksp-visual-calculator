@@ -1,14 +1,30 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, Output, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { CustomAnimation } from '../../../common/domain/custom-animation';
 import { Icons } from 'src/app/common/domain/icons';
+import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
+import { fromEvent, Subject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'cp-input-field',
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   animations: [CustomAnimation.animateFade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
@@ -16,12 +32,14 @@ import { Icons } from 'src/app/common/domain/icons';
     multi: true,
   }],
 })
-export class InputFieldComponent extends BasicValueAccessor {
+export class InputFieldComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
-  // todo: these only work for character input types (text, number, ...)
-  @Input() type: 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
-    | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
-    | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week' = 'text';
+  @Input() type: ControlInputType = 'text';
+
+  // todo: type only works some input types. check if these can be removed
+  // 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
+  //   | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
+  //   | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'
   @Input() label: string;
   @Input() hint: string;
   @Input() suffix: string;
@@ -38,11 +56,23 @@ export class InputFieldComponent extends BasicValueAccessor {
   @ViewChild('input', {static: true}) inputRef: ElementRef<HTMLInputElement>;
 
   isActive: boolean;
-
   icons = Icons;
+  errorBlink$ = new Subject<boolean>();
+  private unsubscribe$ = new Subject();
 
   constructor(private cdr: ChangeDetectorRef) {
     super();
+  }
+
+  ngOnInit() {
+    fromEvent(this.inputRef.nativeElement, 'input')
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((event: Event) => this.userInputChange((event.target as any).value));
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   writeValue(value: any) {
@@ -59,6 +89,7 @@ export class InputFieldComponent extends BasicValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
+    this.disabled = isDisabled;
     this.inputRef.nativeElement.disabled = isDisabled;
     this.cdr.detectChanges();
   }
@@ -70,6 +101,9 @@ export class InputFieldComponent extends BasicValueAccessor {
   }
 
   focus() {
+    if (this.disabled) {
+      return;
+    }
     this.inputRef.nativeElement.focus();
   }
 
@@ -80,5 +114,11 @@ export class InputFieldComponent extends BasicValueAccessor {
 
   clear() {
     this.userInputChange(null);
+  }
+
+  blinkError() {
+    this.errorBlink$.next(true);
+    timer(300).pipe(takeUntil(this.unsubscribe$))
+      .subscribe(() => this.errorBlink$.next(false));
   }
 }

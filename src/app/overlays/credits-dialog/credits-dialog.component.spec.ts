@@ -3,7 +3,7 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 
 let componentType = CreditsDialogComponent;
-describe(componentType.name, () => {
+describe('CreditsDialogComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 

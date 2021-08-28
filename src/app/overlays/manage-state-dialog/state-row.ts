@@ -10,6 +10,7 @@ export class StateRow {
 
   constructor(stateEntry: any) {
     this.name = stateEntry.name;
+    // firebase firestore uses `timestamp.seconds` object structure
     this.timestamp = new Date(stateEntry.timestamp.seconds * 1e3).toLocaleString();
     this.version = 'v' + stateEntry.version.join('.');
     this.state = stateEntry.state;
@@ -22,4 +23,5 @@ export class StateRow {
     parsedState.version = APP_VERSION.split('.').map(t => t.toNumber());
     return parsedState;
   }
+
 }

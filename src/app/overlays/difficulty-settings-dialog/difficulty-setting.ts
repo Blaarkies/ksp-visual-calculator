@@ -24,4 +24,5 @@ export class DifficultySetting {
   static fromObject(difficulty: any): DifficultySetting {
     return new DifficultySetting(difficulty.label, difficulty.rangeModifier, difficulty.dsnModifier);
   }
+
 }

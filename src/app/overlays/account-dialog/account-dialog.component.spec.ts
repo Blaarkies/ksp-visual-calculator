@@ -1,14 +1,11 @@
 import { AccountDialogComponent } from './account-dialog.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
-import { MatDialogRef } from '@angular/material/dialog';
 
 let componentType = AccountDialogComponent;
-describe(componentType.name, () => {
+describe('AccountDialogComponent', () => {
 
-  beforeEach(() => MockBuilder(componentType)
-    .mock(AppModule)
-    .mock(MatDialogRef));
+  beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
   it('should create', () => {
     let fixture = MockRender(componentType);

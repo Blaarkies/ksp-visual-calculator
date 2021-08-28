@@ -60,7 +60,6 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
 
   writeValue(value: any) {
     this.selectRef.value = value;
-    // this.inputRef.nativeElement.value = value;
     this.value = value;
   }
 
@@ -73,12 +72,20 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
   }
 
   setDisabledState(isDisabled: boolean) {
-    // this.inputRef.nativeElement.disabled = isDisabled;
+    this.disabled = isDisabled;
+    if (isDisabled) {
+      this.selectRef.close();
+    }
   }
 
   userInputChange(value: any) {
     this.writeValue(value);
     this.onChange && this.onChange(value);
+  }
+
+  focus() {
+    this.selectRef.open();
+    this.isActive = true;
   }
 
   ngOnDestroy() {

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
 import { Icons } from '../../common/domain/icons';
 import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
-import { AnalyticsService, EventLogs } from '../../services/analytics.service';
+import { AnalyticsService} from '../../services/analytics.service';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { WithDestroy } from '../../common/with-destroy';
+import { EventLogs } from '../../services/event-logs';
 
 @Component({
     selector: 'cp-action-list',

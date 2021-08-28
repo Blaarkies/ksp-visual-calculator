@@ -315,8 +315,6 @@ describe('Domain tests', () => {
     });
 
     // todo: do colors match the strength?
-    // todo: do internal + communotron16 combine?
-    // todo: craft with big direct + small relay. it should not relay outside of "small relay" range
 
   });
 });

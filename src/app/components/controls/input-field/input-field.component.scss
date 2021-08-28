@@ -1,10 +1,37 @@
-span {
-  color: var(--color-text-muted);
-}
+.input-field-component {
 
-.clear-button {
-  opacity: 0;
-  margin-left: 8px;
-  font-size: 1.4em !important; // overrides mat-button
-  transition: .25s ease-in;
+  span {
+    color: var(--color-text-muted);
+  }
+
+  .clear-button {
+    opacity: 0;
+    margin-left: 8px;
+    font-size: 1.4em !important; // overrides mat-button
+    transition: .25s ease-in;
+  }
+
+  &.transition {
+    transition: opacity .3s ease-out,
+    color .2s ease-in,
+    caret-color .2s ease-in,
+    background-color .2s ease-in;
+  }
+
+  &.disabled {
+    opacity: .7;
+  }
+
+  &.error-blink {
+    input {
+      caret-color: #f007 !important;
+      color: #f007 !important;
+    }
+
+    .mat-form-field-underline,
+    .mat-form-field-ripple {
+      background-color: #f007 !important;
+    }
+  }
+
 }

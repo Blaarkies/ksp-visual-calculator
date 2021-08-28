@@ -17,7 +17,7 @@ export class Draggable extends WithDestroy() {
   isHover$ = new Subject<boolean>();
   location = new Vector2();
   lastAttemptLocation: number[];
-  children: Draggable[];
+  children: Draggable[] = [];
   parameterData = new OrbitParameterData();
 
   // tslint:disable:member-ordering
@@ -49,16 +49,10 @@ export class Draggable extends WithDestroy() {
     };
   }
 
-  setChildren(spaceObjects: SpaceObject[]) {
-    let draggables = spaceObjects.map(so => so.draggableHandle);
-    this.children = draggables;
-    draggables.forEach(so => so.parent = this);
-  }
-
   startDrag(event: PointerEvent,
             screen: HTMLDivElement,
-            updateCallback: () => void = () => void 0,
-            camera?: CameraComponent) {
+            updateCallback: () => void,
+            camera: CameraComponent) {
     if (this.moveType === 'soiLock') {
       this.constrainLocation = LocationConstraints.anyMove(this.location.toList());
     }
@@ -199,6 +193,12 @@ export class Draggable extends WithDestroy() {
     }
     soiParent.showSoi = true;
     this.lastActivatedSoi = soiParent;
+  }
+
+  setChildren(spaceObjects: SpaceObject[]) {
+    let draggables = spaceObjects.map(so => so.draggableHandle);
+    this.children = draggables;
+    draggables.forEach(so => so.parent = this);
   }
 
   addChild(draggable: Draggable) {

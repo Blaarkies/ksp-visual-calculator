@@ -4,6 +4,8 @@ export interface WizardMarker {
   type: 'ring' | 'pane';
 }
 
+type MarkerType = 'ring' | 'pane';
+
 @Component({
   selector: 'cp-wizard-marker',
   templateUrl: './wizard-marker.component.html',
@@ -12,8 +14,8 @@ export interface WizardMarker {
 })
 export class WizardMarkerComponent implements WizardMarker {
 
-  markerType: 'ring' | 'pane' = 'pane';
-  @Input() set type(value: 'ring' | 'pane') {
+  markerType: MarkerType = 'pane';
+  @Input() set type(value: MarkerType) {
     this.markerType = value;
     this.ringHost = this.markerType === 'ring';
   }

@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
-
 import { TutorialService } from './tutorial.service';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../app.module';
 
-describe(TutorialService.name, () => {
-  let service: TutorialService;
+let serviceType = TutorialService;
+describe('TutorialService', () => {
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TutorialService);
-  });
+  beforeEach(() => MockBuilder(serviceType).mock(AppModule));
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+    expect(service).toBeDefined();
   });
+
 });

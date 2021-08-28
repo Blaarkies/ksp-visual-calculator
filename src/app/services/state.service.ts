@@ -12,8 +12,8 @@ import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
-import { StateRow } from '../overlays/manage-state-dialog/state.row';
-import { StateEntry } from '../overlays/manage-state-dialog/state.entry';
+import { StateRow } from '../overlays/manage-state-dialog/state-row';
+import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
@@ -26,7 +26,7 @@ export class StateService {
 
   private name: string;
   private autoSaveUnsubscribe$ = new Subject();
-  private context: UsableRoutes.SignalCheck;
+  private context: UsableRoutes;
 
   private lastStateRecord: string;
 
@@ -38,13 +38,14 @@ export class StateService {
     return this.lastStateRecord !== JSON.stringify(this.state);
   }
 
-  set pageContext(value: UsableRoutes.SignalCheck) {
+  set pageContext(value: UsableRoutes) {
     this.context = value;
     this.name = undefined;
   }
 
   get earlyState(): Observable<StateSignalCheck> {
-    return zip(this.setupService.stockPlanets$,
+    return zip(
+      this.setupService.stockPlanets$,
       this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
       .pipe(
         take(1),
@@ -81,10 +82,11 @@ export class StateService {
 
   get stateRow(): StateRow {
     let state = this.state;
+    let {name, timestamp, version} = state;
     return new StateRow({
-      name: state.name,
-      timestamp: {seconds: state.timestamp.getTime() * .001},
-      version: state.version,
+      name,
+      timestamp: {seconds: timestamp.getTime() * .001},
+      version,
       state: JSON.stringify(state),
     });
   }
@@ -98,6 +100,7 @@ export class StateService {
   }
 
   loadState(state?: string): Observable<void> {
+    // todo: use npm i `shrink-string` for 70% shorter strings
     let oldState: string;
     let setAndCompareState = () => {
       let newState = this.state;
@@ -160,7 +163,7 @@ export class StateService {
     return this.dataService.delete('states', name)
       .catch(error => {
         this.snackBar.open(`Could not remove "${name}" from cloud storage`);
-        throw console.error(error);
+        throw new Error(error);
       });
   }
 
@@ -187,10 +190,21 @@ export class StateService {
     this.name = name;
   }
 
-  getTimelessState(state: StateSignalCheck): StateSignalCheck {
+  getTimestamplessState(state: StateSignalCheck): StateSignalCheck {
     let safeToChange = JSON.stringify(state);
     let reparsed: StateSignalCheck = JSON.parse(safeToChange);
     reparsed.timestamp = undefined;
     return reparsed;
   }
+
+  async renameState(oldName: string, state: StateRow): Promise<any> {
+    return this.addStateToStore(state.toUpdatedStateGame())
+      .then(() => this.removeStateFromStore(oldName))
+      .catch(error => {
+        this.snackBar.open(`Could not rename "${oldName}"`);
+        throw error;
+      })
+      .then(() => this.snackBar.open(`Renamed "${oldName}" to "${state.name}"`));
+  }
+
 }

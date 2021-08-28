@@ -19,6 +19,7 @@ import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { AdvancedPlacement } from './advanced-placement';
+import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
@@ -73,12 +74,25 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     altitude: {
       label: 'Altitude',
       control: new FormControl(null, [Validators.min(0)]),
-      controlMeta: new ControlMetaNumber('m', 'Height above surface'),
+      controlMeta: {
+        type: ControlMetaType.Number,
+        min: 0,
+        max: 126123,
+        suffix: 'm',
+        hint: 'Height above surface',
+      } as ControlMetaNumber,
     },
     angle: {
       label: 'Angle',
       control: new FormControl(null),
-      controlMeta: new ControlMetaNumber('°', 'Starts on the right side, increase counter-clockwise'),
+      controlMeta: {
+        type: ControlMetaType.Number,
+        min: 0,
+        max: 360,
+        factor: 1,
+        suffix: '°',
+        hint: 'Starts on the right side, increase counter-clockwise',
+      } as ControlMetaNumber,
     },
   } as InputFields;
   advancedInputFieldsList = Object.values(this.advancedInputFields);

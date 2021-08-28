@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
-
 import { WizardSpotlightService } from './wizard-spotlight.service';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { AppModule } from '../app.module';
 
-describe(WizardSpotlightService.name, () => {
-  let service: WizardSpotlightService;
+let serviceType = WizardSpotlightService;
+describe('WizardSpotlightService', () => {
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(WizardSpotlightService);
-  });
+  beforeEach(() => MockBuilder(serviceType).mock(AppModule));
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    let fixture = MockRender(serviceType);
+    let service = fixture.point.componentInstance;
+    expect(service).toBeDefined();
   });
+
 });

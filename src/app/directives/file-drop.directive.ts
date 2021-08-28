@@ -24,7 +24,7 @@ export class FileDropDirective {
   @HostBinding('class.file-drop-event') private classEvent = false;
 
   @HostListener('dragover', ['$event'])
-  private onDragOver(event) {
+  private onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -34,7 +34,7 @@ export class FileDropDirective {
   }
 
   @HostListener('dragleave', ['$event'])
-  private onDragLeave(event) {
+  private onDragLeave(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -45,7 +45,7 @@ export class FileDropDirective {
   }
 
   @HostListener('drop', ['$event'])
-  private onDrop(event) {
+  private onDrop(event: DragEvent) {
     this.classEvent = false;
     this.classOver = false;
     this.classLeave = false;
@@ -59,8 +59,9 @@ export class FileDropDirective {
     if (!isValid || files.length === 0) {
       this.classLeave = true;
       setTimeout(() => this.classLeave = false, 300);
+
       let allowedTypes = this.fileTypeWhitelist
-        ?.map(w => this.mimeStringMap[w])
+        ?.map(w => this.mimeStringMap[w] ?? `"${w}"`)
         ?.join(', ');
       this.snackBar.open(allowedTypes
         ? `Only ${allowedTypes} files are allowed`
