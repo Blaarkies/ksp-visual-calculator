@@ -1,8 +1,16 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { CraftType } from '../../common/domain/space-objects/craft-type';
-import { InputFields } from '../../common/domain/input-fields/input-fields';
+import { InputField, InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { ControlMetaAntennaSelector } from '../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
@@ -20,6 +28,7 @@ import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { AdvancedPlacement } from './advanced-placement';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
+import { takeUntil } from 'rxjs/operators';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
@@ -71,17 +80,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
         new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon])),
         'Where to place this craft'),
     },
-    altitude: {
-      label: 'Altitude',
-      control: new FormControl(null, [Validators.min(0)]),
-      controlMeta: {
-        type: ControlMetaType.Number,
-        min: 0,
-        max: 126123,
-        suffix: 'm',
-        hint: 'Height above surface',
-      } as ControlMetaNumber,
-    },
+    altitude: {} as InputField,
     angle: {
       label: 'Angle',
       control: new FormControl(null),
@@ -95,16 +94,10 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       } as ControlMetaNumber,
     },
   } as InputFields;
-  advancedInputFieldsList = Object.values(this.advancedInputFields);
-  advancedForm = new FormGroup({
-    orbitParent: this.advancedInputFields.orbitParent.control,
-    altitude: this.advancedInputFields.altitude.control,
-    angle: this.advancedInputFields.angle.control,
-  }, this.getAdvancedPlacementValidator());
+  advancedInputFieldsList: InputField[];
+  advancedForm: FormGroup;
 
-  form = new FormArray([
-    ...this.inputFieldsList.map(field => field.control),
-    this.advancedForm]);
+  form: FormArray;
 
   Icons = Icons;
 
@@ -113,6 +106,48 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
               private setupService: SetupService,
               private spaceObjectService: SpaceObjectService) {
     super();
+
+    this.updateAdvancedPlacementFields(126123); // Gilly Soi == 126123
+    this.updateMainForm();
+
+    this.advancedInputFields.orbitParent.control.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(parent => {
+        let max = parent.sphereOfInfluence ?? 181e9; // 181e9 == 2x Eeloo's orbit
+        this.updateAdvancedPlacementFields(max - parent.equatorialRadius);
+        this.updateMainForm();
+      });
+  }
+
+  private updateMainForm() {
+    this.form = new FormArray([
+      ...this.inputFieldsList.map(field => field.control),
+      this.advancedForm]);
+  }
+
+  private updateAdvancedPlacementFields(soiSize: number) {
+    this.advancedInputFields.altitude = this.getAltitudeInputField(soiSize);
+
+    this.advancedInputFieldsList = Object.values(this.advancedInputFields);
+    this.advancedForm = new FormGroup({
+      orbitParent: this.advancedInputFields.orbitParent.control,
+      altitude: this.advancedInputFields.altitude.control,
+      angle: this.advancedInputFields.angle.control,
+    }, this.getAdvancedPlacementValidator());
+  }
+
+  private getAltitudeInputField(soiSize: number) {
+    return {
+      label: 'Altitude',
+      control: new FormControl(null, [Validators.min(0), Validators.max(soiSize)]),
+      controlMeta: {
+        type: ControlMetaType.Number,
+        min: 0,
+        max: soiSize,
+        suffix: 'm',
+        hint: 'Height above surface',
+      } as ControlMetaNumber,
+    };
   }
 
   submitCraftDetails() {
