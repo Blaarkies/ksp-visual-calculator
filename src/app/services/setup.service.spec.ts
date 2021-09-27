@@ -2,26 +2,36 @@ import { SetupService } from './setup.service';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { interval, of } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 import * as antennaPartsJson from 'src/assets/stock/antenna-parts.json';
 import * as kerbolSystemCharacteristicsJson from 'src/assets/stock/kerbol-system-characteristics.json';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
+import { KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
+import { fakeAsync, tick } from '@angular/core/testing';
 import objectContaining = jasmine.objectContaining;
 import arrayContaining = jasmine.arrayContaining;
 import anything = jasmine.anything;
-import { KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
-import { fakeAsync, tick } from '@angular/core/testing';
-
-let resources = {
-  'antenna-parts.json': (antennaPartsJson as any).default,
-  'kerbol-system-characteristics.json': (kerbolSystemCharacteristicsJson as any).default,
-};
 
 let serviceType = SetupService;
-describe('SetupService', () => {
+describe('SetupService', async () => {
 
-  beforeEach(() => MockBuilder(serviceType)
+  let resources: { [key: string]: {} };
+
+  beforeAll(async () => {
+    await interval(10).pipe(
+      filter(() => (antennaPartsJson as any).default
+        && (kerbolSystemCharacteristicsJson as any).default),
+      take(1))
+      .toPromise();
+
+    resources = {
+      'antenna-parts.json': (antennaPartsJson as any).default,
+      'kerbol-system-characteristics.json': (kerbolSystemCharacteristicsJson as any).default,
+    };
+  });
+
+  beforeEach(async () => MockBuilder(serviceType)
     .mock(HttpClient, {
       get: url => of(resources[url.split('/').pop()]),
     } as any)

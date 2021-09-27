@@ -1,5 +1,5 @@
 import { fromEvent, Observable, Subject } from 'rxjs';
-import { filter, finalize, map, takeUntil, throttleTime } from 'rxjs/operators';
+import { filter, finalize, map, takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
 import { CameraComponent } from '../../../components/camera/camera.component';
@@ -65,7 +65,7 @@ export class Draggable extends WithDestroy() {
       screen.style.cursor = 'grabbing';
       this.isGrabbing = true;
 
-      pointerStream = fromEvent(screen, 'mousemove')
+      pointerStream = this.getEventObservable(screen, 'mousemove')
         .pipe(
           throttleTime(25),
           // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
@@ -80,7 +80,7 @@ export class Draggable extends WithDestroy() {
           takeUntil(fromEvent(screen, 'mouseup')));
 
     } else if (event.pointerType === 'touch') {
-      pointerStream = fromEvent(screen, 'touchmove')
+      pointerStream = this.getEventObservable(screen, 'touchmove')
         .pipe(
           throttleTime(33),
           filter((touch: TouchEvent) => touch.changedTouches.length === 1),
@@ -108,6 +108,13 @@ export class Draggable extends WithDestroy() {
         this.showSoiUnderCraft();
         updateCallback();
       });
+  }
+
+  /**
+   * Function that improves testability on startDrag() code
+   */
+  private getEventObservable(screen: HTMLDivElement, eventType: 'mousemove' | 'touchmove') {
+    return fromEvent(screen, eventType);
   }
 
   private setNewLocation([x, y]: number[]) {

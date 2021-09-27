@@ -2,7 +2,7 @@ import { SpaceObjectService } from './space-object.service';
 import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { SetupService } from './setup.service';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, interval, of } from 'rxjs';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { Craft } from '../common/domain/space-objects/craft';
@@ -23,9 +23,16 @@ import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
 import createSpy = jasmine.createSpy;
 import anything = jasmine.anything;
+import { filter, take } from 'rxjs/operators';
 
 let serviceType = SpaceObjectService;
 describe('SpaceObjectService', () => {
+
+  beforeAll(async () =>
+    await interval(10).pipe(
+      filter(() => (savegameJson as any).default),
+      take(1))
+      .toPromise());
 
   beforeEach(() => MockBuilder(serviceType)
     .mock(SetupService, {
