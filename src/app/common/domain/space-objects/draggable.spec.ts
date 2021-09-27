@@ -4,10 +4,9 @@ import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
 import { CameraComponent } from '../../../components/camera/camera.component';
 import { ineeda } from 'ineeda';
-import { fakeAsync, tick } from '@angular/core/testing';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { Component } from '@angular/core';
-import { BehaviorSubject, fromEvent, of, timer } from 'rxjs';
+import { BehaviorSubject, of, timer } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Vector2 } from '../vector2';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
@@ -145,10 +144,22 @@ describe('Draggable class', () => {
 
   describe('updateConstrainLocation()', () => {
 
-    xit('does not update location for immovable objects', () => {
+    it('does not update location for immovable objects', () => {
+      let draggable = new Draggable('', '', 'noMove');
+      let orbitParameterData = new OrbitParameterData([0, 0]);
+      draggable.updateConstrainLocation(orbitParameterData);
+
+      let result = (draggable as any).constrainLocation(100, 100);
+      expect(result).toEqual([0, 0]);
     });
 
-    xit('updates location for freely movable objects', () => {
+    it('updates location for freely movable objects', () => {
+      let draggable = new Draggable('', '', 'freeMove');
+      let orbitParameterData = new OrbitParameterData([0, 0]);
+      draggable.updateConstrainLocation(orbitParameterData);
+
+      let result = (draggable as any).constrainLocation(100, 100);
+      expect(result).toEqual([100, 100]);
     });
 
     it('updates location for orbital objects', () => {
@@ -158,9 +169,21 @@ describe('Draggable class', () => {
 
       // xy at [1,2] plus the radius offset of 3 (towards +x)
       expect(draggable.location.toString()).toBe('4 2');
+
+      let result = (draggable as any).constrainLocation(-10, 1);
+      expect(result[0] > -1.99 && result[0] < -1.98).toBe(true, result[0]);
+      expect(result[1] > 1.72 && result[1] < 1.73).toBe(true);
     });
 
-    xit('updates location for SOI locked objects', () => {
+    it('updates location for SOI locked objects', () => {
+      let draggable = new Draggable('', '', 'soiLock');
+      let fakePlanetDraggable = ineeda<Draggable>({
+        location: new Vector2(10, 10),
+      });
+      let orbitParameterData = new OrbitParameterData([4, 4], null, fakePlanetDraggable);
+      draggable.updateConstrainLocation(orbitParameterData);
+
+      expect(draggable.location.toString()).toBe('4 4');
     });
   });
 

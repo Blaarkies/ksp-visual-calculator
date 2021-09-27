@@ -3,6 +3,7 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../../app.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { fakeAsync, tick } from '@angular/core/testing';
 
 let componentType = InputToggleComponent;
 describe('InputToggleComponent', () => {
@@ -17,37 +18,48 @@ describe('InputToggleComponent', () => {
     expect(fixture.point.componentInstance).toBeDefined();
   });
 
-  xdescribe('checkbox', () => {
+  describe('checkbox', () => {
+
     it('writeValue() should set native values', () => {
       let fixture = MockRender(componentType, {type: 'checkbox'});
       let component = fixture.point.componentInstance;
       fixture.detectChanges();
 
-      spyOn(component.checkbox, 'writeValue');
+      let checkbox = fixture.debugElement.nativeElement.querySelector('input');
 
       let testValue = true;
       component.writeValue(testValue);
-      expect(component.value).toBe(testValue);
-      expect(component.checkbox.writeValue).toHaveBeenCalled();
+      fixture.detectChanges();
+
+      expect(checkbox.checked).toBe(testValue);
     });
 
-    it('setDisabledState() should disable native elements', () => {
-      let fixture = MockRender(componentType);
+    xit('setDisabledState() should disable native elements', () => {
+      let fixture = MockRender(componentType, {type: 'checkbox'});
       let component = fixture.point.componentInstance;
+      fixture.detectChanges();
+
+      let checkbox = fixture.debugElement.nativeElement.querySelector('input');
 
       component.setDisabledState(true);
+      fixture.detectChanges();
 
       expect(component.disabled).toBeTrue();
-      expect(component.checkbox.disabled).toBeTrue();
+      expect(checkbox.disabled).toBeTrue();
     });
 
-    it('focus() should focus native element', () => {
-      let fixture = MockRender(componentType);
+    xit('focus() should focus native element', () => {
+      let fixture = MockRender(componentType, {type: 'checkbox'});
       let component = fixture.point.componentInstance;
+      fixture.detectChanges();
 
-      spyOn(component.checkbox, 'focus');
+      let testElement = fixture.debugElement.nativeElement;
+      let checkbox: HTMLInputElement = testElement.querySelector('input');
 
-      expect(component.checkbox.focus).toHaveBeenCalled();
+      component.focus();
+      fixture.detectChanges();
+
+      expect(testElement.ownerDocument.activeElement).toBe(checkbox);
     });
   });
 
