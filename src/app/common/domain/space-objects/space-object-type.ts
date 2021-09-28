@@ -5,7 +5,7 @@ export class SpaceObjectType {
 
   get icon(): string {
     return this === SpaceObjectType.Star
-      ? Icons.Flare
+      ? Icons.Star
       : this === SpaceObjectType.Planet
         ? Icons.Planet
         : this === SpaceObjectType.Moon

@@ -2,7 +2,7 @@
   <h1 mat-dialog-title>Account Details</h1>
 
   <div mat-dialog-content class="details-layout">
-    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/guest-account.png'"/>
+    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'"/>
 
     <div>
       <div>Name: {{user.displayName}}</div>
@@ -43,21 +43,21 @@
 
     <div class="email-inputs-container">
       <div class="input-container">
-        <mat-icon>{{icons.Email}}</mat-icon>
+        <mat-icon [svgIcon]="icons.Email"></mat-icon>
         <cp-input-field label="Email Address"
                         [formControl]="controlEmail"
                         [errors]="controlEmail.dirty && controlEmail.errors"></cp-input-field>
       </div>
 
       <div class="input-container">
-        <mat-icon>{{icons.Password}}</mat-icon>
+        <mat-icon [svgIcon]="icons.Password"></mat-icon>
         <cp-input-field label="Password"
                         [type]="passwordVisible ? 'text' : 'password'"
                         [formControl]="controlPassword"
                         [errors]="controlPassword.dirty && controlPassword.errors"></cp-input-field>
         <button mat-icon-button
                 (click)="passwordVisible = !passwordVisible">
-          <mat-icon>{{passwordVisible ? icons.Visible : icons.Invisible}}</mat-icon>
+          <mat-icon [svgIcon]="passwordVisible ? icons.Visible : icons.Invisible"></mat-icon>
         </button>
       </div>
 
@@ -75,7 +75,7 @@
               (click)="signInWithEmailAddress()"
               [disabled]="controlEmail.invalid || controlPassword.invalid"
               [matTooltip]="'If you do not have an account, this will create one'">
-        <mat-icon>{{icons.Email}}</mat-icon>
+        <mat-icon [svgIcon]="icons.Email"></mat-icon>
         <span>Sign in with email address</span>
         <mat-progress-bar [@animateFade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
       </button>

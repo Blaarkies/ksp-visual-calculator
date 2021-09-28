@@ -5,7 +5,7 @@
           mat-icon-button
           (click)="$event.stopPropagation(); openAccountDialog()"
           [matTooltip]="'Go to sign up page'">
-    <mat-icon>{{icons.Guest}}</mat-icon>
+    <mat-icon [svgIcon]="icons.Guest"></mat-icon>
   </button>
 </ng-template>
 
@@ -14,7 +14,7 @@
     <button mat-icon-button
             (click)="$event.stopPropagation(); openAccountDialog()"
             [matTooltip]="'Account Details'">
-      <img class="profile-image" [attr.src]="user.photoURL || 'assets/guest-account.png'"/>
+      <img class="profile-image" [attr.src]="user.photoURL || 'assets/logos/guest-account.png'"/>
     </button>
   </ng-container>
 </ng-template>

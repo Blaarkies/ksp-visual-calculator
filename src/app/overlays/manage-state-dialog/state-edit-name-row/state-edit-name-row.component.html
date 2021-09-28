@@ -14,7 +14,7 @@
             mat-icon-button
             (click)="$event.stopImmediatePropagation(); startEdit(state)"
             [matTooltip]="'Edit the name of this save game'">
-      <mat-icon>{{icons.Edit}}</mat-icon>
+      <mat-icon [svgIcon]="icons.Edit"></mat-icon>
     </button>
     <ng-template #accept>
       <div class="yes-no-buttons">
@@ -22,12 +22,12 @@
                 (click)="$event.stopImmediatePropagation(); confirmEdit(state)"
                 [disabled]="control.invalid"
                 [matTooltip]="'Confirm name change'">
-          <mat-icon color="primary">{{icons.Check}}</mat-icon>
+          <mat-icon color="primary" [svgIcon]="icons.Check"></mat-icon>
         </button>
         <button mat-icon-button
                 (click)="$event.stopImmediatePropagation(); cancelEdit()"
                 [matTooltip]="'Cancel name changes'">
-          <mat-icon color="accent">{{icons.Cancel}}</mat-icon>
+          <mat-icon color="accent" [svgIcon]="icons.Cancel"></mat-icon>
         </button>
       </div>
     </ng-template>

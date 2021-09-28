@@ -15,12 +15,12 @@
               mat-icon-button
               disableRipple
               (click)="clearSearch(inputRef)">
-        <mat-icon color="primary">{{icons.Clear}}</mat-icon>
+        <mat-icon color="primary" [svgIcon]="icons.Clear"></mat-icon>
       </button>
     </div>
 
     <div class="option-container" *ngFor="let option of filteredOptions">
-      <mat-icon *ngIf="mapIcons?.get(option.value); let icon" color="accent">{{icon}}</mat-icon>
+      <mat-icon *ngIf="mapIcons?.get(option.value); let icon" color="accent" [svgIcon]="icon"></mat-icon>
       <mat-option [class.has-icon]="mapIcons?.get(option.value)"
                   [value]="option.value">
         {{option.label}}

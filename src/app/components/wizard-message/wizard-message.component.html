@@ -4,7 +4,7 @@
       <h1 *ngIf="title">{{title}}</h1>
 
       <div class="drag-indicator">
-        <mat-icon>{{icons.DragIndicator}}</mat-icon>
+        <mat-icon [svgIcon]="icons.DragIndicator"></mat-icon>
       </div>
     </div>
 
@@ -13,7 +13,7 @@
       <p *ngFor="let message of messages">{{message}}</p>
     </div>
 
-    <mat-icon *ngIf="icon" class="icon-large" color="primary">{{icon}}</mat-icon>
+    <mat-icon *ngIf="icon" class="icon-large" color="primary" [svgIcon]="icon"></mat-icon>
 
     <button *ngIf="isLastStep; else allowCancel"
             mat-button

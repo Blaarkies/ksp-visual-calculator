@@ -20,7 +20,7 @@
                 [matTooltip]="'Remove this antenna'"
                 (click)="removeAntenna(antennaInput)"
                 [disabled]="disabled">
-          <mat-icon color="warn">{{icons.Delete}}</mat-icon>
+          <mat-icon color="warn" [svgIcon]="icons.Delete"></mat-icon>
         </button>
       </div>
 

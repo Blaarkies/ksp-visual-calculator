@@ -75,8 +75,11 @@
 </ng-template>
 
 <ng-template #faqButton>
-  <button class="faq" mat-mini-fab color="accent" (click)="openFaq()">
-    <mat-icon>{{icons.Help}}</mat-icon>
+  <button class="faq"
+          mat-icon-button
+          color="accent"
+          (click)="openFaq()">
+    <mat-icon [svgIcon]="icons.Help"></mat-icon>
   </button>
 </ng-template>
 

@@ -13,7 +13,7 @@
           <span matBadgeColor="warn"
                 [matBadgeHidden]="!option.unread"
                 matBadge="!"></span>
-          <mat-icon>{{option.icon}}</mat-icon>
+          <mat-icon [svgIcon]="option.icon"></mat-icon>
         </div>
       </ng-container>
 
@@ -24,7 +24,7 @@
           <span matBadgeColor="warn"
                 [matBadgeHidden]="!option.unread"
                 matBadge="!"></span>
-          <mat-icon>{{option.icon}}</mat-icon>
+          <mat-icon [svgIcon]="option.icon"></mat-icon>
         </div>
       </ng-template>
     </ng-template>
@@ -51,7 +51,9 @@
                      (click)="action.emit();
                               updateUnreads(option);
                               logExternalLink(option.actionMeta.externalRoute)">
-      <a class="anchor-invisible" [href]="option.actionMeta.externalRoute">
+      <a class="anchor-invisible"
+         [href]="option.actionMeta.externalRoute"
+         target="_blank">
         <ng-container *ngTemplateOutlet="button"></ng-container>
       </a>
     </mat-list-option>

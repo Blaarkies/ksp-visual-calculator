@@ -16,7 +16,7 @@
           *ngIf="buttonHover$ | async"
           (click)="editSpaceObject.next()"
           (mousedown)="$event.stopPropagation()">
-    <mat-icon>{{icons.Edit}}</mat-icon>
+    <mat-icon [svgIcon]="icons.Edit"></mat-icon>
   </button>
 
 </div>

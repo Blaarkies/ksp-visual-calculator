@@ -3,7 +3,7 @@
         [ngClass]="color"
         [matTooltip]="tooltip"
         (click)="actionButton()">
-  <mat-icon>{{icon}}</mat-icon>
+  <mat-icon [svgIcon]="icon"></mat-icon>
 
   <span class="animate-badge"
         matBadgeColor="warn"

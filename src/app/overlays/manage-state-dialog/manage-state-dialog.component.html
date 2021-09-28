@@ -55,7 +55,7 @@
            cpFileDrop
            [fileTypeWhitelist]="['application/json']"
            (fileDrop)="importFile($event)">
-        <mat-icon>{{icons.Upload}}</mat-icon>
+        <mat-icon [svgIcon]="icons.Upload"></mat-icon>
         <button class="button-loader"
                 mat-stroked-button
                 color="primary"
@@ -76,7 +76,7 @@
                 mat-stroked-button
                 [matTooltip]="'Save now (auto-save occurs every 10 seconds)'"
                 (click)="saveState(nowState)">
-          <mat-icon color="primary">{{icons.Storage}}</mat-icon>
+          <mat-icon color="primary" [svgIcon]="icons.Save"></mat-icon>
           <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.save$ | async"
                             mode="indeterminate"></mat-progress-bar>
         </button>
@@ -85,7 +85,7 @@
                 mat-stroked-button
                 [matTooltip]="'Export to JSON file'"
                 (click)="exportState(nowState)">
-          <mat-icon>{{icons.Download}}</mat-icon>
+          <mat-icon [svgIcon]="icons.Download"></mat-icon>
           <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.export$ | async"
                             mode="indeterminate"></mat-progress-bar>
         </button>
@@ -93,7 +93,7 @@
                 mat-stroked-button
                 [matTooltip]="'Start a new game'"
                 (click)="newState()">
-          <mat-icon color="accent">{{icons.Reset}}</mat-icon>
+          <mat-icon color="accent" [svgIcon]="icons.Reset"></mat-icon>
           <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.new$ | async"
                             color="accent" mode="indeterminate"></mat-progress-bar>
         </button>
@@ -130,7 +130,7 @@
                       mat-stroked-button
                       [matTooltip]="'Load this game'"
                       (click)="loadState(selectedState)">
-                <mat-icon color="primary">{{icons.Load}}</mat-icon>
+                <mat-icon color="primary" [svgIcon]="icons.Load"></mat-icon>
                 <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.load$ | async"
                                   mode="indeterminate"></mat-progress-bar>
               </button>
@@ -138,7 +138,7 @@
                       mat-stroked-button
                       [matTooltip]="'Export to JSON file'"
                       (click)="exportState(selectedState)">
-                <mat-icon>{{icons.Download}}</mat-icon>
+                <mat-icon [svgIcon]="icons.Download"></mat-icon>
                 <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.export$ | async"
                                   mode="indeterminate"></mat-progress-bar>
               </button>
@@ -147,7 +147,7 @@
                       [matTooltip]="'Delete this game'"
                       [disabled]="buttonLoaders.remove$ | async"
                       (click)="removeState(selectedState)">
-                <mat-icon color="warn">{{icons.Delete}}</mat-icon>
+                <mat-icon color="warn" [svgIcon]="icons.Delete"></mat-icon>
                 <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.remove$ | async"
                                   color="warn" mode="indeterminate"></mat-progress-bar>
               </button>
@@ -162,7 +162,7 @@
 
     <ng-template #archiveEmpty>
       <div class="empty-state-archive">
-        <mat-icon>{{icons.File}}</mat-icon>
+        <mat-icon [svgIcon]="icons.File"></mat-icon>
         <h3>No save games found</h3>
         <div>
           <span>Start by</span>

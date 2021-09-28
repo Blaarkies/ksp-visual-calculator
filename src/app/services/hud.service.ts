@@ -61,12 +61,12 @@ export class HudService {
     return [
       new ActionOption(
         'Delta-v Planner',
-        Icons.PlanetSearch,
+        Icons.DeltaV,
         {route: UsableRoutes.DvPlanner},
         'Page that calculates the required delta-v for a specified mission'),
       new ActionOption(
         'Signal Check',
-        Icons.PlanetSearch,
+        Icons.Network,
         {route: UsableRoutes.SignalCheck},
         'Page that calculates CommNet ranges'),
       new ActionOption(
