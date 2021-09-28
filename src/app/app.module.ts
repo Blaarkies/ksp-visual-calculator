@@ -78,6 +78,8 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
 import { environment } from '../environments/environment';
 import { ActionFabComponent } from './components/hud/action-fab/action-fab.component';
 import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-section.component';
+import { PageDvPlannerComponent } from './pages/page-dv-planner/page-dv-planner.component';
+import { UniverseMapComponent } from './components/universe-map/universe-map.component';
 
 @NgModule({
   declarations: [
@@ -127,6 +129,8 @@ import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-secti
     ActionListComponent,
     ActionFabComponent,
     FaqSectionComponent,
+    PageDvPlannerComponent,
+    UniverseMapComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
