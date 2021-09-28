@@ -80,6 +80,10 @@ import { ActionFabComponent } from './components/hud/action-fab/action-fab.compo
 import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-section.component';
 import { PageDvPlannerComponent } from './pages/page-dv-planner/page-dv-planner.component';
 import { UniverseMapComponent } from './components/universe-map/universe-map.component';
+import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-panel/maneuver-sequence-panel.component';
+import { MspListComponent } from './components/maneuver-sequence-panel/msp-list/msp-list.component';
+import { MspNodeComponent } from './components/maneuver-sequence-panel/msp-node/msp-node.component';
+import { MspEdgeComponent } from './components/maneuver-sequence-panel/msp-edge/msp-edge.component';
 
 @NgModule({
   declarations: [
@@ -131,6 +135,10 @@ import { UniverseMapComponent } from './components/universe-map/universe-map.com
     FaqSectionComponent,
     PageDvPlannerComponent,
     UniverseMapComponent,
+    ManeuverSequencePanelComponent,
+    MspListComponent,
+    MspNodeComponent,
+    MspEdgeComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

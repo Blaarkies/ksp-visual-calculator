@@ -1,0 +1,13 @@
+:host {
+  color: white;
+}
+
+.edge-layout {
+  display: grid;
+  justify-content: end;
+  grid-template-columns: max-content max-content;
+  gap: 0 .2em;
+  text-align: end;
+
+  font-weight: 200;
+}

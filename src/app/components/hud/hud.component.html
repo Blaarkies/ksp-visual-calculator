@@ -1,7 +1,7 @@
 <div *ngIf="isHandset$ | async; else desktopScreen"
      class="handset-layout">
 
-  <ng-container *ngTemplateOutlet="faqButton"></ng-container>
+  <ng-container *ngTemplateOutlet="pageContext"></ng-container>
   <ng-container *ngTemplateOutlet="profile"></ng-container>
   <ng-container *ngTemplateOutlet="zoom"></ng-container>
   <ng-container *ngTemplateOutlet="focus"></ng-container>
@@ -42,7 +42,7 @@
                      startTitle="KSP Visual Calculator"
                      [options]="navigationOptions"></cp-action-panel>
 
-    <ng-container *ngTemplateOutlet="faqButton"></ng-container>
+    <ng-container *ngTemplateOutlet="pageContext"></ng-container>
 
     <cp-action-panel class="information"
                      startTitle="Information"
@@ -55,7 +55,7 @@
     <ng-container *ngTemplateOutlet="zoom"></ng-container>
     <ng-container *ngTemplateOutlet="focus"></ng-container>
 
-    <cp-action-panel class="context"
+    <cp-action-panel class="menu-context"
                      id="context-panel"
                      *ngIf="contextPanel$ | async as details"
                      [startTitle]="details.startTitle"
@@ -74,13 +74,21 @@
   </div>
 </ng-template>
 
-<ng-template #faqButton>
-  <button class="faq"
-          mat-icon-button
-          color="accent"
-          (click)="openFaq()">
-    <mat-icon [svgIcon]="icons.Help"></mat-icon>
-  </button>
+<ng-template #pageContext>
+  <div class="page-context">
+    <div class="page-icon">
+      <mat-icon [matTooltip]="pageContextInfo?.tooltip"
+                color="accent"
+                [svgIcon]="pageContextInfo?.icon"></mat-icon>
+    </div>
+
+    <button class="faq"
+            mat-icon-button
+            color="accent"
+            (click)="openFaq()">
+      <mat-icon [svgIcon]="icons.Help"></mat-icon>
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #zoom>

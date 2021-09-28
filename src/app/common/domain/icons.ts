@@ -25,7 +25,7 @@ export class Icons {
   static Coffee = 'coffee';
   static Feedback = 'comment-text';
   static Help = 'help-circle';
-  static Info = 'info';
+  static Info = 'information';
   static Camera = 'video-vintage';
   static Antenna = 'antenna';
   static Relay = 'access-point';

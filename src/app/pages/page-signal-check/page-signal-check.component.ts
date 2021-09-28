@@ -42,7 +42,7 @@ export class PageSignalCheckComponent extends WithDestroy() {
               stateService: StateService) {
     super();
 
-    hudService.pageContext = UsableRoutes.SignalCheck;
+    hudService.setPageContext(UsableRoutes.SignalCheck);
     stateService.pageContext = UsableRoutes.SignalCheck;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 

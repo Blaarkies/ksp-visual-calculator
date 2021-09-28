@@ -1,14 +1,20 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
 import { Icons } from '../common/domain/icons';
 import { AnalyticsService } from './analytics.service';
-import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../overlays/craft-details-dialog/craft-details-dialog.component';
+import {
+  CraftDetailsDialogComponent,
+  CraftDetailsDialogData
+} from '../overlays/craft-details-dialog/craft-details-dialog.component';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
-import { ManageStateDialogComponent, ManageStateDialogData } from '../overlays/manage-state-dialog/manage-state-dialog.component';
+import {
+  ManageStateDialogComponent,
+  ManageStateDialogData
+} from '../overlays/manage-state-dialog/manage-state-dialog.component';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SpaceObjectService } from './space-object.service';
@@ -30,10 +36,14 @@ import { EventLogs } from './event-logs';
 export class HudService {
 
   contextPanel$ = new BehaviorSubject<ActionPanelDetails>(null);
-  private contextChange$ = new Subject();
+  private contextChange$ = new Subject<UsableRoutes>();
 
-  set pageContext(value: UsableRoutes) {
-    this.contextChange$.next();
+  getPageContext(): Observable<UsableRoutes> {
+    return this.contextChange$.asObservable();
+  }
+
+  setPageContext(value: UsableRoutes) {
+    this.contextChange$.next(value);
     let newPanel = this.getContextPanel(value);
     this.contextPanel$.next(newPanel);
   }
@@ -52,6 +62,8 @@ export class HudService {
     switch (context) {
       case UsableRoutes.SignalCheck:
         return this.signalCheckPanel;
+      case UsableRoutes.DvPlanner:
+        return this.dvPlannerPanel;
       default:
         return null;
     }
@@ -194,15 +206,7 @@ export class HudService {
             });
         },
       }),
-      new ActionOption('New Celestial Body', Icons.Planet, {action: () => void 0}, undefined, false, undefined,
-        {
-          unavailable$: of(true),
-          tooltip: 'Adding moons, planets, and stars are coming soon!',
-          action: () => {
-            this.analyticsService.logEvent('Call new celestial body dialog', {category: EventLogs.Category.CelestialBody});
-            this.snackBar.open('Adding moons, planets, and stars are coming soon!');
-          },
-        }),
+      this.createActionOptionNewCelestialBody(),
       new ActionOption('Difficulty Settings', Icons.Difficulty, {
         action: () => {
           this.analyticsService.logEvent('Call difficulty settings dialog', {
@@ -222,30 +226,7 @@ export class HudService {
             });
         },
       }),
-      new ActionOption('Manage Save Games', Icons.Storage, {
-          action: () => {
-            this.analyticsService.logEvent('Call state dialog', {
-              category: EventLogs.Category.State,
-            });
-
-            this.dialog.open(ManageStateDialogComponent, {
-              data: {
-                context: UsableRoutes.SignalCheck,
-              } as ManageStateDialogData,
-              backdropClass: GlobalStyleClass.MobileFriendly,
-            });
-          },
-        }, undefined, false, undefined,
-        {
-          unavailable$: this.authService.user$.pipe(map(user => user === null), startWith(true)),
-          tooltip: 'Save games are only available when signed in',
-          action: () => {
-            this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
-
-            this.dialog.open(AccountDialogComponent);
-          },
-        },
-      ),
+      this.createActionOptionManageSaveGames(UsableRoutes.SignalCheck),
     ];
 
     return {
@@ -256,4 +237,54 @@ export class HudService {
     };
   }
 
+  private get dvPlannerPanel(): ActionPanelDetails {
+    let options = [
+      this.createActionOptionNewCelestialBody(),
+      this.createActionOptionManageSaveGames(UsableRoutes.DvPlanner),
+    ];
+
+    return {
+      startTitle: 'Edit Universe',
+      startIcon: Icons.OpenDetails,
+      color: 'orange',
+      options,
+    };
+  }
+
+  private createActionOptionNewCelestialBody() {
+    return new ActionOption('New Celestial Body', Icons.Planet, {action: () => void 0}, undefined, false, undefined,
+      {
+        unavailable$: of(true),
+        tooltip: 'Adding moons, planets, and stars are coming soon!',
+        action: () => {
+          this.analyticsService.logEvent('Call new celestial body dialog', {category: EventLogs.Category.CelestialBody});
+          this.snackBar.open('Adding moons, planets, and stars are coming soon!');
+        },
+      });
+  }
+
+  private createActionOptionManageSaveGames(context: UsableRoutes) {
+    return new ActionOption('Manage Save Games', Icons.Storage, {
+        action: () => {
+          this.analyticsService.logEvent('Call state dialog', {
+            category: EventLogs.Category.State,
+          });
+
+          this.dialog.open(ManageStateDialogComponent, {
+            data: {context} as ManageStateDialogData,
+            backdropClass: GlobalStyleClass.MobileFriendly,
+          });
+        },
+      }, undefined, false, undefined,
+      {
+        unavailable$: this.authService.user$.pipe(map(user => user === null), startWith(true)),
+        tooltip: 'Save games are only available when signed in',
+        action: () => {
+          this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
+
+          this.dialog.open(AccountDialogComponent);
+        },
+      },
+    );
+  }
 }

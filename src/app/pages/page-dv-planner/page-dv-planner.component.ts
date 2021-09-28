@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Icons } from '../../common/domain/icons';
 import { UsableRoutes } from '../../usable-routes';
 import { takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
@@ -13,13 +12,11 @@ import { StateService } from '../../services/state.service';
 })
 export class PageDvPlannerComponent extends WithDestroy() {
 
-  icons = Icons;
-
   constructor(hudService: HudService,
-              stateService: StateService,) {
+              stateService: StateService) {
     super();
 
-    hudService.pageContext = UsableRoutes.DvPlanner;
+    hudService.setPageContext(UsableRoutes.DvPlanner);
     stateService.pageContext = UsableRoutes.DvPlanner;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
   }
