@@ -23,6 +23,7 @@
                                  [spaceObject]="body"
                                  [scale]="camera.scale"
                                  (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
+                                 cpMouseHover (hoverChange)="hoverBody.emit(body, $event)"
                                  (focusObject)="focusBody(body, $event)"
                                  (editSpaceObject)="editCelestialBody(body)">
         <div class="div-as-image"

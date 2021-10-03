@@ -84,6 +84,7 @@ import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-p
 import { MspListComponent } from './components/maneuver-sequence-panel/msp-list/msp-list.component';
 import { MspNodeComponent } from './components/maneuver-sequence-panel/msp-node/msp-node.component';
 import { MspEdgeComponent } from './components/maneuver-sequence-panel/msp-edge/msp-edge.component';
+import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 
 @NgModule({
   declarations: [
@@ -139,6 +140,7 @@ import { MspEdgeComponent } from './components/maneuver-sequence-panel/msp-edge/
     MspListComponent,
     MspNodeComponent,
     MspEdgeComponent,
+    MissionJourneyComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

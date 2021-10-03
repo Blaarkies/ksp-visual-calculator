@@ -1,7 +1,20 @@
 <div class="overlap-container page-container">
-  <cp-universe-map>
-
+  <cp-universe-map #universeMap
+                   (startDrag)="selectDestination($event)"
+                   (hoverBody)="missionJourney.hoverBody($event)">
+    <cp-mission-journey abovePlanets
+                        #missionJourney
+                        class="z-index-top"
+                        [scale]="universeMap.camera.scale"
+                        [missionDestinations]="missionDestinations"
+                        [isAddingDestination]="isSelectingDestination">
+    </cp-mission-journey>
   </cp-universe-map>
 
-  <cp-maneuver-sequence-panel class="maneuver-sequence-panel"></cp-maneuver-sequence-panel>
+  <cp-maneuver-sequence-panel class="maneuver-sequence-panel"
+                              [destinationList]="missionDestinations"
+                              (add)="addMissionDestination()"
+                              (reset)="resetMission()"
+                              (removeDestination)="removeMissionDestination($event)">
+  </cp-maneuver-sequence-panel>
 </div>

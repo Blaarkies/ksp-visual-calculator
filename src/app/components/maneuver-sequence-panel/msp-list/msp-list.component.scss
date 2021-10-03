@@ -1,9 +1,30 @@
 .list-layout {
   display: grid;
 
-  max-height: 300px;
+  max-height: 400px;
   overflow-y: auto;
 
   border-top: 1px solid white;
   border-bottom: 1px solid white;
+
+  padding-top: 1em;
+
+  .divider {
+    border-bottom: 1px dotted #fff7;
+    margin: 10px 20px;
+  }
+}
+
+.destination-controls {
+  position: sticky;
+  bottom: 0;
+
+  display: grid;
+  grid-template-columns: auto max-content;
+}
+
+.totals-layout {
+  display: grid;
+  grid-template-columns: auto max-content;
+  column-gap: 1em;
 }

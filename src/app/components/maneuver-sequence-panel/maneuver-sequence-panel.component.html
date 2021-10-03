@@ -1,7 +1,9 @@
-<p style="color: white">maneuver-sequence-panel works!</p>
-
 <div class="panel-layout">
-  <div>Start mission by tapping on a celestial body</div>
+  <div>Mission Destinations</div>
 
-  <cp-msp-list></cp-msp-list>
+  <cp-msp-list [destinationList]="destinationList"
+               (add)="add.emit()"
+               (reset)="reset.emit()"
+               (removeNode)="removeDestination.emit($event)">
+  </cp-msp-list>
 </div>

@@ -10,6 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
+import { CustomAnimation } from '../../common/domain/custom-animation';
 
 @Component({
   selector: 'cp-antenna-selector',
@@ -21,6 +22,7 @@ import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component'
     useExisting: forwardRef(() => AntennaSelectorComponent),
     multi: true,
   }],
+  animations: [CustomAnimation.animateScaleVertical],
 })
 export class AntennaSelectorComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

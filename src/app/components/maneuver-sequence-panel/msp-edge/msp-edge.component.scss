@@ -1,13 +1,27 @@
 :host {
   color: white;
+
+  //border: .1px solid #fff2;
+  //border-radius: 7%;
 }
 
 .edge-layout {
   display: grid;
-  justify-content: end;
+  justify-content: center;
   grid-template-columns: max-content max-content;
   gap: 0 .2em;
-  text-align: end;
 
+  text-align: end;
   font-weight: 200;
+}
+
+.node-line {
+  svg {
+    overflow: visible;
+    height: 20px;
+    width: 6px;
+  }
+
+  grid-column: 1 / 3;
+  justify-self: center;
 }

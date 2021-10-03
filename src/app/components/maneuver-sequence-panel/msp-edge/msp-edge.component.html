@@ -1,7 +1,21 @@
 <div class="edge-layout">
+  <div class="node-line">
+    <ng-container *ngTemplateOutlet="line"></ng-container>
+  </div>
+
   <div>{{details.dv}}</div>
   <div>m/s</div>
 
   <div>{{details.twr}}</div>
   <div>TWR</div>
+
+  <div class="node-line">
+    <ng-container *ngTemplateOutlet="line"></ng-container>
+  </div>
 </div>
+
+<ng-template #line>
+  <svg>
+    <line stroke="#fffa" stroke-width="4" x1="0" y1="0" x2="0" y2="20"></line>
+  </svg>
+</ng-template>

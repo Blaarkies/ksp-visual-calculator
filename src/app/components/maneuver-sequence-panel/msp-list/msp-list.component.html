@@ -1,16 +1,36 @@
 <div class="list-layout">
-  <cp-msp-node [details]="{
-    destination: 'Kerbin',
-    situation: 'Low orbit'
-    }"></cp-msp-node>
+  <div *ngFor="let destination of destinationList; trackBy: getNode"
+       [@animateScaleVertical]>
+    <cp-msp-edge *ngIf="destination.edge"
+                 [details]="destination.edge"></cp-msp-edge>
 
-  <cp-msp-edge [details]="{
-    dv: '1240',
-    twr: '0.1'
-    }"></cp-msp-edge>
+    <cp-msp-node [details]="destination.node"
+                 (remove)="removeNode.emit(destination)"></cp-msp-node>
+  </div>
 
-  <cp-msp-node [details]="{
-    destination: 'Duna',
-    situation: 'Surface - Aerobraking'
-    }"></cp-msp-node>
+  <div [@animateScaleVertical] *ngIf="destinationList.length" class="divider"></div>
+
+  <mat-divider></mat-divider>
+</div>
+
+<div class="destination-controls">
+  <button mat-flat-button
+          color="primary"
+          (click)="add.emit()">
+    <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+  </button>
+
+  <button mat-button
+          color="warn"
+          (click)="reset.emit()">
+    <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+  </button>
+</div>
+
+<div class="totals-layout">
+  <div>Total Delta-v required</div>
+  <div>{{6549}} m/s</div>
+
+  <div>Minimum TWR required</div>
+  <div>{{.6}}</div>
 </div>

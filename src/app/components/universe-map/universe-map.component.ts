@@ -39,6 +39,8 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 export class UniverseMapComponent extends WithDestroy() {
 
   @Output() update = new EventEmitter<SpaceObject>();
+  @Output() startDrag = new EventEmitter<SpaceObject>();
+  @Output() hoverBody = new EventEmitter<{body: SpaceObject, hover: boolean}>();
 
   orbits$: Observable<Orbit[]>;
   celestialBodies$: Observable<SpaceObject[]>;
@@ -74,6 +76,8 @@ export class UniverseMapComponent extends WithDestroy() {
         label: EventLogs.Sanitize.anonymize(body.label),
       },
     });
+
+    this.startDrag.emit(body);
   }
 
   private updateUniverse(dragged: SpaceObject) {

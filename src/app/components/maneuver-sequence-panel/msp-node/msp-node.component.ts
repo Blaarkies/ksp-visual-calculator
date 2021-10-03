@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MissionNode } from '../maneuver-sequence-panel.component';
+import { Icons } from '../../../common/domain/icons';
 
 @Component({
   selector: 'cp-msp-node',
@@ -7,7 +9,11 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class MspNodeComponent implements OnInit {
 
-  @Input() details: {destination, situation};
+  @Input() details: MissionNode;
+
+  @Output() remove = new EventEmitter();
+
+  icons = Icons;
 
   constructor() { }
 

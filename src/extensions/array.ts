@@ -42,6 +42,10 @@ Array.prototype.replace = function (this: Array<any>, stale: any, fresh: any, ad
 
 Array.prototype.remove = function (this: Array<any>, stale: any): Array<any> {
   let index = this.indexOf(stale);
+  if (index === -1) {
+    throw new Error(`Stale element not found in array, cannot remove it`);
+  }
+
   this.splice(index, 1);
   return this;
 };

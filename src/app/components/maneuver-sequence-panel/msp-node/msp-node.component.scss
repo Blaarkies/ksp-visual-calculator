@@ -1,7 +1,24 @@
 :host {
   color: white;
 
-  text-align: end;
+  //border: .1px solid #fff2;
+  //border-radius: 7%;
+
+  text-align: center;
+  justify-self: center;
+  width: 100%;
+}
+
+.title-layout {
+  //display: grid;
+  //grid-template-columns: auto max-content;
+  align-items: center;
+
+  button {
+    min-width: unset;
+    padding: unset;
+    justify-self: end;
+  }
 }
 
 .destination {
@@ -11,5 +28,4 @@
 .situation {
   color: #fffc;
   font-weight: 200;
-  margin-right: 1em;
 }

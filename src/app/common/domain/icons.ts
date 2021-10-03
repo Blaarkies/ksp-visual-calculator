@@ -1,10 +1,9 @@
 export class Icons {
 
-  static Network = 'wan';
-  static DeltaV = 'rocket-launch';
-  static Blaarkies = 'leaf-maple';
-  static Hamburger = 'menu';
-  static Craft = 'satellite-variant';
+  static Load = 'play';
+  static Upload = 'upload';
+  static Reset = 'rotate-left';
+  static Download = 'download';
   static Clear = 'close';
   static Cancel = Icons.Clear;
   static Check = 'check';
@@ -12,6 +11,14 @@ export class Icons {
   static Backspace = 'backspace';
   static Delete = 'delete-forever';
   static DeleteAll = 'delete-sweep';
+  static Add = 'plus';
+  static AddMapMarker = 'map-marker-plus';
+
+  static Network = 'wan';
+  static DeltaV = 'rocket-launch';
+  static Blaarkies = 'leaf-maple';
+  static Hamburger = 'menu';
+  static Craft = 'satellite-variant';
   static Star = 'white-balance-sunny';
   static Planet = 'earth';
   static Moon = 'weather-night';
@@ -32,6 +39,7 @@ export class Icons {
   static ZoomIn = 'magnify-plus';
   static SignalStrength = 'wifi-strength-1-alert';
   static Congratulations = 'trophy';
+  static MapMarker = 'map-marker';
   static DragIndicator = 'drag';
   static SourceCode = 'matrix';
   static OpenDetails = 'menu-open';
@@ -40,10 +48,6 @@ export class Icons {
   static Save = 'content-save';
   static Storage = 'content-save-edit';
   static File = 'description';
-  static Load = 'play';
-  static Upload = 'upload';
-  static Reset = 'rotate-left';
-  static Download = 'download';
   static Email = 'email';
   static Password = 'lock';
   static Visible = 'eye';
