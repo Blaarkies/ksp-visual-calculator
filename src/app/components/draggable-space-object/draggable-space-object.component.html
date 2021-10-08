@@ -13,7 +13,7 @@
   <button class="edit-icon-space-object"
           mat-icon-button
           [@animateFade]
-          *ngIf="buttonHover$ | async"
+          *ngIf="allowEdit && buttonHover$ | async"
           (click)="editSpaceObject.next()"
           (mousedown)="$event.stopPropagation()">
     <mat-icon [svgIcon]="icons.Edit"></mat-icon>

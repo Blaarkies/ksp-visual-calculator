@@ -7,16 +7,26 @@ import { Icons } from '../../../common/domain/icons';
   selector: 'cp-msp-list',
   templateUrl: './msp-list.component.html',
   styleUrls: ['./msp-list.component.scss'],
-  animations: [CustomAnimation.animateScaleVertical],
+  animations: [CustomAnimation.animateHeight],
 })
 export class MspListComponent {
 
-  @Input() destinationList: MissionDestination[];
+  _missionDestinations: MissionDestination[];
+
+  @Input() set destinationList(value: MissionDestination[]) {
+    this._missionDestinations = value;
+
+    let edges = value.slice(1).map(md => md.edge);
+    this.deltaVTotal = edges.map(edge => edge.dv).sum();
+    this.twrMinimum = edges.map(edge => edge.twr).sort().first();
+  }
 
   @Output() add = new EventEmitter();
   @Output() reset = new EventEmitter();
   @Output() removeNode = new EventEmitter<MissionDestination>();
 
+  deltaVTotal: number;
+  twrMinimum: number;
   icons = Icons;
 
   constructor() {

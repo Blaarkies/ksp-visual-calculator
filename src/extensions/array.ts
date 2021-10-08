@@ -31,6 +31,11 @@ Array.prototype.sum = function (this: Array<number>): number {
   return this.reduce((total, c) => total + c, 0);
 };
 
+Array.prototype.add = function (this: Array<any>, fresh: any): Array<any> {
+  this.push(fresh);
+  return this;
+};
+
 Array.prototype.replace = function (this: Array<any>, stale: any, fresh: any, addIfAbsent = false): Array<any> {
   let index = this.indexOf(stale);
   (addIfAbsent && index === -1)
@@ -78,3 +83,24 @@ Array.prototype.except = function (this: Array<any>,
   return this.filter(item => !toRemove.has(selector ? selector(item) : item));
 };
 
+/**
+ * Returns a list of snapshots of the window of the given size sliding along this collection with the given step, where
+ * each snapshot is a list. Several last lists may have fewer elements than the given size. Both size and step must be
+ * positive and can be greater than the number of elements in this collection.
+ * @param size - the number of elements to take in each window
+ * @param step - the number of elements to move the window forward by on an each step, by default 1
+ * @param partialWindows - controls whether or not to keep partial windows in the end if any, by default false which
+ *   means partial windows won't be preserved
+ */
+Array.prototype.windowed = function (this: Array<any>,
+                                     size: number,
+                                     step: number = 1,
+                                     partialWindows: boolean = false): Array<Array<any>> {
+  return this.reduce((state, c) => {
+    state.last && state.sum.push([state.last, c]);
+    state.last = c;
+
+    return state;
+  }, {sum: [], last: null})
+    .sum;
+};

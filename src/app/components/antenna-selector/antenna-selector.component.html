@@ -2,7 +2,7 @@
   <mat-tab label="Antennae">
 
     <div class="antenna-selector-layout">
-      <div [@animateScaleVertical]
+      <div [@animateHeight]
            *ngFor="let antennaInput of antennaInputs"
            [id]="antennaInput.selectedAntenna.label"
            class="selected-antenna">

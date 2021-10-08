@@ -1,17 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 import { UsableRoutes } from '../../usable-routes';
-import { finalize, take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { HudService } from '../../services/hud.service';
 import { StateService } from '../../services/state.service';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import {
-  MissionDestination,
-  MissionEdge, MissionNode
-} from '../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
-import { Subject } from 'rxjs';
-import { Uid } from '../../common/uid';
+import { MissionDestination } from '../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
+import { Observable } from 'rxjs';
+import { TravelService } from '../../services/travel.service';
+import { SpaceObjectContainerService } from '../../services/space-object-container.service';
 
 @Component({
   selector: 'cp-page-dv-planner',
@@ -22,107 +20,50 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
   @ViewChild('universeMap') universeMap: UniverseMapComponent;
 
-  missionDestinations: MissionDestination[] = [];
-
-  selectedDestination$ = new Subject<SpaceObject>();
-  unsubscribeSelectedDestination$ = new Subject<SpaceObject>();
-  isSelectingDestination = false;
+  missionDestinations$: Observable<MissionDestination[]>;
+  isSelectingDestination$: Observable<boolean>;
 
   constructor(hudService: HudService,
-              stateService: StateService) {
+              stateService: StateService,
+              private travelService: TravelService,
+              spaceObjectContainerService: SpaceObjectContainerService) {
     super();
 
     hudService.setPageContext(UsableRoutes.DvPlanner);
     stateService.pageContext = UsableRoutes.DvPlanner;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
+
+    this.missionDestinations$ = travelService.missionDestinations$.asObservable();
+    this.isSelectingDestination$ = travelService.isSelectingDestination$.asObservable();
+
+    setTimeout(() => {
+      this.travelService.addMissionDestination();
+      this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('kerbin')));
+
+      this.travelService.addMissionDestination();
+      this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('duna')));
+    }, 500);
   }
 
   ngOnDestroy() {
     super.ngOnDestroy();
-    this.selectedDestination$.complete();
-    this.unsubscribeSelectedDestination$.complete();
+    this.travelService.unsubscribeFromComponent();
+  }
+
+  selectDestination(spaceObject: SpaceObject) {
+    this.travelService.selectDestination(spaceObject);
   }
 
   addMissionDestination() {
-    this.isSelectingDestination = true;
-    this.unsubscribeSelectedDestination$.next();
-
-    this.selectedDestination$
-      .pipe(
-        finalize(() => this.isSelectingDestination = false),
-        take(1),
-        takeUntil(this.unsubscribeSelectedDestination$),
-        takeUntil(this.destroy$))
-      .subscribe(so => {
-        this.addNode(so);
-      })
-  }
-
-  private addNode(so: SpaceObject) {
-    let conditions = [
-      'Surface',
-      'Low orbit',
-      'Elliptical',
-      'Fly by',
-    ];
-    let randomCondition = (Math.random() * (conditions.length - 1))
-      .toInt();
-
-    let node = {
-      body: so,
-      name: so.label,
-      situation: conditions[randomCondition],
-    };
-
-    this.missionDestinations.push({node});
-
-    if (this.missionDestinations.length) {
-      this.updateMissionEdges();
-    }
-  }
-
-  selectDestination(so: SpaceObject) {
-    let isSameAsLastNode = false;
-    if (isSameAsLastNode) {
-      return;
-    }
-
-    this.selectedDestination$.next(so);
+    this.travelService.addMissionDestination();
   }
 
   resetMission() {
-    this.missionDestinations = [];
-
-    this.unsubscribeSelectedDestination$.next();
-    this.isSelectingDestination = false;
+    this.travelService.resetMission();
   }
 
-  removeMissionDestination(md: MissionDestination) {
-    this.missionDestinations.remove(md);
-
-    this.updateMissionEdges();
-
-    this.isSelectingDestination = false;
-    this.unsubscribeSelectedDestination$.next();
-  }
-
-  private updateMissionEdges() {
-    this.missionDestinations = this.calculateEdges(this.missionDestinations.map(md => md.node));
-  }
-
-  private calculateEdges(nodes: MissionNode[]): MissionDestination[] {
-    let edge = () => ({
-      dv: (Math.random() * 1e3).toInt(),
-      twr: (Math.random() * 2).toFixed(1).toNumber(),
-    } as MissionEdge);
-
-    return nodes.map((node, i) => i === 0
-      ? {node}
-      : {edge: edge(), node});
-  }
-
-  setHoverBody(body: SpaceObject, hover: boolean) {
-
+  removeMissionDestination(missionDestination: MissionDestination) {
+    this.travelService.removeMissionDestination(missionDestination);
   }
 
 }

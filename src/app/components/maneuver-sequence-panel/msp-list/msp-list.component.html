@@ -1,6 +1,6 @@
 <div class="list-layout">
-  <div *ngFor="let destination of destinationList; trackBy: getNode"
-       [@animateScaleVertical]>
+  <div *ngFor="let destination of _missionDestinations; trackBy: getNode"
+       [@animateHeight]>
     <cp-msp-edge *ngIf="destination.edge"
                  [details]="destination.edge"></cp-msp-edge>
 
@@ -8,7 +8,7 @@
                  (remove)="removeNode.emit(destination)"></cp-msp-node>
   </div>
 
-  <div [@animateScaleVertical] *ngIf="destinationList.length" class="divider"></div>
+  <div [@animateHeight] *ngIf="_missionDestinations.length" class="divider"></div>
 
   <mat-divider></mat-divider>
 </div>
@@ -29,8 +29,8 @@
 
 <div class="totals-layout">
   <div>Total Delta-v required</div>
-  <div>{{6549}} m/s</div>
+  <div>{{deltaVTotal}} m/s</div>
 
   <div>Minimum TWR required</div>
-  <div>{{.6}}</div>
+  <div>{{twrMinimum}}</div>
 </div>

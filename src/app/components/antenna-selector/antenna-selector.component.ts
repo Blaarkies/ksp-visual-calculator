@@ -22,7 +22,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
     useExisting: forwardRef(() => AntennaSelectorComponent),
     multi: true,
   }],
-  animations: [CustomAnimation.animateScaleVertical],
+  animations: [CustomAnimation.animateHeight],
 })
 export class AntennaSelectorComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

@@ -5,7 +5,7 @@ import { SpaceObject } from '../../common/domain/space-objects/space-object';
 export class MissionNode {
   body: SpaceObject;
   name: string;
-  situation: string;
+  condition: string;
 }
 
 export class MissionEdge {

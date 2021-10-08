@@ -1,28 +1,29 @@
-<svg class="overflow-visible"
-     *ngIf="missionDestinations.length > 1"
+<svg class="overflow-visible position-absolute"
+     *ngFor="let trajectory of trajectories; trackBy: getTrajectoryKey"
      [@animateFade]
      xmlns="http://www.w3.org/2000/svg">
 
-  <path [attr.stroke-width]="6"
+  <path *ngIf="trajectory.b"
+        [attr.stroke-width]="6"
         [attr.stroke]="'#fa0' + 'A'"
         fill="none"
         [attr.d]="'M '
-        + scale * missionDestinations[0].node.body.location.x
+        + scale * trajectory.a.location.x
         + ' '
-        + scale * missionDestinations[0].node.body.location.y
+        + scale * trajectory.a.location.y
          + 'A 1000.1 1000.1 0 0 0 '
-         + scale * missionDestinations[1].node.body.location.x
+         + scale * trajectory.b.location.x
          + ' '
-         + scale * missionDestinations[1].node.body.location.y"
+         + scale * trajectory.b.location.y"
   />
 
   <foreignObject class="overflow-visible destination-marker"
                  width="100%"
                  height="100%"
-                 [attr.x]="scale * missionDestinations[1].node.body.location.x"
-                 [attr.y]="scale * missionDestinations[1].node.body.location.y - missionDestinations[1].node.body.size * .5 - 20">
+                 [attr.x]="scale * trajectory.a.location.x"
+                 [attr.y]="scale * trajectory.a.location.y - trajectory.a.size * .5 - 20">
     <mat-icon class="icon-map-marker" [svgIcon]="icons.MapMarker">
-      <span class="trip-index" xmlns="http://www.w3.org/1999/xhtml">1</span>
+      <span class="trip-index" xmlns="http://www.w3.org/1999/xhtml">{{trajectory.sequence}}</span>
     </mat-icon>
 
   </foreignObject>

@@ -18,6 +18,7 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
 
   @Input() spaceObject: SpaceObject;
   @Input() scale: number;
+  @Input() allowEdit = true;
 
   @Output() dragSpaceObject = new EventEmitter<PointerEvent>();
   @Output() focusObject = new EventEmitter<PointerEvent>();

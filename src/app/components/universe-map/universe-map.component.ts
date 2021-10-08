@@ -5,7 +5,7 @@ import {
   ElementRef,
   Output,
   ViewChild,
-  EventEmitter
+  EventEmitter, Input
 } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
@@ -37,6 +37,8 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
   animations: [CustomAnimation.animateFade],
 })
 export class UniverseMapComponent extends WithDestroy() {
+
+  @Input() allowEdit = true;
 
   @Output() update = new EventEmitter<SpaceObject>();
   @Output() startDrag = new EventEmitter<SpaceObject>();

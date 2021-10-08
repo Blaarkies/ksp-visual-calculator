@@ -13,6 +13,10 @@ export class Icons {
   static DeleteAll = 'delete-sweep';
   static Add = 'plus';
   static AddMapMarker = 'map-marker-plus';
+  static ChevronLeft = 'chevron-left';
+  static ExpandHorizontal = 'arrow-expand-horizontal';
+  static ExpandLeft = 'arrow-expand-left';
+  static CollapseRight = 'arrow-collapse-right';
 
   static Network = 'wan';
   static DeltaV = 'rocket-launch';
