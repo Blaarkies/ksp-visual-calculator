@@ -52,6 +52,7 @@
 .popout-details {
   pointer-events: none;
 
+  transform: scale(0);
   color: white;
   position: absolute;
   padding: 1em;

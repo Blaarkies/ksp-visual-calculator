@@ -4,6 +4,7 @@
   <cp-msp-list [destinationList]="destinationList"
                (add)="add.emit()"
                (reset)="reset.emit()"
-               (removeNode)="removeDestination.emit($event)">
+               (removeNode)="removeDestination.emit($event)"
+               (updateNode)="updateDestination.emit($event)">
   </cp-msp-list>
 </div>

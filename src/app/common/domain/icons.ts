@@ -18,6 +18,9 @@ export class Icons {
   static ExpandLeft = 'arrow-expand-left';
   static CollapseRight = 'arrow-collapse-right';
 
+  static Aerobraking = 'meteor';
+  static GravityAssist = 'arrow-u-right-bottom';
+
   static Network = 'wan';
   static DeltaV = 'rocket-launch';
   static Blaarkies = 'leaf-maple';

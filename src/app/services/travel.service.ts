@@ -39,22 +39,18 @@ export class TravelService {
   }
 
   private addNode(so: SpaceObject) {
-    let conditions = [
-      TravelConditions.Surface,
-      TravelConditions.LowOrbit,
-      TravelConditions.EllipticalOrbit,
-    ];
-    let randomCondition = (Math.random() * (conditions.length - 1)).toInt();
+    let availableConditions = this.dvMap.getAvailableConditionsFor(so.label);
 
-    let node = {
+    let node = new MissionNode({
       body: so,
       name: so.label,
-      condition: conditions[randomCondition],
-    };
+      condition: availableConditions.first(),
+      availableConditions,
+    });
 
     let newList = [...this.missionDestinations$.value, {node}];
 
-    this.updateMissionEdges(newList);
+    this.updateMissionList(newList);
   }
 
   selectDestination(so: SpaceObject) {
@@ -76,32 +72,55 @@ export class TravelService {
   removeMissionDestination(md: MissionDestination) {
     let newList = [...this.missionDestinations$.value.remove(md)];
 
-    this.updateMissionEdges(newList);
+    this.updateMissionList(newList);
 
     this.isSelectingDestination$.next(false);
     this.unsubscribeSelectedDestination$.next();
   }
 
-  private updateMissionEdges(newList: MissionDestination[]) {
-    let updatedList = this.calculateEdges(newList.map(md => md.node));
+  updateMissionDestination(md: MissionDestination) {
+    this.updateMissionList(this.missionDestinations$.value);
+
+    this.isSelectingDestination$.next(false);
+    this.unsubscribeSelectedDestination$.next();
+  }
+
+  private updateMissionList(newList: MissionDestination[]) {
+    let nodeList = newList.map(md => md.node);
+    nodeList = this.calculateNodeDetails(nodeList);
+    let updatedList = this.calculateEdgesDetails(nodeList);
     this.missionDestinations$.next(updatedList);
   }
 
-  private calculateEdges(nodes: MissionNode[]): MissionDestination[] {
-
+  private calculateEdgesDetails(nodes: MissionNode[]): MissionDestination[] {
     let destinationEdges = nodes.windowed(2)
-      .map(([a, b]) => ({
-        edge: {
-          dv: this.dvMap.getDeltaVRequirement(a, b, {}),
-          twr: (Math.random() * 2).toFixed(1).toNumber(),
-        },
-        node: b,
-      }));
+      .map(([a, b]) => {
+        let trip = this.dvMap.getTripDetails(a, b);
+        return {
+          edge: {
+            dv: trip.totalDv,
+            twr: (Math.random() * 2).toFixed(1).toNumber(),
+            pathDetails: trip.pathDetails,
+          },
+          node: b,
+        };
+      });
 
     return [
       {node: nodes[0]},
       ...destinationEdges,
     ];
+  }
+
+  private calculateNodeDetails(nodes: MissionNode[]): MissionNode[] {
+    let processedNodes = nodes.windowed(2)
+      .map(([a, b]) => ({
+        ...b,
+        allowAerobraking: true,
+        allowGravityAssist: true,
+      }));
+
+    return [nodes.first(), ...processedNodes];
   }
 
   setHoverBody(body: SpaceObject, hover: boolean) {

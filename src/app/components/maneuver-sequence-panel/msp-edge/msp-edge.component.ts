@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
 import { animate, group, state, style, transition, trigger } from '@angular/animations';
 import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { MissionEdge } from '../maneuver-sequence-panel.component';
+import { PathDetailsReader } from './path-details-reader';
 
 @Component({
   selector: 'cp-msp-edge',
@@ -27,22 +29,25 @@ import { CustomAnimation } from '../../../common/domain/custom-animation';
 })
 export class MspEdgeComponent {
 
-  @Input() details: { dv, twr };
+  missionEdge: MissionEdge;
+
+  @Input() set details(value: MissionEdge) {
+    this.missionEdge = value;
+    this.path = value.pathDetails
+      .map(details => {
+        let {startNode, startCondition, combinationNode, endNode, endCondition, value} = details;
+        return ({
+          cost: value,
+          description: PathDetailsReader.makeDescription(
+            startNode, startCondition, combinationNode, endNode, endCondition)
+        });
+      });
+  }
 
   icons = Icons;
   isPanelOpen = false;
 
-  path = [
-    [950, 'From a Kerbin low orbit to a Kerbin elliptical orbit'],
-    [10, 'To match orbital planes from Kerbin to Duna'],
-    [130, 'To reach an intercept with Duna'],
-    [300, 'To capture into an elliptical Duna orbit'],
-    [360, 'From a Duna elliptical orbit to a Duna low orbit'],
-    [1450, 'From a Duna low orbit to a Duna landing'],
-  ].map(([cost, description]) => ({cost, description}));
-
-  constructor() {
-  }
+  path: { cost, description }[];
 
   toggleSidePanel() {
     this.isPanelOpen = !this.isPanelOpen;

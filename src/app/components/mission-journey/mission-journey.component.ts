@@ -12,6 +12,7 @@ class TripTrajectory {
   sequence: number;
   a: SpaceObject;
   b?: SpaceObject;
+  curve?: Vector2;
 }
 
 @Component({
@@ -22,14 +23,19 @@ class TripTrajectory {
 })
 export class MissionJourneyComponent implements AfterViewInit {
 
+  private oldMissionDestination: MissionDestination[];
+
   @Input() set missionDestinations(value: MissionDestination[]) {
-    console.log(value);
-    
+    this.oldMissionDestination = value;
+
     if (!value.length) {
       this.trajectories = [];
       return;
     }
+    this.updateTrajectories(value);
+  }
 
+  private updateTrajectories(value: MissionDestination[]) {
     this.trajectories = value.windowed(2)
       .map(([a, b], i) => ({
         sequence: i + 1,
@@ -40,6 +46,22 @@ export class MissionJourneyComponent implements AfterViewInit {
         sequence: value.length,
         a: value.last()?.node?.body,
         b: null,
+      })
+      .map(props => {
+        if (!props.b) {
+          return props;
+        }
+
+        let a = props.a.location;
+        let b = props.b.location;
+        let direction = a.direction(b);
+        let distance = a.distance(b);
+        return {
+          ...props,
+          curve: a.lerpClone(b).addVector2(Vector2.fromDirection(
+            direction + Math.PI * .5,
+            distance * .2)),
+        };
       });
   }
 
@@ -73,4 +95,7 @@ export class MissionJourneyComponent implements AfterViewInit {
     return item.a.label + item.b?.label;
   }
 
+  update() {
+    this.updateTrajectories(this.oldMissionDestination);
+  }
 }

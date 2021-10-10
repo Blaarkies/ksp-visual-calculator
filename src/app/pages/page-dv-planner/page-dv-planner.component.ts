@@ -42,7 +42,7 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
       this.travelService.addMissionDestination();
       this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('duna')));
-    }, 500);
+    }, 300);
   }
 
   ngOnDestroy() {
@@ -64,6 +64,10 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
   removeMissionDestination(missionDestination: MissionDestination) {
     this.travelService.removeMissionDestination(missionDestination);
+  }
+
+  updateMissionDestination(missionDestination: MissionDestination) {
+    this.travelService.updateMissionDestination(missionDestination);
   }
 
 }

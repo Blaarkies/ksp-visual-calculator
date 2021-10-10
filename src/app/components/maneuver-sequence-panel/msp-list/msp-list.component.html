@@ -5,7 +5,8 @@
                  [details]="destination.edge"></cp-msp-edge>
 
     <cp-msp-node [details]="destination.node"
-                 (remove)="removeNode.emit(destination)"></cp-msp-node>
+                 (remove)="removeNode.emit(destination)"
+                 (update)="updateNode.emit(destination)"></cp-msp-node>
   </div>
 
   <div [@animateHeight] *ngIf="_missionDestinations.length" class="divider"></div>

@@ -3,18 +3,38 @@
      [@animateFade]
      xmlns="http://www.w3.org/2000/svg">
 
+  <defs>
+    <marker id="head"
+            orient="auto"
+            markerWidth="3"
+            markerHeight="3"
+            refX="3"
+            refY="1.1">
+      <path d="M 0 2 L 1 1 L 0 0"
+            fill="none"
+            stroke="white"
+            stroke-width=".5"/>
+    </marker>
+  </defs>
+
   <path *ngIf="trajectory.b"
+        marker-end="url(#head)"
         [attr.stroke-width]="6"
         [attr.stroke]="'#fa0' + 'A'"
         fill="none"
+        stroke-linecap="round"
         [attr.d]="'M '
         + scale * trajectory.a.location.x
         + ' '
         + scale * trajectory.a.location.y
-         + 'A 1000.1 1000.1 0 0 0 '
-         + scale * trajectory.b.location.x
-         + ' '
-         + scale * trajectory.b.location.y"
+          + 'S '
+          + scale * trajectory.curve.x
+          + ' '
+          + scale * trajectory.curve.y
+            + ' '
+            + scale * trajectory.b.location.x
+            + ' '
+            + scale * trajectory.b.location.y"
   />
 
   <foreignObject class="overflow-visible destination-marker"

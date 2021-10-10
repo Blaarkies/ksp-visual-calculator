@@ -1,20 +1,36 @@
 :host {
   color: white;
 
-  //border: .1px solid #fff2;
-  //border-radius: 7%;
-
   text-align: center;
   justify-self: center;
   width: 100%;
+
+  display: grid;
+  margin-bottom: .2em;
 }
 
-.title-layout {
-  //display: grid;
-  //grid-template-columns: auto max-content;
+.node-layout {
   align-items: center;
 
-  button {
+  .destination-layout {
+    display: grid;
+    gap: .2em;
+  }
+
+  .capture-methods {
+    justify-self: start;
+    display: grid;
+
+    button {
+      width: unset;
+      height: unset;
+      line-height: unset;
+      border-radius: 50px;
+      padding: 2px;
+    }
+  }
+
+  .delete-button {
     min-width: unset;
     padding: unset;
     justify-self: end;
@@ -26,6 +42,16 @@
 }
 
 .condition {
+  justify-self: center;
   color: #fffc;
   font-weight: 200;
+
+  background-color: #0004;
+  padding: .1em .4em;
+  line-height: unset;
+  width: max-content;
+}
+
+.hidden-condition {
+  visibility: hidden; height: 0
 }

@@ -1,4 +1,4 @@
-.title-layout {
+.node-layout {
   display: grid;
   grid-template-columns: max-content auto;
   gap: 40px;
@@ -45,7 +45,7 @@
 
 @media screen and (max-width: 1000px),
 screen and (max-height: 800px) {
-  .title-layout {
+  .node-layout {
     grid-template-columns: max-content;
     gap: unset;
     margin-bottom: 20px;

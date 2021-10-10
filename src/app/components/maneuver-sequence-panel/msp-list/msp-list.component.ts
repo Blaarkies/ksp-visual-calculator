@@ -24,6 +24,7 @@ export class MspListComponent {
   @Output() add = new EventEmitter();
   @Output() reset = new EventEmitter();
   @Output() removeNode = new EventEmitter<MissionDestination>();
+  @Output() updateNode = new EventEmitter<MissionDestination>();
 
   deltaVTotal: number;
   twrMinimum: number;
