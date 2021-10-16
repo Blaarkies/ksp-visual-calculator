@@ -2,8 +2,7 @@
   <cp-universe-map #universeMap
                    [allowEdit]="false"
                    (startDrag)="selectDestination($event)"
-                   (hoverBody)="missionJourney.hoverBody($event)"
-                   (update)="missionJourney.update()">
+                   (hoverBody)="missionJourney.hoverBody($event)">
     <cp-mission-journey abovePlanets
                         #missionJourney
                         class="z-index-top"

@@ -21,9 +21,6 @@ export class TravelService {
 
   dvMap = new DeltaVGraph();
 
-  constructor() {
-  }
-
   addMissionDestination() {
     this.isSelectingDestination$.next(true);
     this.unsubscribeSelectedDestination$.next();
@@ -116,8 +113,8 @@ export class TravelService {
     let processedNodes = nodes.windowed(2)
       .map(([a, b]) => ({
         ...b,
-        allowAerobraking: true,
-        allowGravityAssist: true,
+        allowAerobraking: this.dvMap.getNodeAllowsAerobraking(b),
+        allowGravityAssist: false,
       }));
 
     return [nodes.first(), ...processedNodes];

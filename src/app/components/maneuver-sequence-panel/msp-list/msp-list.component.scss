@@ -11,13 +11,13 @@
 
   .divider {
     border-bottom: 1px dotted #fff7;
-    margin: 10px 20px;
+    padding: 10px;
+    margin: 0 20px;
   }
 }
 
 .destination-controls {
-  position: sticky;
-  bottom: 0;
+  margin-bottom: 10px;
 
   display: grid;
   grid-template-columns: auto max-content;

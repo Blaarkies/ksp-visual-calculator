@@ -7,12 +7,13 @@ import { fromEvent, Observable } from 'rxjs';
 import { map, sampleTime, startWith, tap, throttleTime } from 'rxjs/operators';
 import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
+import memoize from 'fast-memoize';
 
 class TripTrajectory {
   sequence: number;
   a: SpaceObject;
   b?: SpaceObject;
-  curve?: Vector2;
+  curve?: (x1, y1, x2, y2) => Vector2;
 }
 
 @Component({
@@ -54,13 +55,17 @@ export class MissionJourneyComponent implements AfterViewInit {
 
         let a = props.a.location;
         let b = props.b.location;
-        let direction = a.direction(b);
-        let distance = a.distance(b);
+
+        let memoizedCurve = memoize((x1, y1, x2, y2) => {
+          let direction = a.direction(b);
+          let distance = a.distance(b);
+          return a.lerpClone(b).addVector2(Vector2.fromDirection(
+            direction + Math.PI * .5,
+            distance * .2));
+        });
         return {
           ...props,
-          curve: a.lerpClone(b).addVector2(Vector2.fromDirection(
-            direction + Math.PI * .5,
-            distance * .2)),
+          curve: memoizedCurve,
         };
       });
   }
@@ -95,7 +100,4 @@ export class MissionJourneyComponent implements AfterViewInit {
     return item.a.label + item.b?.label;
   }
 
-  update() {
-    this.updateTrajectories(this.oldMissionDestination);
-  }
 }

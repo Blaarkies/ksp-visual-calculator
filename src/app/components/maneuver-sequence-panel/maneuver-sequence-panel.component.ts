@@ -50,7 +50,4 @@ export class ManeuverSequencePanelComponent {
   @Output() removeDestination = new EventEmitter<MissionDestination>();
   @Output() updateDestination = new EventEmitter<MissionDestination>();
 
-  constructor() {
-  }
-
 }

@@ -1,8 +1,9 @@
 .panel-layout {
   color: white;
 
-  background-color: #779c;
+  background-color: #6662;
   min-height: 400px;
+  min-width: 200px;
   padding: 8px;
 
   display: grid;
@@ -13,5 +14,4 @@
   border-bottom-left-radius: var(--border-radius);
   border-top-left-radius: var(--border-radius);
 
-  //transform: scale(1.5) translateX(-25%);
 }

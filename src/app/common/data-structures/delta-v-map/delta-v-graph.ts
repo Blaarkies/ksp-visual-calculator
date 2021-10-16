@@ -2,13 +2,12 @@ import { DestinationConditions } from './destination-conditions';
 import { GraphDataStructure, NodeGraph } from './graph-data-structure';
 import { MissionNode } from '../../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { TravelConditions } from './travel-conditions';
-import { SpaceObject } from '../../domain/space-objects/space-object';
 
 type DeltaVStep = (string | number)[];
 
 class MissionNodeAbilities {
   allowConditions: TravelConditions[];
-  // allowAerobraking: boolean;
+  allowAerobraking: boolean;
   // allowGravityAssist: boolean;
 }
 
@@ -20,9 +19,7 @@ class TripDetails {
 /**
  * Separator between planet names and orbit conditions
  * @example
- * kerbin:surface
- * or
- * kerbin:interceptWith:duna
+ * kerbin:surface or kerbin:interceptWith:duna
  */
 const SEP = ':';
 
@@ -30,8 +27,7 @@ export class DeltaVGraph {
 
   private readonly vacuumGraph: GraphDataStructure = NodeGraph();
 
-  private readonly planetMatchMap: Map<string, MissionNodeAbilities> = this.makePlanetMatchMap();
-  private readonly aerobrakingNodesMap: Map<string, number>;
+  private readonly nodeAbilitiesMap: Map<string, MissionNodeAbilities> = this.makeNodeAbilitiesMap();
 
   constructor() {
     let specialTravelConditions = [TravelConditions.PlaneWith, TravelConditions.InterceptWith];
@@ -62,14 +58,14 @@ export class DeltaVGraph {
   }
 
   private getDeltaVHops(): DeltaVStep[] {
-    let moho = new DestinationConditions('moho');
-    let eve = new DestinationConditions('eve');
-    let gilly = new DestinationConditions('gilly');
-    let kerbin = new DestinationConditions('kerbin');
-    let mun = new DestinationConditions('mun');
-    let minmus = new DestinationConditions('minmus');
-    let duna = new DestinationConditions('duna');
-    let ike = new DestinationConditions('ike');
+    let moho = new DestinationConditions(Place.Moho);
+    let eve = new DestinationConditions(Place.Eve);
+    let gilly = new DestinationConditions(Place.Gilly);
+    let kerbin = new DestinationConditions(Place.Kerbin);
+    let mun = new DestinationConditions(Place.Mun);
+    let minmus = new DestinationConditions(Place.Minmus);
+    let duna = new DestinationConditions(Place.Duna);
+    let ike = new DestinationConditions(Place.Ike);
 
     let mohoOut = [
       ...this.makeStepsSelf(moho, 870, 69),
@@ -86,8 +82,7 @@ export class DeltaVGraph {
 
     let kerbinOut = [
       ...this.makeStepsSelf(kerbin, 3400, 950),
-      [kerbin.lowOrbit, kerbin.geostationaryOrbit,
-        1115],
+      [kerbin.lowOrbit, kerbin.geostationaryOrbit, 1115],
 
       ...this.makeStepsFromParentToMoon(kerbin, mun, 0, 90, 860),
       ...this.makeStepsFromParentToMoon(kerbin, minmus, 340, 340, 930),
@@ -99,14 +94,12 @@ export class DeltaVGraph {
 
     let munOut = [
       ...this.makeStepsSelf(mun, 580, 69),
-      [kerbin.planeWith(mun), mun.ellipticalOrbit,
-        69],
+      ...this.makeStepsCaptureAtMoon(kerbin, mun, 69),
     ];
 
     let minmusOut = [
       ...this.makeStepsSelf(minmus, 180, 69),
-      [kerbin.planeWith(minmus), minmus.ellipticalOrbit,
-        69],
+      ...this.makeStepsCaptureAtMoon(kerbin, minmus, 69),
       ...this.makeStepsFromEscapeToOtherElliptical(minmus, mun, 340, 70, 69),
     ];
 
@@ -132,7 +125,7 @@ export class DeltaVGraph {
     return fullList;
   }
 
-  private makePlanetMatchMap(): Map<string, MissionNodeAbilities> {
+  private makeNodeAbilitiesMap(): Map<string, MissionNodeAbilities> {
     let typicalConditions = [
       TravelConditions.Surface,
       TravelConditions.LowOrbit,
@@ -140,29 +133,32 @@ export class DeltaVGraph {
     ];
 
     return new Map<string, MissionNodeAbilities>([
-      ['kerbol', {
+      [Place.Kerbol, {
         allowConditions: [
           TravelConditions.LowOrbit,
           TravelConditions.EllipticalOrbit,
         ],
+        allowAerobraking: true,
       }],
-      ['moho', {allowConditions: [...typicalConditions]}],
-      ['eve', {allowConditions: [...typicalConditions]}],
-      ['gilly', {allowConditions: [...typicalConditions]}],
-      ['kerbin', {
+      [Place.Moho, {allowConditions: [...typicalConditions], allowAerobraking: false}],
+      [Place.Eve, {allowConditions: [...typicalConditions], allowAerobraking: true}],
+      [Place.Gilly, {allowConditions: [...typicalConditions], allowAerobraking: false}],
+      [Place.Kerbin, {
         allowConditions: [
           TravelConditions.Surface,
           TravelConditions.LowOrbit,
           TravelConditions.GeostationaryOrbit,
           TravelConditions.EllipticalOrbit,
-        ]
+        ],
+        allowAerobraking: true
       }],
-      ['mun', {allowConditions: [...typicalConditions]}],
-      ['minmus', {allowConditions: [...typicalConditions]}],
-      ['duna', {allowConditions: [...typicalConditions]}],
-      ['ike', {allowConditions: [...typicalConditions]}],
+      [Place.Mun, {allowConditions: [...typicalConditions], allowAerobraking: false}],
+      [Place.Minmus, {allowConditions: [...typicalConditions], allowAerobraking: false}],
+      [Place.Duna, {allowConditions: [...typicalConditions], allowAerobraking: true}],
+      [Place.Ike, {allowConditions: [...typicalConditions], allowAerobraking: false}],
     ]);
   }
+
 
   private makeStepsFromEscapeToOtherElliptical(from: DestinationConditions,
                                                to: DestinationConditions,
@@ -180,49 +176,19 @@ export class DeltaVGraph {
     ];
   }
 
-  getTripDetails(a: MissionNode, b: MissionNode, options: {} = {}): TripDetails {
-    let path = this.vacuumGraph.shortestPath(this.stringifyNode(a), this.stringifyNode(b));
-
-    let pathDetails = path.map(nodeId => {
-      let [name, condition, combinationNode] = nodeId.split(SEP);
-      return {nodeId, name, condition, combinationNode};
-    })
-      .windowed(2)
-      .map(([a, b]) => ({
-        startNode: a.name,
-        startCondition: a.condition,
-        combinationNode: a.combinationNode ?? b.combinationNode,
-        endNode: b.name,
-        endCondition: b.condition,
-        value: this.vacuumGraph.shortestPath(a.nodeId, b.nodeId).weight,
-      }));
-
-    return {
-      totalDv: path.weight,
-      pathDetails,
-    };
-  }
-
-  private stringifyNode(node: MissionNode) {
-    return `${node.name.toLowerCase()}${SEP}${node.condition}`;
-  }
-
-  getAvailableConditionsFor(bodyName: string): TravelConditions[] {
-    return this.planetMatchMap.get(bodyName.toLowerCase()).allowConditions;
-  }
-
   private makeStepsFromParentToMoon(parent: DestinationConditions,
                                     moon: DestinationConditions,
                                     dvToPlane: number,
                                     dvFromElliptical: number,
                                     dvFromLow: number): DeltaVStep[] {
     return [
-      [parent.lowOrbit, parent.interceptWith(moon),
-        dvFromLow],
-      [parent.ellipticalOrbit, parent.interceptWith(moon),
-        dvFromElliptical],
-      [parent.interceptWith(moon), parent.planeWith(moon),
-        dvToPlane],
+      [parent.lowOrbit, parent.interceptWith(moon), dvFromLow],
+      [parent.ellipticalOrbit, parent.interceptWith(moon), dvFromElliptical],
+      [parent.interceptWith(moon), parent.planeWith(moon), dvToPlane],
+
+      [moon.planeWith(parent), parent.lowOrbit, dvFromLow],
+      [moon.planeWith(parent), parent.ellipticalOrbit, dvFromElliptical],
+      [moon.interceptWith(parent), moon.planeWith(parent), dvToPlane],
     ];
   }
 
@@ -230,10 +196,92 @@ export class DeltaVGraph {
                         dvLanding: number,
                         dvToElliptical: number): DeltaVStep[] {
     return [
-      [body.surface, body.lowOrbit,
-        dvLanding],
-      [body.lowOrbit, body.ellipticalOrbit,
-        dvToElliptical],
+      [body.surface, body.lowOrbit, dvLanding],
+      [body.lowOrbit, body.ellipticalOrbit, dvToElliptical],
     ];
   }
+
+  private makeStepsCaptureAtMoon(outside: DestinationConditions, inside: DestinationConditions, dvCapture: number) {
+    return [
+      [outside.planeWith(inside), inside.ellipticalOrbit, dvCapture],
+      [inside.ellipticalOrbit, inside.interceptWith(outside), dvCapture],
+    ];
+  }
+
+  private stringifyNode(node: MissionNode) {
+    return `${node.name.toLowerCase()}${SEP}${node.condition}`;
+  }
+
+  getTripDetails(nodeA: MissionNode, nodeB: MissionNode, options: {} = {}): TripDetails {
+    let path = this.vacuumGraph.shortestPath(this.stringifyNode(nodeA), this.stringifyNode(nodeB));
+
+    let pathDetails = path.map(nodeId => {
+      let [name, condition, combinationNode] = nodeId.split(SEP);
+      return {nodeId, name, condition, combinationNode};
+    })
+      .windowed(2)
+      .map(([a, b]) => ({a, b, value: this.vacuumGraph.shortestPath(a.nodeId, b.nodeId).weight}))
+      .filter(({value}) => value)
+      .map(({a, b, value}) => {
+        let aerobraking = this.canAerobrakeAt(a.name, a.condition,
+          b.name, b.condition, b.combinationNode, nodeB.aerobraking);
+        return ({
+          startNode: a.name,
+          startCondition: a.condition,
+          combinationNode: a.combinationNode ?? b.combinationNode,
+          endNode: b.name,
+          endCondition: b.condition,
+          value: aerobraking ? 0 : value,
+          aerobraking,
+        });
+      });
+
+    return {
+      totalDv: pathDetails.map(pd => pd.value).sum(),
+      pathDetails,
+    };
+  }
+
+  getAvailableConditionsFor(bodyName: string): TravelConditions[] {
+    return this.nodeAbilitiesMap.get(bodyName.toLowerCase()).allowConditions;
+  }
+
+  getNodeAllowsAerobraking(node: MissionNode): boolean {
+    return this.nodeAbilitiesMap.get(node.name.toLowerCase()).allowAerobraking;
+  }
+
+  private canAerobrakeAt(fromDestination: string, fromCondition: string,
+                         toDestination: string, toCondition: string,
+                         combinationNode: string,
+                         tripRequestsAerobrake: boolean): boolean {
+    if (!tripRequestsAerobrake || combinationNode) {
+      return false;
+    }
+
+    let destinationAllowsAerobraking = this.nodeAbilitiesMap.get(toDestination).allowAerobraking;
+    let canAerobrake = TransferFromToCondition.AerobrakeIsPossible[fromCondition + SEP + toCondition];
+
+    return destinationAllowsAerobraking && canAerobrake;
+  }
+}
+
+class Place {
+  static Kerbol = 'kerbol';
+  static Moho = 'moho';
+  static Eve = 'eve';
+  static Gilly = 'gilly';
+  static Kerbin = 'kerbin';
+  static Mun = 'mun';
+  static Minmus = 'minmus';
+  static Duna = 'duna';
+  static Ike = 'ike';
+}
+
+class TransferFromToCondition {
+  static AerobrakeIsPossible = {
+    [TravelConditions.PlaneWith + SEP + TravelConditions.EllipticalOrbit]: true,
+    [TravelConditions.PlaneWith + SEP + TravelConditions.LowOrbit]: true, // from a moon to parent planet
+    [TravelConditions.EllipticalOrbit + SEP + TravelConditions.LowOrbit]: true,
+    [TravelConditions.LowOrbit + SEP + TravelConditions.Surface]: true,
+  };
 }

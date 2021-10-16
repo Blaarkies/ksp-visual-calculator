@@ -36,13 +36,13 @@ export class PageDvPlannerComponent extends WithDestroy() {
     this.missionDestinations$ = travelService.missionDestinations$.asObservable();
     this.isSelectingDestination$ = travelService.isSelectingDestination$.asObservable();
 
-    setTimeout(() => {
-      this.travelService.addMissionDestination();
-      this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('kerbin')));
-
-      this.travelService.addMissionDestination();
-      this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('duna')));
-    }, 300);
+    // setTimeout(() => {
+    //   this.travelService.addMissionDestination();
+    //   this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('kerbin')));
+    //
+    //   this.travelService.addMissionDestination();
+    //   this.selectDestination(spaceObjectContainerService.celestialBodies$.value.find(b => b.label.like('mun')));
+    // }, 300);
   }
 
   ngOnDestroy() {

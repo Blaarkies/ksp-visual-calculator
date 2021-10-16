@@ -35,11 +35,11 @@ export class MspEdgeComponent {
     this.missionEdge = value;
     this.path = value.pathDetails
       .map(details => {
-        let {startNode, startCondition, combinationNode, endNode, endCondition, value} = details;
+        let {startNode, startCondition, combinationNode, endNode, endCondition, value, aerobraking} = details;
         return ({
           cost: value,
           description: PathDetailsReader.makeDescription(
-            startNode, startCondition, combinationNode, endNode, endCondition)
+            startNode, startCondition, combinationNode, endNode, endCondition, aerobraking)
         });
       });
   }

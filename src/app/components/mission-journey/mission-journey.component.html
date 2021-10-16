@@ -12,13 +12,25 @@
             refY="1.1">
       <path d="M 0 2 L 1 1 L 0 0"
             fill="none"
-            stroke="white"
-            stroke-width=".5"/>
+            stroke="#fc4"
+            stroke-width=".5" />
+    </marker>
+    <marker id="tail"
+            orient="auto"
+            markerWidth="3"
+            markerHeight="3"
+            refX="-3"
+            refY="1.1">
+      <path d="M 0 2 L 1 1 L 0 0"
+            fill="none"
+            stroke="#fc4"
+            stroke-width=".5" />
     </marker>
   </defs>
 
   <path *ngIf="trajectory.b"
         marker-end="url(#head)"
+        marker-start="url(#tail)"
         [attr.stroke-width]="6"
         [attr.stroke]="'#fa0' + 'A'"
         fill="none"
@@ -28,14 +40,15 @@
         + ' '
         + scale * trajectory.a.location.y
           + 'S '
-          + scale * trajectory.curve.x
+          + scale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
+                                      trajectory.b.location.x, trajectory.b.location.y).x
           + ' '
-          + scale * trajectory.curve.y
+          + scale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
+                                      trajectory.b.location.x, trajectory.b.location.y).y
             + ' '
             + scale * trajectory.b.location.x
             + ' '
-            + scale * trajectory.b.location.y"
-  />
+            + scale * trajectory.b.location.y" />
 
   <foreignObject class="overflow-visible destination-marker"
                  width="100%"

@@ -11,10 +11,10 @@ import { Icons } from '../../../common/domain/icons';
 })
 export class MspListComponent {
 
-  _missionDestinations: MissionDestination[];
+  missionDestinations: MissionDestination[];
 
   @Input() set destinationList(value: MissionDestination[]) {
-    this._missionDestinations = value;
+    this.missionDestinations = value;
 
     let edges = value.slice(1).map(md => md.edge);
     this.deltaVTotal = edges.map(edge => edge.dv).sum();
@@ -30,11 +30,8 @@ export class MspListComponent {
   twrMinimum: number;
   icons = Icons;
 
-  constructor() {
-  }
-
-  getNode(index: number, item: MissionDestination): MissionNode {
-    return item.node;
+  getNode(index: number, item: MissionDestination): string {
+    return item.node.name;
   }
 
 }
