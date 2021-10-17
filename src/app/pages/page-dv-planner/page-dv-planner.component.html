@@ -12,11 +12,12 @@
     </cp-mission-journey>
   </cp-universe-map>
 
-  <cp-maneuver-sequence-panel class="maneuver-sequence-panel"
-                              [destinationList]="missionDestinations$ | async"
-                              (add)="addMissionDestination()"
-                              (reset)="resetMission()"
-                              (removeDestination)="removeMissionDestination($event)"
-                              (updateDestination)="updateMissionDestination($event)">
-  </cp-maneuver-sequence-panel>
+    <cp-maneuver-sequence-panel class="maneuver-sequence-panel"
+                                [destinationList]="missionDestinations$ | async"
+                                (add)="addMissionDestination()"
+                                (reset)="resetMission()"
+                                (removeDestination)="removeMissionDestination($event)"
+                                (updateDestination)="updateMissionDestination($event)">
+    </cp-maneuver-sequence-panel>
+
 </div>

@@ -1,11 +1,11 @@
-<div class="edge-layout overlap-container">
+<div class="overlap-container">
 
   <div class="simple-details">
-    <div class="node-line">
-      <ng-container *ngTemplateOutlet="line"></ng-container>
-    </div>
+    <div class="node-line"><ng-container *ngTemplateOutlet="line"></ng-container></div>
 
     <button mat-button
+            cdkOverlayOrigin
+            #origin="cdkOverlayOrigin"
             class="button-details"
             [class.is-selected]="isPanelOpen"
             (click)="toggleSidePanel()"
@@ -19,20 +19,27 @@
       </div>
     </button>
 
-    <div class="node-line">
-      <ng-container *ngTemplateOutlet="line"></ng-container>
-    </div>
+    <div class="node-line"><ng-container *ngTemplateOutlet="line"></ng-container></div>
   </div>
 
-  <div class="popout-details"
-       [@animateSlidePanel]="isPanelOpen">
-    <div class="step-layout">
-      <ng-container *ngFor="let step of path">
-        <div>{{step.cost}} m/s</div>
-        <div>{{step.description}}</div>
-      </ng-container>
+  <ng-template
+    cdkConnectedOverlay
+    cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOpen]="isPanelOpen"
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayPositions]="positionLeftCenter"
+    (backdropClick)="isPanelOpen = false">
+    <div class="popout-details" [@animateSlidePanel]>
+      <div class="step-layout">
+        <ng-container *ngFor="let step of path">
+          <div>{{step.cost}} m/s</div>
+          <div>{{step.description}}</div>
+        </ng-container>
+      </div>
     </div>
-  </div>
+  </ng-template>
+
 </div>
 
 <ng-template #line>

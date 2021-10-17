@@ -3,10 +3,6 @@
   --color-selected: #fff2;
 }
 
-.edge-layout {
-  overflow: visible;
-}
-
 .button-details {
   transition: .3s ease-in-out;
   border-radius: 6px;
@@ -21,16 +17,18 @@
   display: grid;
   justify-content: center;
   grid-template-columns: 100%;
-}
 
-.basic-details {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: max-content max-content;
-  gap: 0 .2em;
+  .basic-details {
+    padding: 4px 0;
 
-  text-align: end;
-  font-weight: 200;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: max-content max-content;
+    gap: 0 .2em;
+
+    text-align: end;
+    font-weight: 200;
+  }
 }
 
 .node-line {
@@ -44,19 +42,15 @@
   justify-self: center;
 }
 
-.toggle-button {
-  align-self: center;
-  justify-self: left;
-}
-
 .popout-details {
+  $color: #fff2;
+
   pointer-events: none;
 
   transform: scale(0);
   color: white;
-  position: absolute;
   padding: 1em;
-  background-color: var(--color-selected);
+  background-color: $color;
   border-radius: 6px;
 
   display: grid;

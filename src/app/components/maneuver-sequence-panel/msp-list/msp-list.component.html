@@ -15,18 +15,20 @@
 <div class="destination-controls">
   <button mat-flat-button
           color="primary"
+          [matTooltip]="'Add new checkpoint'"
           (click)="add.emit()">
     <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
   </button>
 
   <button mat-button
           color="warn"
+          [matTooltip]="'Clear entire mission'"
           (click)="reset.emit()">
     <mat-icon [svgIcon]="icons.Delete"></mat-icon>
   </button>
 </div>
 
-<div class="totals-layout">
+<div class="totals-layout text-white">
   <div>Total delta-v</div>
   <div>{{deltaVTotal}} m/s</div>
 
