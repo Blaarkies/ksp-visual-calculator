@@ -1,30 +1,21 @@
-.ring-host {
-  place-self: center;
-  position: absolute;
-  display: grid;
-}
-
 .pane-marker {
-  width: 100%;
-  height: 100%;
-  transform: translateY(-100%);
-
+  z-index: 1;
+  pointer-events: none;
   position: absolute;
-  z-index: -1;
 
   // background oscillates color from dark to bright with transparency
-  animation: kf-animate-background-color-wobble 1.5s ease infinite alternate forwards,
+  animation: kf-animate-background-color-wobble 1.5s ease-in-out infinite alternate forwards,
   kf-animate-fade-in ease-out 3s;
 }
 
 .ring-marker {
-  --border-radius: 40px;
+  --border-radius: 10%;
 
-  width: 150px;
-  height: 150px;
+  z-index: 1;
+  pointer-events: none;
+  position: absolute;
   border: 2px solid #fff;
   border-radius: var(--border-radius);
-  place-self: center;
 
   filter: glow(10px);
 
@@ -42,7 +33,7 @@
 
 @keyframes kf-animate-border-radius-wobble {
   from {border-radius: var(--border-radius)}
-  to {border-radius: calc(var(--border-radius) * 1.5)}
+  to {border-radius: calc(var(--border-radius) * 3)}
 }
 
 @keyframes kf-animate-fade-in {
@@ -51,6 +42,7 @@
 }
 
 @keyframes kf-animate-background-color-wobble {
-  from {background-color: #0002}
-  to {background-color: #fff4}
+  0% {background-color: #0004}
+  50% {background-color: #7770}
+  100% {background-color: #fff4}
 }

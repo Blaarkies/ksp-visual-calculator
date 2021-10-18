@@ -14,6 +14,7 @@
 
 <div class="destination-controls">
   <button mat-flat-button
+          id="add-dv-mission-checkpoint-button"
           color="primary"
           [matTooltip]="'Add new checkpoint'"
           (click)="add.emit()">
@@ -21,14 +22,17 @@
   </button>
 
   <button mat-button
+          id="clear-dv-mission-button"
+          class="fix-disabled-color"
           color="warn"
           [matTooltip]="'Clear entire mission'"
+          [disabled]="!missionDestinations.length"
           (click)="reset.emit()">
     <mat-icon [svgIcon]="icons.Delete"></mat-icon>
   </button>
 </div>
 
-<div class="totals-layout text-white">
+<div class="totals-layout text-white" *ngIf="missionDestinations.length">
   <div>Total delta-v</div>
   <div>{{deltaVTotal}} m/s</div>
 

@@ -23,7 +23,7 @@
     "@angular/platform-browser": "~11.2.4",
     "@angular/platform-browser-dynamic": "~11.2.4",
     "@angular/router": "~11.2.4",
-    "@mdi/angular-material": "^6.1.95",
+    "@mdi/angular-material": "^6.2.95",
     "fast-memoize": "^2.5.2",
     "firebase": "^7.0 || ^8.0",
     "graph-data-structure": "^2.0.0",

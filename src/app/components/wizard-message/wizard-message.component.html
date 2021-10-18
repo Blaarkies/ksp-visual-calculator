@@ -8,25 +8,36 @@
       </div>
     </div>
 
-
     <div class="messages">
       <p *ngFor="let message of messages">{{message}}</p>
     </div>
 
-    <mat-icon *ngIf="icon" class="icon-large" color="primary" [svgIcon]="icon"></mat-icon>
+    <mat-icon *ngIf="icon"
+              class="icon-large"
+              color="primary"
+              [svgIcon]="icon"></mat-icon>
 
-    <button *ngIf="isLastStep; else allowCancel"
-            mat-button
-            color="primary"
-            (click)="finishWizard()">
-      OK
-    </button>
-    <ng-template #allowCancel>
-      <button mat-button
-              color="accent"
-              (click)="cancelWizard()">
-        Cancel Tutorial
+    <div class="buttons">
+      <button *ngIf="stepType === 'end'; else allowCancel"
+              mat-button
+              color="primary"
+              (click)="finishWizard()">
+        OK
       </button>
-    </ng-template>
+      <ng-template #allowCancel>
+        <button mat-button
+                color="accent"
+                (click)="cancelWizard()">
+          Cancel Tutorial
+        </button>
+      </ng-template>
+
+      <button *ngIf="stepType === 'waitForNext'"
+              mat-button
+              color="primary"
+              (click)="continueWizard()">
+        Next
+      </button>
+    </div>
   </div>
 </mat-card>

@@ -20,6 +20,7 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 import { EventLogs } from '../../services/event-logs';
 import { UsableRoutes } from '../../usable-routes';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -79,12 +80,12 @@ export class HudComponent extends WithDestroy() {
         tooltip: 'This page handles Delta-v calculations, click the green menu for others',
       },
       [UsableRoutes.SignalCheck]: {
-        icon: Icons.Network,
+        icon: Icons.Relay,
         tooltip: 'This page handles CommNet calculations, click the green menu for others',
       }
     };
 
-    hudService.getPageContext()
+    hudService.pageContextChange
       .pipe(takeUntil(this.destroy$))
       .subscribe(context => this.pageContextInfo = contextVisualMap[context]);
   }
@@ -140,4 +141,14 @@ export class HudComponent extends WithDestroy() {
     updateUnreadCountCallback();
   }
 
+  openBuyMeACoffee() {
+    this.analyticsService.logEvent('Call coffee dialog', {
+      category: EventLogs.Category.Coffee,
+    });
+
+    this.dialog.open(BuyMeACoffeeDialogComponent)
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+  }
 }

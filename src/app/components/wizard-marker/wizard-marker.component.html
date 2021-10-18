@@ -1,9 +1,17 @@
 <ng-container [ngSwitch]="markerType">
 
   <div *ngSwitchCase="'ring'"
-       class="ring-marker"></div>
+       class="ring-marker"
+       [style.width.px]="target.getBoundingClientRect().width + 50"
+       [style.height.px]="target.getBoundingClientRect().height + 50"
+       [style.left.px]="target.getBoundingClientRect().left - 25"
+       [style.top.px]="target.getBoundingClientRect().top - 25"></div>
 
   <div *ngSwitchCase="'pane'"
-       class="pane-marker"></div>
+       class="pane-marker"
+       [style.width.px]="target.getBoundingClientRect().width"
+       [style.height.px]="target.getBoundingClientRect().height"
+       [style.left.px]="target.getBoundingClientRect().left"
+       [style.top.px]="target.getBoundingClientRect().top"></div>
 
 </ng-container>

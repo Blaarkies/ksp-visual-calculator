@@ -34,10 +34,11 @@ mat-card {
     grid-area: messages;
   }
 
-  button {
+  .buttons {
     grid-area: buttons;
-    justify-self: start;
-    width: max-content;
+
+    display: flex;
+    justify-content: space-between;
   }
 
   .icon-large {

@@ -30,6 +30,7 @@
   <button mat-button
           color="warn"
           class="delete-button"
+          [matTooltip]="'Remove checkpoint'"
           (click)="remove.emit()">
     <mat-icon [svgIcon]="icons.Delete"></mat-icon>
   </button>

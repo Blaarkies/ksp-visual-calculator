@@ -76,17 +76,24 @@
 
 <ng-template #pageContext>
   <div class="page-context">
+    <button class="faq"
+            mat-icon-button
+            color="accent"
+            (click)="openFaq()">
+      <mat-icon [svgIcon]="icons.Help"></mat-icon>
+    </button>
+
     <div class="page-icon">
       <mat-icon [matTooltip]="pageContextInfo?.tooltip"
                 color="accent"
                 [svgIcon]="pageContextInfo?.icon"></mat-icon>
     </div>
 
-    <button class="faq"
+    <button class="buy-me-a-coffee"
             mat-icon-button
-            color="accent"
-            (click)="openFaq()">
-      <mat-icon [svgIcon]="icons.Help"></mat-icon>
+            [matTooltip]="'Support the developer'"
+            (click)="openBuyMeACoffee()">
+      <mat-icon [svgIcon]="icons.Gift"></mat-icon>
     </button>
   </div>
 </ng-template>

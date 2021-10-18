@@ -21,6 +21,10 @@
 
   display: grid;
   grid-template-columns: auto max-content;
+
+  .fix-disabled-color.mat-button-disabled {
+      color: #f526;
+  }
 }
 
 .totals-layout {

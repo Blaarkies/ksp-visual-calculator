@@ -1,11 +1,25 @@
-import { ApplicationRef, ComponentFactoryResolver, ComponentRef, EmbeddedViewRef, Injectable, Injector } from '@angular/core';
+import {
+  ApplicationRef,
+  ComponentFactoryResolver,
+  ComponentRef,
+  EmbeddedViewRef,
+  Injectable,
+  Injector
+} from '@angular/core';
 import { Vector2 } from '../common/domain/vector2';
 import { WizardMessage, WizardMessageComponent } from '../components/wizard-message/wizard-message.component';
 import { WizardMarker, WizardMarkerComponent } from '../components/wizard-marker/wizard-marker.component';
 import { concat, from, Observable, of, Subject } from 'rxjs';
 import { concatMap, delay, finalize, reduce, takeUntil, tap } from 'rxjs/operators';
 
+export type StepType = 'waitForNext' | 'end';
+export type Positions = 'left' | 'right' | 'top' | 'bottom' | 'center';
+
 export class StepDetails {
+  stepType?: StepType;
+  nextButton$?: Subject<void>;
+
+  dialogPosition?: Positions;
   dialogTargetCallback: () => HTMLElement | any;
   dialogTitle?: string;
   dialogMessages: string[];
@@ -58,7 +72,7 @@ export class WizardSpotlightService {
     componentRef.destroy();
   }
 
-  compileStep(stepDetails: StepDetails, isLastStep?: boolean): Observable<any> {
+  compileStep(stepDetails: StepDetails): Observable<any> {
     let allDestroyables = [];
     let compiledStep = from(stepDetails.stages)
       .pipe(
@@ -70,7 +84,7 @@ export class WizardSpotlightService {
               // open dialog, and save component refs for later cleanup
               stageOutput = stageOutput.pipe(
                 tap(() => {
-                  let destroyables = this.setupDialog(stepDetails, isLastStep);
+                  let destroyables = this.setupDialog(stepDetails);
                   allDestroyables.push(...destroyables);
                 }));
             }
@@ -89,27 +103,30 @@ export class WizardSpotlightService {
     return compiledStep;
   }
 
-  private setupDialog(stepDetails: StepDetails, isLastStep: boolean): ComponentRef<any>[] {
+  private setupDialog(stepDetails: StepDetails): ComponentRef<any>[] {
     let dialogTarget = stepDetails.dialogTargetCallback();
     let markerTarget = stepDetails.markerTargetCallback && stepDetails.markerTargetCallback();
 
     let targetDimensions: DOMRect = dialogTarget.getBoundingClientRect();
 
     let wizardMarker = stepDetails.markerTargetCallback
-      && this.createPopup(WizardMarkerComponent, markerTarget, {
-        type: stepDetails.markerType,
-      } as WizardMarker);
-    let wizardMessage: ComponentRef<WizardMessageComponent> =
-      this.createPopup(WizardMessageComponent, document.body, {
+      && this.createPopup(WizardMarkerComponent, document.body,
+        {type: stepDetails.markerType, target: markerTarget} as WizardMarker);
+
+    let wizardMessage: ComponentRef<WizardMessageComponent> = this.createPopup(
+      WizardMessageComponent,
+      document.body,
+      {
         title: stepDetails.dialogTitle,
         messages: stepDetails.dialogMessages,
         icon: stepDetails.dialogIcon,
-        location: new Vector2(targetDimensions.left, targetDimensions.top).add(50, 50),
+        location: new Vector2(targetDimensions.left, targetDimensions.top).subtract(50, 50),
         stopTutorial$: this.stopTutorial$,
-        isLastStep,
+        nextButton$: stepDetails.nextButton$,
+        stepType: stepDetails.stepType,
       } as WizardMessage);
 
-    setTimeout(() => this.placeDialogInScreen(wizardMessage));
+    setTimeout(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition));
 
     return [wizardMarker, wizardMessage].filter(comp => comp);
   }
@@ -119,57 +136,92 @@ export class WizardSpotlightService {
       .pipe(takeUntil(this.stopTutorial$));
   }
 
-  private placeDialogInScreen(dialog: ComponentRef<WizardMessageComponent>) {
+  private placeDialogInScreen(dialog: ComponentRef<WizardMessageComponent>,
+                              target: DOMRect,
+                              dialogPosition: Positions = 'top') {
     let dims: DOMRect = dialog.instance.self.nativeElement.getBoundingClientRect();
     let padding = 8;
-    let minX = padding;
-    let minY = padding;
+    let minX, minY = padding;
     let maxX = -padding + window.innerWidth;
     let maxY = -padding + window.innerHeight;
 
-    let isInBounds = dims.left >= minX
-      && dims.top >= minY
-      && dims.right <= maxX
-      && dims.bottom <= maxY;
+    let dialogSize = new Vector2(dims.width, dims.height);
+    let dialogCenter = new Vector2(dims.left, dims.top).addVector2(
+      dialogSize.clone().multiply(.5));
 
-    if (isInBounds) {
-      return;
+    let targetSize = new Vector2(target.width, target.height);
+    let targetCenter = new Vector2(target.left, target.top).addVector2(
+      targetSize.clone().multiply(.5));
+
+    switch (dialogPosition) {
+      case 'left':
+        dialog.instance.location = new Vector2(target.left, targetCenter.y)
+          .add(-dialogSize.x*1.6, -dialogSize.y * .5);
+        break;
+      case 'right':
+        dialog.instance.location = new Vector2(target.right, targetCenter.y)
+          .add(targetSize.x * .5, -dialogSize.y * .5);
+        break;
+      case 'top':
+        dialog.instance.location = new Vector2(targetCenter.x, target.top)
+          .add(-dialogSize.x * .5, -dialogSize.y);
+        break;
+      case 'bottom':
+        dialog.instance.location = new Vector2(targetCenter.x, target.bottom)
+          .add(-dialogSize.x * .5, targetSize.y * .5);
+        break;
+      case 'center':
+        dialog.instance.location = new Vector2(window.innerWidth * .5, window.innerHeight * .5)
+          .addVector2(dialogSize.clone().multiply(-.5));
+        break;
     }
 
-    let corners = [
-      {
-        // top-left
-        location: new Vector2(0, 0),
-        resultFunction: (size: Vector2) => new Vector2(minX, minY),
-      },
-      {
-        // top-right
-        location: new Vector2(maxX, 0),
-        resultFunction: (size: Vector2) => new Vector2(maxX, minY).subtract(size.x, 0),
-      },
-      {
-        // bottom-left
-        location: new Vector2(0, maxY),
-        resultFunction: (size: Vector2) => new Vector2(minX, maxY).subtract(0, size.y),
-      },
-      {
-        // bottom-right
-        location: new Vector2(maxX, maxY),
-        resultFunction: (size: Vector2) => new Vector2(maxX, maxY).subtract(size.x, size.y),
-      },
-    ];
 
-    let elementSize = new Vector2(dims.width, dims.height);
-    let center = new Vector2(dims.left, dims.top).addVector2(elementSize.clone().multiply(.5));
-    let nearCorner = corners
-      .map(c => ({
-        distance: c.location.distance(center),
-        resultFunction: c.resultFunction,
-      }))
-      .sort((a, b) => b.distance - a.distance)
-      .first();
+    //
+    // let isInBounds = dims.left >= minX
+    //   && dims.top >= minY
+    //   && dims.right <= maxX
+    //   && dims.bottom <= maxY;
+    //
+    // if (isInBounds) {
+    //   return;
+    // }
+    //
+    // let corners = [
+    //   {
+    //     // top-left
+    //     location: new Vector2(0, 0),
+    //     resultFunction: (size: Vector2) => new Vector2(minX, minY),
+    //   },
+    //   {
+    //     // top-right
+    //     location: new Vector2(maxX, 0),
+    //     resultFunction: (size: Vector2) => new Vector2(maxX, minY).subtract(size.x, 0),
+    //   },
+    //   {
+    //     // bottom-left
+    //     location: new Vector2(0, maxY),
+    //     resultFunction: (size: Vector2) => new Vector2(minX, maxY).subtract(0, size.y),
+    //   },
+    //   {
+    //     // bottom-right
+    //     location: new Vector2(maxX, maxY),
+    //     resultFunction: (size: Vector2) => new Vector2(maxX, maxY).subtract(size.x, size.y),
+    //   },
+    // ];
+    //
+    // let elementSize = new Vector2(dims.width, dims.height);
+    // let center = new Vector2(dims.left, dims.top).addVector2(
+    //   elementSize.clone().multiply(.5));
+    // let nearCorner = corners
+    //   .map(c => ({
+    //     distance: c.location.distance(center),
+    //     resultFunction: c.resultFunction,
+    //   }))
+    //   .sort((a, b) => b.distance - a.distance)
+    //   .first();
 
-    dialog.instance.location = nearCorner.resultFunction(elementSize);
+    // dialog.instance.location = nearCorner.resultFunction(elementSize);
   }
 
 }

@@ -3,9 +3,10 @@ import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service'
 import { Icons } from '../common/domain/icons';
 import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
 import { delay, filter, map, mapTo, scan, skip, take, takeUntil } from 'rxjs/operators';
-import { AnalyticsService} from './analytics.service';
+import { AnalyticsService } from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
 import { EventLogs } from './event-logs';
+import { UsableRoutes } from '../usable-routes';
 
 @Injectable({
   providedIn: 'root',
@@ -18,13 +19,14 @@ export class TutorialService {
               private analyticsService: AnalyticsService) {
   }
 
-  startFullTutorial() {
+  startFullTutorial(context: UsableRoutes) {
     this.analyticsService.logEvent('Start tutorial', {
       category: EventLogs.Category.Tutorial,
+      context,
     });
 
     this.resetTutorial$.next();
-    let compiledSteps = this.getCompiledSteps();
+    let compiledSteps = this.getCompiledSteps(context);
 
     this.wizardSpotlightService
       .stopTutorial$
@@ -40,14 +42,31 @@ export class TutorialService {
       .subscribe();
   }
 
-  private getCompiledSteps(): Observable<any>[] {
-    let stepDetails = this.getStepDetails();
+  private getCompiledSteps(context: UsableRoutes): Observable<any>[] {
+    let stepDetails;
+    stepDetails = [
+      // this.getStepStartOfTutorial(context),
+      ...this.getCommonStepDetails(),
+      ...this.getStepDetails(context),
+      this.getStepEndOfTutorial(),
+    ];
 
-    return stepDetails.map((detail, i, a) => this.wizardSpotlightService.compileStep(detail, i === a.length - 1));
+    return stepDetails.map(detail => this.wizardSpotlightService.compileStep(detail));
   }
 
-  private getStepDetails(): StepDetails[] {
+  private getStepDetails(context: UsableRoutes) {
+    switch (context) {
+      case UsableRoutes.SignalCheck:
+        return this.getSignalCheckStepDetails();
+      case UsableRoutes.DvPlanner:
+        return this.getDvPlannerStepDetails();
+    }
+    throw new Error(`Context "${context}" is not recognized`);
+  }
+
+  private getCommonStepDetails(): StepDetails[] {
     let dragPlanet = {
+      dialogPosition: 'right',
       dialogTitle: 'Dragging Planets',
       dialogTargetCallback: () => this.selectObjectInDom('eve').firstChild,
       dialogMessages: [
@@ -107,6 +126,7 @@ export class TutorialService {
     } as StepDetails;
 
     let moveCamera = {
+      dialogPosition: 'top',
       dialogTitle: 'Moving The Camera',
       dialogTargetCallback: () => this.selectObjectInDom('kerbol').firstChild,
       dialogMessages: [
@@ -149,6 +169,7 @@ export class TutorialService {
     } as StepDetails;
 
     let zoomCamera = {
+      dialogPosition: 'right',
       dialogTitle: 'Zooming In',
       dialogTargetCallback: () => this.selectObjectInDom('kerbin').firstChild,
       dialogMessages: [
@@ -194,6 +215,79 @@ export class TutorialService {
       markerType: 'ring',
     } as StepDetails;
 
+    return [dragPlanet, moveCamera, zoomCamera];
+  }
+
+  private getStepStartOfTutorial(context: UsableRoutes): StepDetails {
+    let startTutorialNext$ = new Subject();
+    let startTutorial = {
+      stepType: 'waitForNext',
+      nextButton$: startTutorialNext$,
+      dialogPosition: 'bottom',
+      dialogTitle: null,
+      dialogTargetCallback: () => document.querySelector('.page-icon'),
+      dialogMessages: null,
+      dialogIcon: null,
+      stages: [
+        {
+          isDialogStage: true,
+          callback: input => of(input),
+        },
+        {
+          callback: input => startTutorialNext$.pipe(
+            take(1),
+            mapTo(input)),
+        },
+      ],
+    } as StepDetails;
+
+    switch (context) {
+      case UsableRoutes.SignalCheck:
+        startTutorial.dialogTitle = 'CommNet Signal Check Tutorial';
+        startTutorial.dialogMessages = [
+          'This page helps setup satellite communication networks by letting you place craft with specific antennae.',
+          'Dragging these craft around will instantly show where connections are possible.'
+        ];
+        startTutorial.dialogIcon = Icons.Relay;
+        break;
+      case UsableRoutes.DvPlanner:
+        startTutorial.dialogTitle = 'Delta-v Mission Planner Tutorial';
+        startTutorial.dialogMessages = [
+          'This page calculates the required amount of delta-v a rocket needs to reach a specific destination.',
+          'Multiple checkpoints can be added with aerobraking rules for each, to calculate the total delta-v required.',
+        ];
+        startTutorial.dialogIcon = Icons.DeltaV;
+        break;
+    }
+
+    return startTutorial
+  }
+
+  private getStepEndOfTutorial(): StepDetails {
+    return {
+      stepType: 'end',
+      dialogPosition: 'center',
+      dialogTitle: 'The End',
+      dialogTargetCallback: () => document.body,
+      dialogMessages: [
+        'That concludes the tutorial.',
+        'The universe is now your playground!'],
+      dialogIcon: Icons.Congratulations,
+      stages: [
+        {
+          isDialogStage: true,
+          callback: input => of(input),
+        },
+        {
+          callback: input => timer(15e3).pipe(
+            take(1),
+            mapTo(input)),
+        },
+      ],
+    } as StepDetails
+  }
+
+  private getSignalCheckStepDetails(): StepDetails[] {
     let editUniverse = {
       dialogTitle: 'Adding Spacecraft',
       dialogTargetCallback: () => document.querySelector(
@@ -350,35 +444,145 @@ export class TutorialService {
       ],
     } as StepDetails;
 
-    let endTutorial = {
-      dialogTitle: 'The End',
-      dialogTargetCallback: () => document.body,
+    return [
+      editUniverse,
+      addCraft,
+      communicationLines,
+      relaySatellites,
+    ];
+  }
+
+  private getDvPlannerStepDetails(): StepDetails[] {
+    let missionCheckpoints = {
+      dialogPosition: 'left',
+      dialogTitle: 'Mission Checkpoints',
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
       dialogMessages: [
-        'That concludes the tutorial.',
-        'The universe is now your playground!'],
-      dialogIcon: Icons.Congratulations,
+        'This panel calculates how much delta-v is required for your mission specifications.',
+        'Click the green add checkpoint button on the flashing panel to start your journey.'],
+      dialogIcon: Icons.MapMarker,
+      stages: [
+        {
+          callback: input => defer(() => {
+            let resetCheckpoints = document.querySelector('#clear-dv-mission-button');
+            (resetCheckpoints as HTMLButtonElement).click();
+            return of(input);
+          }),
+        },
+        {
+          isDialogStage: true,
+          callback: input => of(input),
+        },
+        {
+          callback: input => defer(() => {
+            let addCheckpoint = document.querySelector('#add-dv-mission-checkpoint-button');
+            return fromEvent(addCheckpoint, 'click').pipe(
+              take(1), mapTo(input));
+          }),
+        },
+      ],
+      markerTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      markerType: 'pane',
+    } as StepDetails;
+
+    let checkpointKerbin = {
+      dialogPosition: 'left',
+      dialogTitle: 'Adding Checkpoints',
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      dialogMessages: [
+        'Checkpoints define where the mission will be going.',
+        'Click on Kerbin to add it as your first checkpoint.'],
+      dialogIcon: Icons.Traveler,
+      stages: [
+        {
+          callback: () => defer(() => {
+            let eve = this.selectObjectInDom('kerbin');
+            let attachPoint = eve.firstChild.firstChild as HTMLElement;
+            if (!attachPoint) {
+              console.error('Expected draggable element to contain an image element.');
+            }
+
+            attachPoint.style.display = 'grid'; // this centers the wizardMarker around the planet
+            let boundingClientRect = attachPoint.getBoundingClientRect();
+            this.moveCameraToTarget(boundingClientRect);
+            return timer(500).pipe(mapTo({eve, attachPoint}));
+          }),
+        },
+        {
+          isDialogStage: true,
+          callback: input => of(input),
+        },
+        {
+          callback: input => defer(() => interval(500).pipe(
+            map(() => Array.from(document.querySelectorAll('cp-msp-node'))),
+            filter((nodes: any[]) => nodes.find(n => n.innerText.toLowerCase().includes('kerbin'))),
+            mapTo(input),
+            take(1))),
+        },
+      ],
+      markerTargetCallback: () => this.selectObjectInDom('kerbin').firstChild.firstChild as HTMLDivElement,
+      markerType: 'ring',
+    } as StepDetails;
+
+    let nodeExplained = {
+      dialogPosition: 'left',
+      dialogTitle: 'Checkpoint',
+      dialogTargetCallback: () => document.querySelector('cp-msp-node'),
+      dialogMessages: [
+        `Checkpoints appear in this list. The "Surface" button shows the specific situation at this checkpoint.`,
+        `If you do not plan on launching from Kerbin, you can instead set this to "Low Orbit".`,
+        `Let's Add another checkpoint, this time at Duna.`],
+      dialogIcon: Icons.Takeoff,
       stages: [
         {
           isDialogStage: true,
           callback: input => of(input),
         },
         {
-          callback: input => timer(15e3).pipe(
-            take(1),
-            mapTo(input)),
+          callback: input => defer(() => interval(500).pipe(
+            map(() => Array.from(document.querySelectorAll('cp-msp-node'))),
+            filter((nodes: any[]) => nodes.length === 2
+              && nodes.find(n => n.innerText.toLowerCase().includes('duna'))),
+            mapTo(input),
+            take(1))),
         },
       ],
+      markerTargetCallback: () => document.querySelector('cp-msp-node'),
+      markerType: 'pane',
+    } as StepDetails;
+
+    let edgeExplained = {
+      dialogPosition: 'center',
+      dialogTitle: 'Trip Details',
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      dialogMessages: [
+        'When 2 or more checkpoints are selected, the delta-v requirements can be seen in the list.',
+        'Click the delta-v number in the list to expand the trip details. This shows the intermediary steps.',
+        'Add a checkpoint on another planet to see the total delta-v requirements be calculated for you.'
+      ],
+      dialogIcon: Icons.Fuel,
+      stages: [
+        {
+          isDialogStage: true,
+          callback: input => of(input),
+        },
+        {
+          callback: input => defer(() => interval(500).pipe(
+            map(() => Array.from(document.querySelectorAll('cp-msp-node'))),
+            filter((nodes: any[]) => nodes.length === 3),
+            mapTo(input),
+            take(1))),
+        },
+      ],
+      markerTargetCallback: () => document.querySelector('cp-msp-edge'),
+      markerType: 'pane',
     } as StepDetails;
 
     return [
-      dragPlanet,
-      moveCamera,
-      zoomCamera,
-      editUniverse,
-      addCraft,
-      communicationLines,
-      relaySatellites,
-      endTutorial,
+      missionCheckpoints,
+      checkpointKerbin,
+      nodeExplained,
+      edgeExplained,
     ];
   }
 

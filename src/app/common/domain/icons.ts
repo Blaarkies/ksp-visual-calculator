@@ -37,6 +37,7 @@ export class Icons {
   static AccountSettings = 'account-details';
   static Credits = 'account-group';
   static Coffee = 'coffee';
+  static Gift = 'account-cash';
   static Feedback = 'comment-text';
   static Help = 'help-circle';
   static Info = 'information';
@@ -60,5 +61,8 @@ export class Icons {
   static Visible = 'eye';
   static Invisible = 'eye-off';
   static Home = 'home';
+  static Traveler = 'hail';
+  static Takeoff = 'airplane-takeoff';
+  static Fuel = 'gas-station';
 
 }

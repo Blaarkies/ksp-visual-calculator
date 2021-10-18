@@ -137,3 +137,8 @@ body {
     }
   }
 }
+
+.overlay-no-backdrop {
+  background-color: transparent;
+  pointer-events: none;
+}

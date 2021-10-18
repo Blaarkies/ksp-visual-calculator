@@ -2,11 +2,12 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './overlays/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
-import { filter, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './services/auth.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
+import { HudService } from './services/hud.service';
 
 @Component({
   selector: 'cp-root',
@@ -19,7 +20,8 @@ export class AppComponent extends WithDestroy() implements OnInit {
   constructor(private dialog: MatDialog,
               private tutorialService: TutorialService,
               private snackBar: MatSnackBar,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private hudService: HudService) {
     super();
 
     this.authService
@@ -61,7 +63,7 @@ export class AppComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(() => {
         localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString());
-        this.tutorialService.startFullTutorial();
+        this.tutorialService.startFullTutorial(this.hudService.pageContext);
       });
   }
 }

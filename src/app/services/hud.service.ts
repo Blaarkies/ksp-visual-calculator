@@ -9,7 +9,7 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
 } from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import {
   ManageStateDialogComponent,
@@ -36,9 +36,13 @@ import { EventLogs } from './event-logs';
 export class HudService {
 
   contextPanel$ = new BehaviorSubject<ActionPanelDetails>(null);
-  private contextChange$ = new Subject<UsableRoutes>();
+  private contextChange$ = new BehaviorSubject<UsableRoutes>(null);
 
-  getPageContext(): Observable<UsableRoutes> {
+  get pageContext(): UsableRoutes {
+    return this.contextChange$.value;
+  }
+
+  get pageContextChange(): Observable<UsableRoutes> {
     return this.contextChange$.asObservable();
   }
 
@@ -65,7 +69,7 @@ export class HudService {
       case UsableRoutes.DvPlanner:
         return this.dvPlannerPanel;
       default:
-        return null;
+        throw new Error(`No context panel for context "${context}"`);
     }
   }
 
@@ -78,7 +82,7 @@ export class HudService {
         'Page that calculates the required delta-v for a specified mission'),
       new ActionOption(
         'Signal Check',
-        Icons.Network,
+        Icons.Relay,
         {route: UsableRoutes.SignalCheck},
         'Page that calculates CommNet ranges'),
       new ActionOption(
@@ -106,16 +110,14 @@ export class HudService {
                 title: 'Start Tutorial',
                 descriptions: [
                   'Do you want to start the tutorial?',
-                  'This will take you through all the features and controls to navigate and use this application.',
+                  'This will take you through all the features and controls to navigate and use this page.',
                 ],
                 okButtonText: 'Start',
               } as SimpleDialogData,
             })
               .afterClosed()
-              .pipe(
-                filter(ok => ok),
-                takeUntil(this.contextChange$))
-              .subscribe(() => this.tutorialService.startFullTutorial());
+              .pipe(filter(ok => ok))
+              .subscribe(() => this.tutorialService.startFullTutorial(this.pageContext));
           },
         },
         undefined,
@@ -129,7 +131,6 @@ export class HudService {
 
             this.dialog.open(PrivacyDialogComponent)
               .afterClosed()
-              .pipe(takeUntil(this.contextChange$))
               .subscribe();
           },
         },
@@ -144,7 +145,6 @@ export class HudService {
 
           this.dialog.open(CreditsDialogComponent)
             .afterClosed()
-            .pipe(takeUntil(this.contextChange$))
             .subscribe();
         },
       }),
@@ -156,7 +156,6 @@ export class HudService {
 
             this.dialog.open(BuyMeACoffeeDialogComponent)
               .afterClosed()
-              .pipe(takeUntil(this.contextChange$))
               .subscribe();
           },
         },
@@ -170,8 +169,7 @@ export class HudService {
           this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})
             .afterClosed()
             .pipe(
-              filter(ok => ok),
-              takeUntil(this.contextChange$))
+              filter(ok => ok))
             .subscribe(details => this.analyticsService.logEvent('User feedback', {
                 category: EventLogs.Category.Feedback,
                 ...details,
