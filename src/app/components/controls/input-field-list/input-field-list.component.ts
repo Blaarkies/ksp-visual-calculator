@@ -8,7 +8,7 @@ import { animate, group, sequence, style, transition, trigger } from '@angular/a
   selector: 'cp-input-field-list',
   templateUrl: './input-field-list.component.html',
   styleUrls: ['./input-field-list.component.scss'],
-  animations: [CustomAnimation.animateHeight],
+  animations: [CustomAnimation.height],
 })
 export class InputFieldListComponent {
 

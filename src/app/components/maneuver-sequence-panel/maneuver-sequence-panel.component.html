@@ -1,5 +1,51 @@
 <div class="panel-layout">
-  <div class="text-white">Mission Checkpoints</div>
+  <div class="panel-header">
+    <div class="text-white">Mission Checkpoints</div>
+    <button mat-icon-button class="icon"
+            (click)="isOptionsOpen = !isOptionsOpen">
+      <mat-icon [svgIcon]="icons.Configure"></mat-icon>
+    </button>
+  </div>
+
+  <div [@height]="isOptionsOpen" class="options text-white">
+    <div class="text-white">Preferences</div>
+
+    <cp-input-toggle label="Aerobraking" [formControl]="aerobrakeControl"></cp-input-toggle>
+
+    <div class="plane-change-control">
+      <cp-input-number #planeChange class="hidden" style="transform: translateY(-1em);"
+                       [formControl]="planeChangeControl"
+                       [controlMeta]="planeChangeControlMeta"></cp-input-number>
+
+      <button mat-button
+              class="chip-button"
+              (click)="planeChange.focus()">
+        {{planeChangeControl.value}}%
+      </button>
+      <div class="text-white">Plane Change Cost</div>
+    </div>
+
+    <div class="flight-situation">
+      <mat-form-field class="hidden">
+        <mat-select [value]="preferredCondition$.value"
+                    (selectionChange)="setPreferredCondition($event)"
+                    #matSelect>
+          <mat-option *ngFor="let condition of availableConditions"
+                      [value]="condition">
+            {{conditionReadableMap[condition]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button
+              class="condition"
+              (click)="matSelect.open()">
+        {{conditionReadableMap[preferredCondition$.value]}}
+      </button>
+
+      <div class="text-white">Flight Situation</div>
+    </div>
+  </div>
 
   <cp-msp-list [destinationList]="destinationList"
                (add)="add.emit()"

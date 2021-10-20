@@ -5,7 +5,7 @@
     <ng-content select="[aboveBackground]"></ng-content>
 
     <ng-container *ngFor="let orbit of orbits$ | async">
-      <cp-orbit-line [@animateFade]
+      <cp-orbit-line [@fade]
                      *ngIf="orbit.type === spaceObjectTypes.Planet
                          || orbit.type === spaceObjectTypes.Star
                          || camera.scale > scaleToShowMoons"
@@ -16,7 +16,7 @@
     <ng-content select="[aboveOrbits]"></ng-content>
 
     <ng-container *ngFor="let body of celestialBodies$ | async">
-      <cp-draggable-space-object [@animateFade]
+      <cp-draggable-space-object [@fade]
                                  *ngIf="body.type === spaceObjectTypes.Planet
                                      || body.type === spaceObjectTypes.Star
                                      || camera.scale > scaleToShowMoons"

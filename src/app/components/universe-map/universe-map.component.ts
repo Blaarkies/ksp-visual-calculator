@@ -34,7 +34,7 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
   templateUrl: './universe-map.component.html',
   styleUrls: ['./universe-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class UniverseMapComponent extends WithDestroy() {
 

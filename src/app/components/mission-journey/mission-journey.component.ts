@@ -20,7 +20,7 @@ class TripTrajectory {
   selector: 'cp-mission-journey',
   templateUrl: './mission-journey.component.html',
   styleUrls: ['./mission-journey.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class MissionJourneyComponent implements AfterViewInit {
 

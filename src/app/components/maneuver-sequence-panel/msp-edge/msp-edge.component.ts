@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
-import { animate, group, state, style, transition, trigger } from '@angular/animations';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MissionEdge } from '../maneuver-sequence-panel.component';
 import { PathDetailsReader } from './path-details-reader';
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
@@ -23,7 +22,6 @@ import { BehaviorSubject } from 'rxjs';
         animate('.3s ease-in', style({transform: 'translateX(0) scaleY(0)'})),
       ]),
     ]),
-    CustomAnimation.animateScaleY,
   ],
 })
 export class MspEdgeComponent {

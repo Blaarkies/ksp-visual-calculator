@@ -1,14 +1,14 @@
-import { TravelConditions } from '../../../common/data-structures/delta-v-map/travel-conditions';
+import { TravelCondition } from '../../../common/data-structures/delta-v-map/travel-condition';
 
 export class PathDetailsReader {
 
   static conditionMap = {
-    [TravelConditions.Surface]: 'Surface',
-    [TravelConditions.LowOrbit]: 'Low Orbit',
-    [TravelConditions.EllipticalOrbit]: 'Elliptical Orbit',
-    [TravelConditions.PlaneWith]: 'Plane With',
-    [TravelConditions.InterceptWith]: 'Intercept With',
-    [TravelConditions.GeostationaryOrbit]: 'Geostationary Orbit',
+    [TravelCondition.Surface]: 'Surface',
+    [TravelCondition.LowOrbit]: 'Low Orbit',
+    [TravelCondition.EllipticalOrbit]: 'Elliptical Orbit',
+    [TravelCondition.PlaneWith]: 'Plane With',
+    [TravelCondition.InterceptWith]: 'Intercept With',
+    [TravelCondition.GeostationaryOrbit]: 'Geostationary Orbit',
   };
 
   static makeDescription(startNode: string,
@@ -55,11 +55,11 @@ export class PathDetailsReader {
     }
 
     switch (lastTravelCondition) {
-      case TravelConditions.Surface:
+      case TravelCondition.Surface:
         return `Enter atmosphere of ${endNode} to land`;
-      case TravelConditions.LowOrbit:
+      case TravelCondition.LowOrbit:
         return `Aerobrake at ${endNode} into a low orbit`;
-      case TravelConditions.EllipticalOrbit:
+      case TravelCondition.EllipticalOrbit:
         return `Aerocapture at ${endNode} into an elliptical orbit`;
       default:
         return null;
@@ -72,11 +72,11 @@ export class PathDetailsReader {
                                   combinationNode: string,
                                   endNode: string) {
     switch (lastTravelCondition) {
-      case TravelConditions.PlaneWith:
+      case TravelCondition.PlaneWith:
         return `${startNode} orbital plane correction to match ${combinationNode}`;
-      case TravelConditions.InterceptWith:
+      case TravelCondition.InterceptWith:
         return `${startNode} maneuver to intercept ${combinationNode}`;
-      case TravelConditions.Surface:
+      case TravelCondition.Surface:
         return `Land on ${endNode}`;
       default:
         return null;
@@ -90,15 +90,15 @@ export class PathDetailsReader {
                                  endNode: string,
                                  endCondition: string) {
     switch (firstTravelCondition) {
-      case TravelConditions.PlaneWith: // PlaneWith always assumes an Intercept trajectory
+      case TravelCondition.PlaneWith: // PlaneWith always assumes an Intercept trajectory
         return `Capture into ${endNode} ${endCondition}`;
-      case TravelConditions.Surface:
+      case TravelCondition.Surface:
         return `Launch from ${startNode} to ${endCondition}`;
-      case TravelConditions.LowOrbit:
+      case TravelCondition.LowOrbit:
         return `${startNode} ${startCondition} to ${endCondition}`;
-      case TravelConditions.GeostationaryOrbit:
+      case TravelCondition.GeostationaryOrbit:
         return `${startNode} ${startCondition} to ${endCondition}`;
-      case TravelConditions.EllipticalOrbit:
+      case TravelCondition.EllipticalOrbit:
         return `${startNode} ${startCondition} to ${endCondition}`;
       default:
         return `${startNode} ${startCondition} ⇒ ${endNode} ${endCondition}`;

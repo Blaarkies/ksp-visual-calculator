@@ -1,12 +1,12 @@
 import { DestinationConditions } from './destination-conditions';
 import { GraphDataStructure, NodeGraph } from './graph-data-structure';
 import { MissionNode } from '../../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
-import { TravelConditions } from './travel-conditions';
+import { TravelCondition } from './travel-condition';
 
 type DeltaVStep = (string | number)[];
 
 class MissionNodeAbilities {
-  allowConditions: TravelConditions[];
+  allowConditions: TravelCondition[];
   allowAerobraking: boolean;
   // allowGravityAssist: boolean;
 }
@@ -30,7 +30,7 @@ export class DeltaVGraph {
   private readonly nodeAbilitiesMap: Map<string, MissionNodeAbilities> = this.makeNodeAbilitiesMap();
 
   constructor() {
-    let specialTravelConditions = [TravelConditions.PlaneWith, TravelConditions.InterceptWith];
+    let specialTravelConditions = [TravelCondition.PlaneWith, TravelCondition.InterceptWith];
 
     this.getDeltaVHops()
       .forEach(([nodeA, nodeB, weight]: [string, string, number]) =>
@@ -127,16 +127,16 @@ export class DeltaVGraph {
 
   private makeNodeAbilitiesMap(): Map<string, MissionNodeAbilities> {
     let typicalConditions = [
-      TravelConditions.Surface,
-      TravelConditions.LowOrbit,
-      TravelConditions.EllipticalOrbit,
+      TravelCondition.Surface,
+      TravelCondition.LowOrbit,
+      TravelCondition.EllipticalOrbit,
     ];
 
     return new Map<string, MissionNodeAbilities>([
       [Place.Kerbol, {
         allowConditions: [
-          TravelConditions.LowOrbit,
-          TravelConditions.EllipticalOrbit,
+          TravelCondition.LowOrbit,
+          TravelCondition.EllipticalOrbit,
         ],
         allowAerobraking: true,
       }],
@@ -145,10 +145,10 @@ export class DeltaVGraph {
       [Place.Gilly, {allowConditions: [...typicalConditions], allowAerobraking: false}],
       [Place.Kerbin, {
         allowConditions: [
-          TravelConditions.Surface,
-          TravelConditions.LowOrbit,
-          TravelConditions.GeostationaryOrbit,
-          TravelConditions.EllipticalOrbit,
+          TravelCondition.Surface,
+          TravelCondition.LowOrbit,
+          TravelCondition.GeostationaryOrbit,
+          TravelCondition.EllipticalOrbit,
         ],
         allowAerobraking: true
       }],
@@ -212,7 +212,7 @@ export class DeltaVGraph {
     return `${node.name.toLowerCase()}${SEP}${node.condition}`;
   }
 
-  getTripDetails(nodeA: MissionNode, nodeB: MissionNode, options: {} = {}): TripDetails {
+  getTripDetails(nodeA: MissionNode, nodeB: MissionNode, options: { planeChangeFactor?: number } = {}): TripDetails {
     let path = this.vacuumGraph.shortestPath(this.stringifyNode(nodeA), this.stringifyNode(nodeB));
 
     let pathDetails = path.map(nodeId => {
@@ -225,13 +225,17 @@ export class DeltaVGraph {
       .map(({a, b, value}) => {
         let aerobraking = this.canAerobrakeAt(a.name, a.condition,
           b.name, b.condition, b.combinationNode, nodeB.aerobraking);
+
+        let dvCost = this.getDvCostWithOptions(
+          value,
+          {aerobraking, planeChangeFactor: options.planeChangeFactor, endCondition: b.condition});
         return ({
           startNode: a.name,
           startCondition: a.condition,
           combinationNode: a.combinationNode ?? b.combinationNode,
           endNode: b.name,
           endCondition: b.condition,
-          value: aerobraking ? 0 : value,
+          value: dvCost.toInt(),
           aerobraking,
         });
       });
@@ -242,7 +246,7 @@ export class DeltaVGraph {
     };
   }
 
-  getAvailableConditionsFor(bodyName: string): TravelConditions[] {
+  getAvailableConditionsFor(bodyName: string): TravelCondition[] {
     return this.nodeAbilitiesMap.get(bodyName.toLowerCase()).allowConditions;
   }
 
@@ -263,6 +267,17 @@ export class DeltaVGraph {
 
     return destinationAllowsAerobraking && canAerobrake;
   }
+
+  private getDvCostWithOptions(maxDvCost: number,
+                               options: { planeChangeFactor: number; aerobraking: boolean; endCondition: string }) {
+    if (options.endCondition === TravelCondition.PlaneWith) {
+      return maxDvCost * options.planeChangeFactor;
+    } else if (options.aerobraking) {
+      return 0;
+    } else {
+      return maxDvCost;
+    }
+  }
 }
 
 class Place {
@@ -279,9 +294,9 @@ class Place {
 
 class TransferFromToCondition {
   static AerobrakeIsPossible = {
-    [TravelConditions.PlaneWith + SEP + TravelConditions.EllipticalOrbit]: true,
-    [TravelConditions.PlaneWith + SEP + TravelConditions.LowOrbit]: true, // from a moon to parent planet
-    [TravelConditions.EllipticalOrbit + SEP + TravelConditions.LowOrbit]: true,
-    [TravelConditions.LowOrbit + SEP + TravelConditions.Surface]: true,
+    [TravelCondition.PlaneWith + SEP + TravelCondition.EllipticalOrbit]: true,
+    [TravelCondition.PlaneWith + SEP + TravelCondition.LowOrbit]: true, // from a moon to parent planet
+    [TravelCondition.EllipticalOrbit + SEP + TravelCondition.LowOrbit]: true,
+    [TravelCondition.LowOrbit + SEP + TravelCondition.Surface]: true,
   };
 }

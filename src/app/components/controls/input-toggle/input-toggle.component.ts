@@ -10,7 +10,7 @@ import { CustomAnimation } from '../../../common/domain/custom-animation';
   selector: 'cp-input-toggle',
   templateUrl: './input-toggle.component.html',
   styleUrls: ['./input-toggle.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputToggleComponent),

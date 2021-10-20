@@ -1,4 +1,4 @@
-export class TravelConditions {
+export class TravelCondition {
     static Surface = 'surface';
     static LowOrbit = 'lowOrbit';
     static EllipticalOrbit = 'ellipticalOrbit';

@@ -8,7 +8,7 @@ import { UniverseMapComponent } from '../../components/universe-map/universe-map
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { MissionDestination } from '../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { Observable } from 'rxjs';
-import { TravelService } from '../../services/travel.service';
+import { Preferences, TravelService } from '../../services/travel.service';
 import { SpaceObjectContainerService } from '../../services/space-object-container.service';
 
 @Component({
@@ -73,6 +73,10 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
   updateMissionDestination(missionDestination: MissionDestination) {
     this.travelService.updateMissionDestination(missionDestination);
+  }
+
+  updatePreferences(newPreferences: Preferences) {
+    this.travelService.updatePreferences(newPreferences);
   }
 
 }

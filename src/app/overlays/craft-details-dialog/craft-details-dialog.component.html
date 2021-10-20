@@ -14,7 +14,7 @@
       </ng-template>
     </mat-expansion-panel>
 
-    <div [@animateFade]
+    <div [@fade]
          *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
          class="error-message">
       <mat-error>{{advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh}}</mat-error>

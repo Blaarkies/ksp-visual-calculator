@@ -45,7 +45,7 @@ export class TutorialService {
   private getCompiledSteps(context: UsableRoutes): Observable<any>[] {
     let stepDetails;
     stepDetails = [
-      // this.getStepStartOfTutorial(context),
+      this.getStepStartOfTutorial(context),
       ...this.getCommonStepDetails(),
       ...this.getStepDetails(context),
       this.getStepEndOfTutorial(),

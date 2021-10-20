@@ -26,7 +26,7 @@ export class ManageStateDialogData {
   templateUrl: './manage-state-dialog.component.html',
   styleUrls: ['./manage-state-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class ManageStateDialogComponent extends WithDestroy() {
 

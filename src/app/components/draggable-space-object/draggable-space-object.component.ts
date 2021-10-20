@@ -12,7 +12,7 @@ import { Icons } from '../../common/domain/icons';
   templateUrl: './draggable-space-object.component.html',
   styleUrls: ['./draggable-space-object.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDestroy {
 

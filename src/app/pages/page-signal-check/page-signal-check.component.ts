@@ -25,7 +25,7 @@ import { EventLogs } from '../../services/event-logs';
   templateUrl: './page-signal-check.component.html',
   styleUrls: ['./page-signal-check.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class PageSignalCheckComponent extends WithDestroy() {
 

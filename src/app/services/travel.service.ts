@@ -7,7 +7,13 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { finalize, take, takeUntil } from 'rxjs/operators';
 import { DeltaVGraph } from '../common/data-structures/delta-v-map/delta-v-graph';
-import { TravelConditions } from '../common/data-structures/delta-v-map/travel-conditions';
+import { TravelCondition } from '../common/data-structures/delta-v-map/travel-condition';
+
+export class Preferences {
+  aerobraking: boolean;
+  planeChangeCost: number;
+  condition: TravelCondition;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +24,11 @@ export class TravelService {
   selectedDestination$ = new Subject<SpaceObject>();
   unsubscribeSelectedDestination$ = new Subject<SpaceObject>();
   isSelectingDestination$ = new Subject<boolean>();
+  preferences: Preferences = {
+    aerobraking: false,
+    planeChangeCost: 100,
+    condition: TravelCondition.Surface,
+  };
 
   dvMap = new DeltaVGraph();
 
@@ -41,8 +52,11 @@ export class TravelService {
     let node = new MissionNode({
       body: so,
       name: so.label,
-      condition: availableConditions.first(),
+      condition: availableConditions.find(c => c === this.preferences.condition)
+        ?? availableConditions.first(),
       availableConditions,
+      aerobraking: this.preferences.aerobraking,
+      gravityAssist: false,
     });
 
     let newList = [...this.missionDestinations$.value, {node}];
@@ -82,6 +96,25 @@ export class TravelService {
     this.unsubscribeSelectedDestination$.next();
   }
 
+  updatePreferences(newPreferences: Preferences) {
+    this.preferences = newPreferences;
+    if (!this.missionDestinations$.value.length) {
+      return;
+    }
+
+    this.missionDestinations$.value.forEach(({node}) => {
+      node.aerobraking = newPreferences.aerobraking;
+      let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
+      node.condition = availableConditions.find(c => c === this.preferences.condition).toString()
+        ?? node.condition;
+    });
+
+    this.updateMissionList(this.missionDestinations$.value);
+
+    this.isSelectingDestination$.next(false);
+    this.unsubscribeSelectedDestination$.next();
+  }
+
   private updateMissionList(newList: MissionDestination[]) {
     let nodeList = newList.map(md => md.node);
     nodeList = this.calculateNodeDetails(nodeList);
@@ -92,7 +125,7 @@ export class TravelService {
   private calculateEdgesDetails(nodes: MissionNode[]): MissionDestination[] {
     let destinationEdges = nodes.windowed(2)
       .map(([a, b]) => {
-        let trip = this.dvMap.getTripDetails(a, b);
+        let trip = this.dvMap.getTripDetails(a, b, {planeChangeFactor: this.preferences.planeChangeCost * .01});
         return {
           edge: {
             dv: trip.totalDv,

@@ -35,7 +35,7 @@
                  [attr.x]="scale * transmissionLine.textLocation.x - 30"
                  [attr.y]="scale * transmissionLine.textLocation.y - 10">
     <span xmlns="http://www.w3.org/1999/xhtml"
-          [@animateFade]
+          [@fade]
           *ngIf="(transmissionLine.nodes[0].draggableHandle.isHover$ | async)
                   || (transmissionLine.nodes[1].draggableHandle.isHover$ | async)"
           class="distance-text">

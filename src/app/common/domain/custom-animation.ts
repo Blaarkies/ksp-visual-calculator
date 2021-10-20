@@ -2,7 +2,7 @@ import { animate, sequence, state, style, transition, trigger } from '@angular/a
 
 export class CustomAnimation {
 
-  static animateFade = trigger('animateFade', [
+  static fade = trigger('fade', [
     transition(':enter', [
       style({opacity: 0}),
       animate('.5s ease-out', style({opacity: '*'}))]),
@@ -11,7 +11,7 @@ export class CustomAnimation {
       animate('.5s ease-in', style({opacity: 0}))]),
   ]);
 
-  static animateHeight = trigger('animateHeight', [
+  static height = trigger('height', [
     transition(':enter', [
       style({height: 0, overflow: 'hidden'}),
       animate('.3s ease-in', style({height: '*'})),
@@ -20,9 +20,17 @@ export class CustomAnimation {
       style({height: '*', overflow: 'hidden'}),
       animate('.2s ease-out', style({height: 0})),
     ]),
+    state('false', style({height: 0, overflow: 'hidden'})),
+    state('true', style({height: '*', overflow: 'hidden'})),
+    transition('false => true', [
+      animate('.3s ease-in', style({height: '*'})),
+    ]),
+    transition('true => false', [
+      animate('.2s ease-out', style({height: 0})),
+    ]),
   ]);
 
-  static animateScaleY = trigger('animateScaleY', [
+  static scaleY = trigger('scaleY', [
     state('false', style({transform: 'scaleY(0)'})),
     state('true', style({transform: 'scaleY(1)'})),
 
@@ -34,7 +42,7 @@ export class CustomAnimation {
     ]),
   ]);
 
-  static animateFlipHorizontal = trigger('animateFlipHorizontal', [
+  static flipHorizontal = trigger('flipHorizontal', [
     state('false', style({transform: 'scale(1, 1)'})),
     state('true', style({transform: 'scale(-1, 1)'})),
 

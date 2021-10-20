@@ -77,9 +77,9 @@
               [matTooltip]="'If you do not have an account, this will create one'">
         <mat-icon [svgIcon]="icons.Email"></mat-icon>
         <span>Sign in with email address</span>
-        <mat-progress-bar [@animateFade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
+        <mat-progress-bar [@fade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
       </button>
-      <mat-error [@animateFade] *ngIf="emailSignInError$ | async as errorMessage">{{errorMessage}}</mat-error>
+      <mat-error [@fade] *ngIf="emailSignInError$ | async as errorMessage">{{errorMessage}}</mat-error>
     </div>
 
     <mat-divider></mat-divider>
@@ -89,7 +89,7 @@
             (click)="signInWithGoogle()">
       <img class="google-g-logo" src="assets/logos/google-g.svg"/>
       <span>Sign in with Google</span>
-      <mat-progress-bar [@animateFade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
+      <mat-progress-bar [@fade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
     </button>
 
     <mat-divider></mat-divider>

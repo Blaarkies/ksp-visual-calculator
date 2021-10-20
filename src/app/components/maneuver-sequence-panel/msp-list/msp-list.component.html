@@ -1,6 +1,6 @@
 <div class="list-layout">
   <div *ngFor="let destination of missionDestinations; trackBy: getNode"
-       [@animateHeight]>
+       [@height]>
     <cp-msp-edge *ngIf="destination.edge"
                  [details]="destination.edge"></cp-msp-edge>
 
@@ -9,7 +9,7 @@
                  (update)="updateNode.emit(destination)"></cp-msp-node>
   </div>
 
-  <div [@animateHeight] *ngIf="missionDestinations.length" class="divider"></div>
+  <div [@height] *ngIf="missionDestinations.length" class="divider"></div>
 </div>
 
 <div class="destination-controls">

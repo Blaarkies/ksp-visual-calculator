@@ -39,7 +39,7 @@ export class CraftDetailsDialogData {
   selector: 'cp-craft-details-dialog',
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
   encapsulation: ViewEncapsulation.None,
 })
 export class CraftDetailsDialogComponent extends WithDestroy() {

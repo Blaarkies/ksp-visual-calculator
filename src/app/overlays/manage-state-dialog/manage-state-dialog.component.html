@@ -37,7 +37,7 @@
                                     (editStart)="cancelOtherEditors(editor)"
                                     (confirm)="editCurrentStateName($event.oldName, $event.state)">
             </cp-state-edit-name-row>
-            <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.edit$ | async"
+            <mat-progress-bar [@fade] *ngIf="buttonLoaders.edit$ | async"
                               mode="indeterminate"></mat-progress-bar>
           </div>
         </div>
@@ -61,7 +61,7 @@
                 color="primary"
                 (click)="fileUploadInput.click()">
           Import
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.import$ | async"
+          <mat-progress-bar [@fade] *ngIf="buttonLoaders.import$ | async"
                             mode="indeterminate"></mat-progress-bar>
           <input #fileUploadInput
                  [style.display]="'none'"
@@ -77,7 +77,7 @@
                 [matTooltip]="'Save now (auto-save occurs every 10 seconds)'"
                 (click)="saveState(nowState)">
           <mat-icon color="primary" [svgIcon]="icons.Save"></mat-icon>
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.save$ | async"
+          <mat-progress-bar [@fade] *ngIf="buttonLoaders.save$ | async"
                             mode="indeterminate"></mat-progress-bar>
         </button>
 
@@ -86,7 +86,7 @@
                 [matTooltip]="'Export to JSON file'"
                 (click)="exportState(nowState)">
           <mat-icon [svgIcon]="icons.Download"></mat-icon>
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.export$ | async"
+          <mat-progress-bar [@fade] *ngIf="buttonLoaders.export$ | async"
                             mode="indeterminate"></mat-progress-bar>
         </button>
         <button class="button-loader"
@@ -94,7 +94,7 @@
                 [matTooltip]="'Start a new game'"
                 (click)="newState()">
           <mat-icon color="accent" [svgIcon]="icons.Reset"></mat-icon>
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.new$ | async"
+          <mat-progress-bar [@fade] *ngIf="buttonLoaders.new$ | async"
                             color="accent" mode="indeterminate"></mat-progress-bar>
         </button>
       </div>
@@ -131,7 +131,7 @@
                       [matTooltip]="'Load this game'"
                       (click)="loadState(selectedState)">
                 <mat-icon color="primary" [svgIcon]="icons.Load"></mat-icon>
-                <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.load$ | async"
+                <mat-progress-bar [@fade] *ngIf="buttonLoaders.load$ | async"
                                   mode="indeterminate"></mat-progress-bar>
               </button>
               <button class="button-loader"
@@ -139,7 +139,7 @@
                       [matTooltip]="'Export to JSON file'"
                       (click)="exportState(selectedState)">
                 <mat-icon [svgIcon]="icons.Download"></mat-icon>
-                <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.export$ | async"
+                <mat-progress-bar [@fade] *ngIf="buttonLoaders.export$ | async"
                                   mode="indeterminate"></mat-progress-bar>
               </button>
               <button class="button-loader"
@@ -148,7 +148,7 @@
                       [disabled]="buttonLoaders.remove$ | async"
                       (click)="removeState(selectedState)">
                 <mat-icon color="warn" [svgIcon]="icons.Delete"></mat-icon>
-                <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.remove$ | async"
+                <mat-progress-bar [@fade] *ngIf="buttonLoaders.remove$ | async"
                                   color="warn" mode="indeterminate"></mat-progress-bar>
               </button>
             </div>

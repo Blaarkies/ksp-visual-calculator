@@ -1,6 +1,6 @@
 <svg class="overflow-visible position-absolute"
      *ngFor="let trajectory of trajectories; trackBy: getTrajectoryKey"
-     [@animateFade]
+     [@fade]
      xmlns="http://www.w3.org/2000/svg">
 
   <defs>
@@ -65,7 +65,7 @@
 
 <mat-icon class="icon-map-marker mouse-location-marker"
           *ngIf="isAddingDestination"
-          [@animateFade]
+          [@fade]
           [style.left.px]="(mouseLocation$ | async).x"
           [style.top.px]="(mouseLocation$ | async).y"
           [svgIcon]="icons.AddMapMarker"></mat-icon>

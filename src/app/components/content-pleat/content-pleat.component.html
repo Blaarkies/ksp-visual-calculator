@@ -4,7 +4,7 @@
   <div [class.first-sentence-only]="!showContentAfterInit">
     <ng-content></ng-content>
   </div>
-  <div [@animateFade]
+  <div [@fade]
        *ngIf="!panel.expanded"
        class="fade-whiteground">
     <span class="read-more" (click)="panel.open()">Read more...</span>

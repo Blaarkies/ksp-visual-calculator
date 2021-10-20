@@ -7,9 +7,9 @@
          [type]="type"
          (focus)="isActive = true; touch()"
          (blur)="isActive = false"/>
-  <mat-hint [@animateFade]
+  <mat-hint [@fade]
             *ngIf="hint && (value === null || value === '')">{{hint}}</mat-hint>
-  <span [@animateFade]
+  <span [@fade]
         *ngIf="suffix !== null"
         matSuffix>{{suffix}}</span>
   <button *ngIf="allowClear"

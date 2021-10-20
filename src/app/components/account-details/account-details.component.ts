@@ -13,7 +13,7 @@ import { AuthErrorCode } from './auth-error-code';
   selector: 'cp-account-details',
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
 

@@ -2,14 +2,14 @@
                  (update)="updateUniverse($event)">
 
   <ng-container aboveOrbits>
-    <cp-transmission-line [@animateFade]
+    <cp-transmission-line [@fade]
                           *ngFor="let line of transmissionLines$ | async"
                           [transmissionLine]="line"
                           [scale]="universe.camera.scale"></cp-transmission-line>
   </ng-container>
 
   <ng-container abovePlanets>
-    <cp-draggable-space-object [@animateFade]
+    <cp-draggable-space-object [@fade]
                                *ngFor="let craft of crafts$ | async"
                                [spaceObject]="craft"
                                [scale]="universe.camera.scale"
@@ -27,7 +27,7 @@
            [style.background-position-y.px]="craft.spriteLocation.y"
            [style.zoom]="craft.size * .025"></div>
 
-      <div [@animateFade]
+      <div [@fade]
            *ngIf="craft.draggableHandle.isHover$ | async"
            class="altitude-text">
         {{craft.displayAltitude}}

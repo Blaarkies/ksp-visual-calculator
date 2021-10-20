@@ -7,7 +7,7 @@ import { Icons } from '../../../common/domain/icons';
   selector: 'cp-msp-list',
   templateUrl: './msp-list.component.html',
   styleUrls: ['./msp-list.component.scss'],
-  animations: [CustomAnimation.animateHeight],
+  animations: [CustomAnimation.height],
 })
 export class MspListComponent {
 

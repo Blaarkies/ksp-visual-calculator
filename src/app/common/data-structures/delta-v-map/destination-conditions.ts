@@ -1,4 +1,4 @@
-import { TravelConditions } from './travel-conditions';
+import { TravelCondition } from './travel-condition';
 
 export class DestinationConditions {
 
@@ -8,18 +8,18 @@ export class DestinationConditions {
     readonly geostationaryOrbit: string;
 
     constructor(public readonly name: string) {
-        this.surface = `${name}:${TravelConditions.Surface}`;
-        this.lowOrbit = `${name}:${TravelConditions.LowOrbit}`;
-        this.ellipticalOrbit = `${name}:${TravelConditions.EllipticalOrbit}`;
-        this.geostationaryOrbit = `${name}:${TravelConditions.GeostationaryOrbit}`;
+        this.surface = `${name}:${TravelCondition.Surface}`;
+        this.lowOrbit = `${name}:${TravelCondition.LowOrbit}`;
+        this.ellipticalOrbit = `${name}:${TravelCondition.EllipticalOrbit}`;
+        this.geostationaryOrbit = `${name}:${TravelCondition.GeostationaryOrbit}`;
     }
 
     planeWith(other: DestinationConditions) {
-        return `${this.name}:${TravelConditions.PlaneWith}:${other.name}`
+        return `${this.name}:${TravelCondition.PlaneWith}:${other.name}`
     }
 
     interceptWith(other: DestinationConditions) {
-        return `${this.name}:${TravelConditions.InterceptWith}:${other.name}`
+        return `${this.name}:${TravelCondition.InterceptWith}:${other.name}`
     }
 
 }
