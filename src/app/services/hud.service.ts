@@ -237,7 +237,6 @@ export class HudService {
 
   private get dvPlannerPanel(): ActionPanelDetails {
     let options = [
-      this.createActionOptionNewCelestialBody(),
       this.createActionOptionManageSaveGames(UsableRoutes.DvPlanner),
     ];
 

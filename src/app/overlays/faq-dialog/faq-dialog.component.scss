@@ -1,4 +1,4 @@
-.node-layout {
+.title-layout {
   display: grid;
   grid-template-columns: max-content auto;
   gap: 40px;
@@ -12,6 +12,8 @@
 
 .faq-layout {
   box-shadow: inset 0 0 6px 2px #0002;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   display: grid;
   grid-template-columns: 50% 50%;
@@ -45,7 +47,7 @@
 
 @media screen and (max-width: 1000px),
 screen and (max-height: 800px) {
-  .node-layout {
+  .title-layout {
     grid-template-columns: max-content;
     gap: unset;
     margin-bottom: 20px;

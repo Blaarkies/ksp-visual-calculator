@@ -7,6 +7,8 @@ import { Observable, of, zip } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Section } from './faq-section/faq-section.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { HudService } from '../../services/hud.service';
+import { UsableRoutes } from '../../usable-routes';
 
 export class FaqDialogData {
   sections: Section[];
@@ -28,7 +30,8 @@ export class FaqDialogComponent extends WithDestroy() {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FaqDialogData,
               http: HttpClient,
-              breakpointObserver: BreakpointObserver) {
+              breakpointObserver: BreakpointObserver,
+              hudService: HudService) {
     super();
 
     this.isHandset$ = breakpointObserver.observe([
@@ -37,8 +40,11 @@ export class FaqDialogComponent extends WithDestroy() {
     ])
       .pipe(map(bp => bp.matches));
 
-    let sections$ = http.get<Section[]>('assets/faq/general.json')
+    let sections$ = zip(
+      http.get<Section[]>('assets/faq/general.json'),
+      http.get<Section[]>(this.getFilePathForPageContextFaq(hudService.pageContext)))
       .pipe(
+        map(([general, contextual]) => [...general, ...contextual]),
         publishReplay(1),
         refCount());
 
@@ -74,6 +80,14 @@ export class FaqDialogComponent extends WithDestroy() {
     this.searchControl.setValue(query);
   }
 
+  private getFilePathForPageContextFaq(context: UsableRoutes): string {
+    switch (context) {
+      case UsableRoutes.SignalCheck:
+        return 'assets/faq/signal-check.json';
+      case UsableRoutes.DvPlanner:
+        return 'assets/faq/dv-planner.json';
+    }
+  }
 }
 
 

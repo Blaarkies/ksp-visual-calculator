@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Aerobrake",
+    "simpleExplanation": "Uses the atmosphere at the destination to slow down the craft.",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "In the 'Preferences' section of the 'Mission Checkpoints' panel, you can set aerobraking as a default technique to reduce delta-v requirements."
+        }
+      ],
+      [
+        {
+          "type": "span",
+          "content": "This is typically only advantageous when slowing down the craft, e.g. to capture into orbit from an intercepting trajectory, or lowering the craft's highly elliptical orbit down to a low orbit."
+        }
+      ]
+    ],
+    "tags": "aerobrake aerocapture capture slow down re-entry"
+  },
+
+  {
+    "title": "Trip Details",
+    "simpleExplanation": "Step by step breakdown showing what the craft needs to do, to get to the destination.",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "Tap the delta-v value between 2 checkpoints to view the delta-v cost for intermediary steps. This will take into account any configuration (e.g. Aerobraking or 0% Plane Changes) to show how the delta-v cost was derived."
+        }
+      ]
+    ],
+    "tags": "detail trip step breakdown"
+  }
+
+]
+
