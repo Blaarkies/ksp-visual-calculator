@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MissionDestination, MissionNode } from '../maneuver-sequence-panel.component';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CustomAnimation } from '../../../common/domain/custom-animation';
 import { Icons } from '../../../common/domain/icons';
+import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoint';
 
 @Component({
   selector: 'cp-msp-list',
@@ -11,26 +11,26 @@ import { Icons } from '../../../common/domain/icons';
 })
 export class MspListComponent {
 
-  missionDestinations: MissionDestination[];
+  missionCheckpoints: Checkpoint[];
 
-  @Input() set destinationList(value: MissionDestination[]) {
-    this.missionDestinations = value;
+  @Input() set checkpoints(value: Checkpoint[]) {
+    this.missionCheckpoints = value;
 
     let edges = value.slice(1).map(md => md.edge);
     this.deltaVTotal = edges.map(edge => edge.dv).sum();
-    this.twrMinimum = edges.map(edge => edge.twr).sort().first();
+    // this.twrMinimum = edges.map(edge => edge.twr).sort().first();
   }
 
   @Output() add = new EventEmitter();
-  @Output() reset = new EventEmitter();
-  @Output() removeNode = new EventEmitter<MissionDestination>();
-  @Output() updateNode = new EventEmitter<MissionDestination>();
+  @Output() resetAll = new EventEmitter();
+  @Output() removeNode = new EventEmitter<Checkpoint>();
+  @Output() updateNode = new EventEmitter<Checkpoint>();
 
   deltaVTotal: number;
-  twrMinimum: number;
+  // twrMinimum: number;
   icons = Icons;
 
-  getNode(index: number, item: MissionDestination): string {
+  getNode(index: number, item: Checkpoint): string {
     return item.node.name;
   }
 

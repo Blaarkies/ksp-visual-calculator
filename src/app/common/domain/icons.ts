@@ -14,6 +14,7 @@ export class Icons {
   static Add = 'plus';
   static AddMapMarker = 'map-marker-plus';
   static ChevronLeft = 'chevron-left';
+  static ChevronDown = 'chevron-down';
   static ExpandHorizontal = 'arrow-expand-horizontal';
   static ExpandLeft = 'arrow-expand-left';
   static CollapseRight = 'arrow-collapse-right';

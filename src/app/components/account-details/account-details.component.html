@@ -2,7 +2,7 @@
   <h1 mat-dialog-title>Account Details</h1>
 
   <div mat-dialog-content class="details-layout">
-    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'"/>
+    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'" />
 
     <div>
       <div>Name: {{user.displayName}}</div>
@@ -26,19 +26,28 @@
 </ng-container>
 
 <ng-template #noUser>
-  <h1 mat-dialog-title>Sign In</h1>
+  <h1 mat-dialog-title>Register - Sign In</h1>
 
-  <div mat-dialog-content class="sign-in-layout">
-    <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png"/>
+  <div mat-dialog-content class="sign-in-layout" (click)="isPromoteOpen = false">
+    <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png" />
 
     <div class="promote-sign-in">
-      <div>Signing in accesses save game features</div>
-      <ul>
-        <li>Continue where you left off</li>
-        <li>Manage multiple save games</li>
-        <li>Load your save games from multiple devices</li>
-        <li>Import/Export save games to share with friends</li>
-      </ul>
+      <div class="reasons-header">
+        <span>Why should I sign in?</span>
+        <button mat-icon-button
+                #buttonWhy
+                (focus)="buttonWhy._elementRef.nativeElement.blur()"
+                (click)="isPromoteOpen = !isPromoteOpen; $event.stopPropagation()">
+          <mat-icon [svgIcon]="icons.ChevronDown" [@flipVertical]="isPromoteOpen"></mat-icon>
+        </button>
+
+        <ul class="promote-reasons" [@slideOutVertical]="isPromoteOpen">
+          <li>Continue where you left off</li>
+          <li>Manage multiple save games</li>
+          <li>Load your save games from multiple devices</li>
+          <li>Import/Export save games to share with friends</li>
+        </ul>
+      </div>
     </div>
 
     <div class="email-inputs-container">
@@ -87,7 +96,7 @@
     <button mat-stroked-button
             class="button-loader"
             (click)="signInWithGoogle()">
-      <img class="google-g-logo" src="assets/logos/google-g.svg"/>
+      <img class="google-g-logo" src="assets/logos/google-g.svg" />
       <span>Sign in with Google</span>
       <mat-progress-bar [@fade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
     </button>

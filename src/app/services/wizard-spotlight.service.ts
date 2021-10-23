@@ -140,14 +140,14 @@ export class WizardSpotlightService {
                               target: DOMRect,
                               dialogPosition: Positions = 'top') {
     let dims: DOMRect = dialog.instance.self.nativeElement.getBoundingClientRect();
-    let padding = 8;
-    let minX, minY = padding;
-    let maxX = -padding + window.innerWidth;
-    let maxY = -padding + window.innerHeight;
+    // let padding = 8;
+    // let minX, minY = padding;
+    // let maxX = -padding + window.innerWidth;
+    // let maxY = -padding + window.innerHeight;
 
     let dialogSize = new Vector2(dims.width, dims.height);
-    let dialogCenter = new Vector2(dims.left, dims.top).addVector2(
-      dialogSize.clone().multiply(.5));
+    // let dialogCenter = new Vector2(dims.left, dims.top).addVector2(
+    //   dialogSize.clone().multiply(.5));
 
     let targetSize = new Vector2(target.width, target.height);
     let targetCenter = new Vector2(target.left, target.top).addVector2(
@@ -156,7 +156,7 @@ export class WizardSpotlightService {
     switch (dialogPosition) {
       case 'left':
         dialog.instance.location = new Vector2(target.left, targetCenter.y)
-          .add(-dialogSize.x*1.6, -dialogSize.y * .5);
+          .add(-dialogSize.x * 1.6, -dialogSize.y * .5);
         break;
       case 'right':
         dialog.instance.location = new Vector2(target.right, targetCenter.y)

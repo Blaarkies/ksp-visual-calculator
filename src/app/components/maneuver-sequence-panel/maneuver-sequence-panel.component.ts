@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { TravelCondition } from '../../common/data-structures/delta-v-map/travel-condition';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Icons } from '../../common/domain/icons';
@@ -8,43 +7,11 @@ import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta
 import { sampleTime, startWith, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { Preferences } from '../../services/travel.service';
 import { PathDetailsReader } from './msp-edge/path-details-reader';
 import { MatSelectChange } from '@angular/material/select';
-
-export class MissionNode {
-
-  body: SpaceObject;
-  name: string;
-  condition: string;
-  aerobraking: boolean;
-  gravityAssist: boolean;
-  availableConditions: TravelCondition[];
-
-  allowAerobraking: boolean;
-  allowGravityAssist: boolean;
-
-  constructor(params: any) {
-    this.body = params.body;
-    this.name = params.name;
-    this.condition = params.condition;
-    this.aerobraking = params.aerobraking;
-    this.gravityAssist = params.gravityAssist;
-    this.availableConditions = params.availableConditions;
-  }
-
-}
-
-export class MissionEdge {
-  dv: number;
-  twr: number;
-  pathDetails: any[];
-}
-
-export class MissionDestination {
-  edge?: MissionEdge;
-  node: MissionNode;
-}
+import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
+import { CheckpointPreferences } from '../../common/domain/checkpoint-preferences';
+import { SetupService } from '../../services/setup.service';
 
 @Component({
   selector: 'cp-maneuver-sequence-panel',
@@ -54,13 +21,13 @@ export class MissionDestination {
 })
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 
-  @Input() destinationList: MissionDestination[];
+  @Input() checkpoints: Checkpoint[];
 
   @Output() add = new EventEmitter();
-  @Output() reset = new EventEmitter();
-  @Output() removeDestination = new EventEmitter<MissionDestination>();
-  @Output() updateDestination = new EventEmitter<MissionDestination>();
-  @Output() updatePreferences = new EventEmitter<Preferences>();
+  @Output() resetAll = new EventEmitter();
+  @Output() removeCheckpoint = new EventEmitter<Checkpoint>();
+  @Output() updateCheckpoint = new EventEmitter<Checkpoint>();
+  @Output() updatePreferences = new EventEmitter<CheckpointPreferences>();
 
   isOptionsOpen = false;
   icons = Icons;
@@ -71,25 +38,33 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     TravelCondition.EllipticalOrbit,
   ];
 
-  aerobrakeControl = new FormControl(false);
+  aerobrakeControl = new FormControl(this.setupService.checkpointPreferences$.value.aerobraking);
 
-  planeChangeControl = new FormControl(100);
+  planeChangeControl = new FormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
   planeChangeControlMeta = new ControlMetaNumber(0, 100, 1);
 
-  preferredCondition$ = new BehaviorSubject(TravelCondition.Surface);
+  preferredCondition$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.condition);
 
-  constructor() {
+  constructor(private setupService: SetupService) {
     super();
 
-    combineLatest(
-      this.aerobrakeControl.valueChanges.pipe(startWith(this.aerobrakeControl.value)),
-      this.planeChangeControl.valueChanges.pipe(startWith(this.planeChangeControl.value)),
-      this.preferredCondition$)
+    combineLatest([
+      this.aerobrakeControl.valueChanges.pipe(startWith(this.aerobrakeControl.value as boolean)),
+      this.planeChangeControl.valueChanges.pipe(startWith(this.planeChangeControl.value as number)),
+      this.preferredCondition$])
       .pipe(
-        sampleTime(100),
+        sampleTime(50),
         takeUntil(this.destroy$))
       .subscribe(([aerobraking, planeChangeCost, condition]) =>
-        this.updatePreferences.emit({aerobraking, planeChangeCost, condition} as Preferences));
+        this.updatePreferences.emit({aerobraking, planeChangeCost, condition} as CheckpointPreferences));
+
+    this.setupService.checkpointPreferences$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(cp => {
+        this.aerobrakeControl.setValue(cp.aerobraking);
+        this.planeChangeControl.setValue(cp.planeChangeCost);
+        this.preferredCondition$.next(cp.condition);
+      });
   }
 
   setPreferredCondition(event: MatSelectChange) {

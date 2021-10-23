@@ -62,4 +62,24 @@ export class CustomAnimation {
     ]),
   ]);
 
+  static flipVertical = trigger('flipVertical', [
+    state('false', style({transform: 'scale(1, 1)'})),
+    state('true', style({transform: 'scale(1, -1)'})),
+
+    transition('false => true', [
+      sequence([
+        animate('.1s ease-in', style({transform: 'scale(0, 1)'})),
+        style({transform: 'scale(0, -1)'}),
+        animate('.1s ease-in', style({transform: 'scale(1, -1)'})),
+      ]),
+    ]),
+    transition('true => false', [
+      sequence([
+        animate('.1s ease-in', style({transform: 'scale(0, -1)'})),
+        style({transform: 'scale(0, 1)'}),
+        animate('.1s ease-in', style({transform: 'scale(1, 1)'})),
+      ]),
+    ]),
+  ]);
+
 }

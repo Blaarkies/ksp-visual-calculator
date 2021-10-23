@@ -6,10 +6,11 @@ import { HudService } from '../../services/hud.service';
 import { StateService } from '../../services/state.service';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { MissionDestination } from '../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { Observable } from 'rxjs';
-import { Preferences, TravelService } from '../../services/travel.service';
+import { TravelService } from '../../services/travel.service';
 import { SpaceObjectContainerService } from '../../services/space-object-container.service';
+import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
+import { CheckpointPreferences } from '../../common/domain/checkpoint-preferences';
 
 @Component({
   selector: 'cp-page-dv-planner',
@@ -20,21 +21,26 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
   @ViewChild('universeMap') universeMap: UniverseMapComponent;
 
-  missionDestinations$: Observable<MissionDestination[]>;
-  isSelectingDestination$: Observable<boolean>;
+  checkpoints$: Observable<Checkpoint[]>;
+  isSelectingCheckpoint$: Observable<boolean>;
 
   constructor(hudService: HudService,
               stateService: StateService,
               private travelService: TravelService,
               spaceObjectContainerService: SpaceObjectContainerService) {
     super();
+    super.ngOnDestroy = () => {
+      // workaround, error NG2007: Class is using Angular features but is not decorated.
+      super.ngOnDestroy();
+      this.travelService.unsubscribeFromComponent();
+    };
 
     hudService.setPageContext(UsableRoutes.DvPlanner);
     stateService.pageContext = UsableRoutes.DvPlanner;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 
-    this.missionDestinations$ = travelService.missionDestinations$.asObservable();
-    this.isSelectingDestination$ = travelService.isSelectingDestination$.asObservable();
+    this.checkpoints$ = travelService.checkpoints$.asObservable();
+    this.isSelectingCheckpoint$ = travelService.isSelectingCheckpoint$.asObservable();
 
     setTimeout(() => {
       let addCheckpoint = name => {
@@ -50,32 +56,27 @@ export class PageDvPlannerComponent extends WithDestroy() {
     }, 300);
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-    this.travelService.unsubscribeFromComponent();
+  selectCheckpoint(spaceObject: SpaceObject) {
+    this.travelService.selectCheckpoint(spaceObject);
   }
 
-  selectDestination(spaceObject: SpaceObject) {
-    this.travelService.selectDestination(spaceObject);
-  }
-
-  addMissionDestination() {
-    this.travelService.addMissionDestination();
+  addCheckpoint() {
+    this.travelService.addCheckpoint();
   }
 
   resetMission() {
-    this.travelService.resetMission();
+    this.travelService.resetCheckpoints();
   }
 
-  removeMissionDestination(missionDestination: MissionDestination) {
-    this.travelService.removeMissionDestination(missionDestination);
+  removeCheckpoint(missionDestination: Checkpoint) {
+    this.travelService.removeCheckpoint(missionDestination);
   }
 
-  updateMissionDestination(missionDestination: MissionDestination) {
-    this.travelService.updateMissionDestination(missionDestination);
+  updateCheckpoint(missionDestination: Checkpoint) {
+    this.travelService.updateCheckpoint(missionDestination);
   }
 
-  updatePreferences(newPreferences: Preferences) {
+  updatePreferences(newPreferences: CheckpointPreferences) {
     this.travelService.updatePreferences(newPreferences);
   }
 

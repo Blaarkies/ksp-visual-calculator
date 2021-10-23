@@ -3,7 +3,6 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../../app.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { fakeAsync, tick } from '@angular/core/testing';
 
 let componentType = InputToggleComponent;
 describe('InputToggleComponent', () => {

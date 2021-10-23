@@ -14,10 +14,26 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
 import { StateRow } from '../overlays/manage-state-dialog/state-row';
 import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
-import { catchError, combineAll, delay, filter, map, switchMap, switchMapTo, take, takeUntil, tap, throttleTime } from 'rxjs/operators';
+import {
+  catchError,
+  combineAll,
+  delay,
+  filter,
+  map,
+  switchMap,
+  switchMapTo,
+  take,
+  takeUntil,
+  tap,
+  throttleTime
+} from 'rxjs/operators';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { TravelService } from './travel.service';
+import { StateCheckpoint } from './json-interfaces/state-checkpoint';
+import { StateDvPlanner } from './json-interfaces/state-dv-planner';
+import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 
 @Injectable({
   providedIn: 'root',
@@ -43,14 +59,15 @@ export class StateService {
     this.name = undefined;
   }
 
-  get earlyState(): Observable<StateSignalCheck> {
+  get earlyState(): Observable<StateGame> {
     return zip(
       this.setupService.stockPlanets$,
       this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
       .pipe(
         take(1),
         delay(0),
-        // todo: StateService should be independent of the specifics in the universe (crafts$ might not exist in other universe types)
+        // todo: StateService should be independent of the specifics in the universe (crafts$ might not exist in other
+        // universe types)
         switchMap(() => of(this.spaceObjectContainerService.celestialBodies$, this.spaceObjectContainerService.crafts$)),
         combineAll(),
         filter(([a, b]) => !!a && !!b),
@@ -58,26 +75,40 @@ export class StateService {
         map(() => this.state));
   }
 
-  get state(): StateSignalCheck {
-    // todo: check pageContext to save correct properties
-
-    let state: StateSignalCheck = {
+  get state(): StateGame | StateSignalCheck | StateDvPlanner {
+    let state: StateGame = {
       name: this.name || Uid.new,
       timestamp: new Date(),
       context: this.context,
       version: APP_VERSION.split('.').map(t => t.toNumber()),
-      settings: {
-        difficulty: this.setupService.difficultySetting,
-      },
       celestialBodies: this.spaceObjectContainerService.celestialBodies$.value
         .map(b => b.toJson()) as StateSpaceObject[],
-      craft: this.spaceObjectContainerService.crafts$.value
-        .map(b => b.toJson()) as StateCraft[],
     };
 
     this.name = state.name;
 
-    return state;
+    switch (this.context) {
+      case UsableRoutes.SignalCheck:
+        return {
+          ...state,
+          settings: {
+            ...state.settings,
+            difficulty: this.setupService.difficultySetting,
+          },
+          craft: this.spaceObjectContainerService.crafts$.value
+            .map(b => b.toJson()) as StateCraft[],
+        };
+      case UsableRoutes.DvPlanner:
+        return {
+          ...state,
+          settings: {
+            ...state.settings,
+            preferences: this.setupService.checkpointPreferences$.value,
+          },
+          checkpoints: this.travelService.checkpoints$.value
+            .map(c => c.toJson()) as StateCheckpoint[],
+        };
+    }
   }
 
   get stateRow(): StateRow {
@@ -95,6 +126,7 @@ export class StateService {
               private setupService: SetupService,
               private spaceObjectContainerService: SpaceObjectContainerService,
               private spaceObjectService: SpaceObjectService,
+              private travelService: TravelService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog) {
   }
@@ -134,15 +166,40 @@ export class StateService {
     if (state) {
       let parsedState: StateGame = JSON.parse(state);
       this.name = parsedState.name;
-      this.setupService.difficultySetting = DifficultySetting.fromObject(parsedState.settings.difficulty);
-      buildStateResult = this.spaceObjectService.buildState(state);
+      this.setContextualProperties({state, context: parsedState.context, parsedState});
+      buildStateResult = this.spaceObjectService.buildState(state, parsedState.context);
     } else {
       this.name = Uid.new;
-      this.setupService.difficultySetting = DifficultySetting.normal;
-      buildStateResult = this.spaceObjectService.buildStockState();
+      this.setContextualProperties({state, context: this.context});
+      buildStateResult = this.spaceObjectService.buildStockState(this.context);
     }
 
     return buildStateResult.pipe(tap(() => this.setStateRecord()));
+  }
+
+  private setContextualProperties({state, context, parsedState}:
+                                    { state: string, context?: string, parsedState?: StateGame }) {
+    if (state) {
+      switch (context as UsableRoutes) {
+        case UsableRoutes.SignalCheck:
+          this.setupService.updateDifficultySetting(
+            DifficultySetting.fromObject(parsedState.settings.difficulty));
+          break;
+        case UsableRoutes.DvPlanner:
+          this.setupService.updateCheckpointPreferences(
+            CheckpointPreferences.fromObject(parsedState.settings.preferences));
+          break;
+      }
+    } else {
+      switch (context as UsableRoutes) {
+        case UsableRoutes.SignalCheck:
+          this.setupService.updateDifficultySetting(DifficultySetting.normal);
+          break;
+        case UsableRoutes.DvPlanner:
+          this.setupService.updateCheckpointPreferences(CheckpointPreferences.default);
+          break;
+      }
+    }
   }
 
   addStateToStore(state: StateGame): Promise<void> {
@@ -172,10 +229,9 @@ export class StateService {
   }
 
   getStatesInContext(): Observable<StateEntry[]> {
-    return this.getStates()
-      .pipe(
-        map(states => states.filter(s => s.context === this.context)
-          .sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)));
+    return this.getStates().pipe(map(states => states
+      .filter(s => s.context === this.context)
+      .sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)));
   }
 
   async importState(stateString: string): Promise<void> {
@@ -190,9 +246,9 @@ export class StateService {
     this.name = name;
   }
 
-  getTimestamplessState(state: StateSignalCheck): StateSignalCheck {
+  getTimestamplessState(state: StateGame): StateGame {
     let safeToChange = JSON.stringify(state);
-    let reparsed: StateSignalCheck = JSON.parse(safeToChange);
+    let reparsed: StateGame = JSON.parse(safeToChange);
     reparsed.timestamp = undefined;
     return reparsed;
   }

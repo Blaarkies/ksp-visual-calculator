@@ -19,7 +19,6 @@ import {
 import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 import { EventLogs } from '../../services/event-logs';
 import { UsableRoutes } from '../../usable-routes';
-import { CustomAnimation } from '../../common/domain/custom-animation';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 
 export class ActionPanelDetails {

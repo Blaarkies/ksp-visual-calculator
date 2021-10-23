@@ -1,165 +1,172 @@
 import { Injectable } from '@angular/core';
-import {
-  MissionDestination,
-  MissionNode
-} from '../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { finalize, take, takeUntil } from 'rxjs/operators';
 import { DeltaVGraph } from '../common/data-structures/delta-v-map/delta-v-graph';
 import { TravelCondition } from '../common/data-structures/delta-v-map/travel-condition';
-
-export class Preferences {
-  aerobraking: boolean;
-  planeChangeCost: number;
-  condition: TravelCondition;
-}
+import { CheckpointNode } from '../common/data-structures/delta-v-map/checkpoint-node';
+import { CheckpointEdge } from '../common/data-structures/delta-v-map/checkpoint-edge';
+import { Checkpoint } from '../common/data-structures/delta-v-map/checkpoint';
+import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
+import { StateCheckpoint } from './json-interfaces/state-checkpoint';
+import { SetupService } from './setup.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TravelService {
 
-  missionDestinations$ = new BehaviorSubject<MissionDestination[]>([]);
-  selectedDestination$ = new Subject<SpaceObject>();
-  unsubscribeSelectedDestination$ = new Subject<SpaceObject>();
-  isSelectingDestination$ = new Subject<boolean>();
-  preferences: Preferences = {
-    aerobraking: false,
-    planeChangeCost: 100,
-    condition: TravelCondition.Surface,
-  };
+  checkpoints$ = new BehaviorSubject<Checkpoint[]>([]);
+  selectedCheckpoint$ = new Subject<SpaceObject>();
+  unsubscribeSelectedCheckpoint$ = new Subject<SpaceObject>();
+  isSelectingCheckpoint$ = new Subject<boolean>();
 
   dvMap = new DeltaVGraph();
 
-  addMissionDestination() {
-    this.isSelectingDestination$.next(true);
-    this.unsubscribeSelectedDestination$.next();
+  constructor(private setupService: SetupService) {
+  }
 
-    this.selectedDestination$
+  addCheckpoint() {
+    this.isSelectingCheckpoint$.next(true);
+    this.unsubscribeSelectedCheckpoint$.next();
+
+    this.selectedCheckpoint$
       .pipe(
-        finalize(() => this.isSelectingDestination$.next(false)),
+        finalize(() => this.isSelectingCheckpoint$.next(false)),
         take(1),
-        takeUntil(this.unsubscribeSelectedDestination$))
-      .subscribe(so => {
-        this.addNode(so);
-      })
+        takeUntil(this.unsubscribeSelectedCheckpoint$))
+      .subscribe(so => this.addNode(so));
   }
 
   private addNode(so: SpaceObject) {
-    let availableConditions = this.dvMap.getAvailableConditionsFor(so.label);
+    let availableConditions = this.getAvailableConditionsByLabel(so.label);
 
-    let node = new MissionNode({
+    let node = new CheckpointNode({
       body: so,
       name: so.label,
-      condition: availableConditions.find(c => c === this.preferences.condition)
+      condition: availableConditions.find(c => c === this.setupService.checkpointPreferences$.value.condition)
         ?? availableConditions.first(),
       availableConditions,
-      aerobraking: this.preferences.aerobraking,
+      aerobraking: this.setupService.checkpointPreferences$.value.aerobraking,
       gravityAssist: false,
     });
 
-    let newList = [...this.missionDestinations$.value, {node}];
+    let newList = [...this.checkpoints$.value, new Checkpoint(node)];
 
-    this.updateMissionList(newList);
+    this.updateCheckpoints(newList);
   }
 
-  selectDestination(so: SpaceObject) {
-    let isSameAsLastNode = false;
-    if (isSameAsLastNode) {
+  private getAvailableConditionsByLabel(label: string): TravelCondition[] {
+    return this.dvMap.getAvailableConditionsFor(label);
+  }
+
+  selectCheckpoint(so: SpaceObject) {
+    this.selectedCheckpoint$.next(so);
+  }
+
+  resetCheckpoints() {
+    this.checkpoints$.next([]);
+
+    this.stopCheckpointSelection();
+  }
+
+  private stopCheckpointSelection() {
+    this.unsubscribeSelectedCheckpoint$.next();
+    this.isSelectingCheckpoint$.next(false);
+  }
+
+  removeCheckpoint(md: Checkpoint) {
+    let newList = [...this.checkpoints$.value.remove(md)];
+
+    this.updateCheckpoints(newList);
+
+    this.stopCheckpointSelection();
+  }
+
+  updateCheckpoint(checkpoint: Checkpoint) {
+    this.updateCheckpoints(this.checkpoints$.value);
+
+    this.stopCheckpointSelection();
+  }
+
+  updatePreferences(newPreferences: CheckpointPreferences) {
+    this.setupService.updateCheckpointPreferences(newPreferences);
+    if (!this.checkpoints$.value.length) {
       return;
     }
 
-    this.selectedDestination$.next(so);
-  }
-
-  resetMission() {
-    this.missionDestinations$.next([]);
-
-    this.unsubscribeSelectedDestination$.next();
-    this.isSelectingDestination$.next(false);
-  }
-
-  removeMissionDestination(md: MissionDestination) {
-    let newList = [...this.missionDestinations$.value.remove(md)];
-
-    this.updateMissionList(newList);
-
-    this.isSelectingDestination$.next(false);
-    this.unsubscribeSelectedDestination$.next();
-  }
-
-  updateMissionDestination(md: MissionDestination) {
-    this.updateMissionList(this.missionDestinations$.value);
-
-    this.isSelectingDestination$.next(false);
-    this.unsubscribeSelectedDestination$.next();
-  }
-
-  updatePreferences(newPreferences: Preferences) {
-    this.preferences = newPreferences;
-    if (!this.missionDestinations$.value.length) {
-      return;
-    }
-
-    this.missionDestinations$.value.forEach(({node}) => {
+    this.checkpoints$.value.forEach(({node}) => {
       node.aerobraking = newPreferences.aerobraking;
       let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
-      node.condition = availableConditions.find(c => c === this.preferences.condition).toString()
+      node.condition = availableConditions.find(c => c === this.setupService.checkpointPreferences$.value.condition).toString()
         ?? node.condition;
     });
 
-    this.updateMissionList(this.missionDestinations$.value);
+    this.updateCheckpoints(this.checkpoints$.value);
 
-    this.isSelectingDestination$.next(false);
-    this.unsubscribeSelectedDestination$.next();
+    this.stopCheckpointSelection();
   }
 
-  private updateMissionList(newList: MissionDestination[]) {
+  private updateCheckpoints(newList: Checkpoint[]) {
+    if (!newList.length) {
+      return this.checkpoints$.next([]);
+    }
+
     let nodeList = newList.map(md => md.node);
     nodeList = this.calculateNodeDetails(nodeList);
-    let updatedList = this.calculateEdgesDetails(nodeList);
-    this.missionDestinations$.next(updatedList);
+    let updatedList = this.calculateEdgesDetails(nodeList, newList.first());
+    this.checkpoints$.next(updatedList);
   }
 
-  private calculateEdgesDetails(nodes: MissionNode[]): MissionDestination[] {
-    let destinationEdges = nodes.windowed(2)
-      .map(([a, b]) => {
-        let trip = this.dvMap.getTripDetails(a, b, {planeChangeFactor: this.preferences.planeChangeCost * .01});
-        return {
-          edge: {
-            dv: trip.totalDv,
-            twr: (Math.random() * 2).toFixed(1).toNumber(),
-            pathDetails: trip.pathDetails,
-          },
-          node: b,
-        };
-      });
-
-    return [
-      {node: nodes[0]},
-      ...destinationEdges,
-    ];
-  }
-
-  private calculateNodeDetails(nodes: MissionNode[]): MissionNode[] {
+  private calculateNodeDetails(nodes: CheckpointNode[]): CheckpointNode[] {
     let processedNodes = nodes.windowed(2)
-      .map(([a, b]) => ({
-        ...b,
-        allowAerobraking: this.dvMap.getNodeAllowsAerobraking(b),
-        allowGravityAssist: false,
-      }));
+      .map(([a, b]) => {
+        b.allowAerobraking = this.dvMap.getNodeAllowsAerobraking(b);
+        b.allowGravityAssist = false;
+        return b;
+      });
 
     return [nodes.first(), ...processedNodes];
   }
 
+  private calculateEdgesDetails(nodes: CheckpointNode[], firstCheckpoint: Checkpoint): Checkpoint[] {
+    let destinationEdges = nodes.windowed(2)
+      .map(([a, b]) => {
+        let trip = this.dvMap.getTripDetails(
+          a,
+          b,
+          {planeChangeFactor: this.setupService.checkpointPreferences$.value.planeChangeCost * .01});
+        let edge = new CheckpointEdge({
+          dv: trip.totalDv,
+          pathDetails: trip.pathDetails,
+        });
+        return new Checkpoint(b, edge);
+      });
+
+    return [
+      firstCheckpoint,
+      ...destinationEdges,
+    ];
+  }
+
+  // TODO: add visual hover effect on planets while user is adding a checkpoint
   setHoverBody(body: SpaceObject, hover: boolean) {
 
   }
 
   unsubscribeFromComponent() {
-    this.selectedDestination$.complete();
-    this.unsubscribeSelectedDestination$.complete();
+    this.selectedCheckpoint$.complete();
+    this.unsubscribeSelectedCheckpoint$.complete();
   }
 
+  setCheckpoints(checkpoints: Checkpoint[]) {
+    this.updateCheckpoints(checkpoints);
+  }
+
+  buildState(jsonCheckpoints: StateCheckpoint[], getBodyByLabel: (label: string) => SpaceObject) {
+    let getAvailableConditions = (label: string) => this.getAvailableConditionsByLabel(label);
+    let checkpoints = jsonCheckpoints.map(json => Checkpoint.fromJson(json, getBodyByLabel, getAvailableConditions));
+
+    this.setCheckpoints(checkpoints);
+  }
 }

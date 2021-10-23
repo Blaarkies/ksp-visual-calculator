@@ -64,7 +64,7 @@
 </svg>
 
 <mat-icon class="icon-map-marker mouse-location-marker"
-          *ngIf="isAddingDestination"
+          *ngIf="isAddingCheckpoint"
           [@fade]
           [style.left.px]="(mouseLocation$ | async).x"
           [style.top.px]="(mouseLocation$ | async).y"

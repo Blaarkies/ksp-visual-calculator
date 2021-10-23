@@ -67,9 +67,12 @@ $cp-theme: mat-light-theme((
   --color-background-panel-orange-glass: rgba(var(--orange), .5);
   --color-background-panel-cosmic-blue-glass: rgba(var(--cosmic-blue), .5);
 
-  --color-primary-text: #{map-get($cp-primary, 700)};
-  --color-hyperlink-text: #263dc1;
-  --color-icon-muted: #666;
+  --color-text-primary: #{map-get($cp-primary, 700)};
+  --color-text-hyperlink: #263dc1;
+  --color-text-map-green: #cf0a;
+  --color-text-muted: #999;
 
+  --color-icon-muted: #666;
+  --color-icon-white: #fffc;
 }
 

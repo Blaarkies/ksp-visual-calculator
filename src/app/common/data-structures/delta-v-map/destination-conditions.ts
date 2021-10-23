@@ -15,11 +15,11 @@ export class DestinationConditions {
     }
 
     planeWith(other: DestinationConditions) {
-        return `${this.name}:${TravelCondition.PlaneWith}:${other.name}`
+        return `${this.name}:${TravelCondition.PlaneWith}:${other.name}`;
     }
 
     interceptWith(other: DestinationConditions) {
-        return `${this.name}:${TravelCondition.InterceptWith}:${other.name}`
+        return `${this.name}:${TravelCondition.InterceptWith}:${other.name}`;
     }
 
 }

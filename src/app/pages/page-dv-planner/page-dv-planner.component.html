@@ -1,23 +1,23 @@
 <div class="overlap-container page-container">
   <cp-universe-map #universeMap
                    [allowEdit]="false"
-                   (startDrag)="selectDestination($event)"
+                   (startDrag)="selectCheckpoint($event)"
                    (hoverBody)="missionJourney.hoverBody($event)">
     <cp-mission-journey abovePlanets
                         #missionJourney
                         class="z-index-top"
                         [scale]="universeMap.camera.scale"
-                        [missionDestinations]="missionDestinations$ | async"
-                        [isAddingDestination]="isSelectingDestination$ | async">
+                        [checkpoints]="checkpoints$ | async"
+                        [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
     </cp-mission-journey>
   </cp-universe-map>
 
     <cp-maneuver-sequence-panel class="maneuver-sequence-panel"
-                                [destinationList]="missionDestinations$ | async"
-                                (add)="addMissionDestination()"
-                                (reset)="resetMission()"
-                                (removeDestination)="removeMissionDestination($event)"
-                                (updateDestination)="updateMissionDestination($event)"
+                                [checkpoints]="checkpoints$ | async"
+                                (add)="addCheckpoint()"
+                                (resetAll)="resetMission()"
+                                (removeCheckpoint)="removeCheckpoint($event)"
+                                (updateCheckpoint)="updateCheckpoint($event)"
                                 (updatePreferences)="updatePreferences($event)">
     </cp-maneuver-sequence-panel>
 

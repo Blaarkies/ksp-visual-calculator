@@ -40,17 +40,17 @@
       <button mat-button
               class="condition"
               (click)="matSelect.open()">
-        {{conditionReadableMap[preferredCondition$.value]}}
+        {{conditionReadableMap[preferredCondition$.value.toString()]}}
       </button>
 
       <div class="text-white">Flight Situation</div>
     </div>
   </div>
 
-  <cp-msp-list [destinationList]="destinationList"
+  <cp-msp-list [checkpoints]="checkpoints"
                (add)="add.emit()"
-               (reset)="reset.emit()"
-               (removeNode)="removeDestination.emit($event)"
-               (updateNode)="updateDestination.emit($event)">
+               (resetAll)="resetAll.emit()"
+               (removeNode)="removeCheckpoint.emit($event)"
+               (updateNode)="updateCheckpoint.emit($event)">
   </cp-msp-list>
 </div>

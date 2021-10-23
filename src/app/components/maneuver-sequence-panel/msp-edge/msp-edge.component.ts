@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { MissionEdge } from '../maneuver-sequence-panel.component';
 import { PathDetailsReader } from './path-details-reader';
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
 import { BehaviorSubject } from 'rxjs';
+import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
 
 @Component({
   selector: 'cp-msp-edge',
@@ -26,11 +26,11 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MspEdgeComponent {
 
-  missionEdge: MissionEdge;
+  missionEdge: CheckpointEdge;
 
-  @Input() set details(value: MissionEdge) {
-    this.missionEdge = value;
-    this.path = value.pathDetails
+  @Input() set details(edge: CheckpointEdge) {
+    this.missionEdge = edge;
+    this.path = edge.pathDetails
       .map(details => {
         let {startNode, startCondition, combinationNode, endNode, endCondition, value, aerobraking} = details;
         return ({

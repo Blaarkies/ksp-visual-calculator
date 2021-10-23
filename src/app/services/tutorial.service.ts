@@ -260,7 +260,7 @@ export class TutorialService {
         break;
     }
 
-    return startTutorial
+    return startTutorial;
   }
 
   private getStepEndOfTutorial(): StepDetails {
@@ -284,7 +284,7 @@ export class TutorialService {
             mapTo(input)),
         },
       ],
-    } as StepDetails
+    } as StepDetails;
   }
 
   private getSignalCheckStepDetails(): StepDetails[] {

@@ -3,12 +3,10 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { Vector2 } from '../common/domain/vector2';
 import { ineeda } from 'ineeda';
-import { Draggable } from '../common/domain/space-objects/draggable';
-import objectContaining = jasmine.objectContaining;
-import createSpy = jasmine.createSpy;
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
-import { fakeAsync, tick } from '@angular/core/testing';
+import objectContaining = jasmine.objectContaining;
+import createSpy = jasmine.createSpy;
 
 let serviceType = CameraService;
 describe('CameraService', () => {

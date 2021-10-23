@@ -1,0 +1,42 @@
+
+.overlap-container {
+  display: grid;
+
+  > * {
+    grid-row: 1/1;
+    grid-column: 1/1;
+  }
+}
+
+.text-white {
+  color: white;
+}
+
+.text-mute {
+  color: var(--color-text-muted);
+}
+
+.overflow-visible {
+  overflow: visible;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.visible {
+  opacity: 1 !important;
+}
+
+.read-more {
+  color: var(--color-text-hyperlink);
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 4px;
+  margin: 0 -4px;
+  transition: .2s;
+
+  &:hover {
+    background-color: #00000007;
+  }
+}

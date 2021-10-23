@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MissionNode } from '../maneuver-sequence-panel.component';
 import { Icons } from '../../../common/domain/icons';
 import { MatSelectChange } from '@angular/material/select';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PathDetailsReader } from '../msp-edge/path-details-reader';
+import { CheckpointNode } from '../../../common/data-structures/delta-v-map/checkpoint-node';
 
 @Component({
   selector: 'cp-msp-node',
@@ -24,7 +24,7 @@ import { PathDetailsReader } from '../msp-edge/path-details-reader';
 })
 export class MspNodeComponent {
 
-  @Input() details: MissionNode;
+  @Input() details: CheckpointNode;
 
   @Output() remove = new EventEmitter();
   @Output() update = new EventEmitter();

@@ -1,0 +1,33 @@
+
+.cdk-global-scrollblock {
+  overflow: hidden;
+}
+
+[mat-dialog-actions] {
+  display: grid !important;
+  grid-auto-flow: column;
+
+  & > *:nth-last-child(n + 2) { // all except last
+    justify-self: start;
+  }
+
+  & > *:last-child {
+    justify-self: end;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .cdk-overlay-backdrop.mobile-friendly + .cdk-global-overlay-wrapper {
+    align-items: start !important;
+
+    .cdk-overlay-pane {
+      max-width: unset !important;
+      width: 100%;
+    }
+  }
+}
+
+.overlay-no-backdrop {
+  background-color: transparent;
+  pointer-events: none;
+}

@@ -1,15 +1,15 @@
 <div class="list-layout">
-  <div *ngFor="let destination of missionDestinations; trackBy: getNode"
+  <div *ngFor="let checkpoint of missionCheckpoints; trackBy: getNode"
        [@height]>
-    <cp-msp-edge *ngIf="destination.edge"
-                 [details]="destination.edge"></cp-msp-edge>
+    <cp-msp-edge *ngIf="checkpoint.edge"
+                 [details]="checkpoint.edge"></cp-msp-edge>
 
-    <cp-msp-node [details]="destination.node"
-                 (remove)="removeNode.emit(destination)"
-                 (update)="updateNode.emit(destination)"></cp-msp-node>
+    <cp-msp-node [details]="checkpoint.node"
+                 (remove)="removeNode.emit(checkpoint)"
+                 (update)="updateNode.emit(checkpoint)"></cp-msp-node>
   </div>
 
-  <div [@height] *ngIf="missionDestinations.length" class="divider"></div>
+  <div [@height] *ngIf="missionCheckpoints.length" class="divider"></div>
 </div>
 
 <div class="destination-controls">
@@ -26,13 +26,13 @@
           class="fix-disabled-color"
           color="warn"
           [matTooltip]="'Clear entire mission'"
-          [disabled]="!missionDestinations.length"
-          (click)="reset.emit()">
+          [disabled]="!missionCheckpoints.length"
+          (click)="resetAll.emit()">
     <mat-icon [svgIcon]="icons.Delete"></mat-icon>
   </button>
 </div>
 
-<div class="totals-layout text-white" *ngIf="missionDestinations.length">
+<div class="totals-layout text-white" *ngIf="missionCheckpoints.length">
   <div>Total delta-v</div>
   <div>{{deltaVTotal}} m/s</div>
 

@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/core';
-import { MissionDestination, MissionNode } from '../maneuver-sequence-panel/maneuver-sequence-panel.component';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { fromEvent, Observable } from 'rxjs';
-import { map, sampleTime, startWith, tap, throttleTime } from 'rxjs/operators';
+import { map, sampleTime, startWith } from 'rxjs/operators';
 import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
 import memoize from 'fast-memoize';
+import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
 
 class TripTrajectory {
   sequence: number;
@@ -24,11 +24,7 @@ class TripTrajectory {
 })
 export class MissionJourneyComponent implements AfterViewInit {
 
-  private oldMissionDestination: MissionDestination[];
-
-  @Input() set missionDestinations(value: MissionDestination[]) {
-    this.oldMissionDestination = value;
-
+  @Input() set checkpoints(value: Checkpoint[]) {
     if (!value.length) {
       this.trajectories = [];
       return;
@@ -36,7 +32,17 @@ export class MissionJourneyComponent implements AfterViewInit {
     this.updateTrajectories(value);
   }
 
-  private updateTrajectories(value: MissionDestination[]) {
+  @Input() scale: number;
+  @Input() isAddingCheckpoint: boolean;
+
+  icons = Icons;
+  mouseLocation$: Observable<Vector2>;
+  trajectories: TripTrajectory[] = [];
+
+  constructor(private cameraService: CameraService) {
+  }
+
+  private updateTrajectories(value: Checkpoint[]) {
     this.trajectories = value.windowed(2)
       .map(([a, b], i) => ({
         sequence: i + 1,
@@ -70,16 +76,6 @@ export class MissionJourneyComponent implements AfterViewInit {
       });
   }
 
-  @Input() scale: number;
-  @Input() isAddingDestination: boolean;
-
-  icons = Icons;
-  mouseLocation$: Observable<Vector2>;
-  trajectories: TripTrajectory[] = [];
-
-  constructor(private cameraService: CameraService) {
-  }
-
   ngAfterViewInit() {
     this.mouseLocation$ = fromEvent(
       this.cameraService.cameraController.nativeElement,
@@ -89,7 +85,7 @@ export class MissionJourneyComponent implements AfterViewInit {
         map((event: MouseEvent) => new Vector2(event.pageX, event.pageY)
           .subtractVector2(this.cameraService.location)
           .subtract(20, 48)),
-        startWith(Vector2.zero))
+        startWith(Vector2.zero));
   }
 
   hoverBody({body, hover}: { body: SpaceObject, hover: boolean }) {

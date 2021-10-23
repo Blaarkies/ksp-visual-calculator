@@ -8,12 +8,27 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { catchError, finalize, mapTo, mergeAll, startWith, take, takeUntil, timeout } from 'rxjs/operators';
 import { AuthErrorCode } from './auth-error-code';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'cp-account-details',
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [
+    CustomAnimation.fade,
+    CustomAnimation.height,
+    CustomAnimation.flipVertical,
+    trigger('slideOutVertical', [
+      state('false', style({height: 0, overflow: 'hidden', borderColor: '#0000'})),
+      state('true', style({height: '*', overflow: 'hidden'})),
+      transition('false => true', [
+        animate('.3s ease-in', style({height: '*', borderColor: '#0003'})),
+      ]),
+      transition('true => false', [
+        animate('.2s ease-out', style({height: 0})),
+      ]),
+    ])
+  ],
 })
 export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
 
@@ -27,6 +42,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   @Output() signOut = new EventEmitter();
 
   icons = Icons;
+  isPromoteOpen = false;
 
   constructor(private snackBar: MatSnackBar,
               public authService: AuthService) {

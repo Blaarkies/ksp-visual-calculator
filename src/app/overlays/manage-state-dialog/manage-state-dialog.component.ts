@@ -14,7 +14,7 @@ import { StateRow } from './state-row';
 import { StateEntry } from './state-entry';
 import { MatSelectionList } from '@angular/material/list';
 import { CustomAnimation } from '../../common/domain/custom-animation';
-import { AnalyticsService} from '../../services/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 
 export class ManageStateDialogData {
@@ -26,12 +26,12 @@ export class ManageStateDialogData {
   templateUrl: './manage-state-dialog.component.html',
   styleUrls: ['./manage-state-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade],
+  animations: [CustomAnimation.fade, CustomAnimation.height],
 })
 export class ManageStateDialogComponent extends WithDestroy() {
 
   context: UsableRoutes = this.data.context;
-  contextTitle = 'signal check';
+  contextTitle = '';
   nowState: StateRow;
   states$ = this.getStates().pipe(startWith([]));
 
@@ -64,6 +64,8 @@ export class ManageStateDialogComponent extends WithDestroy() {
         delay(0),
         takeUntil(this.destroy$))
       .subscribe(() => this.stateList.selectedOptions.select(this.stateList.options.first));
+
+    this.contextTitle = this.getContextTitle(this.context);
   }
 
   async editStateName(oldName: string, state: StateRow) {
@@ -110,16 +112,14 @@ export class ManageStateDialogComponent extends WithDestroy() {
   }
 
   private getStates(): Observable<StateRow[]> {
-    return this.stateService.getStates()
+    return this.stateService.getStatesInContext()
       .pipe(
+        // update the form control that handles renaming. it must validate for allowing only unique names
         tap(stateEntries => this.editNameControl = new FormControl('', [
           Validators.required,
           Validators.max(60),
           CommonValidators.uniqueString(stateEntries.map(s => s.name))])),
-        map((stateEntries: StateEntry[]) => stateEntries
-          .filter(entry => entry.context === this.context)
-          .sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)
-          .map(entry => new StateRow(entry))));
+        map((stateEntries: StateEntry[]) => stateEntries.map(entry => new StateRow(entry))));
   }
 
   loadState(selectedState: StateRow) {
@@ -244,6 +244,15 @@ export class ManageStateDialogComponent extends WithDestroy() {
 
   triggerImport() {
     this.fileUploadInput.nativeElement.click();
+  }
+
+  private getContextTitle(context: UsableRoutes): string {
+    switch (context) {
+      case UsableRoutes.SignalCheck:
+        return 'Signal Check';
+      case UsableRoutes.DvPlanner:
+        return 'Delta-v Planner';
+    }
   }
 
 }

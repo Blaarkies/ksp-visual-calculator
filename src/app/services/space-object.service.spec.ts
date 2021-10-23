@@ -69,7 +69,7 @@ describe('SpaceObjectService', () => {
 
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await service.buildStockState().toPromise();
+    await service.buildStockState(this.context).toPromise();
 
     expect(service.orbits$.value.length).toBe(1);
     expect(service.celestialBodies$.value.length).toBe(1);
@@ -103,7 +103,7 @@ describe('SpaceObjectService', () => {
 
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await service.buildStockState().toPromise();
+    await service.buildStockState(this.context).toPromise();
 
     let planets = service.celestialBodies$.value;
     let groundStationPlanet = planets.find(p => p.hasDsn);
@@ -136,7 +136,7 @@ describe('SpaceObjectService', () => {
     let lastStateString = JSON.stringify((savegameJson as any).default);
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await service.buildState(lastStateString).toPromise();
+    await service.buildState(lastStateString, parsedState.context).toPromise();
 
     let orbitsResult = service.orbits$.value;
     let celestialBodiesResult = service.celestialBodies$.value;

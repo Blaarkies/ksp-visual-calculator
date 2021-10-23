@@ -12,7 +12,7 @@ import { CraftDetails } from '../overlays/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
 import { filter, mapTo, take, takeUntil, tap } from 'rxjs/operators';
 import { CelestialBodyDetails } from '../overlays/celestial-body-details-dialog/celestial-body-details';
-import { AnalyticsService} from './analytics.service';
+import { AnalyticsService } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
@@ -20,6 +20,9 @@ import { StateSignalCheck } from './json-interfaces/state-signal-check';
 import { StateCraft } from './json-interfaces/state-craft';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { EventLogs } from './event-logs';
+import { UsableRoutes } from '../usable-routes';
+import { StateDvPlanner } from './json-interfaces/state-dv-planner';
+import { TravelService } from './travel.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +37,8 @@ export class SpaceObjectService extends WithDestroy() {
   constructor(private cameraService: CameraService,
               private setupService: SetupService,
               private analyticsService: AnalyticsService,
-              private spaceObjectContainerService: SpaceObjectContainerService) {
+              private spaceObjectContainerService: SpaceObjectContainerService,
+              private travelService: TravelService) {
     super();
   }
 
@@ -54,7 +58,7 @@ export class SpaceObjectService extends WithDestroy() {
         takeUntil(this.destroy$));
   }
 
-  buildStockState(): Observable<void> {
+  buildStockState(context: UsableRoutes): Observable<void> {
     return this.runWhenStockAssetsReady(({listOrbits, celestialBodies, antennae}) => {
       this.orbits$.next(listOrbits);
       this.celestialBodies$.next(celestialBodies);
@@ -73,72 +77,126 @@ export class SpaceObjectService extends WithDestroy() {
     });
   }
 
-  buildState(lastState: string): Observable<void> {
+  buildState(lastState: string, context: string): Observable<void> {
     let parseState = () => {
-      let state: StateSignalCheck = JSON.parse(lastState);
-      let {celestialBodies: jsonCelestialBodies, craft: jsonCraft} = state;
-
-      let antennaGetter = name => this.setupService.getAntenna(name);
-
-      let orbitsLabels = jsonCelestialBodies.filter(json => [
-        SpaceObjectType.types.planet,
-        SpaceObjectType.types.moon].includes(json.type))
-        .map(b => b.draggableHandle)
-        .map(draggable => {
-          let {parameters, color, type} = draggable.orbit;
-          let orbit = new Orbit(new OrbitParameterData(parameters.xy, parameters.r, parameters.parent), color);
-          orbit.type = SpaceObjectType.fromString(type);
-          return [draggable.label, orbit];
-        });
-      let orbitsLabelMap = new Map<string, Orbit>(orbitsLabels as []);
-      this.orbits$.next(orbitsLabels.map(([, orbit]) => orbit) as Orbit[]);
-
-      let bodies = jsonCelestialBodies.filter(json => [
-        SpaceObjectType.types.star,
-        SpaceObjectType.types.planet,
-        SpaceObjectType.types.moon].includes(json.type))
-        .map(b => [SpaceObject.fromJson(b, antennaGetter), b]);
-
-      let craftJsonMap = new Map<Craft, StateCraft>(jsonCraft.map(json => [Craft.fromJson(json, antennaGetter), json]));
-      let craft = Array.from(craftJsonMap.keys());
-      let bodiesChildrenMap = new Map<string, SpaceObject>([
-        ...bodies.map(([b]: [SpaceObject]) => [b.label, b]),
-        ...craft.map(c => [c.label, c]),
-      ] as any);
-      bodies.forEach(([b, json]: [SpaceObject, StateSpaceObject]) => {
-        let matchingOrbit = orbitsLabelMap.get(json.draggableHandle.label);
-        if (matchingOrbit) {
-          b.draggableHandle.addOrbit(matchingOrbit);
-        } else {
-          b.draggableHandle.parameterData = new OrbitParameterData(json.draggableHandle.location);
-          b.draggableHandle.updateConstrainLocation(OrbitParameterData.fromJson(b.draggableHandle.parameterData));
-        }
-
-        b.draggableHandle.setChildren(
-          json.draggableHandle.children
-            .map(c => bodiesChildrenMap.get(c))
-            // fix:v1.1.1:craft draggables were not removed from parent draggable
-            .filter(c => c !== undefined));
-
-        if (json.draggableHandle.orbit) {
-          let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
-          b.draggableHandle.updateConstrainLocation(parameters);
-        }
-      });
-      this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
-
-      craft.forEach(c => c.draggableHandle.updateConstrainLocation(
-        new OrbitParameterData(
-          craftJsonMap.get(c).location, // setChildren() above resets craft locations. get original location from json
-          undefined,
-          c.draggableHandle.parent)));
-      this.crafts$.next(craft);
-
-      this.transmissionLines$.next([]);
-      this.updateTransmissionLines();
+      switch (context as UsableRoutes) {
+        case UsableRoutes.SignalCheck:
+          this.buildStateSignalCheck(lastState);
+          break;
+        case UsableRoutes.DvPlanner:
+          this.buildStateDvPlanner(lastState);
+          break;
+      }
     };
 
     return this.runWhenStockAssetsReady(() => parseState());
+  }
+
+  private makeOrbitsLabelMap(jsonCelestialBodies: StateSpaceObject[]) {
+    let orbitsLabels = jsonCelestialBodies.filter(json => [
+      SpaceObjectType.types.planet,
+      SpaceObjectType.types.moon].includes(json.type))
+      .map(b => b.draggableHandle)
+      .map(draggable => {
+        let {parameters, color, type} = draggable.orbit;
+        let orbit = new Orbit(new OrbitParameterData(parameters.xy, parameters.r, parameters.parent), color);
+        orbit.type = SpaceObjectType.fromString(type);
+        return [draggable.label, orbit];
+      });
+    let orbitsLabelMap = new Map<string, Orbit>(orbitsLabels as []);
+    this.orbits$.next(orbitsLabels.map(([, orbit]) => orbit) as Orbit[]);
+    return orbitsLabelMap;
+  }
+
+  private buildStateSignalCheck(lastState: string) {
+    let state: StateSignalCheck = JSON.parse(lastState);
+    let {celestialBodies: jsonCelestialBodies, craft: jsonCraft} = state;
+
+    let orbitsLabelMap = this.makeOrbitsLabelMap(jsonCelestialBodies);
+
+    let antennaGetter = name => this.setupService.getAntenna(name);
+
+    let bodies = jsonCelestialBodies.filter(json => [
+      SpaceObjectType.types.star,
+      SpaceObjectType.types.planet,
+      SpaceObjectType.types.moon].includes(json.type))
+      .map(b => [SpaceObject.fromJson(b, antennaGetter), b]);
+
+    let craftJsonMap = new Map<Craft, StateCraft>(jsonCraft.map(json => [Craft.fromJson(json, antennaGetter), json]));
+    let craft = Array.from(craftJsonMap.keys());
+    let bodiesChildrenMap = new Map<string, SpaceObject>([
+      ...bodies.map(([b]: [SpaceObject]) => [b.label, b]),
+      ...craft.map(c => [c.label, c]),
+    ] as any);
+    bodies.forEach(([b, json]: [SpaceObject, StateSpaceObject]) => {
+      let matchingOrbit = orbitsLabelMap.get(json.draggableHandle.label);
+      if (matchingOrbit) {
+        b.draggableHandle.addOrbit(matchingOrbit);
+      } else {
+        b.draggableHandle.parameterData = new OrbitParameterData(json.draggableHandle.location);
+        b.draggableHandle.updateConstrainLocation(OrbitParameterData.fromJson(b.draggableHandle.parameterData));
+      }
+
+      b.draggableHandle.setChildren(
+        json.draggableHandle.children
+          .map(c => bodiesChildrenMap.get(c))
+          // @fix v1.1.1:craft draggables were not removed from parent draggable
+          .filter(c => c !== undefined));
+
+      if (json.draggableHandle.orbit) {
+        let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
+        b.draggableHandle.updateConstrainLocation(parameters);
+      }
+    });
+    this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
+
+    craft.forEach(c => c.draggableHandle.updateConstrainLocation(
+      new OrbitParameterData(
+        craftJsonMap.get(c).location, // setChildren() above resets craft locations. get original location from json
+        undefined,
+        c.draggableHandle.parent)));
+    this.crafts$.next(craft);
+
+    this.transmissionLines$.next([]);
+    this.updateTransmissionLines();
+  }
+
+  private buildStateDvPlanner(lastState: string) {
+    let state: StateDvPlanner = JSON.parse(lastState);
+    let {celestialBodies: jsonCelestialBodies, checkpoints: jsonCheckpoints} = state;
+
+    let orbitsLabelMap = this.makeOrbitsLabelMap(jsonCelestialBodies);
+
+    let bodies = jsonCelestialBodies.filter(json => [
+      SpaceObjectType.types.star,
+      SpaceObjectType.types.planet,
+      SpaceObjectType.types.moon].includes(json.type))
+      .map(b => [SpaceObject.fromJson(b, () => null), b]);
+
+    let bodiesChildrenMap = new Map<string, SpaceObject>([
+      ...bodies.map(([b]: [SpaceObject]) => [b.label, b])] as any);
+    bodies.forEach(([b, json]: [SpaceObject, StateSpaceObject]) => {
+      let matchingOrbit = orbitsLabelMap.get(json.draggableHandle.label);
+      if (matchingOrbit) {
+        b.draggableHandle.addOrbit(matchingOrbit);
+      } else {
+        b.draggableHandle.parameterData = new OrbitParameterData(json.draggableHandle.location);
+        b.draggableHandle.updateConstrainLocation(OrbitParameterData.fromJson(b.draggableHandle.parameterData));
+      }
+
+      b.draggableHandle.setChildren(
+        json.draggableHandle.children
+          .map(c => bodiesChildrenMap.get(c)));
+
+      if (json.draggableHandle.orbit) {
+        let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
+        b.draggableHandle.updateConstrainLocation(parameters);
+      }
+    });
+    this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
+
+    let getBodyByLabel = (label: string) => this.celestialBodies$.value.find(b => b.label.like(label));
+    this.travelService.buildState(jsonCheckpoints, getBodyByLabel);
   }
 
   private static getIndexOfSameCombination = (parentItem, list) => list.findIndex(item => item.every(so => parentItem.includes(so)));

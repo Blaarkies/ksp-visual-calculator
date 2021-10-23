@@ -1,7 +1,7 @@
 import { DestinationConditions } from './destination-conditions';
 import { GraphDataStructure, NodeGraph } from './graph-data-structure';
-import { MissionNode } from '../../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { TravelCondition } from './travel-condition';
+import { CheckpointNode } from './checkpoint-node';
 
 type DeltaVStep = (string | number)[];
 
@@ -46,8 +46,8 @@ export class DeltaVGraph {
    * but single edges for complex conditions.
    */
   private setupEdges(nodeA: string, nodeB: string, specialTravelConditions: string[], weight: number) {
-    let [startNodeA, conditionA, endNodeA] = nodeA.split(SEP);
-    let [startNodeB, conditionB, endNodeB] = nodeB.split(SEP);
+    let [, conditionA, ] = nodeA.split(SEP);
+    let [, conditionB, ] = nodeB.split(SEP);
 
     if (specialTravelConditions.includes(conditionA)
       || specialTravelConditions.includes(conditionB)) {
@@ -208,11 +208,11 @@ export class DeltaVGraph {
     ];
   }
 
-  private stringifyNode(node: MissionNode) {
+  private stringifyNode(node: CheckpointNode) {
     return `${node.name.toLowerCase()}${SEP}${node.condition}`;
   }
 
-  getTripDetails(nodeA: MissionNode, nodeB: MissionNode, options: { planeChangeFactor?: number } = {}): TripDetails {
+  getTripDetails(nodeA: CheckpointNode, nodeB: CheckpointNode, options: { planeChangeFactor?: number } = {}): TripDetails {
     let path = this.vacuumGraph.shortestPath(this.stringifyNode(nodeA), this.stringifyNode(nodeB));
 
     let pathDetails = path.map(nodeId => {
@@ -250,7 +250,7 @@ export class DeltaVGraph {
     return this.nodeAbilitiesMap.get(bodyName.toLowerCase()).allowConditions;
   }
 
-  getNodeAllowsAerobraking(node: MissionNode): boolean {
+  getNodeAllowsAerobraking(node: CheckpointNode): boolean {
     return this.nodeAbilitiesMap.get(node.name.toLowerCase()).allowAerobraking;
   }
 
