@@ -9,7 +9,7 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
 } from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import {
   ManageStateDialogComponent,
@@ -274,12 +274,22 @@ export class HudService {
         },
       }, undefined, false, undefined,
       {
-        unavailable$: this.authService.user$.pipe(map(user => user === null), startWith(true)),
-        tooltip: 'Save games are only available when signed in',
-        action: () => {
-          this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
+        unavailable$: this.authService.user$.pipe(map(user => user === null || !user?.isCustomer), startWith(true)),
+        tooltip: `Save games are only available after supporting on 'buymeacoffee.com/Blaarkies'`,
+        action: async () => {
+          let user = await this.authService.user$.pipe(take(1)).toPromise();
 
-          this.dialog.open(AccountDialogComponent);
+          if (!user) {
+            this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
+            this.dialog.open(AccountDialogComponent);
+            return Promise.resolve();
+          }
+
+          if (user?.isCustomer === false) {
+            this.analyticsService.logEvent('Call coffee dialog from Edit Universe', {category: EventLogs.Category.Coffee});
+            this.dialog.open(BuyMeACoffeeDialogComponent);
+            return Promise.resolve();
+          }
         },
       },
     );

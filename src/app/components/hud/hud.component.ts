@@ -20,6 +20,9 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 import { EventLogs } from '../../services/event-logs';
 import { UsableRoutes } from '../../usable-routes';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
+import { CustomAnimation } from '../../common/domain/custom-animation';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -38,6 +41,7 @@ export class ActionGroupType {
   selector: 'cp-hud',
   templateUrl: './hud.component.html',
   styleUrls: ['./hud.component.scss'],
+  animations: [CustomAnimation.fade],
 })
 export class HudComponent extends WithDestroy() {
 
@@ -54,6 +58,7 @@ export class HudComponent extends WithDestroy() {
   cameraZoomLimits = CameraService.zoomLimits;
   scaleToShowMoons = CameraService.scaleToShowMoons;
   pageContextInfo: { icon, tooltip };
+  hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
 
   get scale(): number {
     return this.cameraService.scale;
@@ -61,6 +66,7 @@ export class HudComponent extends WithDestroy() {
 
   constructor(private hudService: HudService,
               private analyticsService: AnalyticsService,
+              private auth: AuthService,
               private dialog: MatDialog,
               private cameraService: CameraService,
               breakpointObserver: BreakpointObserver,
@@ -150,4 +156,5 @@ export class HudComponent extends WithDestroy() {
       .pipe(takeUntil(this.destroy$))
       .subscribe();
   }
+
 }

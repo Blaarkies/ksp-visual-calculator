@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable, of, zip } from 'rxjs';
+import { EMPTY, interval, Observable, of, zip } from 'rxjs';
 import { Router } from '@angular/router';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { DataService, User } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import UserCredential = firebase.auth.UserCredential;
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { EventLogs } from './event-logs';
+import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AnalyticsService } from './analytics.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,13 +25,32 @@ export class AuthService {
               private router: Router,
               private dataService: DataService,
               private stateService: StateService,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private dialog: MatDialog,
+              private analyticsService: AnalyticsService,
+              private http: HttpClient) {
     this.user$ = afAuth.authState
       .pipe(
         tap(user => this.dataService.updateUserId(user?.uid)),
         switchMap(user => user
           ? this.dataService.getRef<User>(`users/${user.uid}`).valueChanges()
           : of(null)));
+
+    this.user$.pipe(
+      distinctUntilChanged(),
+      tap(() => console.log('after distinct')),
+      switchMap(u => u?.isCustomer
+        ? EMPTY
+        : interval(2 * 60 * 1e3)),
+      tap(() => console.log('after customer check')),
+      switchMap(() => this.snackBar.open('Would you like to support the developer?', 'Yes', {duration: 15e3}).onAction()),
+      tap(() => console.log('after snackbar')),
+      tap(() => {
+        this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});
+        this.dialog.open(BuyMeACoffeeDialogComponent);
+      }),
+    )
+      .subscribe();
 
     stateService.earlyState
       .pipe(
@@ -62,7 +86,7 @@ export class AuthService {
   async googleSignIn() {
     const provider = new firebase.auth.GoogleAuthProvider();
     const credential = await this.afAuth.signInWithPopup(provider);
-    await this.updateUserData(credential.user);
+    this.updateUserData(credential.user);
     await this.loadUserLastSaveGame();
   }
 
@@ -74,25 +98,29 @@ export class AuthService {
   }
 
   private async updateUserData(user): Promise<void> {
+    let isCustomer = user.isCustomer || await this.isCustomer(user.email);
+
     const data = {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
       photoURL: user.photoURL,
+      isCustomer,
     };
 
-    return this.dataService.getRef(`users/${user.uid}`).set(data, {merge: true});
+    return await this.dataService.getRef(`users/${user.uid}`).set(data, {merge: true});
   }
 
   async emailSignIn(email: string, password: string): Promise<UserCredential> {
     let credential = await this.afAuth.signInWithEmailAndPassword(email, password);
+    this.updateUserData(credential.user);
     await this.loadUserLastSaveGame();
     return credential;
   }
 
   async emailSignUp(email: string, password: string): Promise<UserCredential> {
     let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-    await this.updateUserData(credential.user);
+    this.updateUserData(credential.user);
     // todo: check that current "tutorial" game is saved
     return credential;
   }
@@ -127,5 +155,18 @@ export class AuthService {
     await this.stateService.loadState(newestState?.state).pipe(take(1)).toPromise();
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
+  }
+
+  private async isCustomer(email: string): Promise<boolean> {
+    let projectId = 'ksp-commnet-planner';
+    let endpoint = 'isEmailACustomer';
+
+    return await this.http
+      .get<{ isCustomer: boolean }>(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`, {
+        params: new HttpParams()
+          .append('email', email),
+      })
+      .pipe(map(result => result.isCustomer))
+      .toPromise();
   }
 }

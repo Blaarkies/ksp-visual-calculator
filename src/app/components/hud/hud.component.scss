@@ -57,6 +57,18 @@
     mat-icon {
       color: var(--color-icon-white);
     }
+
+    span.mat-badge-content {
+      animation: kf-animate-badge 3s linear infinite alternate;
+
+      @keyframes kf-animate-badge {
+        0% {opacity: 0}
+        70% {opacity: 0}
+        80% {opacity: 1}
+        90% {opacity: 1}
+        100% {opacity: .5}
+      }
+    }
   }
 
   mat-icon {
