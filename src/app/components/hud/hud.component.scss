@@ -55,6 +55,7 @@
 
   .buy-me-a-coffee {
     mat-icon {
+      overflow: hidden;
       color: var(--color-icon-white);
     }
 

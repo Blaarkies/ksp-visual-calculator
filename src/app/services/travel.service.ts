@@ -10,6 +10,8 @@ import { Checkpoint } from '../common/data-structures/delta-v-map/checkpoint';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { SetupService } from './setup.service';
+import { EventLogs } from './event-logs';
+import { AnalyticsService } from './analytics.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,8 @@ export class TravelService {
 
   dvMap = new DeltaVGraph();
 
-  constructor(private setupService: SetupService) {
+  constructor(private setupService: SetupService,
+              private analyticsService: AnalyticsService) {
   }
 
   addCheckpoint() {
@@ -54,6 +57,11 @@ export class TravelService {
     let newList = [...this.checkpoints$.value, new Checkpoint(node)];
 
     this.updateCheckpoints(newList);
+
+    this.analyticsService.logEvent('Add checkpoint', {
+      category: EventLogs.Category.DeltaV,
+      checkpoints: newList.map(n => n.node.name),
+    });
   }
 
   private getAvailableConditionsByLabel(label: string): TravelCondition[] {
@@ -68,6 +76,10 @@ export class TravelService {
     this.checkpoints$.next([]);
 
     this.stopCheckpointSelection();
+
+    this.analyticsService.logEvent('Reset checkpoints', {
+      category: EventLogs.Category.DeltaV,
+    });
   }
 
   private stopCheckpointSelection() {
@@ -75,12 +87,17 @@ export class TravelService {
     this.isSelectingCheckpoint$.next(false);
   }
 
-  removeCheckpoint(md: Checkpoint) {
-    let newList = [...this.checkpoints$.value.remove(md)];
+  removeCheckpoint(checkpoint: Checkpoint) {
+    let newList = [...this.checkpoints$.value.remove(checkpoint)];
 
     this.updateCheckpoints(newList);
 
     this.stopCheckpointSelection();
+
+    this.analyticsService.logEvent('Reset checkpoints', {
+      category: EventLogs.Category.DeltaV,
+      checkpoint: checkpoint.node.name,
+    });
   }
 
   updateCheckpoint(checkpoint: Checkpoint) {
@@ -91,6 +108,7 @@ export class TravelService {
 
   updatePreferences(newPreferences: CheckpointPreferences) {
     this.setupService.updateCheckpointPreferences(newPreferences);
+
     if (!this.checkpoints$.value.length) {
       return;
     }
@@ -98,7 +116,8 @@ export class TravelService {
     this.checkpoints$.value.forEach(({node}) => {
       node.aerobraking = newPreferences.aerobraking;
       let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
-      node.condition = availableConditions.find(c => c === this.setupService.checkpointPreferences$.value.condition).toString()
+      node.condition = availableConditions.find(c =>
+          c === this.setupService.checkpointPreferences$.value.condition).toString()
         ?? node.condition;
     });
 

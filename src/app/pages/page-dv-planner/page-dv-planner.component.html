@@ -12,13 +12,7 @@
     </cp-mission-journey>
   </cp-universe-map>
 
-    <cp-maneuver-sequence-panel class="maneuver-sequence-panel"
-                                [checkpoints]="checkpoints$ | async"
-                                (add)="addCheckpoint()"
-                                (resetAll)="resetMission()"
-                                (removeCheckpoint)="removeCheckpoint($event)"
-                                (updateCheckpoint)="updateCheckpoint($event)"
-                                (updatePreferences)="updatePreferences($event)">
-    </cp-maneuver-sequence-panel>
+  <cp-maneuver-sequence-panel class="maneuver-sequence-panel">
+  </cp-maneuver-sequence-panel>
 
 </div>

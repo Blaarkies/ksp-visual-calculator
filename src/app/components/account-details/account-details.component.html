@@ -41,12 +41,15 @@
           <mat-icon [svgIcon]="icons.ChevronDown" [@flipVertical]="isPromoteOpen"></mat-icon>
         </button>
 
-        <ul class="promote-reasons" [@slideOutVertical]="isPromoteOpen">
-          <li>Continue where you left off</li>
-          <li>Manage multiple save games</li>
-          <li>Load your save games from multiple devices</li>
-          <li>Import/Export save games to share with friends</li>
-        </ul>
+        <div class="promote-reasons" [@slideOutVertical]="isPromoteOpen">
+          <div>Signed in accounts can access more features:</div>
+          <ul>
+            <li>Continue where you left off</li>
+            <li>Manage multiple save games</li>
+            <li>Load your save games from multiple devices</li>
+            <li>Import/Export save games to share with friends</li>
+          </ul>
+        </div>
       </div>
     </div>
 

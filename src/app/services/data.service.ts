@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument, SetOptions } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { BehaviorSubject, timer } from 'rxjs';
+import { map, mapTo, take } from 'rxjs/operators';
 import firebase from 'firebase/app';
 import FieldValue = firebase.firestore.FieldValue;
 import GetOptions = firebase.firestore.GetOptions;
@@ -29,6 +29,12 @@ export class DataService {
     return this.afs.doc<T>(path);
   }
 
+  private checkUserSignIn(): Promise<void> {
+    return new Promise((resolve, reject) => this.userId$.value
+      ? resolve()
+      : reject('No user signed in, cannot use database without user authentication.'));
+  }
+
   async write(table: 'users' | 'states',
               fields: {},
               options: SetOptions = {}): Promise<void> {
@@ -45,10 +51,13 @@ export class DataService {
       .update({[field]: FieldValue.delete()});
   }
 
-  private checkUserSignIn(): Promise<void> {
-    return new Promise((resolve, reject) => this.userId$.value
-      ? resolve()
-      : reject('No user signed in, cannot use database without user authentication.'));
+  async read<T>(table: 'users' | 'states', id: string, options: GetOptions = {}): Promise<T> {
+    await this.checkUserSignIn();
+
+    let entry = await this.afs.doc<T>(`${table}/${id}`)
+      .get(options)
+      .toPromise();
+    return entry.data();
   }
 
   async readAll<T>(table: 'users' | 'states', options: GetOptions = {}): Promise<T[]> {
@@ -61,8 +70,9 @@ export class DataService {
       .toPromise();
   }
 
-  updateUserId(uid: string) {
+  async updateUserId(uid: string): Promise<void> {
     this.userId$.next(uid);
+    return timer(0).pipe(mapTo(void 0)).toPromise();
   }
 
 }

@@ -5,6 +5,8 @@ import { PathDetailsReader } from './path-details-reader';
 import { ConnectionPositionPair } from '@angular/cdk/overlay';
 import { BehaviorSubject } from 'rxjs';
 import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
+import { EventLogs } from '../../../services/event-logs';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Component({
   selector: 'cp-msp-edge',
@@ -50,8 +52,17 @@ export class MspEdgeComponent {
   positionLeftCenter = [new ConnectionPositionPair(
     {originX: 'start', originY: 'center'}, {overlayX: 'start', overlayY: 'center'})];
 
+  constructor(private analyticsService: AnalyticsService) {
+  }
+
   toggleSidePanel() {
     this.isPanelOpen = !this.isPanelOpen;
+
+    if (this.isPanelOpen) {
+      this.analyticsService.logEvent('View trip details', {
+        category: EventLogs.Category.DeltaV,
+      });
+    }
   }
 
 }

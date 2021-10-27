@@ -1,5 +1,4 @@
 .details-layout {
-
   display: grid;
   gap: 20px;
   margin-bottom: 20px;
@@ -52,6 +51,14 @@
         border-top: none;
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
+
+        ul {
+          margin-left: 1em;
+        }
+
+        div {
+          margin-left: .3em;
+        }
       }
     }
   }

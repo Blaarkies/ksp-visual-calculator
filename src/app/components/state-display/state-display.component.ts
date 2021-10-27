@@ -5,6 +5,7 @@ import { StateSignalCheck } from '../../services/json-interfaces/state-signal-ch
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
+import { StateDvPlanner } from '../../services/json-interfaces/state-dv-planner';
 
 @Component({
   selector: 'cp-state-display',
@@ -14,12 +15,14 @@ import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 export class StateDisplayComponent {
 
   private stateRow: StateRow;
+
   @Input() set state(value: StateRow) {
     this.stateRow = value;
     this.updateProperties();
   }
 
   private contextType: UsableRoutes;
+
   @Input() set context(value: UsableRoutes) {
     this.contextType = value;
     this.updateProperties();
@@ -63,6 +66,23 @@ export class StateDisplayComponent {
         ['DSN', bestDsn],
         ['DSN at', dsnPlanets.map(b => b.draggableHandle.label).join(', ')],
       ];
+
+      properties.push(...newProperties);
+    }
+
+    if (this.contextType === UsableRoutes.DvPlanner) {
+      let contentsDP = contents as StateDvPlanner;
+
+      let newProperties = [
+        ['Checkpoints', contentsDP.checkpoints.length.toString()],
+        ['Start', contentsDP.checkpoints.first().name],
+      ];
+
+      if (contentsDP.checkpoints.length > 1) {
+        newProperties.push(
+          ['End', contentsDP.checkpoints.last().name],
+        );
+      }
 
       properties.push(...newProperties);
     }

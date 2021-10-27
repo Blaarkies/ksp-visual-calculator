@@ -1,4 +1,7 @@
 .frame {
+  position: absolute;
+  z-index: 1;
+
   --width: 150px;
   width: var(--width);
   overflow-x: hidden;

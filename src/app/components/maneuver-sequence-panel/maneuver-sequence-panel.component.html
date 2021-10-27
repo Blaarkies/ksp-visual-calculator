@@ -1,8 +1,8 @@
-<div class="panel-layout">
+<div class="panel-layout frosted-glass">
   <div class="panel-header">
     <div class="text-white">Mission Checkpoints</div>
-    <button mat-icon-button class="icon"
-            (click)="isOptionsOpen = !isOptionsOpen">
+    <button mat-icon-button
+            (click)="toggleOptions()">
       <mat-icon [svgIcon]="icons.Configure"></mat-icon>
     </button>
   </div>
@@ -47,10 +47,10 @@
     </div>
   </div>
 
-  <cp-msp-list [checkpoints]="checkpoints"
-               (add)="add.emit()"
-               (resetAll)="resetAll.emit()"
-               (removeNode)="removeCheckpoint.emit($event)"
-               (updateNode)="updateCheckpoint.emit($event)">
+  <cp-msp-list [checkpoints]="checkpoints$ | async"
+               (add)="addCheckpoint()"
+               (resetAll)="resetMission()"
+               (removeNode)="removeCheckpoint($event)"
+               (updateNode)="updateCheckpoint($event)">
   </cp-msp-list>
 </div>

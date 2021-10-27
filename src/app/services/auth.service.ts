@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { EMPTY, interval, Observable, of, zip } from 'rxjs';
+import { Observable, of, timer, zip } from 'rxjs';
 import { Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, publishReplay, refCount, switchMap, take, tap } from 'rxjs/operators';
 import { DataService, User } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import UserCredential = firebase.auth.UserCredential;
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { EventLogs } from './event-logs';
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
+import UserCredential = firebase.auth.UserCredential;
 
 @Injectable({
   providedIn: 'root',
@@ -31,20 +31,25 @@ export class AuthService {
               private http: HttpClient) {
     this.user$ = afAuth.authState
       .pipe(
-        tap(user => this.dataService.updateUserId(user?.uid)),
-        switchMap(user => user
-          ? this.dataService.getRef<User>(`users/${user.uid}`).valueChanges()
-          : of(null)));
+        map(user => user?.uid),
+        distinctUntilChanged(),
+        tap(uid => this.dataService.updateUserId(uid)),
+        switchMap(uid => uid
+          ? this.dataService.getRef<User>(`users/${uid}`).valueChanges()
+          : of(null)),
+        publishReplay(1),
+        refCount());
 
+    let minute = 60 * 1e3;
     this.user$.pipe(
       distinctUntilChanged(),
-      tap(() => console.log('after distinct')),
-      switchMap(u => u?.isCustomer
-        ? EMPTY
-        : interval(2 * 60 * 1e3)),
-      tap(() => console.log('after customer check')),
-      switchMap(() => this.snackBar.open('Would you like to support the developer?', 'Yes', {duration: 15e3}).onAction()),
-      tap(() => console.log('after snackbar')),
+      filter(u => !(u?.isCustomer)),
+      switchMap(() => timer(2 * minute, 5 * minute)),
+      switchMap(() => this.snackBar.open(
+        'Would you like to support the developer?',
+        'Yes',
+        {duration: 15e3, panelClass: 'promote-flash'})
+        .onAction()),
       tap(() => {
         this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});
         this.dialog.open(BuyMeACoffeeDialogComponent);
@@ -86,8 +91,28 @@ export class AuthService {
   async googleSignIn() {
     const provider = new firebase.auth.GoogleAuthProvider();
     const credential = await this.afAuth.signInWithPopup(provider);
-    this.updateUserData(credential.user);
+    await this.updateDataService(credential);
+
+    await this.updateUserData(credential.user);
     await this.loadUserLastSaveGame();
+  }
+
+  async emailSignIn(email: string, password: string): Promise<UserCredential> {
+    let credential = await this.afAuth.signInWithEmailAndPassword(email, password);
+    await this.updateDataService(credential);
+
+    await this.updateUserData(credential.user);
+    await this.loadUserLastSaveGame();
+    return credential;
+  }
+
+  async emailSignUp(email: string, password: string): Promise<UserCredential> {
+    let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+    await this.updateDataService(credential);
+
+    await this.updateUserData(credential.user);
+    // todo: check that current "tutorial" game is saved
+    return credential;
   }
 
   async signOut() {
@@ -98,7 +123,8 @@ export class AuthService {
   }
 
   private async updateUserData(user): Promise<void> {
-    let isCustomer = user.isCustomer || await this.isCustomer(user.email);
+    let dbUser = await this.dataService.read<User>('users', user.uid);
+    let isCustomer = dbUser.isCustomer || await this.isCustomer(user.email);
 
     const data = {
       uid: user.uid,
@@ -108,22 +134,9 @@ export class AuthService {
       isCustomer,
     };
 
-    return await this.dataService.getRef(`users/${user.uid}`).set(data, {merge: true});
+    return await this.dataService.write('users', data);
   }
 
-  async emailSignIn(email: string, password: string): Promise<UserCredential> {
-    let credential = await this.afAuth.signInWithEmailAndPassword(email, password);
-    this.updateUserData(credential.user);
-    await this.loadUserLastSaveGame();
-    return credential;
-  }
-
-  async emailSignUp(email: string, password: string): Promise<UserCredential> {
-    let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
-    this.updateUserData(credential.user);
-    // todo: check that current "tutorial" game is saved
-    return credential;
-  }
 
   async resetPassword(email: string): Promise<void> {
     if (!email) {
@@ -157,6 +170,11 @@ export class AuthService {
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
 
+  /**
+   * Calls functions/src/buy-me-a-coffee **isEmailACustomer** to determine if this email exists on
+   * the Buy Me a Coffee supporters list.
+   * @param email string
+   */
   private async isCustomer(email: string): Promise<boolean> {
     let projectId = 'ksp-commnet-planner';
     let endpoint = 'isEmailACustomer';
@@ -169,4 +187,9 @@ export class AuthService {
       .pipe(map(result => result.isCustomer))
       .toPromise();
   }
+
+  private updateDataService(credential: UserCredential): Promise<void> {
+    return this.dataService.updateUserId(credential.user.uid);
+  }
+
 }
