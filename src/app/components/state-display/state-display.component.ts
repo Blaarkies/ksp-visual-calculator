@@ -75,8 +75,13 @@ export class StateDisplayComponent {
 
       let newProperties = [
         ['Checkpoints', contentsDP.checkpoints.length.toString()],
-        ['Start', contentsDP.checkpoints.first().name],
       ];
+
+      if (contentsDP.checkpoints.length > 0) {
+        newProperties.push(
+          ['Start', contentsDP.checkpoints.first().name],
+        );
+      }
 
       if (contentsDP.checkpoints.length > 1) {
         newProperties.push(

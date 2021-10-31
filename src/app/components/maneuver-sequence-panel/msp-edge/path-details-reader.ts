@@ -92,6 +92,8 @@ export class PathDetailsReader {
     switch (firstTravelCondition) {
       case TravelCondition.PlaneWith: // PlaneWith always assumes an Intercept trajectory
         return `Capture into ${endNode} ${endCondition}`;
+      case TravelCondition.InterceptWith:
+        return `Capture into ${endNode} ${endCondition}`;
       case TravelCondition.Surface:
         return `Launch from ${startNode} to ${endCondition}`;
       case TravelCondition.LowOrbit:

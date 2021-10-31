@@ -162,6 +162,8 @@ export class TravelService {
         return new Checkpoint(b, edge);
       });
 
+    firstCheckpoint.edge = undefined;
+
     return [
       firstCheckpoint,
       ...destinationEdges,
