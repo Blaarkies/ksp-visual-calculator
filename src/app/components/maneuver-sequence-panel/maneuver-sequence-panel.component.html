@@ -29,7 +29,7 @@
       <mat-form-field class="hidden">
         <mat-select [value]="preferredCondition$.value"
                     (selectionChange)="setPreferredCondition($event)"
-                    #matSelect>
+                    #selectSituation>
           <mat-option *ngFor="let condition of availableConditions"
                       [value]="condition">
             {{conditionReadableMap[condition]}}
@@ -38,12 +38,33 @@
       </mat-form-field>
 
       <button mat-button
-              class="condition"
-              (click)="matSelect.open()">
+              class="button-select"
+              (click)="selectSituation.open()">
         {{conditionReadableMap[preferredCondition$.value.toString()]}}
       </button>
 
       <div class="text-white">Flight Situation</div>
+    </div>
+
+    <div class="route-type">
+      <mat-form-field class="hidden">
+        <mat-select [value]="routeType$.value"
+                    (selectionChange)="setRouteType($event)"
+                    #routeSelect>
+          <mat-option *ngFor="let routeType of routeTypes"
+                      [value]="routeType">
+            {{routeTypeReadableMap[routeType]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button
+              class="button-select"
+              (click)="routeSelect.open()">
+        {{routeTypeReadableMap[routeType$.value.toString()]}}
+      </button>
+
+      <div class="text-white">Route Type</div>
     </div>
   </div>
 

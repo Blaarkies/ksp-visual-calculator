@@ -149,12 +149,16 @@ export class TravelService {
   }
 
   private calculateEdgesDetails(nodes: CheckpointNode[], firstCheckpoint: Checkpoint): Checkpoint[] {
+    let checkpointPreferences = this.setupService.checkpointPreferences$.value;
     let destinationEdges = nodes.windowed(2)
       .map(([a, b]) => {
         let trip = this.dvMap.getTripDetails(
           a,
           b,
-          {planeChangeFactor: this.setupService.checkpointPreferences$.value.planeChangeCost * .01});
+          {
+            planeChangeFactor: checkpointPreferences.planeChangeCost * .01,
+            routeType: checkpointPreferences.routeType,
+          });
         let edge = new CheckpointEdge({
           dv: trip.totalDv,
           pathDetails: trip.pathDetails,

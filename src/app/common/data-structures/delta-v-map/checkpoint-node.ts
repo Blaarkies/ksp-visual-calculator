@@ -34,7 +34,7 @@ export class CheckpointNode {
       name: this.name,
       condition: this.condition,
       aerobraking: this.aerobraking,
-      gravityAssist: this.gravityAssist,
+      // gravityAssist: this.gravityAssist,
     };
   }
 

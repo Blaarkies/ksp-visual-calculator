@@ -41,10 +41,13 @@
       }
     }
 
+    --color-text-active: #afa;
+
     .chip-button {
       margin-right: .5em;
       padding: 0 6px;
       background-color: #fff4;
+      color: var(--color-text-active);
       min-width: unset;
       line-height: unset;
     }
@@ -58,19 +61,23 @@
     .flight-situation {
       display: grid;
       grid-template-columns: 0 max-content auto;
+    }
 
-      .condition {
-        margin-right: .5em;
+    .route-type {
+      display: grid;
+      grid-template-columns: 0 max-content auto;
+    }
 
-        justify-self: center;
-        color: #fffc;
-        font-weight: 200;
+    .button-select {
+      margin-right: .5em;
 
-        background-color: #fff2;
-        padding: .1em .4em;
-        line-height: unset;
-        width: max-content;
-      }
+      justify-self: center;
+      color: var(--color-text-active);
+
+      background-color: #fff4;
+      padding: .1em .4em;
+      line-height: unset;
+      width: max-content;
     }
 
     .hidden {

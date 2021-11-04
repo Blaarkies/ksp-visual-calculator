@@ -10,11 +10,12 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { PathDetailsReader } from './msp-edge/path-details-reader';
 import { MatSelectChange } from '@angular/material/select';
 import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
-import { CheckpointPreferences } from '../../common/domain/checkpoint-preferences';
+import { CheckpointPreferences} from '../../common/domain/checkpoint-preferences';
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 import { TravelService } from '../../services/travel.service';
+import { DvRouteType } from '../../common/domain/dv-route-type';
 
 @Component({
   selector: 'cp-maneuver-sequence-panel',
@@ -34,12 +35,19 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     TravelCondition.EllipticalOrbit,
   ];
 
+  routeTypeReadableMap = {
+    [DvRouteType.lessDetours]: 'Direct',
+    [DvRouteType.lessDv]: 'Efficient',
+  };
+  routeTypes = [DvRouteType.lessDv, DvRouteType.lessDetours];
+
   aerobrakeControl = new FormControl(this.setupService.checkpointPreferences$.value.aerobraking);
 
   planeChangeControl = new FormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
   planeChangeControlMeta = new ControlMetaNumber(0, 100, 1);
 
   preferredCondition$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.condition);
+  routeType$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.routeType);
 
   constructor(private travelService: TravelService,
               private setupService: SetupService,
@@ -50,13 +58,14 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     combineLatest([
       this.aerobrakeControl.valueChanges.pipe(startWith(this.aerobrakeControl.value as boolean)),
       this.planeChangeControl.valueChanges.pipe(startWith(this.planeChangeControl.value as number)),
-      this.preferredCondition$])
+      this.preferredCondition$,
+      this.routeType$])
       .pipe(
         sampleTime(50),
         distinctUntilChanged((x, y) => x.every((argument, i) => argument === y[i])),
         takeUntil(this.destroy$))
-      .subscribe(([aerobraking, planeChangeCost, condition]) => {
-        let preferences = {aerobraking, planeChangeCost, condition} as CheckpointPreferences;
+      .subscribe(([aerobraking, planeChangeCost, condition, routeType]) => {
+        let preferences = {aerobraking, planeChangeCost, condition, routeType} as CheckpointPreferences;
         this.updatePreferences(preferences);
         preferencesDebouncer$.next(preferences);
       });
@@ -67,6 +76,7 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
         this.aerobrakeControl.setValue(cp.aerobraking);
         this.planeChangeControl.setValue(cp.planeChangeCost);
         this.preferredCondition$.next(cp.condition);
+        this.routeType$.next(cp.routeType);
       });
 
     preferencesDebouncer$.pipe(
@@ -80,6 +90,10 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
 
   setPreferredCondition(event: MatSelectChange) {
     this.preferredCondition$.next(event.value);
+  }
+
+  setRouteType(event: MatSelectChange) {
+    this.routeType$.next(event.value);
   }
 
   toggleOptions() {

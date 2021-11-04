@@ -2,6 +2,7 @@ import { DeltavDestination } from './deltav-destination';
 import { GraphDataStructure, NodeGraph } from './graph-data-structure';
 import { TravelCondition } from './travel-condition';
 import { CheckpointNode } from './checkpoint-node';
+import { DvRouteType } from '../../domain/dv-route-type';
 
 type DeltaVStep = (string | number)[];
 
@@ -25,7 +26,8 @@ const SEP = ':';
 
 export class DeltaVGraph {
 
-  private readonly vacuumGraph: GraphDataStructure = NodeGraph();
+  private readonly graphWeighted: GraphDataStructure = NodeGraph();
+  private readonly graphWeightless: GraphDataStructure = NodeGraph();
 
   private readonly nodeAbilitiesMap: Map<string, MissionNodeAbilities> = this.makeNodeAbilitiesMap();
 
@@ -47,30 +49,32 @@ export class DeltaVGraph {
 
     if (specialTravelConditions.includes(conditionA)
       || specialTravelConditions.includes(conditionB)) {
-      this.vacuumGraph.addEdge(nodeA, nodeB, weight);
+      this.graphWeighted.addEdge(nodeA, nodeB, weight);
+      this.graphWeightless.addEdge(nodeA, nodeB);
     } else {
-      this.vacuumGraph.addBiEdge(nodeA, nodeB, weight);
+      this.graphWeighted.addBiEdge(nodeA, nodeB, weight);
+      this.graphWeightless.addBiEdge(nodeA, nodeB);
     }
   }
 
   private getDeltaVHops(): DeltaVStep[] {
-    let kerbol = new DeltavDestination(Place.Kerbol, 950);
-    let moho = new DeltavDestination(Place.Moho, 69);
-    let eve = new DeltavDestination(Place.Eve, 1330);
-    let gilly = new DeltavDestination(Place.Gilly, 69);
-    let kerbin = new DeltavDestination(Place.Kerbin, 69);
-    let mun = new DeltavDestination(Place.Mun, 69);
-    let minmus = new DeltavDestination(Place.Minmus, 69);
-    let duna = new DeltavDestination(Place.Duna, 360);
-    let ike = new DeltavDestination(Place.Ike, 69);
-    let dres = new DeltavDestination(Place.Dres, 69);
-    let jool = new DeltavDestination(Place.Jool, 2810);
-    let laythe = new DeltavDestination(Place.Laythe, 69);
-    let vall = new DeltavDestination(Place.Vall, 69);
-    let tylo = new DeltavDestination(Place.Tylo, 69);
-    let bop = new DeltavDestination(Place.Bop, 69);
-    let pol = new DeltavDestination(Place.Pol, 69);
-    let eeloo = new DeltavDestination(Place.Eeloo, 69);
+    let kerbol = new DeltavDestination(Place.Kerbol, 27640);
+    let moho = new DeltavDestination(Place.Moho, 319);
+    let eve = new DeltavDestination(Place.Eve, 1303);
+    let gilly = new DeltavDestination(Place.Gilly, 5.7);
+    let kerbin = new DeltavDestination(Place.Kerbin, 931);
+    let mun = new DeltavDestination(Place.Mun, 199);
+    let minmus = new DeltavDestination(Place.Minmus, 62);
+    let duna = new DeltavDestination(Place.Duna, 364);
+    let ike = new DeltavDestination(Place.Ike, 120);
+    let dres = new DeltavDestination(Place.Dres, 157);
+    let jool = new DeltavDestination(Place.Jool, 2782);
+    let laythe = new DeltavDestination(Place.Laythe, 596);
+    let vall = new DeltavDestination(Place.Vall, 271);
+    let tylo = new DeltavDestination(Place.Tylo, 809);
+    let bop = new DeltavDestination(Place.Bop, 68); // measured from 10km low orbit (orbit is not stable)
+    let pol = new DeltavDestination(Place.Pol, 44);
+    let eeloo = new DeltavDestination(Place.Eeloo, 240);
 
     let destinations: { [key: string]: DeltavDestination } = {
       kerbol, moho, eve, gilly, kerbin, mun, minmus, duna, ike,
@@ -78,25 +82,31 @@ export class DeltaVGraph {
     };
 
     let kerbolOut = [
-      ...StepMaker.starToPlanet(kerbol, kerbin, 69, 13700, 6000),
+      [kerbol.lowOrbit, kerbol.ellipticalOrbit, kerbol.dvToElliptical],
 
-      // TODO: same for moho, eve, ...
+      ...StepMaker.starToPlanet(kerbol, moho, 24780, 7530),
+      ...StepMaker.starToPlanet(kerbol, eve, 26450, 5130),
+      ...StepMaker.starToPlanet(kerbol, kerbin, 26800, 4930),
+      ...StepMaker.starToPlanet(kerbol, duna, 27130, 4900),
+      ...StepMaker.starToPlanet(kerbol, dres, 27390, 4350),
+      ...StepMaker.starToPlanet(kerbol, jool, 27530, 570),
+      ...StepMaker.starToPlanet(kerbol, eeloo, 27540, 3010),
     ];
 
     let mohoOut = [
-      ...StepMaker.self(moho, 870, 69),
+      ...StepMaker.self(moho, 870),
     ];
 
     let eveOut = [
-      ...StepMaker.self(eve, 8000, 1330),
+      ...StepMaker.self(eve, 8000),
     ];
 
     let gillyOut = [
-      ...StepMaker.self(gilly, 30, 69),
+      ...StepMaker.self(gilly, 30),
     ];
 
     let kerbinOut = [
-      ...StepMaker.self(kerbin, 3400, 950),
+      ...StepMaker.self(kerbin, 3400),
       [kerbin.lowOrbit, kerbin.geostationaryOrbit, 1115],
 
       ...StepMaker.parentToMoon(kerbin, mun, 0, 90, 860),
@@ -104,37 +114,38 @@ export class DeltaVGraph {
     ];
 
     let munOut = [
-      ...StepMaker.self(mun, 580, 69),
+      ...StepMaker.self(mun, 580),
       ...StepMaker.captureAtMoon(kerbin, mun, 69),
     ];
 
     let minmusOut = [
-      ...StepMaker.self(minmus, 180, 69),
+      ...StepMaker.self(minmus, 180),
       ...StepMaker.captureAtMoon(kerbin, minmus, 69),
-      // ...StepMaker.escapeToOtherElliptical(minmus, mun, 340, 70, 69),
     ];
 
     let dunaOut = [
-      ...StepMaker.self(duna, 1450, 360),
+      ...StepMaker.self(duna, 1450),
     ];
 
     let ikeOut = [
-      ...StepMaker.self(ike, 390, 69),
+      ...StepMaker.self(ike, 390),
     ];
 
     let dresOut = [
-      ...StepMaker.self(dres, 430, 69),
+      ...StepMaker.self(dres, 430),
     ];
 
     let joolOut = [
-      ...StepMaker.self(jool, 14000, 2810),
+      ...StepMaker.self(jool, 14000),
     ];
 
     let eelooOut = [
-      ...StepMaker.self(eeloo, 620, 69),
+      ...StepMaker.self(eeloo, 620),
     ];
 
-    let interBodyTransfers = dvNumbers.map(({origin, destination, ejectDv, captureDv, planeChangeDv}) => {
+    /** Handles the transfers for all bodies, from the body's elliptical orbit, into a capture of
+     * the other body's elliptical orbit  */
+    let interBodyTransfers = bodiesTransferDvNumbers.map(({origin, destination, ejectDv, captureDv, planeChangeDv}) => {
       let from = destinations[origin];
       let to = destinations[destination];
       return StepMaker.escapeToOtherElliptical(from, to, planeChangeDv,
@@ -208,15 +219,21 @@ export class DeltaVGraph {
     return `${node.name.toLowerCase()}${SEP}${node.condition}`;
   }
 
-  getTripDetails(nodeA: CheckpointNode, nodeB: CheckpointNode, options: { planeChangeFactor?: number } = {}): TripDetails {
-    let path = this.vacuumGraph.shortestPath(this.stringifyNode(nodeA), this.stringifyNode(nodeB));
+  getTripDetails(nodeA: CheckpointNode,
+                 nodeB: CheckpointNode,
+                 options: { planeChangeFactor?: number, routeType?: DvRouteType } = {}): TripDetails {
+    let graph = options.routeType === DvRouteType.lessDv
+      ? this.graphWeighted
+      : this.graphWeightless;
+
+    let path = graph.shortestPath(this.stringifyNode(nodeA), this.stringifyNode(nodeB));
 
     let pathDetails = path.map(nodeId => {
       let [name, condition, combinationNode] = nodeId.split(SEP);
       return {nodeId, name, condition, combinationNode};
     })
       .windowed(2)
-      .map(([a, b]) => ({a, b, value: this.vacuumGraph.shortestPath(a.nodeId, b.nodeId).weight}))
+      .map(([a, b]) => ({a, b, value: this.graphWeighted.shortestPath(a.nodeId, b.nodeId).weight}))
       .filter(({value}) => value)
       .map(({a, b, value}) => {
         let aerobraking = this.canAerobrakeAt(a.name, a.condition,
@@ -341,11 +358,10 @@ class StepMaker {
   }
 
   static self(body: DeltavDestination,
-              dvLanding: number,
-              dvToElliptical: number): DeltaVStep[] {
+              dvLanding: number): DeltaVStep[] {
     return [
       [body.surface, body.lowOrbit, dvLanding],
-      [body.lowOrbit, body.ellipticalOrbit, dvToElliptical],
+      [body.lowOrbit, body.ellipticalOrbit, body.dvToElliptical],
     ];
   }
 
@@ -358,19 +374,18 @@ class StepMaker {
     ];
   }
 
-  static starToPlanet(kerbol: DeltavDestination,
+  static starToPlanet(star: DeltavDestination,
                       planet: DeltavDestination,
-                      dvFromElliptical: number,
                       dvFromLow: number,
                       dvCapture: number): DeltaVStep[] {
     return [
-      ...this.parentToMoon(kerbol, planet, 0, dvFromElliptical, dvFromLow),
-      ...this.captureAtMoon(kerbol, planet, dvCapture),
+      ...this.parentToMoon(star, planet, 0, star.dvToElliptical - dvFromLow, dvFromLow),
+      ...this.captureAtMoon(star, planet, dvCapture),
     ];
   }
 }
 
-let dvNumbers: { origin, destination, ejectDv, captureDv, planeChangeDv }[] = JSON.parse(`[
+let bodiesTransferDvNumbers: { origin, destination, ejectDv, captureDv, planeChangeDv }[] = JSON.parse(`[
 {"origin":"eve","destination":"moho","ejectDv":2241,"captureDv":1260,"planeChangeDv":0},
 {"origin":"kerbin","destination":"eve","ejectDv":1025,"captureDv":1411,"planeChangeDv":0},
 {"origin":"kerbin","destination":"moho","ejectDv":2288,"captureDv":1909,"planeChangeDv":0},
@@ -393,9 +408,9 @@ let dvNumbers: { origin, destination, ejectDv, captureDv, planeChangeDv }[] = JS
 {"origin":"eeloo","destination":"dres","ejectDv":1060,"captureDv":492,"planeChangeDv":2},
 {"origin":"eeloo","destination":"jool","ejectDv":246,"captureDv":2849,"planeChangeDv":2},
 {"origin":"minmus","destination":"mun","ejectDv":85,"captureDv":215,"planeChangeDv":2},
-{"origin":"vall","destination":"laythe","ejectDv":305,"captureDv":593,"planeChangeDv":2},
+{"origin":"vall","destination":"laythe","ejectDv":330,"captureDv":628,"planeChangeDv":2},
 {"origin":"tylo","destination":"laythe","ejectDv":848,"captureDv":649,"planeChangeDv":2},
-{"origin":"tylo","destination":"vall","ejectDv":817,"captureDv":297,"planeChangeDv":2},
+{"origin":"tylo","destination":"vall","ejectDv":830,"captureDv":357,"planeChangeDv":2},
 {"origin":"bop","destination":"laythe","ejectDv":404,"captureDv":787,"planeChangeDv":2},
 {"origin":"bop","destination":"vall","ejectDv":304,"captureDv":483,"planeChangeDv":2},
 {"origin":"bop","destination":"tylo","ejectDv":109,"captureDv":894,"planeChangeDv":2},
