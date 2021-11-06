@@ -1,18 +1,16 @@
 <div class="overlap-container page-container">
+
   <cp-universe-map #universeMap
                    [allowEdit]="false"
                    (startDrag)="selectCheckpoint($event)"
                    (hoverBody)="missionJourney.hoverBody($event)">
+
     <cp-mission-journey abovePlanets
                         #missionJourney
-                        class="z-index-top"
+                        class="no-mouse"
                         [scale]="universeMap.camera.scale"
                         [checkpoints]="checkpoints$ | async"
                         [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
     </cp-mission-journey>
   </cp-universe-map>
-
-  <cp-maneuver-sequence-panel class="maneuver-sequence-panel">
-  </cp-maneuver-sequence-panel>
-
 </div>

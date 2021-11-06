@@ -6,7 +6,7 @@
   grid-template-rows: minmax(200px, max-content) 1fr auto max-content;
   grid-template-areas:
 'nav          page    zoom info'
-'focus        .       .    .'
+'focus        .       .    dv'
 'menu-context .       .    clippy';
 
   .zoom {
@@ -22,7 +22,7 @@
     grid-template-areas:
 'nav          page  info'
 'zoom         zoom     zoom'
-'focus        .        .'
+'focus        .        dv'
 'menu-context .        clippy';
 
     .zoom {
@@ -89,13 +89,14 @@
   grid-area: focus;
 }
 
+.dv {
+  grid-area: dv;
+  justify-self: end;
+}
+
 .menu-context {grid-area: menu-context;}
 
 //.clippy {grid-area: clippy}
-
-.no-mouse {
-  pointer-events: none;
-}
 
 .profile-icon {
   border-radius: 100px;
@@ -111,7 +112,7 @@
   grid-template-areas:
 'page    profile'
 'zoom    zoom'
-'focus   focus'
+'focus   dv'
 'clippy  fab-buttons';
 
   .page-context {
@@ -139,8 +140,13 @@
   }
 }
 
+/** Landscape mode */
 @media screen and (max-height: 500px) {
   .handset-layout {
+    .dv {
+      margin-right: 80px;
+    }
+
     .fab-buttons {
       position: absolute;
       right: 0;

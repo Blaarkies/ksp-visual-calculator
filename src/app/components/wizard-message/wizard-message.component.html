@@ -1,6 +1,6 @@
-<mat-card cdkDrag cdkDragBoundary="body" cdkDragHandle>
+<mat-card cdkDrag cdkDragBoundary="body" >
   <div class="layout">
-    <div class="title">
+    <div class="title" cdkDragHandle>
       <h1 *ngIf="title">{{title}}</h1>
 
       <div class="drag-indicator">
@@ -12,7 +12,7 @@
       <p *ngFor="let message of messages">{{message}}</p>
     </div>
 
-    <mat-icon *ngIf="icon"
+    <mat-icon *ngIf="icon && !(isHandset$ | async)"
               class="icon-large"
               color="primary"
               [svgIcon]="icon"></mat-icon>

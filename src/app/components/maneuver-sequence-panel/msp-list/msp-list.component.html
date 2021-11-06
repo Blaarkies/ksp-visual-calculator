@@ -36,6 +36,13 @@
   <div>Total delta-v</div>
   <div>{{deltaVTotal}} m/s</div>
 
-<!--  <div>Minimum TWR required</div>-->
-<!--  <div>{{twrMinimum}}</div>-->
+  <!--  <div>Minimum TWR required</div>-->
+  <!--  <div>{{twrMinimum}}</div>-->
+</div>
+
+<div [@height]="!missionCheckpoints.length"
+     class="text-mute empty-state-msp">
+  No checkpoints selected. <br>
+  Start by adding your <br>
+  first checkpoint.
 </div>

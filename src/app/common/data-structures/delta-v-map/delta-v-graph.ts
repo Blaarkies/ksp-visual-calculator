@@ -99,6 +99,7 @@ export class DeltaVGraph {
 
     let eveOut = [
       ...StepMaker.self(eve, 8000),
+      ...StepMaker.parentToMoon(eve, gilly, 0, 69, 69),
     ];
 
     let gillyOut = [
@@ -125,6 +126,7 @@ export class DeltaVGraph {
 
     let dunaOut = [
       ...StepMaker.self(duna, 1450),
+      ...StepMaker.parentToMoon(duna, ike, 0, 69, 69),
     ];
 
     let ikeOut = [
@@ -137,6 +139,11 @@ export class DeltaVGraph {
 
     let joolOut = [
       ...StepMaker.self(jool, 14000),
+      ...StepMaker.parentToMoon(jool, laythe, 0, 69, 69),
+      ...StepMaker.parentToMoon(jool, vall, 0, 69, 69),
+      ...StepMaker.parentToMoon(jool, tylo, 0, 69, 69),
+      ...StepMaker.parentToMoon(jool, bop, 0, 69, 69),
+      ...StepMaker.parentToMoon(jool, pol, 0, 69, 69),
     ];
 
     let eelooOut = [

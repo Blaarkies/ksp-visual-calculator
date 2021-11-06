@@ -5,6 +5,7 @@
   <ng-container *ngTemplateOutlet="profile"></ng-container>
   <ng-container *ngTemplateOutlet="zoom"></ng-container>
   <ng-container *ngTemplateOutlet="focus"></ng-container>
+  <ng-container *ngTemplateOutlet="dv"></ng-container>
 
   <div class="fab-buttons">
     <cp-action-fab color="green"
@@ -54,6 +55,7 @@
 
     <ng-container *ngTemplateOutlet="zoom"></ng-container>
     <ng-container *ngTemplateOutlet="focus"></ng-container>
+    <ng-container *ngTemplateOutlet="dv"></ng-container>
 
     <cp-action-panel class="menu-context"
                      id="context-panel"
@@ -110,4 +112,8 @@
 
 <ng-template #focus>
   <cp-focus-jump-to-panel class="focus"></cp-focus-jump-to-panel>
+</ng-template>
+
+<ng-template #dv>
+  <cp-maneuver-sequence-panel class="dv"></cp-maneuver-sequence-panel>
 </ng-template>
