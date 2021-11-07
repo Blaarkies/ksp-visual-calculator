@@ -117,7 +117,7 @@ export class TravelService {
       node.aerobraking = newPreferences.aerobraking;
       let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
       node.condition = availableConditions.find(c =>
-          c === this.setupService.checkpointPreferences$.value.condition).toString()
+          c === this.setupService.checkpointPreferences$.value.condition)?.toString()
         ?? node.condition;
     });
 

@@ -44,8 +44,8 @@ export class DeltaVGraph {
    * but single edges for complex conditions.
    */
   private setupEdges(nodeA: string, nodeB: string, specialTravelConditions: string[], weight: number) {
-    let [, conditionA,] = nodeA.split(SEP);
-    let [, conditionB,] = nodeB.split(SEP);
+    let [ , conditionA, ] = nodeA.split(SEP);
+    let [ , conditionB, ] = nodeB.split(SEP);
 
     if (specialTravelConditions.includes(conditionA)
       || specialTravelConditions.includes(conditionB)) {
@@ -99,7 +99,7 @@ export class DeltaVGraph {
 
     let eveOut = [
       ...StepMaker.self(eve, 8000),
-      ...StepMaker.parentToMoon(eve, gilly, 0, 69, 69),
+      ...StepMaker.parentToMoon(eve, gilly, 0, 1287, 191),
     ];
 
     let gillyOut = [
@@ -110,23 +110,21 @@ export class DeltaVGraph {
       ...StepMaker.self(kerbin, 3400),
       [kerbin.lowOrbit, kerbin.geostationaryOrbit, 1115],
 
-      ...StepMaker.parentToMoon(kerbin, mun, 0, 90, 860),
-      ...StepMaker.parentToMoon(kerbin, minmus, 340, 340, 930),
+      ...StepMaker.parentToMoon(kerbin, mun, 0, 852, 71.8),
+      ...StepMaker.parentToMoon(kerbin, minmus, 0, 921, 98),
     ];
 
     let munOut = [
       ...StepMaker.self(mun, 580),
-      ...StepMaker.captureAtMoon(kerbin, mun, 69),
     ];
 
     let minmusOut = [
       ...StepMaker.self(minmus, 180),
-      ...StepMaker.captureAtMoon(kerbin, minmus, 69),
     ];
 
     let dunaOut = [
       ...StepMaker.self(duna, 1450),
-      ...StepMaker.parentToMoon(duna, ike, 0, 69, 69),
+      ...StepMaker.parentToMoon(duna, ike, 0, 282, 10.8),
     ];
 
     let ikeOut = [
@@ -139,19 +137,21 @@ export class DeltaVGraph {
 
     let joolOut = [
       ...StepMaker.self(jool, 14000),
-      ...StepMaker.parentToMoon(jool, laythe, 0, 69, 69),
-      ...StepMaker.parentToMoon(jool, vall, 0, 69, 69),
-      ...StepMaker.parentToMoon(jool, tylo, 0, 69, 69),
-      ...StepMaker.parentToMoon(jool, bop, 0, 69, 69),
-      ...StepMaker.parentToMoon(jool, pol, 0, 69, 69),
+      ...StepMaker.parentToMoon(jool, laythe, 0, 1812, 210),
+      ...StepMaker.parentToMoon(jool, vall, 0, 2168, 568),
+      ...StepMaker.parentToMoon(jool, tylo, 0, 2378, 209),
+      ...StepMaker.parentToMoon(jool, bop, 0, 2608, 647),
+      ...StepMaker.parentToMoon(jool, pol, 0, 2655, 643),
     ];
 
     let eelooOut = [
       ...StepMaker.self(eeloo, 620),
     ];
 
-    /** Handles the transfers for all bodies, from the body's elliptical orbit, into a capture of
-     * the other body's elliptical orbit  */
+    /**
+     * Handles the transfers for all bodies, from the body's elliptical orbit, into a capture of
+     * the other body's elliptical orbit
+     */
     let interBodyTransfers = bodiesTransferDvNumbers.map(({origin, destination, ejectDv, captureDv, planeChangeDv}) => {
       let from = destinations[origin];
       let to = destinations[destination];
@@ -351,16 +351,18 @@ class StepMaker {
   static parentToMoon(parent: DeltavDestination,
                       moon: DeltavDestination,
                       dvToPlane: number,
-                      dvFromElliptical: number,
-                      dvFromLow: number): DeltaVStep[] {
+                      dvFromLow: number,
+                      dvCapture: number): DeltaVStep[] {
     return [
       [parent.lowOrbit, parent.interceptWith(moon), dvFromLow],
-      [parent.ellipticalOrbit, parent.interceptWith(moon), dvFromElliptical],
+      [parent.ellipticalOrbit, parent.interceptWith(moon), parent.dvToElliptical - dvFromLow],
       [parent.interceptWith(moon), parent.planeWith(moon), dvToPlane],
 
       [moon.planeWith(parent), parent.lowOrbit, dvFromLow],
-      [moon.planeWith(parent), parent.ellipticalOrbit, dvFromElliptical],
+      [moon.planeWith(parent), parent.ellipticalOrbit, parent.dvToElliptical - dvFromLow],
       [moon.interceptWith(parent), moon.planeWith(parent), dvToPlane],
+
+      ...this.captureAtMoon(parent, moon, dvCapture),
     ];
   }
 
@@ -386,8 +388,7 @@ class StepMaker {
                       dvFromLow: number,
                       dvCapture: number): DeltaVStep[] {
     return [
-      ...this.parentToMoon(star, planet, 0, star.dvToElliptical - dvFromLow, dvFromLow),
-      ...this.captureAtMoon(star, planet, dvCapture),
+      ...this.parentToMoon(star, planet, 0, dvFromLow, dvCapture),
     ];
   }
 }

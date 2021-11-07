@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { TravelCondition } from '../../common/data-structures/delta-v-map/travel-condition';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Icons } from '../../common/domain/icons';

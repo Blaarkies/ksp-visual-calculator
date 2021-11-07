@@ -12,7 +12,7 @@
       <p *ngFor="let message of messages">{{message}}</p>
     </div>
 
-    <mat-icon *ngIf="icon && !(isHandset$ | async)" cdkDragHandle
+    <mat-icon *ngIf="icon && (isHandset$ | async) === false" cdkDragHandle
               class="icon-large"
               color="primary"
               [svgIcon]="icon"></mat-icon>

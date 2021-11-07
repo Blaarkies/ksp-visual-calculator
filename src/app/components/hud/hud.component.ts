@@ -20,7 +20,6 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 import { EventLogs } from '../../services/event-logs';
 import { UsableRoutes } from '../../usable-routes';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 
