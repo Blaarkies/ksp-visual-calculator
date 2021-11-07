@@ -115,5 +115,6 @@
 </ng-template>
 
 <ng-template #dv>
-  <cp-maneuver-sequence-panel class="dv"></cp-maneuver-sequence-panel>
+  <cp-maneuver-sequence-panel class="dv" *ngIf="(context$ | async) === contextTypes.DvPlanner">
+  </cp-maneuver-sequence-panel>
 </ng-template>

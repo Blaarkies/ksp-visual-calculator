@@ -14,13 +14,13 @@ import { AnalyticsService } from '../../../services/analytics.service';
   styleUrls: ['./msp-edge.component.scss'],
   animations: [
     trigger('animateSlidePanel', [
-      state('*', style({transform: 'translateX(-100%) scaleY(1)'})),
+      state('*', style({transform: 'translateX(-90%) scaleY(1)'})),
       transition(':enter', [
         style({transform: 'translateX(0) scaleY(0)'}),
-        animate('.3s ease-out', style({transform: 'translateX(-100%) scaleY(1)'})),
+        animate('.3s ease-out', style({transform: 'translateX(-90%) scaleY(1)'})),
       ]),
       transition(':leave', [
-        style({transform: 'translateX(-100%) scaleY(1)'}),
+        style({transform: 'translateX(-90%) scaleY(1)'}),
         animate('.3s ease-in', style({transform: 'translateX(0) scaleY(0)'})),
       ]),
     ]),

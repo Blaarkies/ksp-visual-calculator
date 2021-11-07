@@ -82,7 +82,7 @@ export class TravelService {
     });
   }
 
-  private stopCheckpointSelection() {
+  stopCheckpointSelection() {
     this.unsubscribeSelectedCheckpoint$.next();
     this.isSelectingCheckpoint$.next(false);
   }

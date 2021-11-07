@@ -52,6 +52,9 @@ export class HudComponent extends WithDestroy() {
     return this.hudService.contextPanel$.asObservable();
   }
 
+  context$ = this.hudService.context$;
+  contextTypes = UsableRoutes;
+
   isHandset$: Observable<boolean>;
   icons = Icons;
   actionGroupTypes = ActionGroupType;

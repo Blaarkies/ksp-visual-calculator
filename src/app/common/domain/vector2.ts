@@ -33,7 +33,7 @@ export class Vector2 {
     return Math.hypot(this.x - other.x, this.y - other.y);
   }
 
-  add(x: number, y: number): Vector2 {
+  add(x: number, y: number = x): Vector2 {
     this.x += x;
     this.y += y;
     return this;

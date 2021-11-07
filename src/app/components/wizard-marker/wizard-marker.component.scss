@@ -4,7 +4,7 @@
   position: absolute;
 
   // background oscillates color from dark to bright with transparency
-  animation: kf-animate-background-color-wobble 1.5s ease-in-out infinite alternate forwards,
+  animation: kf-animate-background-color-wobble .5s ease-in-out infinite alternate forwards,
   kf-animate-fade-in ease-out 3s;
 }
 

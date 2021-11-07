@@ -1,4 +1,8 @@
 :host {
+  pointer-events: none;
+  > * {
+    pointer-events: all;
+  }
   position: fixed;
   max-width: 400px;
   z-index: 1001; // mat-dialog adds a z-index:1000 backdrop
@@ -10,7 +14,7 @@
     to {opacity: 1}
   }
 
-  @media screen and (max-width: 600px) and (max-height: 800px) {
+  @media screen and (max-width: 600px), (max-height: 500px) {
     .layout {
       .messages {
         height: 100px;

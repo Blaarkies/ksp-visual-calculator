@@ -7,7 +7,7 @@ import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoi
   selector: 'cp-msp-list',
   templateUrl: './msp-list.component.html',
   styleUrls: ['./msp-list.component.scss'],
-  animations: [CustomAnimation.height],
+  animations: [CustomAnimation.height, CustomAnimation.fade],
 })
 export class MspListComponent {
 
@@ -20,6 +20,8 @@ export class MspListComponent {
     this.deltaVTotal = edges.map(edge => edge.dv).sum();
     // this.twrMinimum = edges.map(edge => edge.twr).sort().first();
   }
+
+  @Input() isAddingCheckpoint: boolean;
 
   @Output() add = new EventEmitter();
   @Output() resetAll = new EventEmitter();

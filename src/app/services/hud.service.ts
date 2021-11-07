@@ -1,5 +1,5 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
@@ -37,6 +37,9 @@ export class HudService {
 
   contextPanel$ = new BehaviorSubject<ActionPanelDetails>(null);
   private contextChange$ = new BehaviorSubject<UsableRoutes>(null);
+  context$ = this.contextChange$.asObservable();
+  // fix dialog takeUntil using BehaviorSubject, because it cancels the stream immediately
+  unsubscribeDialog$ = new Subject();
 
   get pageContext(): UsableRoutes {
     return this.contextChange$.value;
@@ -50,6 +53,7 @@ export class HudService {
     this.contextChange$.next(value);
     let newPanel = this.getContextPanel(value);
     this.contextPanel$.next(newPanel);
+    this.unsubscribeDialog$.next();
   }
 
   constructor(private dialog: MatDialog,
@@ -197,7 +201,7 @@ export class HudService {
             .afterClosed()
             .pipe(
               filter(craftDetails => craftDetails),
-              takeUntil(this.contextChange$))
+              takeUntil(this.unsubscribeDialog$))
             .subscribe(craftDetails => {
               this.spaceObjectService.addCraftToUniverse(craftDetails);
               this.cdr.tick();
@@ -216,7 +220,7 @@ export class HudService {
             .afterClosed()
             .pipe(
               filter(details => details),
-              takeUntil(this.contextChange$))
+              takeUntil(this.unsubscribeDialog$))
             .subscribe(details => {
               this.setupService.updateDifficultySetting(details);
               this.cdr.tick();

@@ -145,6 +145,8 @@
   .handset-layout {
     .dv {
       margin-right: 80px;
+      margin-top: 10px;
+      grid-row: 1 / -1;
     }
 
     .fab-buttons {

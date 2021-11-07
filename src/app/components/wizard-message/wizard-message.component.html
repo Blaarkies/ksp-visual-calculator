@@ -1,4 +1,4 @@
-<mat-card cdkDrag cdkDragBoundary="body" >
+<mat-card cdkDrag cdkDragBoundary="body" class="mat-elevation-z24">
   <div class="layout">
     <div class="title" cdkDragHandle>
       <h1 *ngIf="title">{{title}}</h1>
@@ -12,12 +12,12 @@
       <p *ngFor="let message of messages">{{message}}</p>
     </div>
 
-    <mat-icon *ngIf="icon && !(isHandset$ | async)"
+    <mat-icon *ngIf="icon && !(isHandset$ | async)" cdkDragHandle
               class="icon-large"
               color="primary"
               [svgIcon]="icon"></mat-icon>
 
-    <div class="buttons">
+    <div class="buttons" cdkDragHandle>
       <button *ngIf="stepType === 'end'; else allowCancel"
               mat-button
               color="primary"

@@ -7,6 +7,7 @@ import { AnalyticsService } from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
 import { EventLogs } from './event-logs';
 import { UsableRoutes } from '../usable-routes';
+import { StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +17,18 @@ export class TutorialService {
   resetTutorial$ = new Subject<boolean>();
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private stateService: StateService) {
   }
 
-  startFullTutorial(context: UsableRoutes) {
+  async startFullTutorial(context: UsableRoutes) {
     this.analyticsService.logEvent('Start tutorial', {
       category: EventLogs.Category.Tutorial,
       context,
     });
+
+    // reset universe
+    await this.stateService.loadState().pipe(take(1)).toPromise();
 
     this.resetTutorial$.next();
     let compiledSteps = this.getCompiledSteps(context);
@@ -289,9 +294,10 @@ export class TutorialService {
 
   private getSignalCheckStepDetails(): StepDetails[] {
     let editUniverse = {
+      dialogPosition: 'top',
       dialogTitle: 'Adding Spacecraft',
       dialogTargetCallback: () => document.querySelector(
-        'cp-action-panel#context-panel, cp-action-fab#context-fab button'),
+        'cp-action-bottom-sheet, cp-action-panel#context-panel'),
       dialogMessages: [
         'This universe can be configured here.',
         'Click "New Craft" to add your own spacecraft.'],
@@ -315,7 +321,7 @@ export class TutorialService {
               'cp-action-panel#context-panel mat-list-option, cp-action-list mat-list-option');
             let target = Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
             return fromEvent(target, 'click').pipe(
-              take(1), mapTo(input));
+              take(1), mapTo(input), delay(100));
           }),
         },
       ],
@@ -328,11 +334,12 @@ export class TutorialService {
     } as StepDetails;
 
     let addCraft = {
+      dialogPosition: 'top',
       dialogTitle: 'Selecting Antenna Types',
-      dialogTargetCallback: () => document.querySelector('cp-action-panel, cp-action-fab'),
+      dialogTargetCallback: () => document.querySelector('cp-input-field[label="Search"]'),
       dialogMessages: [
         'Spacecraft can be added and configured here.',
-        'Remember to select a communications antenna for this spacecraft.',
+        'Remember to select a communications antenna for this spacecraft, e.g. the "Communotron HG-55".',
         'After that, click "Create" to add the spacecraft.'],
       dialogIcon: Icons.Antenna,
       stages: [
@@ -355,19 +362,19 @@ export class TutorialService {
           }),
         },
       ],
-      markerTargetCallback: () => Array.from(document.querySelectorAll('mat-option span'))
-        .find((e: HTMLElement) => e.innerText.includes('Communotron HG-55')),
+      markerTargetCallback: () => document.querySelectorAll('mat-option span')[3],
       markerType: 'pane',
     } as StepDetails;
 
     let communicationLines = {
+      dialogPosition: 'bottom',
       dialogTitle: 'Changing Communication lines',
       dialogTargetCallback: () => {
         let crafts = document.querySelectorAll('.craft-icon-sprite-image');
         return crafts[crafts.length - 1];
       },
       dialogMessages: [
-        'The new spacecraft should have a visible, green, solid line to the closest relay (like Kerbin).',
+        'The new spacecraft should have a visible solid green line to the closest relay or Kerbin.',
         'This line color represents the signal strength. A dashed line indicates the relay aspect of this connection.',
         'Move the spacecraft closer/farther from Kerbin to see the connection strength change.',
         'Strong antennae can be dragged to far away planets before losing connection.'],
@@ -379,7 +386,6 @@ export class TutorialService {
             let crafts = document.querySelectorAll('.craft-icon-sprite-image');
             let lastCraft = crafts[crafts.length - 1] as HTMLElement;
 
-            lastCraft.style.display = 'grid'; // this centers the wizardMarker around the craft
             return of({...input, lastCraft});
           }),
         },
@@ -403,21 +409,17 @@ export class TutorialService {
               filter(({isMoved}) => isMoved),
               take(1), mapTo(input)),
         },
-        {
-          callback: (input: { lastCraft }) => defer(() => {
-            input.lastCraft.style.display = undefined;
-            return of(input);
-          }),
-        },
       ],
       markerTargetCallback: () => {
         let crafts = document.querySelectorAll('.craft-icon-sprite-image');
-        return crafts[crafts.length - 1];
+        let lastAddedCraft = crafts[crafts.length - 1];
+        return lastAddedCraft.parentElement;
       },
       markerType: 'ring',
     } as StepDetails;
 
     let relaySatellites = {
+      dialogPosition: 'bottom',
       dialogTitle: 'Relaying Signals',
       dialogTargetCallback: () => document.querySelector('.craft-icon-sprite-image'),
       dialogMessages: [
@@ -456,10 +458,10 @@ export class TutorialService {
     let missionCheckpoints = {
       dialogPosition: 'left',
       dialogTitle: 'Mission Checkpoints',
-      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
         'This panel calculates how much delta-v is required for your mission specifications.',
-        'Click the green add checkpoint button on the flashing panel to start your journey.'],
+        'Tap the green add checkpoint button on the flashing panel to start your journey.'],
       dialogIcon: Icons.MapMarker,
       stages: [
         {
@@ -481,17 +483,17 @@ export class TutorialService {
           }),
         },
       ],
-      markerTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      markerTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel *'),
       markerType: 'pane',
     } as StepDetails;
 
     let checkpointKerbin = {
-      dialogPosition: 'left',
+      dialogPosition: 'bottom',
       dialogTitle: 'Adding Checkpoints',
-      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
         'Checkpoints define where the mission will be going.',
-        'Click on Kerbin to add it as your first checkpoint.'],
+        'Tap Kerbin to add it as your first checkpoint.'],
       dialogIcon: Icons.Traveler,
       stages: [
         {
@@ -530,8 +532,8 @@ export class TutorialService {
       dialogTargetCallback: () => document.querySelector('cp-msp-node'),
       dialogMessages: [
         `Checkpoints appear in this list. The "Surface" button shows the specific situation at this checkpoint.`,
-        `If you do not plan on launching from Kerbin, you can instead set this to "Low Orbit".`,
-        `Let's Add another checkpoint, this time at Duna.`],
+        `If you do not plan on launching from Kerbin's surface, you can instead set this to "Low Orbit".`,
+        `Let's add another checkpoint, this time at Duna.`],
       dialogIcon: Icons.Takeoff,
       stages: [
         {
@@ -552,12 +554,12 @@ export class TutorialService {
     } as StepDetails;
 
     let edgeExplained = {
-      dialogPosition: 'center',
+      dialogPosition: 'bottom',
       dialogTitle: 'Trip Details',
-      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
         'When 2 or more checkpoints are selected, the delta-v requirements can be seen in the list.',
-        'Click the delta-v number in the list to expand the trip details. This shows the intermediary steps.',
+        'Tap the delta-v number in the list to expand the trip details. This shows the intermediary steps.',
         'Add a checkpoint on another planet to see the total delta-v requirements be calculated for you.'
       ],
       dialogIcon: Icons.Fuel,

@@ -26,6 +26,7 @@ import { DvRouteType } from '../../common/domain/dv-route-type';
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 
   checkpoints$ = this.travelService.checkpoints$.asObservable();
+  isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
   isOptionsOpen = false;
   icons = Icons;
   conditionReadableMap = PathDetailsReader.conditionMap;
@@ -106,8 +107,12 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     }
   }
 
-  addCheckpoint() {
-    this.travelService.addCheckpoint();
+  addCheckpoint(isSelecting: boolean) {
+    if (isSelecting) {
+      this.travelService.stopCheckpointSelection();
+    } else {
+      this.travelService.addCheckpoint();
+    }
   }
 
   resetMission() {

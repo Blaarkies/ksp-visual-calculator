@@ -18,7 +18,13 @@
           color="primary"
           [matTooltip]="'Add new checkpoint'"
           (click)="add.emit()">
-    <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+    <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>
+    <ng-template #isBusy>
+      <div class="animate-flashing">Tap a planet</div>
+    </ng-template>
+    <ng-template #idleIcon>
+      <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+    </ng-template>
   </button>
 
   <button mat-button

@@ -6,7 +6,7 @@ import { Antenna } from '../common/domain/antenna';
 import { Craft } from '../common/domain/space-objects/craft';
 import { TransmissionLine } from '../common/domain/transmission-line';
 import { CameraService } from './camera.service';
-import { BehaviorSubject, Observable, zip } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of, zip } from 'rxjs';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { CraftDetails } from '../overlays/craft-details-dialog/craft-details';
 import { SetupService } from './setup.service';
@@ -42,12 +42,15 @@ export class SpaceObjectService extends WithDestroy() {
     super();
   }
 
-  private runWhenStockAssetsReady(callback?: ({listOrbits, celestialBodies, antennae}) => void)
+  private runWhenStockAssetsReady(context: UsableRoutes, callback?: ({listOrbits, celestialBodies, antennae}) => void)
     : Observable<void> {
     let stockPlanets$ = this.setupService.stockPlanets$;
 
-    let stockAntennae$ = this.setupService.availableAntennae$
-      .pipe(filter(a => !!a.length));
+    let antennaeRequired = context === UsableRoutes.SignalCheck;
+    let stockAntennae$ = antennaeRequired
+      ? this.setupService.availableAntennae$
+        .pipe(filter(a => !!a.length))
+      : of([]);
 
     return zip(stockPlanets$, stockAntennae$)
       .pipe(
@@ -59,21 +62,32 @@ export class SpaceObjectService extends WithDestroy() {
   }
 
   buildStockState(context: UsableRoutes): Observable<void> {
-    return this.runWhenStockAssetsReady(({listOrbits, celestialBodies, antennae}) => {
+    return this.runWhenStockAssetsReady(context, ({listOrbits, celestialBodies, antennae}) => {
       this.orbits$.next(listOrbits);
       this.celestialBodies$.next(celestialBodies);
+
+      // TODO: remove out-of-context dependency at state service
       this.crafts$.next([]);
       this.transmissionLines$.next([]);
+      // TODO:
 
-      // todo: hasDsn is removed. add default tracking station another way
-      let needsBasicDsn = this.celestialBodies$.value
-        .find(cb => cb.hasDsn && cb.antennae?.length === 0);
-      if (needsBasicDsn) {
-        needsBasicDsn.antennae.push(
-          new Group<Antenna>(this.setupService.getAntenna('Tracking Station 1')));
+      if (context === UsableRoutes.SignalCheck) {
+        this.crafts$.next([]);
+        this.transmissionLines$.next([]);
+
+        // todo: hasDsn is removed. add default tracking station another way
+        let needsBasicDsn = this.celestialBodies$.value
+          .find(cb => cb.hasDsn && cb.antennae?.length === 0);
+        if (needsBasicDsn) {
+          needsBasicDsn.antennae.push(
+            new Group<Antenna>(this.setupService.getAntenna('Tracking Station 1')));
+        }
+
+        this.updateTransmissionLines();
+
+      } else if (context === UsableRoutes.DvPlanner) {
+        this.travelService.resetCheckpoints();
       }
-
-      this.updateTransmissionLines();
     });
   }
 
@@ -89,7 +103,7 @@ export class SpaceObjectService extends WithDestroy() {
       }
     };
 
-    return this.runWhenStockAssetsReady(() => parseState());
+    return this.runWhenStockAssetsReady(context as UsableRoutes, () => parseState());
   }
 
   private makeOrbitsLabelMap(jsonCelestialBodies: StateSpaceObject[]) {
@@ -206,7 +220,8 @@ export class SpaceObjectService extends WithDestroy() {
       .filter(so => so.antennae?.length)
       .joinSelf()
       .distinct(SpaceObjectService.getIndexOfSameCombination)
-      .distinct(SpaceObjectService.getIndexOfSameCombination) // run again, opposing permutations are still similar as combinations
+      .distinct(SpaceObjectService.getIndexOfSameCombination) // run again, opposing permutations are still similar as
+                                                              // combinations
       .map(pair => // leave existing transmission lines here so that visuals do not flicker
         this.transmissionLines$.value.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new TransmissionLine(pair, this.setupService))

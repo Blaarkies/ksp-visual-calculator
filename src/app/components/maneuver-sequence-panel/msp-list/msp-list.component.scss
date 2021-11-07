@@ -23,7 +23,7 @@
   grid-template-columns: auto max-content;
 
   .fix-disabled-color.mat-button-disabled {
-      color: #f526;
+    color: #f526;
   }
 }
 
@@ -35,4 +35,14 @@
 
 .empty-state-msp {
   text-align: center;
+}
+
+.animate-flashing {
+  animation: kf-animate-fade-in 1.1s infinite alternate ease-out;
+}
+
+@media screen and (max-width: 600px), (max-height: 500px) {
+  .list-layout {
+    max-height: 200px;
+  }
 }

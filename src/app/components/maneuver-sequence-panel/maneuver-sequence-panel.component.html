@@ -68,8 +68,10 @@
     </div>
   </div>
 
-  <cp-msp-list [checkpoints]="checkpoints$ | async"
-               (add)="addCheckpoint()"
+  <cp-msp-list #list
+               [checkpoints]="checkpoints$ | async"
+               [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
+               (add)="addCheckpoint(list.isAddingCheckpoint)"
                (resetAll)="resetMission()"
                (removeNode)="removeCheckpoint($event)"
                (updateNode)="updateCheckpoint($event)">
