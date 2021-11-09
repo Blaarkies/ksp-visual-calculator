@@ -51,6 +51,12 @@ export class DataService {
       .update({[field]: FieldValue.delete()});
   }
 
+  async deleteAll(table: 'users' | 'states'): Promise<void> {
+    await this.checkUserSignIn();
+
+    return this.afs.doc(`${table}/${this.userId$.value}`).delete();
+  }
+
   async read<T>(table: 'users' | 'states', id: string, options: GetOptions = {}): Promise<T> {
     await this.checkUserSignIn();
 

@@ -2,17 +2,63 @@
   <h1 mat-dialog-title>Account Details</h1>
 
   <div mat-dialog-content class="details-layout">
-    <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'" />
+    <div class="display-details-layout">
+      <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'" />
 
-    <div>
-      <div>Name: {{user.displayName}}</div>
-      <div>Email: {{user.email}}</div>
+      <div class="user-details">
+        <div>
+          <ng-container *ngIf="editingDetails$.value; then edit else show"></ng-container>
+          <ng-template #edit><cp-input-field [formControl]="nameControl" label="Name"></cp-input-field></ng-template>
+          <ng-template #show><div>{{user.displayName}}</div></ng-template>
+
+          <div>{{user.email}}</div>
+        </div>
+
+        <button mat-icon-button (click)="isSettingsOpen = !isSettingsOpen">
+          <mat-icon [svgIcon]="icons.Settings" class="text-mute"></mat-icon>
+        </button>
+      </div>
+
+    </div>
+
+    <div *ngIf="isSettingsOpen" [@width] class="edit-details-layout">
+      <mat-divider vertical></mat-divider>
+
+      <div>
+        <div [matTooltip]="user.isCustomer
+                  ? 'Thank you for supporting! 😁'
+                  : 'Checks whether \'' + user.email + '\' has already supported at buymeacoffee.com/Blaarkies'">
+          <button class="button-loader"
+                  mat-button
+                  [disabled]="user.isCustomer || (validatingCustomer$ | async)"
+                  (click)="validateAccount(user)">
+            {{user.isCustomer ? 'Account Verified' : 'Verify Account'}}
+            <mat-progress-bar [@fade] *ngIf="validatingCustomer$ | async" mode="indeterminate"></mat-progress-bar>
+          </button>
+        </div>
+
+        <button class="button-loader"
+                mat-button
+                (click)="uploadImage(user)">
+          Upload Profile Image
+          <mat-progress-bar [@fade] *ngIf="uploadingImage$ | async" mode="indeterminate"></mat-progress-bar>
+        </button>
+
+        <button [class.flashing]="editingDetails$.value"
+                mat-button
+                [matTooltip]="editingDetails$.value ? 'Click to save changes' : ''"
+                [matTooltipDisabled]="!editingDetails$.value"
+                (click)="editDetails(user)">
+          {{editingDetails$.value ? 'Save Details' : 'Edit Details'}}
+        </button>
+
+        <button mat-stroked-button color="warn" (click)="deleteAccount(user)">Delete Account</button>
+      </div>
     </div>
   </div>
 
   <div mat-dialog-actions>
-    <button mat-flat-button
-            color="warn"
+    <button mat-button color="accent"
             (click)="actionSignOut()">
       Sign Out
     </button>
@@ -26,7 +72,7 @@
 </ng-container>
 
 <ng-template #noUser>
-  <h1 mat-dialog-title>Register - Sign In</h1>
+  <h1 mat-dialog-title>Sign Up / Sign In</h1>
 
   <div mat-dialog-content class="sign-in-layout" (click)="isPromoteOpen = false">
     <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png" />
@@ -85,7 +131,7 @@
       <button mat-stroked-button
               class="button-loader"
               (click)="signInWithEmailAddress()"
-              [disabled]="controlEmail.invalid || controlPassword.invalid"
+              [disabled]="controlEmail.invalid || controlPassword.invalid || (signingInWithEmail$ | async)"
               [matTooltip]="'If you do not have an account, this will create one'">
         <mat-icon [svgIcon]="icons.Email"></mat-icon>
         <span>Sign in with email address</span>
@@ -98,6 +144,7 @@
 
     <button mat-stroked-button
             class="button-loader"
+            [disabled]="signingInWithGoogle$ | async"
             (click)="signInWithGoogle()">
       <img class="google-g-logo" src="assets/logos/google-g.svg" />
       <span>Sign in with Google</span>

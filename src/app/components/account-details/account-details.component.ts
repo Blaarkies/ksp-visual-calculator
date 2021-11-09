@@ -3,12 +3,13 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { FormControl, Validators } from '@angular/forms';
-import { EMPTY, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable, of, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { catchError, finalize, mapTo, mergeAll, startWith, take, takeUntil, timeout } from 'rxjs/operators';
 import { AuthErrorCode } from './auth-error-code';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { User } from '../../services/data.service';
 
 @Component({
   selector: 'cp-account-details',
@@ -16,7 +17,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   styleUrls: ['./account-details.component.scss'],
   animations: [
     CustomAnimation.fade,
-    CustomAnimation.height,
+    CustomAnimation.width,
     CustomAnimation.flipVertical,
     trigger('slideOutVertical', [
       state('false', style({height: 0, overflow: 'hidden', borderColor: '#0000'})),
@@ -39,10 +40,17 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   signingInWithEmail$ = new Subject<boolean>();
   signingInWithGoogle$ = new Subject<boolean>();
 
+  validatingCustomer$ = new Subject<boolean>();
+  uploadingImage$ = new Subject<boolean>();
+  editingDetails$ = new BehaviorSubject<boolean>(false);
+
+  nameControl = new FormControl(null, [Validators.required]);
+
   @Output() signOut = new EventEmitter();
 
   icons = Icons;
   isPromoteOpen = false;
+  isSettingsOpen = false;
 
   constructor(private snackBar: MatSnackBar,
               public authService: AuthService) {
@@ -141,4 +149,44 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
     await this.authService.googleSignIn();
     this.signingInWithGoogle$.next(false);
   }
+
+  async validateAccount(user: User) {
+    this.validatingCustomer$.next(true);
+    let newUserData = await this.authService.updateUserData(user);
+    if (newUserData.isCustomer) {
+      await this.authService.reloadUserSignIn();
+      this.snackBar.open(`Congratulations! Premium features have been unlocked on "${user.email}".
+                          Thank you for your support`);
+    } else {
+      this.snackBar.open(`"${user.email}" could not be verified on buymeacoffee.com/Blaarkies`);
+    }
+    this.validatingCustomer$.next(false);
+  }
+
+  async uploadImage(user: User) {
+    this.snackBar.open(`Custom profile pictures coming soon!`);
+  }
+
+  async editDetails(user: User) {
+    let isEditing = this.editingDetails$.value;
+    if (isEditing) {
+      await this.authService.editUserData({
+        ...user,
+        displayName: this.nameControl.value,
+      });
+
+      this.editingDetails$.next(false);
+
+      this.snackBar.open(`Details have been updated`);
+    } else {
+      this.nameControl.setValue(user.displayName);
+      this.editingDetails$.next(true);
+    }
+  }
+
+  async deleteAccount(user: User) {
+    await this.authService.deleteAccount(user);
+    this.snackBar.open(`"${user.email}" account has been deleted`);
+  }
+
 }

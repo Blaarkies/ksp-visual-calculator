@@ -13,6 +13,7 @@ import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/
 import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
 import UserCredential = firebase.auth.UserCredential;
+import { AuthErrorCode } from '../components/account-details/auth-error-code';
 
 @Injectable({
   providedIn: 'root',
@@ -122,21 +123,36 @@ export class AuthService {
     this.stateService.setStateRecord();
   }
 
-  private async updateUserData(user): Promise<void> {
+  async updateUserData(user: User | firebase.User): Promise<User> {
     let dbUser = await this.dataService.read<User>('users', user.uid);
     let isCustomer = dbUser?.isCustomer || await this.isCustomer(user.email);
 
     const data = {
       uid: user.uid,
       email: user.email,
-      displayName: user.displayName,
-      photoURL: user.photoURL,
+      displayName: dbUser?.displayName || user.displayName,
+      photoURL: dbUser?.photoURL || user.photoURL,
       isCustomer,
     };
 
-    return await this.dataService.write('users', data);
+    await this.dataService.write('users', data);
+
+    return data;
   }
 
+  async editUserData(user: User | firebase.User): Promise<User> {
+    let dbUser = await this.dataService.read<User>('users', user.uid);
+
+    const data = {
+      ...dbUser,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
+    };
+
+    await this.dataService.write('users', data);
+
+    return data;
+  }
 
   async resetPassword(email: string): Promise<void> {
     if (!email) {
@@ -149,10 +165,14 @@ export class AuthService {
   private async loadUserLastSaveGame(): Promise<void> {
     await this.user$.pipe(take(1)).toPromise();
 
-    let states = await this.stateService.getStatesInContext()
+    let states = await this.stateService
+      .getStatesInContext()
       .pipe(take(1))
       .toPromise();
     let newestState = states[0];
+    if (!newestState) {
+      return;
+    }
 
     if (this.stateService.stateIsUnsaved) {
       let {dismissedByAction} = await this.snackBar
@@ -192,4 +212,19 @@ export class AuthService {
     return this.dataService.updateUserId(credential.user.uid);
   }
 
+  async reloadUserSignIn() {
+    let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
+    await signedInUser.reload();
+  }
+
+  async deleteAccount(user: User) {
+    let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
+    await this.dataService.deleteAll('users');
+    await this.dataService.deleteAll('states');
+    await signedInUser.delete().catch(e => {
+      if (e === AuthErrorCode.RequiresRecentLogin) {
+        console.log('login again');
+      }
+    });
+  }
 }

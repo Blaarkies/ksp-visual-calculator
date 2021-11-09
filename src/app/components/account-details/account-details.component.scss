@@ -1,5 +1,10 @@
 .details-layout {
   display: grid;
+  grid-template-columns: auto max-content;
+}
+
+.display-details-layout {
+  display: grid;
   gap: 20px;
   margin-bottom: 20px;
 
@@ -10,6 +15,30 @@
     justify-self: center;
   }
 
+  .user-details {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.edit-details-layout {
+  margin-left: 10px;
+  display: flex;
+  gap: 20px;
+
+  mat-divider {
+    height: 100%;
+  }
+
+  div {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: 10px;
+  }
+
+  mat-icon {
+    font-size: 1em;
+  }
 }
 
 .input-container {
@@ -128,4 +157,13 @@
   width: 13em;
   padding: 16px 0;
   justify-self: end;
+}
+
+.flashing {
+  animation: kf-fade-in 1s infinite alternate cubic-bezier(0, 0.3, 0.16, 1);
+
+  @keyframes kf-fade-in {
+    from {opacity: .1}
+    to {opacity: 1}
+  }
 }

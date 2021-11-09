@@ -66,7 +66,7 @@ export class StateService {
       .pipe(
         take(1),
         delay(0),
-        // todo: StateService should be independent of the specifics in the universe (crafts$ might not exist in other
+        // TODO: StateService should be independent of the specifics in the universe (crafts$ might not exist in other
         // universe types)
         switchMap(() => of(this.spaceObjectContainerService.celestialBodies$, this.spaceObjectContainerService.crafts$)),
         combineAll(),
