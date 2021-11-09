@@ -232,7 +232,7 @@ export class HudService {
     ];
 
     return {
-      startTitle: 'Edit Universe',
+      startTitle: 'Signal Check',
       startIcon: Icons.OpenDetails,
       color: 'orange',
       options,
@@ -245,7 +245,7 @@ export class HudService {
     ];
 
     return {
-      startTitle: 'Edit Universe',
+      startTitle: 'Delta-v Planner',
       startIcon: Icons.OpenDetails,
       color: 'orange',
       options,

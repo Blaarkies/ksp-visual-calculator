@@ -124,7 +124,7 @@ export class AuthService {
 
   private async updateUserData(user): Promise<void> {
     let dbUser = await this.dataService.read<User>('users', user.uid);
-    let isCustomer = dbUser.isCustomer || await this.isCustomer(user.email);
+    let isCustomer = dbUser?.isCustomer || await this.isCustomer(user.email);
 
     const data = {
       uid: user.uid,

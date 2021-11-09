@@ -91,13 +91,13 @@
                 [svgIcon]="pageContextInfo?.icon"></mat-icon>
     </div>
 
-    <button *ngIf="(hasBoughtCoffee$ | async) === (false || undefined)"
+    <button *ngIf="!(hasBoughtCoffee$ | async)"
             [@fade]
             class="buy-me-a-coffee"
             mat-icon-button
             [matTooltip]="'Support the developer'"
             (click)="openBuyMeACoffee()">
-      <mat-icon [svgIcon]="icons.Gift" class="promote-flash"></mat-icon>
+      <mat-icon [svgIcon]="icons.Gift"></mat-icon>
       <span matBadge="!" matBadgeColor="warn"></span>
     </button>
   </div>
