@@ -25,6 +25,20 @@
   .fix-disabled-color.mat-button-disabled {
     color: #f526;
   }
+
+  .button-lock-mode {
+    padding: 0 10px;
+    min-width: unset;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .button-single-checkpoint {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 1px solid #0004;
+    min-width: 110px;
+  }
 }
 
 .totals-layout {

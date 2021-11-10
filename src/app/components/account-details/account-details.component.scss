@@ -17,6 +17,7 @@
 
   .user-details {
     display: flex;
+    justify-content: space-between;
     gap: 10px;
   }
 }
@@ -157,13 +158,4 @@
   width: 13em;
   padding: 16px 0;
   justify-self: end;
-}
-
-.flashing {
-  animation: kf-fade-in 1s infinite alternate cubic-bezier(0, 0.3, 0.16, 1);
-
-  @keyframes kf-fade-in {
-    from {opacity: .1}
-    to {opacity: 1}
-  }
 }

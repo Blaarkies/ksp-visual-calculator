@@ -48,3 +48,9 @@
 .no-mouse {
   pointer-events: none;
 }
+
+.input-field-dark-text {
+  input {
+    color: #000 !important;
+  }
+}

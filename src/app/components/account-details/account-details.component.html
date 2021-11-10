@@ -1,4 +1,4 @@
-<ng-container *ngIf="authService.user$ | async as user; else noUser">
+<ng-container *ngIf="user$ | async as user; else noUser">
   <h1 mat-dialog-title>Account Details</h1>
 
   <div mat-dialog-content class="details-layout">
@@ -7,10 +7,10 @@
 
       <div class="user-details">
         <div>
-          <ng-container *ngIf="editingDetails$.value; then edit else show"></ng-container>
-          <ng-template #edit><cp-input-field [formControl]="nameControl" label="Name"></cp-input-field></ng-template>
-          <ng-template #show><div>{{user.displayName}}</div></ng-template>
-
+          <cp-input-field class="input-field-dark-text"
+                          [formControl]="nameControl"
+                          label=""
+                          (keyup.enter)="editDetails(user)"></cp-input-field>
           <div>{{user.email}}</div>
         </div>
 
@@ -33,26 +33,27 @@
                   [disabled]="user.isCustomer || (validatingCustomer$ | async)"
                   (click)="validateAccount(user)">
             {{user.isCustomer ? 'Account Verified' : 'Verify Account'}}
-            <mat-progress-bar [@fade] *ngIf="validatingCustomer$ | async" mode="indeterminate"></mat-progress-bar>
+            <mat-progress-bar [@fade] *ngIf="validatingCustomer$ | async" mode="query"></mat-progress-bar>
           </button>
         </div>
 
-        <button class="button-loader"
-                mat-button
-                (click)="uploadImage(user)">
+        <button class="button-loader" mat-button (click)="uploadImage(user)">
           Upload Profile Image
-          <mat-progress-bar [@fade] *ngIf="uploadingImage$ | async" mode="indeterminate"></mat-progress-bar>
+          <mat-progress-bar [@fade] *ngIf="uploadingImage$ | async" mode="buffer"></mat-progress-bar>
         </button>
 
-        <button [class.flashing]="editingDetails$.value"
-                mat-button
+        <button mat-button
                 [matTooltip]="editingDetails$.value ? 'Click to save changes' : ''"
                 [matTooltipDisabled]="!editingDetails$.value"
                 (click)="editDetails(user)">
           {{editingDetails$.value ? 'Save Details' : 'Edit Details'}}
+          <mat-progress-bar [@fade] *ngIf="editingDetails$ | async" mode="buffer"></mat-progress-bar>
         </button>
 
-        <button mat-stroked-button color="warn" (click)="deleteAccount(user)">Delete Account</button>
+        <button mat-stroked-button color="warn" (click)="deleteAccount(user)">
+          Delete Account
+          <mat-progress-bar [@fade] *ngIf="deletingAccount$ | async" mode="buffer" color="warn"></mat-progress-bar>
+        </button>
       </div>
     </div>
   </div>

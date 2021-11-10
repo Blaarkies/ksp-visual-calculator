@@ -21,6 +21,7 @@ export class TravelService {
   checkpoints$ = new BehaviorSubject<Checkpoint[]>([]);
   selectedCheckpoint$ = new Subject<SpaceObject>();
   unsubscribeSelectedCheckpoint$ = new Subject<SpaceObject>();
+  unsubscribeLockedCheckpointMode$ = new Subject();
   isSelectingCheckpoint$ = new Subject<boolean>();
 
   dvMap = new DeltaVGraph();
@@ -38,10 +39,29 @@ export class TravelService {
         finalize(() => this.isSelectingCheckpoint$.next(false)),
         take(1),
         takeUntil(this.unsubscribeSelectedCheckpoint$))
-      .subscribe(so => this.addNode(so));
+      .subscribe(so => this.addNode(so, 'tap'));
   }
 
-  private addNode(so: SpaceObject) {
+  setCheckpointMode(isLocked: boolean) {
+    this.analyticsService.logEvent('Toggle checkpoint lock mode', {
+      category: EventLogs.Category.DeltaV,
+      isLocked,
+    });
+
+    if (isLocked) {
+      this.unsubscribeSelectedCheckpoint$.next();
+      this.isSelectingCheckpoint$.next(true);
+
+      this.selectedCheckpoint$
+        .pipe(takeUntil(this.unsubscribeLockedCheckpointMode$))
+        .subscribe(so => this.addNode(so, 'lock'));
+    } else {
+      this.isSelectingCheckpoint$.next(false);
+      this.unsubscribeLockedCheckpointMode$.next();
+    }
+  }
+
+  private addNode(so: SpaceObject, inputMode: 'tap' | 'lock') {
     let availableConditions = this.getAvailableConditionsByLabel(so.label);
 
     let node = new CheckpointNode({
@@ -61,6 +81,7 @@ export class TravelService {
     this.analyticsService.logEvent('Add checkpoint', {
       category: EventLogs.Category.DeltaV,
       checkpoints: newList.map(n => n.node.name),
+      inputMode,
     });
   }
 
@@ -182,6 +203,7 @@ export class TravelService {
   unsubscribeFromComponent() {
     this.selectedCheckpoint$.complete();
     this.unsubscribeSelectedCheckpoint$.complete();
+    this.unsubscribeLockedCheckpointMode$.complete();
   }
 
   setCheckpoints(checkpoints: Checkpoint[]) {
@@ -194,4 +216,5 @@ export class TravelService {
 
     this.setCheckpoints(checkpoints);
   }
+
 }

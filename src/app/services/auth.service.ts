@@ -49,7 +49,7 @@ export class AuthService {
       switchMap(() => this.snackBar.open(
         'Would you like to support the developer?',
         'Yes',
-        {duration: 15e3, panelClass: 'promote-flash'})
+        {duration: 15e3, panelClass: 'snackbar-promote-flash'})
         .onAction()),
       tap(() => {
         this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});
@@ -212,18 +212,18 @@ export class AuthService {
     return this.dataService.updateUserId(credential.user.uid);
   }
 
-  async reloadUserSignIn() {
+  async reloadUserSignIn(): Promise<void> {
     let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
     await signedInUser.reload();
   }
 
-  async deleteAccount(user: User) {
+  async deleteAccount(user: User): Promise<void> {
     let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
     await this.dataService.deleteAll('users');
     await this.dataService.deleteAll('states');
     await signedInUser.delete().catch(e => {
       if (e === AuthErrorCode.RequiresRecentLogin) {
-        console.log('login again');
+        this.snackBar.open('This action requires a recent sign in, try this again to complete');
       }
     });
   }

@@ -68,6 +68,8 @@ $cp-theme: mat-light-theme((
   --color-background-panel-cosmic-blue-glass: rgba(var(--cosmic-blue), .5);
 
   --color-text-primary: #{map-get($cp-primary, 700)};
+  --color-text-accent: #{map-get($cp-accent, 700)};
+  --color-text-warn: #{map-get($cp-warn, 700)};
   --color-text-hyperlink: #263dc1;
   --color-text-map-green: #cf0a;
   --color-text-muted: #999;

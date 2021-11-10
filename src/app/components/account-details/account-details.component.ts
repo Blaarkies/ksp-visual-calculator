@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
@@ -6,10 +6,13 @@ import { FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject, EMPTY, from, Observable, of, Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
-import { catchError, finalize, mapTo, mergeAll, startWith, take, takeUntil, timeout } from 'rxjs/operators';
+import { catchError, finalize, mapTo, mergeAll, startWith, switchMap, take, takeUntil, timeout } from 'rxjs/operators';
 import { AuthErrorCode } from './auth-error-code';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { User } from '../../services/data.service';
+import { InputFieldComponent } from '../controls/input-field/input-field.component';
+import { EventLogs } from '../../services/event-logs';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'cp-account-details',
@@ -43,18 +46,29 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   validatingCustomer$ = new Subject<boolean>();
   uploadingImage$ = new Subject<boolean>();
   editingDetails$ = new BehaviorSubject<boolean>(false);
+  deletingAccount$ = new Subject<boolean>();
 
   nameControl = new FormControl(null, [Validators.required]);
 
+  user$ = this.authService.user$;
+
   @Output() signOut = new EventEmitter();
+
+  @ViewChild(InputFieldComponent) fieldDisplayName: InputFieldComponent;
 
   icons = Icons;
   isPromoteOpen = false;
   isSettingsOpen = false;
 
   constructor(private snackBar: MatSnackBar,
-              public authService: AuthService) {
+              private authService: AuthService,
+              private analyticsService: AnalyticsService) {
     super();
+
+    this.user$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => this.nameControl.setValue(user?.displayName));
+    this.nameControl.disable();
   }
 
   ngOnDestroy() {
@@ -161,32 +175,70 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       this.snackBar.open(`"${user.email}" could not be verified on buymeacoffee.com/Blaarkies`);
     }
     this.validatingCustomer$.next(false);
+
+    this.analyticsService.logEvent('Validate account supporter status', {
+      category: EventLogs.Category.Account,
+      isCustomer: newUserData.isCustomer,
+    });
   }
 
   async uploadImage(user: User) {
     this.snackBar.open(`Custom profile pictures coming soon!`);
+
+    this.analyticsService.logEvent('Upload profile image', {
+      category: EventLogs.Category.Account,
+    });
   }
 
   async editDetails(user: User) {
     let isEditing = this.editingDetails$.value;
     if (isEditing) {
+      this.analyticsService.logEvent('Complete edit user data', {
+        category: EventLogs.Category.Account,
+      });
       await this.authService.editUserData({
         ...user,
         displayName: this.nameControl.value,
       });
 
       this.editingDetails$.next(false);
+      this.nameControl.disable();
 
       this.snackBar.open(`Details have been updated`);
     } else {
+      this.analyticsService.logEvent('Start edit user data', {
+        category: EventLogs.Category.Account,
+      });
+
       this.nameControl.setValue(user.displayName);
       this.editingDetails$.next(true);
+      this.nameControl.enable();
+      this.fieldDisplayName.focus();
     }
   }
 
   async deleteAccount(user: User) {
-    await this.authService.deleteAccount(user);
-    this.snackBar.open(`"${user.email}" account has been deleted`);
+    this.analyticsService.logEvent('Started account deletion', {
+      category: EventLogs.Category.Account,
+    });
+
+    this.deletingAccount$.next(true);
+
+    this.snackBar.open(`This will permanently delete your account, and any associated information to it.
+      Are you sure you want to remove your account?`,
+      'Delete', {duration: 10e3, panelClass: 'snackbar-warn'})
+      .onAction()
+      .pipe(
+        switchMap(() => this.authService.deleteAccount(user)),
+        finalize(() => this.deletingAccount$.next(false)),
+        takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.snackBar.open(`"${user.email}" account has been deleted`);
+
+        this.analyticsService.logEvent('Completed account deletion', {
+          category: EventLogs.Category.Account,
+        });
+      });
   }
 
 }

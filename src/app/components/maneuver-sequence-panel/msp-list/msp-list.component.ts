@@ -24,6 +24,7 @@ export class MspListComponent {
   @Input() isAddingCheckpoint: boolean;
 
   @Output() add = new EventEmitter();
+  @Output() checkpointMode = new EventEmitter<boolean>();
   @Output() resetAll = new EventEmitter();
   @Output() removeNode = new EventEmitter<Checkpoint>();
   @Output() updateNode = new EventEmitter<Checkpoint>();
@@ -31,9 +32,21 @@ export class MspListComponent {
   deltaVTotal: number;
   // twrMinimum: number;
   icons = Icons;
+  isTapCheckpointMode = false;
 
   getNode(index: number, item: Checkpoint): string {
     return item.node.name;
   }
 
+  toggleTapCheckpointMode() {
+    this.isTapCheckpointMode = !this.isTapCheckpointMode;
+    this.checkpointMode.emit(this.isTapCheckpointMode);
+  }
+
+  addCheckpoint() {
+    this.isTapCheckpointMode = false;
+    this.checkpointMode.emit(false);
+
+    this.add.emit();
+  }
 }

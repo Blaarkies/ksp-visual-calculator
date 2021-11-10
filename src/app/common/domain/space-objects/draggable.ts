@@ -67,7 +67,7 @@ export class Draggable extends WithDestroy() {
 
       pointerStream = this.getEventObservable(screen, 'mousemove')
         .pipe(
-          throttleTime(25),
+          throttleTime(17),
           // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
           filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
           map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
@@ -82,7 +82,7 @@ export class Draggable extends WithDestroy() {
     } else if (event.pointerType === 'touch') {
       pointerStream = this.getEventObservable(screen, 'touchmove')
         .pipe(
-          throttleTime(33),
+          throttleTime(17),
           filter((touch: TouchEvent) => touch.changedTouches.length === 1),
           map((touchEvent: TouchEvent) => {
             let touch = touchEvent.touches[0];

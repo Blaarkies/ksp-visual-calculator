@@ -72,6 +72,7 @@
                [checkpoints]="checkpoints$ | async"
                [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
                (add)="addCheckpoint(list.isAddingCheckpoint)"
+               (checkpointMode)="setCheckpointMode($event)"
                (resetAll)="resetMission()"
                (removeNode)="removeCheckpoint($event)"
                (updateNode)="updateCheckpoint($event)">

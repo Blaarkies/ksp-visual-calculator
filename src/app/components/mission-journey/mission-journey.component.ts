@@ -2,8 +2,8 @@ import { AfterViewInit, Component, Input } from '@angular/core';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
-import { fromEvent, Observable } from 'rxjs';
-import { map, sampleTime, startWith } from 'rxjs/operators';
+import { fromEvent, interval, merge, Observable } from 'rxjs';
+import { filter, map, mapTo, sampleTime, scan, startWith } from 'rxjs/operators';
 import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
 import memoize from 'fast-memoize';
@@ -77,14 +77,15 @@ export class MissionJourneyComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.mouseLocation$ = fromEvent(
-      this.cameraService.cameraController.nativeElement,
-      'mousemove')
+    let screenSpace = this.cameraService.cameraController.nativeElement;
+    this.mouseLocation$ = merge(fromEvent(screenSpace, 'mousemove'), interval(17).pipe(mapTo(null)))
       .pipe(
+        scan((acc, value) => value || acc),
+        filter(e => e),
         sampleTime(16),
         map((event: MouseEvent) => new Vector2(event.pageX, event.pageY)
           .subtractVector2(this.cameraService.location)
-          .subtract(20, 48)),
+          .multiply(1 / this.cameraService.scale)),
         startWith(Vector2.zero));
   }
 

@@ -18,6 +18,8 @@ export class Icons {
   static ExpandHorizontal = 'arrow-expand-horizontal';
   static ExpandLeft = 'arrow-expand-left';
   static CollapseRight = 'arrow-collapse-right';
+  static Lock = 'lock';
+  static Unlock = 'lock-open-variant';
 
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';

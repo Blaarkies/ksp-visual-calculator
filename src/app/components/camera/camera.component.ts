@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
-import { fromEvent, interval, Observable, Subject } from 'rxjs';
+import { fromEvent, interval, Observable } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -8,9 +8,11 @@ import {
   map,
   sampleTime,
   scan,
-  skip, startWith,
-  switchMap, take,
-  takeUntil, tap
+  skip,
+  startWith,
+  switchMap,
+  take,
+  takeUntil
 } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';

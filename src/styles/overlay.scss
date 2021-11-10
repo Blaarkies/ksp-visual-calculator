@@ -1,4 +1,4 @@
-.promote-flash {
+.snackbar-promote-flash {
   overflow: hidden;
 
   position: relative;
@@ -33,5 +33,12 @@
       80% {backdrop-filter: brightness(1)}
       100% {backdrop-filter: brightness(2)}
     }
+  }
+}
+
+.snackbar-warn {
+  button {
+    color: var(--color-text-warn);
+    background-color: #0003;
   }
 }

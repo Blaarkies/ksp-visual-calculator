@@ -83,7 +83,7 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     preferencesDebouncer$.pipe(
       debounceTime(10e3),
       takeUntil(this.destroy$))
-      .subscribe(preferences => this.analyticsService.logEvent('Update checkpoint configuration', {
+      .subscribe(preferences => this.analyticsService.logEvent('Update checkpoint preferences', {
         category: EventLogs.Category.DeltaV,
         ...preferences,
       }));
@@ -113,6 +113,10 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     } else {
       this.travelService.addCheckpoint();
     }
+  }
+
+  setCheckpointMode(isLocked: boolean) {
+    this.travelService.setCheckpointMode(isLocked);
   }
 
   resetMission() {
