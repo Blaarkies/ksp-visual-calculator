@@ -285,7 +285,7 @@ export class HudService {
 
           if (!user) {
             this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
-            this.dialog.open(AccountDialogComponent);
+            this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
             return Promise.resolve();
           }
 

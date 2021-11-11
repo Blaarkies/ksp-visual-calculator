@@ -14,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
 import UserCredential = firebase.auth.UserCredential;
 import { AuthErrorCode } from '../components/account-details/auth-error-code';
+import { GlobalStyleClass } from '../common/GlobalStyleClass';
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +50,7 @@ export class AuthService {
       switchMap(() => this.snackBar.open(
         'Would you like to support the developer?',
         'Yes',
-        {duration: 15e3, panelClass: 'snackbar-promote-flash'})
+        {duration: 15e3, panelClass: GlobalStyleClass.SnackbarPromoteFlash})
         .onAction()),
       tap(() => {
         this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});

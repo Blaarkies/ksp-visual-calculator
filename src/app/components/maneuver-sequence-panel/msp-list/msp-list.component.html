@@ -45,8 +45,8 @@
           color="warn"
           [matTooltip]="'Clear entire mission'"
           [disabled]="!missionCheckpoints.length"
-          (click)="resetAll.emit()">
-    <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+          (click)="resetMission()">
+    <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
   </button>
 </div>
 

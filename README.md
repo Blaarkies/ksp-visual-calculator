@@ -1,18 +1,32 @@
 # KSP Visual Calculator
 
-[Demo](https://ksp-visual-calculator.blaarkies.com)
+[Live website](https://ksp-visual-calculator.blaarkies.com)
 
 ## A tool for Kerbal Space Program
 
-This helps players visualize and plan out their communication networks in Kerbal Space Program.
+This helps players visualize and plan out missions in Kerbal Space Program. There are two pages, each solving a different question:
+- [Delta-v Planner](#Delta-v Planner), calculates how much delta-v is required to complete a mission with specific checkpoints
+- [Signal Check](#Signal Check), solves the layout of Communication Networks
 
-### Map preview
+### Delta-v Planner
+
+The Delta-v Planner page imitates the map view from Kerbal Space Program, showing all planets and moons.
+
+Using the Mission Checkpoints panel, the user can set multiple checkpoints in the order that they should be visited, 
+and the required delta-v for this mission will be calculated automatically.
+
+Each checkpoint can be configured with specific orbital requirements, and the preferred type of route that should be taken.
+
+![A footsteps on the moons mission](./storage/map-dv-preview.jpg?raw=true "A footsteps on the moons mission")
+
+
+### Signal Check
 
 The Signal Check page imitates the map view from Kerbal Space Program, showing all planets, moons, and spacecraft.
 
-From here the user can drag planets/moons along their orbits, and spacecraft can be dragged to anywhere on the map.
+From here the user can drag planets/moons along their orbits, and spacecraft can be dragged to be anywhere on the map.
 
-![A relay network](./storage/map-preview.jpg?raw=true "A relay network")
+![A relay network](./storage/map-signal-preview.jpg?raw=true "A relay network")
 
 ### Modify in real-time
 

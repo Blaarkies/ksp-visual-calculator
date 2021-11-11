@@ -49,4 +49,12 @@ export class MspListComponent {
 
     this.add.emit();
   }
+
+  resetMission() {
+    this.isTapCheckpointMode = false;
+    this.checkpointMode.emit(false);
+
+    this.resetAll.emit()
+  }
+
 }

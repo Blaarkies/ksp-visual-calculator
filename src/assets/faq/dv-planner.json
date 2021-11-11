@@ -6,13 +6,22 @@
       [
         {
           "type": "span",
-          "content": "In the 'Preferences' section of the 'Mission Checkpoints' panel, you can set aerobraking as a default technique to reduce delta-v requirements."
+          "content": "Each checkpoint can individually be set to use aerobraking (if that checkpoint has an atmosphere). In the 'Preferences' section of the 'Mission Checkpoints' panel, you can set aerobraking as a default technique to reduce delta-v requirements."
         }
       ],
       [
         {
           "type": "span",
-          "content": "This is typically only advantageous when slowing down the craft, e.g. to capture into orbit from an intercepting trajectory, or lowering the craft's highly elliptical orbit down to a low orbit."
+          "content": "This is typically advantageous when slowing down the craft, e.g. to capture into orbit from an intercepting trajectory, or lowering the craft's highly elliptical orbit down to a low orbit."
+        }
+      ],
+      [
+        {
+          "type": "image",
+          "content": "Aerobraking at Duna can reduce delta-v requirements",
+          "src": "assets/faq/aerobrake.jpg",
+          "alt": "An example image of the mission checkpoints panel, with aerobraking enabled",
+          "height": 330
         }
       ]
     ],
@@ -31,7 +40,86 @@
       ]
     ],
     "tags": "detail trip step breakdown"
-  }
+  },
 
+  {
+    "title": "Checkpoint Mode",
+    "simpleExplanation": "Add single checkpoints, or enable checkpoint mode to add many.",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "Tap the green add checkpoint button, then tap a planet to add a single checkpoint."
+        }
+      ],
+      [
+        {
+          "type": "span",
+          "content": "Tap the green lock button to enable checkpoint mode, then tap multiple planets to add checkpoints to them. To disable checkpoint mode, tap the green lock button again."
+        }
+      ]
+    ],
+    "tags": "checkpoint mode add"
+  },
+
+  {
+    "title": "Route Type",
+    "simpleExplanation": "Sets the preferred type of route that will be used during calculations.",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "The 'Direct' route type will attempt to find a simple trip with the least amount of intermediary steps. When going from Moho to Duna, it will attempt a planetary transfer directly to Duna."
+        }
+      ],
+      [
+        {
+          "type": "span",
+          "content": "The 'Efficient' route type will prefer trips with the least amount of delta-v required. When going from Moho to Duna, it will suggest the following trip 'Moho->Eve->Kerbin->Duna' because that is cheaper, although such trips will take much longer to complete."
+        }
+      ]
+    ],
+    "tags": "delta-v route direct efficient skip cheap"
+  },
+
+  {
+    "title": "Plane Change Cost",
+    "simpleExplanation": "Sets the ratio used for calculations regarding plane changes.",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "When transferring between planets or moons with different orbital inclinations, the craft will likely need to correct for the by expending extra delta-v."
+        }
+      ],
+      [
+        {
+          "type": "span",
+          "content": "Generally, the more patient a trip plan is to launch during the correct launch window, the less delta-v is required to correct for this."
+        }
+      ]
+    ],
+    "tags": "plane change inclination launch window skew sideways wrong"
+  },
+
+  {
+    "title": "Remove Checkpoint",
+    "simpleExplanation": "Checkpoints can be deleted, individually, or as an entire mission.",
+    "advancedExplanations": [
+      [
+        {
+          "type": "span",
+          "content": "In the 'Mission Checkpoints' panel, tap the red trash can beside a checkpoint to delete that checkpoint. The mission will assume to skip that checkpoint, make a new connection in it's place, and re-calculate the other checkpoints for a new result."
+        }
+      ],
+      [
+        {
+          "type": "span",
+          "content": "Tap the red trashcan below the list to remove all checkpoints from the mission. This will clear the list to let you start a new mission."
+        }
+      ]
+    ],
+    "tags": "checkpoint mission remove delete stop clear no less over"
+  }
 ]
 

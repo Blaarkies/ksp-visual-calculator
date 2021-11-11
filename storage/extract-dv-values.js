@@ -1,3 +1,9 @@
+/**
+ * This script can run in the browser on https://alexmoon.github.io/ksp/
+ * It will test planetary transfers between every celestial body, and extract the delta-v requirements for each transfer.
+ * This info is used by the .\src\app\common\data-structures\delta-v-map\delta-v-graph.ts to build a node graph data structure.
+ */
+
 Array.prototype.joinSelf = function () {
   return this.map((item, i, list) =>
     list.map(innerItem => [item, innerItem]))

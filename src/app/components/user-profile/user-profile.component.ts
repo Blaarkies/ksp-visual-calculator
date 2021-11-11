@@ -7,6 +7,7 @@ import { AccountDialogComponent } from '../../overlays/account-dialog/account-di
 import { takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
+import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 
 @Component({
   selector: 'cp-user-profile',
@@ -28,7 +29,7 @@ export class UserProfileComponent extends WithDestroy() {
       category: EventLogs.Category.Account,
     });
 
-    this.dialog.open(AccountDialogComponent)
+    this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})
       .afterClosed()
       .pipe(takeUntil(this.destroy$))
       .subscribe();

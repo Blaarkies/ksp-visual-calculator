@@ -13,6 +13,7 @@ import { User } from '../../services/data.service';
 import { InputFieldComponent } from '../controls/input-field/input-field.component';
 import { EventLogs } from '../../services/event-logs';
 import { AnalyticsService } from '../../services/analytics.service';
+import { GlobalStyleClass } from '../../common/GlobalStyleClass';
 
 @Component({
   selector: 'cp-account-details',
@@ -226,7 +227,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
     this.snackBar.open(`This will permanently delete your account, and any associated information to it.
       Are you sure you want to remove your account?`,
-      'Delete', {duration: 10e3, panelClass: 'snackbar-warn'})
+      'Delete', {duration: 10e3, panelClass: GlobalStyleClass.SnackbarWarn})
       .onAction()
       .pipe(
         switchMap(() => this.authService.deleteAccount(user)),

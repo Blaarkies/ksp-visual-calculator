@@ -34,6 +34,7 @@ import { TravelService } from './travel.service';
 import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
+import { GlobalStyleClass } from '../common/GlobalStyleClass';
 
 @Injectable({
   providedIn: 'root',
@@ -154,7 +155,7 @@ export class StateService {
             catchError(() => this.snackBar.open(`Cannot save changes without an account`, 'Sign In', {duration: 15e3})
               .onAction()
               .pipe(
-                tap(() => this.dialog.open(AccountDialogComponent)),
+                tap(() => this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})),
                 switchMapTo(EMPTY), // stop this iteration of the stream here
                 takeUntil(this.autoSaveUnsubscribe$))))),
         throttleTime(30e3),
