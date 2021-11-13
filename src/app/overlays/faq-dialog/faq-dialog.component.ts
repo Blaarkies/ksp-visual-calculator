@@ -86,6 +86,8 @@ export class FaqDialogComponent extends WithDestroy() {
         return 'assets/faq/signal-check.json';
       case UsableRoutes.DvPlanner:
         return 'assets/faq/dv-planner.json';
+      default:
+        throw new Error(`Context "${context}" does not exist`);
     }
   }
 }

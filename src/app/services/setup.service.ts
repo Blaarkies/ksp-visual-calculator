@@ -4,7 +4,7 @@ import { AntennaPart } from './json-interfaces/antenna-part';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Antenna } from '../common/domain/antenna';
 import { CelestialBody, KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
-import { SpaceObject} from '../common/domain/space-objects/space-object';
+import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { Orbit } from '../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { map, takeUntil } from 'rxjs/operators';

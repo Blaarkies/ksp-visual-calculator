@@ -62,7 +62,7 @@ Number.prototype.transform = function (this: number, type: 'log' | 'eo-parab' | 
       return (1 - this) * (1 + this);
 
     default:
-      console.error(`Type "${type}" is not a valid transformation function`);
+      throw new Error(`Type "${type}" is not a valid transformation function`);
   }
 };
 

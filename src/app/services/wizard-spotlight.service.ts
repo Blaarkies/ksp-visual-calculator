@@ -176,6 +176,8 @@ export class WizardSpotlightService {
         newLocation = new Vector2(window.innerWidth * .5, window.innerHeight * .5)
           .addVector2(dialogSize.clone().multiply(-.5));
         break;
+      default:
+        throw new Error(`DialogPosition "${dialogPosition}" does not exist`);
     }
 
     if (newLocation.x < 0) {

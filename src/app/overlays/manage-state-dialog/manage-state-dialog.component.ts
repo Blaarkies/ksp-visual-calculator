@@ -65,7 +65,7 @@ export class ManageStateDialogComponent extends WithDestroy() {
         takeUntil(this.destroy$))
       .subscribe(() => this.stateList.selectedOptions.select(this.stateList.options.first));
 
-    this.contextTitle = this.getContextTitle(this.context);
+    this.contextTitle = this.getContextTitle(this.data.context);
   }
 
   async editStateName(oldName: string, state: StateRow) {
@@ -252,6 +252,8 @@ export class ManageStateDialogComponent extends WithDestroy() {
         return 'Signal Check';
       case UsableRoutes.DvPlanner:
         return 'Delta-v Planner';
+      // default:
+      //   throw new Error(`Context "${context}" does not exist`);
     }
   }
 

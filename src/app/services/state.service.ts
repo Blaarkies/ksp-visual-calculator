@@ -109,6 +109,8 @@ export class StateService {
           checkpoints: this.travelService.checkpoints$.value
             .map(c => c.toJson()) as StateCheckpoint[],
         };
+      default:
+        throw new Error(`Could not process context "${this.context}"`);
     }
   }
 
@@ -190,6 +192,8 @@ export class StateService {
           this.setupService.updateCheckpointPreferences(
             CheckpointPreferences.fromObject(parsedState.settings.preferences));
           break;
+        default:
+          throw new Error(`Context "${context}" does not exist`);
       }
     } else {
       switch (context as UsableRoutes) {
@@ -199,6 +203,8 @@ export class StateService {
         case UsableRoutes.DvPlanner:
           this.setupService.updateCheckpointPreferences(CheckpointPreferences.default);
           break;
+        default:
+          throw new Error(`Context "${context}" does not exist`);
       }
     }
   }

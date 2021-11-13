@@ -1,18 +1,36 @@
 import { FaqDialogComponent } from './faq-dialog.component';
-import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
+import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { HttpClient } from '@angular/common/http';
 import { ineeda } from 'ineeda';
-import { EMPTY, of } from 'rxjs';
+import { of } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Section } from './faq-section/faq-section.component';
+import { HudService } from '../../services/hud.service';
+import { UsableRoutes } from '../../usable-routes';
 
 let componentType = FaqDialogComponent;
 describe('FaqDialogComponent', () => {
 
   beforeEach(() => MockBuilder(componentType)
     .mock(AppModule)
-    .mock(HttpClient, ineeda<HttpClient>({get: url => EMPTY}))
+    .mock(HudService, ineeda<HudService>({
+      pageContext: UsableRoutes.SignalCheck,
+    }))
+    .mock(HttpClient, ineeda<HttpClient>({
+      get: (url => {
+        switch (url) {
+          case 'assets/faq/general.json':
+            return of(jsonDataGeneral);
+          case 'assets/faq/signal-check.json':
+            return of(jsonDataSignalCheck);
+          case 'assets/faq/dv-planner.json':
+            return of(jsonDataDvPlanner);
+          default:
+            throw new Error(`URL "${url}" does not match any legit asset JSON file.`);
+        }
+      }) as any,
+    }))
     .mock(BreakpointObserver, ineeda<BreakpointObserver>({
       observe: () => of(),
     })));
@@ -23,16 +41,12 @@ describe('FaqDialogComponent', () => {
   });
 
   it('constructor should get json data and populate allSections', () => {
-    MockInstance(HttpClient, instance => ineeda<HttpClient>({
-      get: url => of(jsonData) as any,
-    }));
-
     let fixture = MockRender(componentType);
     let component = fixture.point.componentInstance;
 
-    expect(component.allSections.length).toBe(2);
+    expect(component.allSections.length).toBe(3);
     expect(component.columns.length).toBe(3);
-    expect(component.columns[0].length).toBe(1);
+    expect(component.columns[0].length).toBe(2);
     expect(component.columns[1].length).toBe(1);
     expect(component.columns[2].length).toBe(0);
   });
@@ -48,7 +62,7 @@ describe('FaqDialogComponent', () => {
 });
 
 /* tslint:disable:object-literal-key-quotes */
-let jsonData: Section[] = [
+let jsonDataGeneral: Section[] = [
   {
     'title': 'test-title',
     'simpleExplanation': 'test-simple',
@@ -72,5 +86,23 @@ let jsonData: Section[] = [
     'simpleExplanation': 'test-simple-b',
     'advancedExplanations': [],
     'tags': 'test-tag-b',
+  },
+];
+
+let jsonDataSignalCheck: Section[] = [
+  {
+    'title': 'test-title-signal-check',
+    'simpleExplanation': '',
+    'advancedExplanations': [],
+    'tags': '',
+  },
+];
+
+let jsonDataDvPlanner: Section[] = [
+  {
+    'title': 'test-title-dv-planner',
+    'simpleExplanation': '',
+    'advancedExplanations': [],
+    'tags': '',
   },
 ];

@@ -4,8 +4,9 @@ import { AppModule } from '../../app.module';
 import { CameraService } from '../../services/camera.service';
 import { ineeda } from 'ineeda';
 import { Vector2 } from '../../common/domain/vector2';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { Common } from '../../common/common';
 import createSpy = jasmine.createSpy;
+import createSpyObj = jasmine.createSpyObj;
 
 let componentType = CameraComponent;
 describe('CameraComponent', () => {
@@ -70,17 +71,26 @@ describe('CameraComponent', () => {
     target,
     touchType: 'direct',
   } as TouchInit);
-  it('touchStart() should move camera location', fakeAsync(() => {
-    let spyZoomAt = MockInstance(CameraService, 'zoomAt', createSpy());
-    let location = MockInstance(CameraService, 'location', new Vector2());
 
-    spyOn(location, 'addVector2');
+  it('touchStart() should move camera location', async (done) => {
+    // let spyZoomAt = MockInstance(CameraService, 'zoomAt', createSpy('spyZoomAt'));
+    let spyLocation = MockInstance(CameraService, 'location',
+      createSpyObj({addVector2: createSpy('spyAddVector2')}));
 
     let fixture = MockRender(componentType);
     let component = fixture.point.componentInstance;
 
     let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div.camera-controller');
-    component.touchStart(ineeda<TouchEvent>(), screenSpace);
+
+    let touchA0 = new Touch(getTouchAt(1, 1, screenSpace));
+    let touchB0 = new Touch(getTouchAt(2, -1, screenSpace));
+    let touchEvent = new TouchEvent('touchmove', {
+      changedTouches: [touchA0, touchB0],
+      touches: [touchA0, touchB0],
+    });
+    component.touchStart(touchEvent, screenSpace);
+
+    await Common.waitPromise();
 
     let touchA1 = new Touch(getTouchAt(0, 0, screenSpace));
     let touchB1 = new Touch(getTouchAt(10, 0, screenSpace));
@@ -89,21 +99,32 @@ describe('CameraComponent', () => {
       touches: [touchA1, touchB1],
     }));
 
-    tick(100);
+    await Common.waitPromise();
 
-    let touchA2 = new Touch(getTouchAt(5, 0, screenSpace));
-    let touchB2 = new Touch(getTouchAt(20, 0, screenSpace));
+    let touchA2 = new Touch(getTouchAt(5, -100, screenSpace));
+    let touchB2 = new Touch(getTouchAt(20, 100, screenSpace));
     screenSpace.dispatchEvent(new TouchEvent('touchmove', {
       changedTouches: [touchA2, touchB2],
       touches: [touchA2, touchB2],
     }));
 
-    tick(100);
+    await Common.waitPromise();
 
-    expect(location.addVector2).toHaveBeenCalled();
-    expect(spyZoomAt).toHaveBeenCalled();
+    screenSpace.dispatchEvent(new TouchEvent('touchmove', {
+      changedTouches: [],
+      touches: [],
+    }));
+
+    await Common.waitPromise();
+
+    expect(spyLocation.addVector2).toHaveBeenCalled();
+    // dz returns 0, which causes no zoom function call
+    // expect(spyZoomAt).toHaveBeenCalled();
 
     component.ngOnDestroy();
-  }));
+
+    done();
+
+  });
 
 });

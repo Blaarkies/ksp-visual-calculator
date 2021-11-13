@@ -263,6 +263,8 @@ export class TutorialService {
         ];
         startTutorial.dialogIcon = Icons.DeltaV;
         break;
+      default:
+        throw new Error(`Context "${context}" does not exist`);
     }
 
     return startTutorial;

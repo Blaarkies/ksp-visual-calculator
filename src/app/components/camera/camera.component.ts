@@ -98,6 +98,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
 
     fromEvent(screenSpace, 'touchmove')
       .pipe(
+        startWith(event),
         distinctUntilChanged((x: TouchEvent, y: TouchEvent) => x.touches.length === y.touches.length),
         switchMap((touch: TouchEvent) => touch.touches.length === 1
           ? this.getOneTouchStream(screenSpace)

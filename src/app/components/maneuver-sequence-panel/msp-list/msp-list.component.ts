@@ -54,7 +54,7 @@ export class MspListComponent {
     this.isTapCheckpointMode = false;
     this.checkpointMode.emit(false);
 
-    this.resetAll.emit()
+    this.resetAll.emit();
   }
 
 }

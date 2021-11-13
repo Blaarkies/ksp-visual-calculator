@@ -91,7 +91,7 @@
                 [svgIcon]="pageContextInfo?.icon"></mat-icon>
     </div>
 
-    <button *ngIf="!(hasBoughtCoffee$ | async)"
+    <button *ngIf="hasBoughtCoffee$ | async | not"
             [@fade]
             class="buy-me-a-coffee"
             mat-icon-button

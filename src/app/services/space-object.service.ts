@@ -100,6 +100,8 @@ export class SpaceObjectService extends WithDestroy() {
         case UsableRoutes.DvPlanner:
           this.buildStateDvPlanner(lastState);
           break;
+        default:
+          throw new Error(`Context "${context}" does not exist`);
       }
     };
 

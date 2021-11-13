@@ -3,7 +3,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, EMPTY, from, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { catchError, finalize, mapTo, mergeAll, startWith, switchMap, take, takeUntil, timeout } from 'rxjs/operators';
@@ -41,13 +41,13 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   controlPassword = new FormControl(null, [Validators.required, Validators.minLength(6)]);
   passwordVisible = false;
   emailSignInError$ = new Observable<string>();
-  signingInWithEmail$ = new Subject<boolean>();
-  signingInWithGoogle$ = new Subject<boolean>();
+  signingInWithEmail$ = new BehaviorSubject<boolean>(false);
+  signingInWithGoogle$ = new BehaviorSubject<boolean>(false);
 
-  validatingCustomer$ = new Subject<boolean>();
-  uploadingImage$ = new Subject<boolean>();
+  validatingCustomer$ = new BehaviorSubject<boolean>(false);
+  uploadingImage$ = new BehaviorSubject<boolean>(false);
   editingDetails$ = new BehaviorSubject<boolean>(false);
-  deletingAccount$ = new Subject<boolean>();
+  deletingAccount$ = new BehaviorSubject<boolean>(false);
 
   nameControl = new FormControl(null, [Validators.required]);
 

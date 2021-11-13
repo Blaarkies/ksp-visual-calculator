@@ -13,6 +13,9 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import createSpy = jasmine.createSpy;
 import objectContaining = jasmine.objectContaining;
+import { HttpClient } from '@angular/common/http';
+import { ineeda } from 'ineeda';
+import { take } from 'rxjs/operators';
 
 let serviceType = AuthService;
 describe('AuthService', () => {
@@ -25,6 +28,9 @@ describe('AuthService', () => {
         set: () => Promise.resolve(),
       }) as any,
     })
+    .mock(HttpClient, ineeda<HttpClient>({
+      get: () => of({isCustomer: true} as any)
+    }))
     .mock(StateService, {
       earlyState: of({}) as any,
       getStatesInContext: () => of([]) as any,
@@ -38,23 +44,27 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
-  it('user$ should update when authState changes', fakeAsync(() => {
+  it('user$ should update when authState changes', (done) => {
     let spyUpdateUserId = MockInstance(DataService, 'updateUserId', createSpy());
     let spyGetRef = MockInstance(DataService, 'getRef', createSpy()
       .and.returnValue({valueChanges: () => of({uid: 'test-uid'})}));
+    MockInstance(AngularFireAuth, 'authState', of({uid: 'test-uid'} as any));
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
 
     service.user$
+      .pipe(take(1))
       .subscribe(user => {
         expect(user).toEqual(objectContaining({uid: 'test-uid'}));
         expect(spyUpdateUserId).toHaveBeenCalled();
         expect(spyGetRef).toHaveBeenCalled();
-      });
-  }));
 
-  it('when current state has changed, ask user before loading new state', fakeAsync(() => {
+        done();
+      });
+  });
+
+  xit('when current state has changed, ask user before loading new state', fakeAsync(() => {
     MockInstance(StateService, 'earlyState', of({
       name: 'test-early-name',
     } as any));
@@ -110,7 +120,8 @@ describe('AuthService', () => {
   });
 
   it('emailSignIn() should attempt to signIn with email and password', async () => {
-    let spySignInWithEmailAndPassword = MockInstance(AngularFireAuth, 'signInWithEmailAndPassword', createSpy());
+    let spySignInWithEmailAndPassword = MockInstance(AngularFireAuth, 'signInWithEmailAndPassword',
+      createSpy().and.returnValue({user: {}}));
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
@@ -168,14 +179,14 @@ describe('AuthService', () => {
         name: 'test-name',
         state: 'test-state',
       } as StateEntry])));
-    MockInstance(StateService, 'stateIsUnsaved', true);
+    MockInstance(StateService, 'stateIsUnsaved', false);
     MockInstance(MatSnackBar, 'open', createSpy()
       .and.returnValue({
         afterDismissed: () => of({
           dismissedByAction: false,
         }),
       }));
-    let spyLoadState = MockInstance(StateService, 'loadState', createSpy()
+    let spyLoadState = MockInstance(StateService, 'loadState', createSpy('spyLoadState')
       .and.returnValue(of(0)));
 
     let fixture = MockRender(serviceType);

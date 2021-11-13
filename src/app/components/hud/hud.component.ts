@@ -92,7 +92,7 @@ export class HudComponent extends WithDestroy() {
       }
     };
 
-    hudService.pageContextChange
+    hudService.pageContextChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe(context => this.pageContextInfo = contextVisualMap[context]);
   }

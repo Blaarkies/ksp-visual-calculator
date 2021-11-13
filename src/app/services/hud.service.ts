@@ -45,7 +45,7 @@ export class HudService {
     return this.contextChange$.value;
   }
 
-  get pageContextChange(): Observable<UsableRoutes> {
+  get pageContextChange$(): Observable<UsableRoutes> {
     return this.contextChange$.asObservable();
   }
 

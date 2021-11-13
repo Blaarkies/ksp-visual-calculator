@@ -86,6 +86,7 @@ import { MspNodeComponent } from './components/maneuver-sequence-panel/msp-node/
 import { MspEdgeComponent } from './components/maneuver-sequence-panel/msp-edge/msp-edge.component';
 import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { NegatePipe } from './common/negate.pipe';
 
 @NgModule({
   declarations: [
@@ -142,6 +143,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
     MspNodeComponent,
     MspEdgeComponent,
     MissionJourneyComponent,
+    NegatePipe,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
