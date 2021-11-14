@@ -3,11 +3,10 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { Vector2 } from '../common/domain/vector2';
 import { ineeda } from 'ineeda';
-import { Draggable } from '../common/domain/space-objects/draggable';
-import objectContaining = jasmine.objectContaining;
-import createSpy = jasmine.createSpy;
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
+import objectContaining = jasmine.objectContaining;
+import createSpy = jasmine.createSpy;
 
 let serviceType = CameraService;
 describe('CameraService', () => {
@@ -39,28 +38,29 @@ describe('CameraService', () => {
     expect(service.location).toEqual(objectContaining({x: 960, y: 540}));
   });
 
-  xit('when hoverObject exists, zoomAt() should update scale & location towards hoverObject', () => {
+  it('when hoverObject exists, zoomAt() should update scale & location towards hoverObject', () => {
     let fixture = MockRender(serviceType, {cdr});
     let service = fixture.point.componentInstance;
 
-    service.currentHoverObject = ineeda<Draggable>(
-      {location: new Vector2(10e9, 15e9)});
-    service.zoomAt(1);
+    service.scale = 23e-5;
+    service.currentHoverObject = {location: new Vector2(2e5, 3e5)} as any;
+
+    service.zoomAt(.1);
 
     expect(service.location).toEqual(objectContaining(
-      {x: 1460, y: 1290}));
-    expect(service.scale).toBe(5e-8);
+      {x: 1001.4, y: 602.1}));
+    expect(service.scale.toFixed(7).toNumber()).toBe(0.000023);
   });
 
-  xit('when hoverObject is null, zoomAt() should update scale & location towards mouseLocation', () => {
+  it('when hoverObject is null, zoomAt() should update scale & location towards mouseLocation', () => {
     let fixture = MockRender(serviceType, {cdr});
     let service = fixture.point.componentInstance;
 
-    service.zoomAt(1, new Vector2(-10e9, 5e9));
+    service.zoomAt(.1, new Vector2(-10e4, 5e4));
 
     expect(service.location).toEqual(objectContaining(
-      {x: 1460, y: 1290}));
-    expect(service.scale).toBe(5e-8);
+      {x: -89904, y: 45054}));
+    expect(service.scale).toBe(5e-9);
   });
 
   it('focusAt() should update scale & location', () => {

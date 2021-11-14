@@ -7,7 +7,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
   selector: 'cp-transmission-line',
   templateUrl: './transmission-line.component.html',
   styleUrls: ['./transmission-line.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class TransmissionLineComponent implements OnDestroy {
 

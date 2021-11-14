@@ -5,9 +5,9 @@
   grid-template-columns: max-content max-content auto max-content;
   grid-template-rows: minmax(200px, max-content) 1fr auto max-content;
   grid-template-areas:
-'nav     faq zoom info'
-'focus   .   .    .'
-'context .   .    clippy';
+'nav          page    zoom info'
+'focus        .       .    dv'
+'menu-context .       .    clippy';
 
   .zoom {
     max-width: 800px;
@@ -20,10 +20,10 @@
     grid-template-columns: max-content auto max-content;
     grid-template-rows: max-content max-content 1fr auto max-content;
     grid-template-areas:
-'nav     faq  info'
-'zoom    zoom zoom'
-'focus   .    .'
-'context .    clippy';
+'nav          page  info'
+'zoom         zoom     zoom'
+'focus        .        dv'
+'menu-context .        clippy';
 
     .zoom {
       max-width: 600px;
@@ -33,10 +33,67 @@
 
 .navigation {grid-area: nav;}
 
-.faq {
-  grid-area: faq;
-  color: white;
-  margin: 4px;
+.page-context {
+  grid-area: page;
+
+  display: flex;
+  z-index: 1;
+  gap: 16px;
+  margin-left: 16px;
+  height: 50px;
+  align-items: center;
+
+  .page-icon {
+    height: 40px;
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      color: var(--color-icon-white);
+    }
+  }
+
+  .buy-me-a-coffee {
+
+    mat-icon {
+      overflow: hidden;
+      position: relative;
+
+      &:before {
+        content: '';
+        width: 100%;
+        height: 100%;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+
+        background: linear-gradient(90deg, #0000, #0000 30%, #fff7 50%, #0000 70%, #0000 100%);
+
+        animation: kf-animate-wave 10s ease-in-out infinite;
+
+        @keyframes kf-animate-wave {
+          0% {transform: translateX(-200%)}
+          65% {transform: translateX(-200%)}
+          100% {transform: translateX(200%)}
+        }
+      }
+
+      color: var(--color-icon-white);
+    }
+
+    span.mat-badge-content {
+      animation: kf-animate-badge 5s linear infinite alternate;
+
+      @keyframes kf-animate-badge {
+        0% {opacity: 0}
+        75% {opacity: 0}
+        85% {opacity: 1}
+        90% {opacity: 1}
+        100% {opacity: .5}
+      }
+    }
+  }
 
   mat-icon {
     transform: scale(1.6);
@@ -55,13 +112,14 @@
   grid-area: focus;
 }
 
-.context {grid-area: context;}
+.dv {
+  grid-area: dv;
+  justify-self: end;
+}
+
+.menu-context {grid-area: menu-context;}
 
 //.clippy {grid-area: clippy}
-
-.no-mouse {
-  pointer-events: none;
-}
 
 .profile-icon {
   border-radius: 100px;
@@ -75,13 +133,13 @@
   grid-template-columns: auto auto;
   grid-template-rows: max-content max-content auto max-content;
   grid-template-areas:
-'faq    profile'
-'zoom   zoom'
-'focus  focus'
-'clippy fab-buttons';
+'page    profile'
+'zoom    zoom'
+'focus   dv'
+'clippy  fab-buttons';
 
-  .faq {
-    grid-area: faq;
+  .page-context {
+    grid-area: page;
   }
 
   .profile {
@@ -105,8 +163,15 @@
   }
 }
 
+/** Landscape mode */
 @media screen and (max-height: 500px) {
   .handset-layout {
+    .dv {
+      margin-right: 80px;
+      margin-top: 10px;
+      grid-row: 1 / -1;
+    }
+
     .fab-buttons {
       position: absolute;
       right: 0;

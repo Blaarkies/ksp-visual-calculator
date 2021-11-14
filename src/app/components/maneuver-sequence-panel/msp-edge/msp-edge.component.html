@@ -1,0 +1,49 @@
+<div class="overlap-container">
+
+  <div class="simple-details">
+    <div class="node-line"><ng-container *ngTemplateOutlet="line"></ng-container></div>
+
+    <button mat-button
+            cdkOverlayOrigin
+            #origin="cdkOverlayOrigin"
+            class="button-details"
+            [class.is-selected]="isPanelOpen"
+            (click)="toggleSidePanel()"
+            (blur)="isPanelOpen = false">
+      <div class="basic-details">
+        <div>{{missionEdge.dv}}</div>
+        <div>m/s</div>
+
+<!--        <div>{{missionEdge.twr}}</div>-->
+<!--        <div>TWR</div>-->
+      </div>
+    </button>
+
+    <div class="node-line"><ng-container *ngTemplateOutlet="line"></ng-container></div>
+  </div>
+
+  <ng-template
+    cdkConnectedOverlay
+    cdkConnectedOverlayBackdropClass="overlay-no-backdrop"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOpen]="isPanelOpen"
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayPositions]="positionLeftCenter"
+    (backdropClick)="isPanelOpen = false">
+    <div class="popout-details frosted-glass" [@animateSlidePanel]>
+      <div class="step-layout">
+        <ng-container *ngFor="let step of path">
+          <div>{{step.cost}} m/s</div>
+          <div>{{step.description}}</div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-template>
+
+</div>
+
+<ng-template #line>
+  <svg>
+    <line stroke="#fff4" stroke-width="2" x1="0" y1="0" x2="0" y2="16"></line>
+  </svg>
+</ng-template>

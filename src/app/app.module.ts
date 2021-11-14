@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppRoutingModule } from './app-routing.module';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatListModule } from '@angular/material/list';
 import { PageSignalCheckComponent } from './pages/page-signal-check/page-signal-check.component';
@@ -78,6 +78,15 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
 import { environment } from '../environments/environment';
 import { ActionFabComponent } from './components/hud/action-fab/action-fab.component';
 import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-section.component';
+import { PageDvPlannerComponent } from './pages/page-dv-planner/page-dv-planner.component';
+import { UniverseMapComponent } from './components/universe-map/universe-map.component';
+import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-panel/maneuver-sequence-panel.component';
+import { MspListComponent } from './components/maneuver-sequence-panel/msp-list/msp-list.component';
+import { MspNodeComponent } from './components/maneuver-sequence-panel/msp-node/msp-node.component';
+import { MspEdgeComponent } from './components/maneuver-sequence-panel/msp-edge/msp-edge.component';
+import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
+import { OverlayModule } from '@angular/cdk/overlay';
+import { NegatePipe } from './common/negate.pipe';
 
 @NgModule({
   declarations: [
@@ -127,6 +136,14 @@ import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-secti
     ActionListComponent,
     ActionFabComponent,
     FaqSectionComponent,
+    PageDvPlannerComponent,
+    UniverseMapComponent,
+    ManeuverSequencePanelComponent,
+    MspListComponent,
+    MspNodeComponent,
+    MspEdgeComponent,
+    MissionJourneyComponent,
+    NegatePipe,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),
@@ -161,6 +178,7 @@ import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-secti
     MatTabsModule,
     MatProgressBarModule,
     MatBottomSheetModule,
+    OverlayModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},
@@ -168,4 +186,11 @@ import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-secti
   bootstrap: [AppComponent],
 })
 export class AppModule {
+
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(
+      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg')
+    );
+  }
+
 }

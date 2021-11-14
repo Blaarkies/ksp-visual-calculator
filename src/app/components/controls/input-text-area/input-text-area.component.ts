@@ -8,7 +8,7 @@ import { CustomAnimation } from '../../../common/domain/custom-animation';
   selector: 'cp-input-text-area',
   templateUrl: './input-text-area.component.html',
   styleUrls: ['./input-text-area.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputTextAreaComponent),

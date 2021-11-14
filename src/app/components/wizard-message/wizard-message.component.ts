@@ -1,7 +1,10 @@
 import { Component, ElementRef, Input } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
+import { StepType } from '../../services/wizard-spotlight.service';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs/operators';
 
 export interface WizardMessage {
   title: string;
@@ -9,6 +12,8 @@ export interface WizardMessage {
   icon: string;
   location: Vector2;
   stopTutorial$: Subject<boolean>;
+  nextButton$: Subject<void>;
+  stepType: StepType;
 }
 
 @Component({
@@ -29,11 +34,19 @@ export class WizardMessageComponent implements WizardMessage {
   }
 
   @Input() stopTutorial$: Subject<boolean>;
-  @Input() isLastStep: boolean;
+  @Input() nextButton$: Subject<void>;
+  @Input() stepType: StepType;
 
   icons = Icons;
+  isHandset$: Observable<boolean>;
 
-  constructor(public self: ElementRef) {
+  constructor(public self: ElementRef,
+              breakpointObserver: BreakpointObserver) {
+    this.isHandset$ = breakpointObserver.observe([
+      '(max-width: 600px)',
+      '(max-height: 800px)',
+    ])
+      .pipe(map(bp => bp.matches));
   }
 
   cancelWizard() {
@@ -43,4 +56,9 @@ export class WizardMessageComponent implements WizardMessage {
   finishWizard() {
     this.stopTutorial$.next(true);
   }
+
+  continueWizard() {
+    this.nextButton$.next();
+  }
+
 }

@@ -1,0 +1,27 @@
+.destination-marker {
+
+  > * {
+    transform: translate(-50%, -50%);
+  }
+}
+
+.icon-map-marker {
+  color: #fa0;
+  width: 48px;
+  height: 48px;
+
+  position: relative;
+}
+
+.mouse-location-marker {
+  position: absolute;
+  opacity: .3;
+  pointer-events: none;
+  transform: translate(2px, 6px);
+}
+
+.trip-index {
+  position: absolute;
+  right: -0.4em;
+  font-size: 1.5em;
+}

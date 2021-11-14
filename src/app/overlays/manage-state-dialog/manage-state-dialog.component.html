@@ -1,8 +1,6 @@
-<h1 mat-dialog-title>Manage Save Games</h1>
-<!--<div class="subtitle">Only for {{contextTitle}} universes</div>-->
+<h1 mat-dialog-title>Manage {{contextTitle}} Save Games</h1>
 
 <div mat-dialog-content class="manage-state-layout">
-
   <mat-tab-group mat-align-tabs="start" (drop)="$event.stopImmediatePropagation()">
     <mat-tab label="Current">
       <ng-container *ngTemplateOutlet="currentTab"></ng-container>
@@ -12,7 +10,6 @@
       <ng-container *ngTemplateOutlet="archiveTab"></ng-container>
     </mat-tab>
   </mat-tab-group>
-
 </div>
 
 <div mat-dialog-actions>
@@ -37,7 +34,8 @@
                                     (editStart)="cancelOtherEditors(editor)"
                                     (confirm)="editCurrentStateName($event.oldName, $event.state)">
             </cp-state-edit-name-row>
-            <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.edit$ | async"
+            <mat-progress-bar [@fade]
+                              *ngIf="buttonLoaders.edit$ | async"
                               mode="indeterminate"></mat-progress-bar>
           </div>
         </div>
@@ -55,13 +53,14 @@
            cpFileDrop
            [fileTypeWhitelist]="['application/json']"
            (fileDrop)="importFile($event)">
-        <mat-icon>{{icons.Upload}}</mat-icon>
+        <mat-icon [svgIcon]="icons.Upload"></mat-icon>
         <button class="button-loader"
                 mat-stroked-button
                 color="primary"
                 (click)="fileUploadInput.click()">
           Import
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.import$ | async"
+          <mat-progress-bar [@fade]
+                            *ngIf="buttonLoaders.import$ | async"
                             mode="indeterminate"></mat-progress-bar>
           <input #fileUploadInput
                  [style.display]="'none'"
@@ -76,8 +75,9 @@
                 mat-stroked-button
                 [matTooltip]="'Save now (auto-save occurs every 10 seconds)'"
                 (click)="saveState(nowState)">
-          <mat-icon color="primary">{{icons.Storage}}</mat-icon>
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.save$ | async"
+          <mat-icon color="primary" [svgIcon]="icons.Save"></mat-icon>
+          <mat-progress-bar [@fade]
+                            *ngIf="buttonLoaders.save$ | async"
                             mode="indeterminate"></mat-progress-bar>
         </button>
 
@@ -85,22 +85,23 @@
                 mat-stroked-button
                 [matTooltip]="'Export to JSON file'"
                 (click)="exportState(nowState)">
-          <mat-icon>{{icons.Download}}</mat-icon>
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.export$ | async"
+          <mat-icon [svgIcon]="icons.Download"></mat-icon>
+          <mat-progress-bar [@fade]
+                            *ngIf="buttonLoaders.export$ | async"
                             mode="indeterminate"></mat-progress-bar>
         </button>
         <button class="button-loader"
                 mat-stroked-button
                 [matTooltip]="'Start a new game'"
                 (click)="newState()">
-          <mat-icon color="accent">{{icons.Reset}}</mat-icon>
-          <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.new$ | async"
-                            color="accent" mode="indeterminate"></mat-progress-bar>
+          <mat-icon color="accent" [svgIcon]="icons.Reset"></mat-icon>
+          <mat-progress-bar [@fade]
+                            *ngIf="buttonLoaders.new$ | async"
+                            color="accent"
+                            mode="indeterminate"></mat-progress-bar>
         </button>
       </div>
-
     </div>
-
   </div>
 </ng-template>
 
@@ -130,16 +131,18 @@
                       mat-stroked-button
                       [matTooltip]="'Load this game'"
                       (click)="loadState(selectedState)">
-                <mat-icon color="primary">{{icons.Load}}</mat-icon>
-                <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.load$ | async"
+                <mat-icon color="primary" [svgIcon]="icons.Load"></mat-icon>
+                <mat-progress-bar [@fade]
+                                  *ngIf="buttonLoaders.load$ | async"
                                   mode="indeterminate"></mat-progress-bar>
               </button>
               <button class="button-loader"
                       mat-stroked-button
                       [matTooltip]="'Export to JSON file'"
                       (click)="exportState(selectedState)">
-                <mat-icon>{{icons.Download}}</mat-icon>
-                <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.export$ | async"
+                <mat-icon [svgIcon]="icons.Download"></mat-icon>
+                <mat-progress-bar [@fade]
+                                  *ngIf="buttonLoaders.export$ | async"
                                   mode="indeterminate"></mat-progress-bar>
               </button>
               <button class="button-loader"
@@ -147,9 +150,11 @@
                       [matTooltip]="'Delete this game'"
                       [disabled]="buttonLoaders.remove$ | async"
                       (click)="removeState(selectedState)">
-                <mat-icon color="warn">{{icons.Delete}}</mat-icon>
-                <mat-progress-bar [@animateFade] *ngIf="buttonLoaders.remove$ | async"
-                                  color="warn" mode="indeterminate"></mat-progress-bar>
+                <mat-icon color="warn" [svgIcon]="icons.Delete"></mat-icon>
+                <mat-progress-bar [@fade]
+                                  *ngIf="buttonLoaders.remove$ | async"
+                                  color="warn"
+                                  mode="indeterminate"></mat-progress-bar>
               </button>
             </div>
 
@@ -162,7 +167,7 @@
 
     <ng-template #archiveEmpty>
       <div class="empty-state-archive">
-        <mat-icon>{{icons.File}}</mat-icon>
+        <mat-icon [svgIcon]="icons.File"></mat-icon>
         <h3>No save games found</h3>
         <div>
           <span>Start by</span>

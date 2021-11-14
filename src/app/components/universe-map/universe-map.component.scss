@@ -1,0 +1,11 @@
+:host > div {
+  background-color: #111;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.div-as-image {
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+}

@@ -4,7 +4,13 @@ import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
 import { CameraComponent } from '../../../components/camera/camera.component';
 import { ineeda } from 'ineeda';
-import { fakeAsync, tick } from '@angular/core/testing';
+import { MockBuilder, MockRender } from 'ng-mocks';
+import { Component } from '@angular/core';
+import { BehaviorSubject, of, timer } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Vector2 } from '../vector2';
+import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import createSpy = jasmine.createSpy;
 
 let nameA = 'A';
 let nameB = 'B';
@@ -138,10 +144,22 @@ describe('Draggable class', () => {
 
   describe('updateConstrainLocation()', () => {
 
-    xit('does not update location for immovable objects', () => {
+    it('does not update location for immovable objects', () => {
+      let draggable = new Draggable('', '', 'noMove');
+      let orbitParameterData = new OrbitParameterData([0, 0]);
+      draggable.updateConstrainLocation(orbitParameterData);
+
+      let result = (draggable as any).constrainLocation(100, 100);
+      expect(result).toEqual([0, 0]);
     });
 
-    xit('updates location for freely movable objects', () => {
+    it('updates location for freely movable objects', () => {
+      let draggable = new Draggable('', '', 'freeMove');
+      let orbitParameterData = new OrbitParameterData([0, 0]);
+      draggable.updateConstrainLocation(orbitParameterData);
+
+      let result = (draggable as any).constrainLocation(100, 100);
+      expect(result).toEqual([100, 100]);
     });
 
     it('updates location for orbital objects', () => {
@@ -151,29 +169,42 @@ describe('Draggable class', () => {
 
       // xy at [1,2] plus the radius offset of 3 (towards +x)
       expect(draggable.location.toString()).toBe('4 2');
+
+      let result = (draggable as any).constrainLocation(-10, 1);
+      expect(result[0] > -1.99 && result[0] < -1.98).toBe(true, result[0]);
+      expect(result[1] > 1.72 && result[1] < 1.73).toBe(true);
     });
 
-    xit('updates location for SOI locked objects', () => {
+    it('updates location for SOI locked objects', () => {
+      let draggable = new Draggable('', '', 'soiLock');
+      let fakePlanetDraggable = ineeda<Draggable>({
+        location: new Vector2(10, 10),
+      });
+      let orbitParameterData = new OrbitParameterData([4, 4], null, fakePlanetDraggable);
+      draggable.updateConstrainLocation(orbitParameterData);
+
+      expect(draggable.location.toString()).toBe('4 4');
     });
   });
 
   describe('startDrag()', () => {
 
-    xit('temporarily sets SOI locked objects to be freely movable', fakeAsync(() => {
+    beforeEach(() => MockBuilder(TestDivComponent));
+
+    it('temporarily sets SOI locked objects to be freely movable', async () => {
       let draggable = new Draggable('', '', 'soiLock');
 
       // @ts-ignore
       let oldConstrainLocationString = draggable.constrainLocation.toString();
 
-      let screenElement = document.createElement('div');
-      document.body.appendChild(screenElement);
-      screenElement.addEventListener = () => void 0;
+      MockBuilder(TestDivComponent);
+      let fixture = MockRender(TestDivComponent);
 
-      tick();
+      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div');
 
       draggable.startDrag(
         new PointerEvent('pointerdown', {pointerType: 'mouse'}),
-        screenElement,
+        screenSpace,
         () => void 0,
         ineeda<CameraComponent>(),
       );
@@ -182,18 +213,102 @@ describe('Draggable class', () => {
       expect(draggable.constrainLocation.toString)
         .not.toBe(oldConstrainLocationString);
 
-      screenElement.dispatchEvent(new MouseEvent('mouseup'));
+      screenSpace.dispatchEvent(new MouseEvent('mouseup'));
 
-      tick();
       draggable.destroy$.next();
-    }));
-
-    xit('pointer move events update the location', () => {
     });
 
-    xit('in certain locations, the SOI under craft will activate', () => {
+    it('pointer move events update the location', () => {
+      let draggable = new Draggable('', '', 'orbital');
+      draggable.location.set([0, 0]);
+
+      let fixture = MockRender(TestDivComponent);
+      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div');
+
+      spyOn(draggable as any, 'getEventObservable')
+        .and.returnValue(of({
+        buttons: 1,
+        pageX: 100,
+        pageY: 0,
+      }));
+
+      draggable.startDrag(
+        ineeda<PointerEvent>({
+          pointerType: 'mouse',
+          target: screenSpace,
+        }),
+        screenSpace,
+        () => void 0,
+        ineeda<CameraComponent>({
+          location: new Vector2(0, 0),
+          scale: 1
+        }),
+      );
+
+      expect(draggable.location.x).not.toBe(0);
+
+      screenSpace.dispatchEvent(new MouseEvent('mouseup'));
+
+      draggable.destroy$.next();
+    });
+
+    it('in certain locations, the SOI under craft will activate', async () => {
+      let draggable = new Draggable('', '', 'soiLock');
+      draggable.location.set([0, 0]);
+
+      let fixture = MockRender(TestDivComponent);
+      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div');
+
+      spyOn(draggable as any, 'getEventObservable')
+        .and.returnValue(new BehaviorSubject({
+        buttons: 1,
+        pageX: 100,
+        pageY: 0,
+      }));
+
+      new SpaceObjectContainerService();
+      let fakePlanet = ineeda<SpaceObject>({
+        showSoi: false,
+        draggableHandle: ineeda<Draggable>({
+          removeChild: createSpy(),
+          addChild: createSpy(),
+        })
+      });
+      SpaceObjectContainerService.instance.celestialBodies$.next([fakePlanet]);
+      spyOn(SpaceObjectContainerService.instance, 'getSoiParent')
+        .and.returnValue(fakePlanet);
+
+      expect(fakePlanet.showSoi).toBe(false);
+
+      draggable.startDrag(
+        ineeda<PointerEvent>({
+          pointerType: 'mouse',
+          target: screenSpace,
+        }),
+        screenSpace,
+        () => void 0,
+        ineeda<CameraComponent>({
+          location: new Vector2(0, 0),
+          scale: 1
+        }),
+      );
+
+      await timer(100).pipe(take(1)).toPromise();
+
+      expect(fakePlanet.showSoi).toBe(true);
+
+      screenSpace.dispatchEvent(new MouseEvent('mouseup'));
+
+      draggable.destroy$.next();
     });
 
   });
 
 });
+
+@Component({
+  template: `
+    <div>thing here</div>`,
+})
+export class TestDivComponent {
+}

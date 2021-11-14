@@ -1,9 +1,27 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
-import { fromEvent } from 'rxjs';
-import { filter, finalize, map, sampleTime, scan, skip, takeUntil } from 'rxjs/operators';
+import { fromEvent, interval, Observable } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  finalize,
+  map,
+  sampleTime,
+  scan,
+  skip,
+  startWith,
+  switchMap,
+  take,
+  takeUntil
+} from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
+
+interface TouchCameraControl {
+  dxy: Vector2;
+  dz: number;
+  lastLocation: Vector2;
+}
 
 @Component({
   selector: 'cp-camera',
@@ -35,16 +53,23 @@ export class CameraComponent extends WithDestroy() implements OnInit {
 
   updateScale(event: WheelEvent) {
     let isTouchPad = Math.abs(event.deltaY) < 25;
-
-    let zoomRatio = isTouchPad ? 1.05 : 1.25;
     let zoomDirection = -event.deltaY.sign();
 
-    this.cameraService.zoomAt(zoomRatio * zoomDirection, new Vector2(event.x, event.y));
-    window.requestAnimationFrame(() => this.cdr.markForCheck());
+    if (isTouchPad) {
+      this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
+      window.requestAnimationFrame(() => this.cdr.markForCheck());
+    } else {
+      interval(17)
+        .pipe(startWith(0), take(5))
+        .subscribe(() => {
+          this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
+          window.requestAnimationFrame(() => this.cdr.markForCheck());
+        });
+    }
   }
 
   mouseDown(event: MouseEvent, screenSpace: HTMLDivElement) {
-    if (!event.buttons.bitwiseIncludes(2)) {
+    if (!event.buttons.bitwiseIncludes(2) && !event.buttons.bitwiseIncludes(1)) {
       return;
     }
 
@@ -73,8 +98,45 @@ export class CameraComponent extends WithDestroy() implements OnInit {
 
     fromEvent(screenSpace, 'touchmove')
       .pipe(
+        startWith(event),
+        distinctUntilChanged((x: TouchEvent, y: TouchEvent) => x.touches.length === y.touches.length),
+        switchMap((touch: TouchEvent) => touch.touches.length === 1
+          ? this.getOneTouchStream(screenSpace)
+          : this.getMultiTouchStream(screenSpace)),
+        finalize(() => screenStyle.transition = oldTransition),
+        takeUntil(fromEvent(screenSpace, 'touchcancel')),
+        takeUntil(fromEvent(screenSpace, 'touchend')
+          .pipe(filter((touch: TouchEvent) => touch.touches.length === 0))),
+        takeUntil(this.destroy$))
+      .subscribe(({dxy, dz, lastLocation}) => {
+        if (dz !== 0) {
+          this.cameraService.zoomAt(1 + dz * .5, lastLocation.clone());
+        }
+        this.cameraService.location.addVector2(dxy);
+
+        window.requestAnimationFrame(() => this.cdr.markForCheck());
+      });
+  }
+
+  private getOneTouchStream(screenSpace: HTMLDivElement): Observable<TouchCameraControl> {
+    return fromEvent(screenSpace, 'touchmove')
+      .pipe(
+        sampleTime(17),
+        scan((acc, touch: TouchEvent) => {
+          let singleTouch = touch.touches[0];
+          let location = new Vector2(singleTouch.clientX, singleTouch.clientY);
+
+          acc.dxy = location.subtractVector2Clone(acc.lastLocation);
+          acc.lastLocation = location;
+          return acc;
+        }, {dxy: undefined, dz: 0, lastLocation: new Vector2(0, 0)}),
+        skip(1));
+  }
+
+  private getMultiTouchStream(screenSpace: HTMLDivElement): Observable<TouchCameraControl> {
+    return fromEvent(screenSpace, 'touchmove')
+      .pipe(
         sampleTime(33),
-        filter((touch: TouchEvent) => touch.changedTouches.length > 1),
         scan((acc, touch: TouchEvent) => {
           let locations = Array.from(touch.touches)
             .map(t => new Vector2(t.clientX, t.clientY));
@@ -86,21 +148,11 @@ export class CameraComponent extends WithDestroy() implements OnInit {
             .multiply(1 / locations.length);
           acc.lastLocation = meanLocation;
 
-          acc.dz = (touchMeanDistance - acc.lastDistance) / acc.lastDistance;
+          acc.dz = (touchMeanDistance - acc.lastDistance) / acc.lastDistance.coerceAtLeast(1e-9);
           acc.lastDistance = touchMeanDistance;
           return acc;
-        }, {dxy: undefined, dz: undefined, lastLocation: new Vector2(), lastDistance: 1}),
-        skip(1),
-        map(e => [e.dxy, e.dz, e.lastLocation]),
-        finalize(() => screenStyle.transition = oldTransition),
-        takeUntil(fromEvent(screenSpace, 'touchcancel')),
-        takeUntil(fromEvent(screenSpace, 'touchend')),
-        takeUntil(this.destroy$))
-      .subscribe(([dxy, dz, location]: [Vector2, number, Vector2]) => {
-        this.cameraService.zoomAt(1 + dz * .5, location.clone());
-        this.cameraService.location.addVector2(dxy);
-        window.requestAnimationFrame(() => this.cdr.markForCheck());
-      });
+        }, {dxy: undefined, dz: undefined, lastLocation: new Vector2(0, 0), lastDistance: 1}),
+        skip(1));
   }
 
 }

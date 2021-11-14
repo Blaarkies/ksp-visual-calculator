@@ -2,11 +2,13 @@ import * as antennaPartsJson from 'src/assets/stock/antenna-parts.json';
 import { Antenna } from './antenna';
 import { AntennaPart } from '../../services/json-interfaces/antenna-part';
 import { TransmissionLine } from './transmission-line';
-import { SpaceObject} from './space-objects/space-object';
+import { SpaceObject } from './space-objects/space-object';
 import { Group } from './group';
 import { SetupService } from '../../services/setup.service';
 import { DifficultySetting } from '../../overlays/difficulty-settings-dialog/difficulty-setting';
 import { SpaceObjectType } from './space-objects/space-object-type';
+import { interval } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 
 interface SignalScenario {
   label: string;
@@ -22,6 +24,12 @@ interface AntennaScenario extends SignalScenario {
 }
 
 describe('Domain tests', () => {
+
+  beforeAll(async () =>
+    await interval(10).pipe(
+      filter(() => (antennaPartsJson as any).default),
+      take(1))
+      .toPromise());
 
   describe('Antenna calculations', async () => {
     let setupServiceMock = {
@@ -162,7 +170,11 @@ describe('Domain tests', () => {
           distance: 227.3e6,
           expectedStrength: 0,
         },
-      ] as SignalScenario[]).map(ss => ({...ss, craft: spaceObjectMap.communotron16, relay: spaceObjectMap.ra100Relay})),
+      ] as SignalScenario[]).map(ss => ({
+        ...ss,
+        craft: spaceObjectMap.communotron16,
+        relay: spaceObjectMap.ra100Relay
+      })),
 
       ...([
         {
@@ -241,7 +253,11 @@ describe('Domain tests', () => {
           distance: 38e6,
           expectedStrength: .01,
         },
-      ] as SignalScenario[]).map(ss => ({...ss, craft: spaceObjectMap.communotron16, difficulty: DifficultySetting.easy})),
+      ] as SignalScenario[]).map(ss => ({
+        ...ss,
+        craft: spaceObjectMap.communotron16,
+        difficulty: DifficultySetting.easy
+      })),
 
       ...([
         {
@@ -264,7 +280,11 @@ describe('Domain tests', () => {
           distance: 24.56e6,
           expectedStrength: .01,
         },
-      ] as SignalScenario[]).map(ss => ({...ss, craft: spaceObjectMap.communotron16, difficulty: DifficultySetting.hard})),
+      ] as SignalScenario[]).map(ss => ({
+        ...ss,
+        craft: spaceObjectMap.communotron16,
+        difficulty: DifficultySetting.hard
+      })),
 
       ...([
         {

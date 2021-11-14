@@ -6,13 +6,20 @@ import { AuthService } from '../../services/auth.service';
 import { of } from 'rxjs';
 import { User } from '../../services/data.service';
 import { fakeAsync } from '@angular/core/testing';
+import { ineeda } from 'ineeda';
+import { InputFieldComponent } from '../controls/input-field/input-field.component';
+import { Common } from '../../common/common';
 
 let componentType = AccountDetailsComponent;
 describe('AccountDetailsComponent', () => {
 
   beforeEach(() => MockBuilder(componentType)
+    .keep(InputFieldComponent)
     .mock(AppModule)
-    .mock(MatSnackBar));
+    .mock(MatSnackBar)
+    .mock(AuthService, ineeda<AuthService>({
+      user$: of(null),
+    })));
 
   it('should create', () => {
     let fixture = MockRender(componentType);
@@ -21,16 +28,19 @@ describe('AccountDetailsComponent', () => {
 
   describe('authService.user$ signed in', () => {
 
-    let mockUser: User = {uid: 'a', email: 'email', displayName: 'name', photoURL: 'http me'};
+    let mockUser: User = {uid: 'a', email: 'email', displayName: 'name', photoURL: 'http me', isCustomer: false};
 
     it('show user details', async () => {
       MockInstance(AuthService, 'user$', of(mockUser));
 
       let fixture = MockRender(componentType);
+      let nativeElement = fixture.debugElement.nativeElement;
 
-      let innerText = fixture.debugElement.nativeElement.innerText;
+      fixture.detectChanges();
+
+      let innerText = nativeElement.innerText;
       expect(innerText.includes(mockUser.email)).toBeTrue();
-      expect(innerText.includes(mockUser.displayName)).toBeTrue();
+      expect(fixture.componentInstance.nameControl.value).toBe(mockUser.displayName);
     });
   });
 
@@ -41,25 +51,19 @@ describe('AccountDetailsComponent', () => {
       forgotPassword: 'Forgot password?',
     };
 
-    let getSignInWithEmailButton = (fixture: MockedComponentFixture<AccountDetailsComponent, AccountDetailsComponent>,
-                                    buttonTextQuery: string) => Array.from(
-      fixture.debugElement.nativeElement.querySelectorAll('button'))
-      .find((e: HTMLButtonElement) =>
-        e.innerText.includes(buttonTextQuery)) as HTMLButtonElement;
-
-    let getButtonDisabled = (signInEmailButton: HTMLButtonElement) =>
-      signInEmailButton.attributes['ng-reflect-disabled']
-        .value
-        .toBoolean();
+    let getButtonWithText = (fixture: MockedComponentFixture<AccountDetailsComponent, AccountDetailsComponent>,
+                             buttonTextQuery: string) =>
+      Common.getElementByInnerText<HTMLButtonElement>(
+        fixture.debugElement.nativeElement, 'button', buttonTextQuery);
 
     it('valid details should allow sign-in-with-email', () => {
       let fixture = MockRender(componentType);
       let component = fixture.point.componentInstance;
 
-      let signInEmailButton = getSignInWithEmailButton(fixture, buttonText.signInEmail);
+      let signInEmailButton = getButtonWithText(fixture, buttonText.signInEmail);
 
-      let buttonDisabledAtStart = getButtonDisabled(signInEmailButton);
-      expect(buttonDisabledAtStart).toBeTrue();
+      let buttonDisabledAtStart = Common.isNgDisabled(signInEmailButton);
+      expect(buttonDisabledAtStart).toBe(true);
 
       component.controlEmail.setValue('test@test.test');
       component.controlPassword.setValue('more than 6 chars');
@@ -68,15 +72,15 @@ describe('AccountDetailsComponent', () => {
 
       fixture.detectChanges();
 
-      let buttonDisabledAfter = getButtonDisabled(signInEmailButton);
-      expect(buttonDisabledAfter).toBeFalse();
+      let buttonDisabledAfter = Common.isNgDisabled(signInEmailButton);
+      expect(buttonDisabledAfter).toBe(false);
     });
 
     it('invalid details should disable sign-in-with-email', fakeAsync(() => {
       let fixture = MockRender(componentType);
       let component = fixture.point.componentInstance;
 
-      let signInEmailButton = getSignInWithEmailButton(fixture, buttonText.signInEmail);
+      let signInEmailButton = getButtonWithText(fixture, buttonText.signInEmail);
 
       component.controlEmail.setValue('15 Mun street');
       component.controlPassword.setValue('5char');
@@ -85,7 +89,7 @@ describe('AccountDetailsComponent', () => {
 
       fixture.detectChanges();
 
-      let buttonDisabled = getButtonDisabled(signInEmailButton);
+      let buttonDisabled = Common.isNgDisabled(signInEmailButton);
       expect(buttonDisabled).toBeTrue();
     }));
 
@@ -93,14 +97,14 @@ describe('AccountDetailsComponent', () => {
       let fixture = MockRender(componentType);
       let component = fixture.point.componentInstance;
 
-      let forgotPasswordButton: HTMLButtonElement = getSignInWithEmailButton(fixture, buttonText.forgotPassword);
+      let forgotPasswordButton: HTMLButtonElement = getButtonWithText(fixture, buttonText.forgotPassword);
 
       component.controlEmail.setValue('test@test.test');
       component.controlEmail.markAsTouched();
 
       fixture.detectChanges();
 
-      let buttonDisabled = getButtonDisabled(forgotPasswordButton);
+      let buttonDisabled = Common.isNgDisabled(forgotPasswordButton);
       expect(buttonDisabled).toBeFalse();
     }));
 
@@ -108,14 +112,14 @@ describe('AccountDetailsComponent', () => {
       let fixture = MockRender(componentType);
       let component = fixture.point.componentInstance;
 
-      let forgotPasswordButton: HTMLButtonElement = getSignInWithEmailButton(fixture, buttonText.forgotPassword);
+      let forgotPasswordButton: HTMLButtonElement = getButtonWithText(fixture, buttonText.forgotPassword);
 
       component.controlEmail.setValue('15 Mun street');
       component.controlEmail.markAsTouched();
 
       fixture.detectChanges();
 
-      let buttonDisabled = getButtonDisabled(forgotPasswordButton);
+      let buttonDisabled = Common.isNgDisabled(forgotPasswordButton);
       expect(buttonDisabled).toBeTrue();
     }));
 

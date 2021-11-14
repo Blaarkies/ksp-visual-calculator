@@ -10,9 +10,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { FaqDialogComponent } from '../../overlays/faq-dialog/faq-dialog.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ActionOption } from '../../common/domain/action-option';
+import { UsableRoutes } from '../../usable-routes';
 import createSpy = jasmine.createSpy;
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
+import { AuthService } from '../../services/auth.service';
 
 let componentType = HudComponent;
 describe('HudComponent', () => {
@@ -26,6 +28,11 @@ describe('HudComponent', () => {
       contextPanel$: {
         asObservable: () => 0,
       } as any,
+      context$: of(UsableRoutes.SignalCheck),
+      pageContextChange$: of(UsableRoutes.SignalCheck),
+    }))
+    .mock(AuthService, ineeda<AuthService>({
+      user$: of({isCustomer: false} as any),
     })));
 
   it('should create', () => {

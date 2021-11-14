@@ -12,12 +12,13 @@ import { Icons } from '../../common/domain/icons';
   templateUrl: './draggable-space-object.component.html',
   styleUrls: ['./draggable-space-object.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDestroy {
 
   @Input() spaceObject: SpaceObject;
   @Input() scale: number;
+  @Input() allowEdit = true;
 
   @Output() dragSpaceObject = new EventEmitter<PointerEvent>();
   @Output() focusObject = new EventEmitter<PointerEvent>();

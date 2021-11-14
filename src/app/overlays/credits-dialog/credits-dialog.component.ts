@@ -32,6 +32,12 @@ export class CreditsDialogComponent {
       link: 'https://line.17qq.com/articles/ibeiiebz.html',
       product: 'Space Tile Background',
     },
+    {
+      creator: 'Alex Moon',
+      action: 'for interplanetary dv cost transfer calculations with',
+      link: 'https://alexmoon.github.io/ksp/',
+      product: 'Launch Window Planner',
+    },
   ];
 
 }

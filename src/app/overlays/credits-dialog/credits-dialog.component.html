@@ -4,7 +4,7 @@
   <div *ngFor="let credit of credits">
     <span class="creator-text">{{credit.creator ? credit.creator + ' ' : ''}}</span>
     <span class="action-text">{{credit.action ? credit.action + ' ' : ''}}</span>
-    <a class="product-text" [href]="credit.link">{{credit.product ? credit.product + ' ' : ''}}</a>
+    <a class="product-text" [href]="credit.link" target="_blank">{{credit.product ? credit.product + ' ' : ''}}</a>
   </div>
 </div>
 

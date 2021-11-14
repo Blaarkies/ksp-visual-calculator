@@ -47,6 +47,7 @@ describe('StateService', () => {
   it('stateIsUnsaved should return true when lastStateRecord differs from state', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
+    service.pageContext = UsableRoutes.SignalCheck;
 
     (service as any).lastStateRecord = 'old-not-saved';
     spyOnProperty(service, 'state', 'get')
@@ -58,6 +59,7 @@ describe('StateService', () => {
   it('stateIsUnsaved should return false when lastStateRecord matches state', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
+    service.pageContext = UsableRoutes.SignalCheck;
 
     let state = {name: 'test-state'};
     (service as any).lastStateRecord = JSON.stringify(state);
@@ -130,15 +132,15 @@ describe('StateService', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
     let serviceAsAny = service as any;
+    service.pageContext = UsableRoutes.SignalCheck;
 
     serviceAsAny.name = 'test-name';
-    serviceAsAny.context = 'test-context';
 
     let state = service.state;
     expect(state).toEqual(objectContaining({
       name: 'test-name',
       timestamp: anything(),
-      context: 'test-context',
+      context: UsableRoutes.SignalCheck,
       version: anything(),
       settings: objectContaining({
         difficulty: objectContaining({
@@ -164,6 +166,7 @@ describe('StateService', () => {
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
+    service.pageContext = UsableRoutes.SignalCheck;
 
     let state = service.state;
     expect(state.name).not.toBe(undefined);
@@ -174,6 +177,7 @@ describe('StateService', () => {
   it('stateRow should get a StateRow version of state', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
+    service.pageContext = UsableRoutes.SignalCheck;
 
     spyOnProperty(service, 'state', 'get')
       .and.returnValue({
@@ -192,8 +196,8 @@ describe('StateService', () => {
   });
 
   it('with no state, loadState() should return a stock state', () => {
-    let spyDifficultySetting = MockInstance(SetupService, 'difficultySetting', createSpy(), 'set');
-    let spyBuildStockState = MockInstance(SpaceObjectService, 'buildStockState', createSpy()
+    let spyDifficultySetting = MockInstance(SetupService, 'updateDifficultySetting', createSpy('updateDifficultySetting'));
+    let spyBuildStockState = MockInstance(SpaceObjectService, 'buildStockState', createSpy('buildStockState')
       .and.returnValue(EMPTY));
 
     let fixture = MockRender(serviceType);
@@ -203,6 +207,7 @@ describe('StateService', () => {
     spyOnProperty(serviceAsAny, 'earlyState', 'get')
       .and.returnValue(EMPTY);
 
+    service.pageContext = UsableRoutes.SignalCheck;
     service.loadState();
 
     expect(spyBuildStockState).toHaveBeenCalled();
@@ -211,13 +216,14 @@ describe('StateService', () => {
   });
 
   it('with state, loadState() should return a built State', () => {
-    let spyDifficultySetting = MockInstance(SetupService, 'difficultySetting', createSpy(), 'set');
-    let spyBuildState = MockInstance(SpaceObjectService, 'buildState', createSpy()
+    let spyUpdateDifficultySetting = MockInstance(SetupService, 'updateDifficultySetting', createSpy('updateDifficultySetting'));
+    let spyBuildState = MockInstance(SpaceObjectService, 'buildState', createSpy('buildState')
       .and.returnValue(EMPTY));
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
     let serviceAsAny = service as any;
+    service.pageContext = UsableRoutes.SignalCheck;
 
     spyOnProperty(serviceAsAny, 'earlyState', 'get')
       .and.returnValue(EMPTY);
@@ -225,6 +231,7 @@ describe('StateService', () => {
 
     let state = {
       name: 'test-name',
+      context: UsableRoutes.SignalCheck,
       settings: {
         difficulty: 'test-difficulty',
       },
@@ -233,7 +240,7 @@ describe('StateService', () => {
 
     expect(spyBuildState).toHaveBeenCalled();
     expect(serviceAsAny.name).toBe('test-name');
-    expect(spyDifficultySetting).toHaveBeenCalled();
+    expect(spyUpdateDifficultySetting).toHaveBeenCalled();
     expect(DifficultySetting.fromObject).toHaveBeenCalledWith('test-difficulty');
   });
 

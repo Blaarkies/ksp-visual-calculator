@@ -1,0 +1,80 @@
+<div class="panel-layout frosted-glass">
+  <div class="panel-header">
+    <div class="text-white">Mission Checkpoints</div>
+    <button mat-icon-button
+            (click)="toggleOptions()">
+      <mat-icon [svgIcon]="icons.Configure"></mat-icon>
+    </button>
+  </div>
+
+  <div [@height]="isOptionsOpen" class="options text-white">
+    <div class="text-white">Preferences</div>
+
+    <cp-input-toggle label="Aerobraking" [formControl]="aerobrakeControl"></cp-input-toggle>
+
+    <div class="plane-change-control">
+      <cp-input-number #planeChange class="hidden" style="transform: translateY(-1em);"
+                       [formControl]="planeChangeControl"
+                       [controlMeta]="planeChangeControlMeta"></cp-input-number>
+
+      <button mat-button
+              class="chip-button"
+              (click)="planeChange.focus()">
+        {{planeChangeControl.value}}%
+      </button>
+      <div class="text-white">Plane Change Cost</div>
+    </div>
+
+    <div class="flight-situation">
+      <mat-form-field class="hidden">
+        <mat-select [value]="preferredCondition$.value"
+                    (selectionChange)="setPreferredCondition($event)"
+                    #selectSituation>
+          <mat-option *ngFor="let condition of availableConditions"
+                      [value]="condition">
+            {{conditionReadableMap[condition]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button
+              class="button-select"
+              (click)="selectSituation.open()">
+        {{conditionReadableMap[preferredCondition$.value.toString()]}}
+      </button>
+
+      <div class="text-white">Flight Situation</div>
+    </div>
+
+    <div class="route-type">
+      <mat-form-field class="hidden">
+        <mat-select [value]="routeType$.value"
+                    (selectionChange)="setRouteType($event)"
+                    #routeSelect>
+          <mat-option *ngFor="let routeType of routeTypes"
+                      [value]="routeType">
+            {{routeTypeReadableMap[routeType]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-button
+              class="button-select"
+              (click)="routeSelect.open()">
+        {{routeTypeReadableMap[routeType$.value.toString()]}}
+      </button>
+
+      <div class="text-white">Route Type</div>
+    </div>
+  </div>
+
+  <cp-msp-list #list
+               [checkpoints]="checkpoints$ | async"
+               [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
+               (add)="addCheckpoint(list.isAddingCheckpoint)"
+               (checkpointMode)="setCheckpointMode($event)"
+               (resetAll)="resetMission()"
+               (removeNode)="removeCheckpoint($event)"
+               (updateNode)="updateCheckpoint($event)">
+  </cp-msp-list>
+</div>

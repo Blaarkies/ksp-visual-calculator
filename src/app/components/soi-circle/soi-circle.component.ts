@@ -6,7 +6,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
   selector: 'cp-soi-circle',
   templateUrl: './soi-circle.component.html',
   styleUrls: ['./soi-circle.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class SoiCircleComponent {
 

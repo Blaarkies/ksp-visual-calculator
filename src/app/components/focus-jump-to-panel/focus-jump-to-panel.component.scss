@@ -1,4 +1,7 @@
 .frame {
+  position: absolute;
+  z-index: 1;
+
   --width: 150px;
   width: var(--width);
   overflow-x: hidden;
@@ -6,11 +9,6 @@
   --height: 290px;
   height: var(--height);
   overflow-y: hidden;
-
-  //z-index: 1;
-  //position: absolute;
-  //left: 0;
-  //top: calc(50% - var(--height) * .5);
 
   --border-radius: 16px;
   border-top-right-radius: var(--border-radius);

@@ -1,14 +1,20 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
 import { Icons } from '../common/domain/icons';
 import { AnalyticsService } from './analytics.service';
-import { CraftDetailsDialogComponent, CraftDetailsDialogData } from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import { filter, map, startWith, takeUntil } from 'rxjs/operators';
+import {
+  CraftDetailsDialogComponent,
+  CraftDetailsDialogData
+} from '../overlays/craft-details-dialog/craft-details-dialog.component';
+import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
-import { ManageStateDialogComponent, ManageStateDialogData } from '../overlays/manage-state-dialog/manage-state-dialog.component';
+import {
+  ManageStateDialogComponent,
+  ManageStateDialogData
+} from '../overlays/manage-state-dialog/manage-state-dialog.component';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { SpaceObjectService } from './space-object.service';
@@ -30,12 +36,24 @@ import { EventLogs } from './event-logs';
 export class HudService {
 
   contextPanel$ = new BehaviorSubject<ActionPanelDetails>(null);
-  private contextChange$ = new Subject();
+  private contextChange$ = new BehaviorSubject<UsableRoutes>(null);
+  context$ = this.contextChange$.asObservable();
+  // fix dialog takeUntil using BehaviorSubject, because it cancels the stream immediately
+  unsubscribeDialog$ = new Subject();
 
-  set pageContext(value: UsableRoutes) {
-    this.contextChange$.next();
+  get pageContext(): UsableRoutes {
+    return this.contextChange$.value;
+  }
+
+  get pageContextChange$(): Observable<UsableRoutes> {
+    return this.contextChange$.asObservable();
+  }
+
+  setPageContext(value: UsableRoutes) {
+    this.contextChange$.next(value);
     let newPanel = this.getContextPanel(value);
     this.contextPanel$.next(newPanel);
+    this.unsubscribeDialog$.next();
   }
 
   constructor(private dialog: MatDialog,
@@ -52,16 +70,23 @@ export class HudService {
     switch (context) {
       case UsableRoutes.SignalCheck:
         return this.signalCheckPanel;
+      case UsableRoutes.DvPlanner:
+        return this.dvPlannerPanel;
       default:
-        return null;
+        throw new Error(`No context panel for context "${context}"`);
     }
   }
 
   get navigationOptions(): ActionOption[] {
     return [
       new ActionOption(
+        'Delta-v Planner',
+        Icons.DeltaV,
+        {route: UsableRoutes.DvPlanner},
+        'Page that calculates the required delta-v for a specified mission'),
+      new ActionOption(
         'Signal Check',
-        Icons.PlanetSearch,
+        Icons.Relay,
         {route: UsableRoutes.SignalCheck},
         'Page that calculates CommNet ranges'),
       new ActionOption(
@@ -89,16 +114,14 @@ export class HudService {
                 title: 'Start Tutorial',
                 descriptions: [
                   'Do you want to start the tutorial?',
-                  'This will take you through all the features and controls to navigate and use this application.',
+                  'This will take you through all the features and controls to navigate and use this page.',
                 ],
                 okButtonText: 'Start',
               } as SimpleDialogData,
             })
               .afterClosed()
-              .pipe(
-                filter(ok => ok),
-                takeUntil(this.contextChange$))
-              .subscribe(() => this.tutorialService.startFullTutorial());
+              .pipe(filter(ok => ok))
+              .subscribe(() => this.tutorialService.startFullTutorial(this.pageContext));
           },
         },
         undefined,
@@ -112,7 +135,6 @@ export class HudService {
 
             this.dialog.open(PrivacyDialogComponent)
               .afterClosed()
-              .pipe(takeUntil(this.contextChange$))
               .subscribe();
           },
         },
@@ -127,7 +149,6 @@ export class HudService {
 
           this.dialog.open(CreditsDialogComponent)
             .afterClosed()
-            .pipe(takeUntil(this.contextChange$))
             .subscribe();
         },
       }),
@@ -139,7 +160,6 @@ export class HudService {
 
             this.dialog.open(BuyMeACoffeeDialogComponent)
               .afterClosed()
-              .pipe(takeUntil(this.contextChange$))
               .subscribe();
           },
         },
@@ -153,8 +173,7 @@ export class HudService {
           this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})
             .afterClosed()
             .pipe(
-              filter(ok => ok),
-              takeUntil(this.contextChange$))
+              filter(ok => ok))
             .subscribe(details => this.analyticsService.logEvent('User feedback', {
                 category: EventLogs.Category.Feedback,
                 ...details,
@@ -182,22 +201,14 @@ export class HudService {
             .afterClosed()
             .pipe(
               filter(craftDetails => craftDetails),
-              takeUntil(this.contextChange$))
+              takeUntil(this.unsubscribeDialog$))
             .subscribe(craftDetails => {
               this.spaceObjectService.addCraftToUniverse(craftDetails);
               this.cdr.tick();
             });
         },
       }),
-      new ActionOption('New Celestial Body', Icons.Planet, {action: () => void 0}, undefined, false, undefined,
-        {
-          unavailable$: of(true),
-          tooltip: 'Adding moons, planets, and stars are coming soon!',
-          action: () => {
-            this.analyticsService.logEvent('Call new celestial body dialog', {category: EventLogs.Category.CelestialBody});
-            this.snackBar.open('Adding moons, planets, and stars are coming soon!');
-          },
-        }),
+      this.createActionOptionNewCelestialBody(),
       new ActionOption('Difficulty Settings', Icons.Difficulty, {
         action: () => {
           this.analyticsService.logEvent('Call difficulty settings dialog', {
@@ -209,7 +220,7 @@ export class HudService {
             .afterClosed()
             .pipe(
               filter(details => details),
-              takeUntil(this.contextChange$))
+              takeUntil(this.unsubscribeDialog$))
             .subscribe(details => {
               this.setupService.updateDifficultySetting(details);
               this.cdr.tick();
@@ -217,38 +228,74 @@ export class HudService {
             });
         },
       }),
-      new ActionOption('Manage Save Games', Icons.Storage, {
-          action: () => {
-            this.analyticsService.logEvent('Call state dialog', {
-              category: EventLogs.Category.State,
-            });
-
-            this.dialog.open(ManageStateDialogComponent, {
-              data: {
-                context: UsableRoutes.SignalCheck,
-              } as ManageStateDialogData,
-              backdropClass: GlobalStyleClass.MobileFriendly,
-            });
-          },
-        }, undefined, false, undefined,
-        {
-          unavailable$: this.authService.user$.pipe(map(user => user === null), startWith(true)),
-          tooltip: 'Save games are only available when signed in',
-          action: () => {
-            this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
-
-            this.dialog.open(AccountDialogComponent);
-          },
-        },
-      ),
+      this.createActionOptionManageSaveGames(UsableRoutes.SignalCheck),
     ];
 
     return {
-      startTitle: 'Edit Universe',
+      startTitle: 'Signal Check',
       startIcon: Icons.OpenDetails,
       color: 'orange',
       options,
     };
   }
 
+  private get dvPlannerPanel(): ActionPanelDetails {
+    let options = [
+      this.createActionOptionManageSaveGames(UsableRoutes.DvPlanner),
+    ];
+
+    return {
+      startTitle: 'Delta-v Planner',
+      startIcon: Icons.OpenDetails,
+      color: 'orange',
+      options,
+    };
+  }
+
+  private createActionOptionNewCelestialBody() {
+    return new ActionOption('New Celestial Body', Icons.Planet, {action: () => void 0}, undefined, false, undefined,
+      {
+        unavailable$: of(true),
+        tooltip: 'Adding moons, planets, and stars are coming soon!',
+        action: () => {
+          this.analyticsService.logEvent('Call new celestial body dialog', {category: EventLogs.Category.CelestialBody});
+          this.snackBar.open('Adding moons, planets, and stars are coming soon!');
+        },
+      });
+  }
+
+  private createActionOptionManageSaveGames(context: UsableRoutes) {
+    return new ActionOption('Manage Save Games', Icons.Storage, {
+        action: () => {
+          this.analyticsService.logEvent('Call state dialog', {
+            category: EventLogs.Category.State,
+          });
+
+          this.dialog.open(ManageStateDialogComponent, {
+            data: {context} as ManageStateDialogData,
+            backdropClass: GlobalStyleClass.MobileFriendly,
+          });
+        },
+      }, undefined, false, undefined,
+      {
+        unavailable$: this.authService.user$.pipe(map(user => user === null || !user?.isCustomer), startWith(true)),
+        tooltip: `Save games are only available after supporting on 'buymeacoffee.com/Blaarkies'`,
+        action: async () => {
+          let user = await this.authService.user$.pipe(take(1)).toPromise();
+
+          if (!user) {
+            this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
+            this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+            return Promise.resolve();
+          }
+
+          if (user?.isCustomer === false) {
+            this.analyticsService.logEvent('Call coffee dialog from Edit Universe', {category: EventLogs.Category.Coffee});
+            this.dialog.open(BuyMeACoffeeDialogComponent);
+            return Promise.resolve();
+          }
+        },
+      },
+    );
+  }
 }

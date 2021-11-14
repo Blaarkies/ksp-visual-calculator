@@ -2,7 +2,8 @@
   <mat-tab label="Antennae">
 
     <div class="antenna-selector-layout">
-      <div *ngFor="let antennaInput of antennaInputs"
+      <div [@height]
+           *ngFor="let antennaInput of antennaInputs"
            [id]="antennaInput.selectedAntenna.label"
            class="selected-antenna">
 
@@ -20,7 +21,7 @@
                 [matTooltip]="'Remove this antenna'"
                 (click)="removeAntenna(antennaInput)"
                 [disabled]="disabled">
-          <mat-icon color="warn">{{icons.Delete}}</mat-icon>
+          <mat-icon color="warn" [svgIcon]="icons.Delete"></mat-icon>
         </button>
       </div>
 

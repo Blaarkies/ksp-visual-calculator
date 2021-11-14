@@ -4,7 +4,7 @@ import { AntennaPart } from './json-interfaces/antenna-part';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Antenna } from '../common/domain/antenna';
 import { CelestialBody, KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
-import { SpaceObject} from '../common/domain/space-objects/space-object';
+import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { Orbit } from '../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../common/domain/space-objects/orbit-parameter-data';
 import { map, takeUntil } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { LabeledOption } from '../common/domain/input-fields/labeled-option';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { WithDestroy } from '../common/with-destroy';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
+import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class SetupService extends WithDestroy() {
   availableAntennae$ = new BehaviorSubject<Antenna[]>([]);
   stockPlanets$: Observable<{ listOrbits, celestialBodies }>;
   difficultySetting: DifficultySetting;
+  checkpointPreferences$ = new BehaviorSubject<CheckpointPreferences>(CheckpointPreferences.default);
 
   constructor(http: HttpClient) {
     super();
@@ -50,6 +52,10 @@ export class SetupService extends WithDestroy() {
 
   updateDifficultySetting(details: DifficultySetting) {
     this.difficultySetting = details;
+  }
+
+  updateCheckpointPreferences(details: CheckpointPreferences) {
+    this.checkpointPreferences$.next(details);
   }
 
   // todo: move method to some 'generate' handler

@@ -1,0 +1,58 @@
+:host {
+  color: white;
+
+  text-align: center;
+  justify-self: center;
+  width: 100%;
+
+  display: grid;
+  margin-bottom: .2em;
+}
+
+.node-layout {
+  align-items: center;
+
+  .destination-layout {
+    display: grid;
+    gap: .2em;
+  }
+
+  .capture-methods {
+    justify-self: start;
+    display: grid;
+
+    button {
+      width: unset;
+      height: unset;
+      line-height: unset;
+      border-radius: 50px;
+      padding: 2px;
+    }
+  }
+
+  .delete-button {
+    min-width: unset;
+    padding: unset;
+    justify-self: end;
+  }
+}
+
+.destination {
+  font-size: 1.5em;
+}
+
+.condition {
+  justify-self: center;
+  color: #fffc;
+  font-weight: 200;
+
+  background-color: #fff2;
+  padding: .1em .4em;
+  line-height: unset;
+  width: max-content;
+}
+
+.hidden-condition {
+  visibility: hidden;
+  height: 0;
+}

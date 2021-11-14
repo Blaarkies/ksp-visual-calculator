@@ -9,7 +9,7 @@
             (blur)="isActive = false"
             (input)="userInputChange($any($event).currentTarget.value)">
   </textarea>
-  <mat-hint [@animateFade] *ngIf="value === null && hint">{{hint}}</mat-hint>
+  <mat-hint [@fade] *ngIf="value === null && hint">{{hint}}</mat-hint>
 </mat-form-field>
 
 <cp-validation-message [fieldName]="label" [errors]="errors"></cp-validation-message>

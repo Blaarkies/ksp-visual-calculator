@@ -36,12 +36,12 @@ describe('HudService', () => {
     spyOn(serviceAsAny.contextChange$, 'next');
     spyOn(service.contextPanel$, 'next');
 
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.setPageContext(UsableRoutes.SignalCheck);
 
     expect(serviceAsAny.contextChange$.next).toHaveBeenCalled();
     expect(service.contextPanel$.next).toHaveBeenCalledWith(
       objectContaining({
-        startTitle: 'Edit Universe',
+        startTitle: 'Signal Check',
       }));
   });
 

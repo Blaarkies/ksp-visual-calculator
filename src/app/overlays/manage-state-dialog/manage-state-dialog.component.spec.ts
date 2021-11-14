@@ -20,7 +20,10 @@ describe('ManageStateDialogComponent', () => {
     .mock(MAT_DIALOG_DATA, {
       context: UsableRoutes.SignalCheck,
     })
-    .mock(StateService, ineeda<StateService>({getStates: () => EMPTY})),
+    .mock(StateService, ineeda<StateService>({
+      getStates: () => EMPTY,
+      getStatesInContext: () => EMPTY,
+    })),
   );
 
   it('should create', () => {

@@ -6,7 +6,9 @@ import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './services/auth.service';
+import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
+import { GlobalStyleClass } from './common/GlobalStyleClass';
 
 @Component({
   selector: 'cp-root',
@@ -19,7 +21,8 @@ export class AppComponent extends WithDestroy() implements OnInit {
   constructor(private dialog: MatDialog,
               private tutorialService: TutorialService,
               private snackBar: MatSnackBar,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private hudService: HudService) {
     super();
 
     this.authService
@@ -28,7 +31,7 @@ export class AppComponent extends WithDestroy() implements OnInit {
         filter(user => user === null),
         take(1),
         takeUntil(this.destroy$))
-      .subscribe(() => this.dialog.open(AccountDialogComponent));
+      .subscribe(() => this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly}));
   }
 
   ngOnInit() {
@@ -45,8 +48,8 @@ export class AppComponent extends WithDestroy() implements OnInit {
         title: 'First Visit?',
         descriptions: [
           'There is an orange quick-help button in the top-left corner that can explain the control scheme.',
-          'You can start a detailed tutorial now, or if you prefer later, you can find it in the "Information" menu in the top-right corner.',
-          'This is a tool to help players visualize their communication networks in Kerbal Space Program. Players can plan the details around a CommNet before even launching their first rocket.',
+          'You can start a detailed tutorial now, or if you prefer later, you can find it in the blue "Information" menu.',
+          'This is a tool to help players visualize and solve their ideas in Kerbal Space Program. ',
         ],
         okButtonText: 'Start Tutorial',
         cancelButtonText: 'Skip',
@@ -61,7 +64,7 @@ export class AppComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(() => {
         localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString());
-        this.tutorialService.startFullTutorial();
+        this.tutorialService.startFullTutorial(this.hudService.pageContext);
       });
   }
 }

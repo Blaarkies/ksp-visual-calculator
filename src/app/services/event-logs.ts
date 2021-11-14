@@ -1,5 +1,6 @@
 class Category {
   static Tutorial = 'tutorial';
+  static DeltaV = 'deltav';
   static Craft = 'craft';
   static CelestialBody = 'celestialbody';
   static Privacy = 'privacy';

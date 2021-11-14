@@ -1,27 +1,5 @@
 [
   {
-    "title": "Tracking Stations",
-    "simpleExplanation": "Change the tracking station building level by editing any planet.",
-    "advancedExplanations": [
-      [
-        {
-          "type": "span",
-          "content": "By "
-        },
-        {
-          "type": "search",
-          "content": "editing a planet",
-          "query": "Edit planet"
-        },
-        {
-          "type": "span",
-          "content": ", we can add tracking stations to planets other than Kerbin (and even onto moons). This also allows us to remove the Kerbin tracking station."
-        }
-      ]
-    ],
-    "tags": "dsn tracking station range dish ksc launchpad"
-  },
-  {
     "title": "Focus Jump-to Panel",
     "simpleExplanation": "Quickly focus the camera onto a specific moon by selecting it in the list, or use keyboard shortcuts to cycle through them.",
     "advancedExplanations": [
@@ -73,43 +51,7 @@
     ],
     "tags": "camera quick center tab focus"
   },
-  {
-    "title": "Measurements and Altitude",
-    "simpleExplanation": "When hovering the mouse pointer over a craft, it will display extra measurements.",
-    "advancedExplanations": [
-      [
-        {
-          "type": "span",
-          "content": "The percentage number on the "
-        },
-        {
-          "type": "search",
-          "content": "green signal line",
-          "query": "Communication line"
-        },
-        {
-          "type": "span",
-          "content": " shows the signal strength. The second part shows the length of the connection. When connecting to a planet, this length is relative to the center of the planet."
-        }
-      ],
-      [
-        {
-          "type": "span",
-          "content": "The number to the right side of the craft indicates its altitude, relative to the celestial body that it is orbiting."
-        }
-      ],
-      [
-        {
-          "type": "image",
-          "content": "Measurements of a craft and its connection",
-          "src": "assets/faq/signal-text.jpg",
-          "alt": "An image of a craft with a connection to Kerbin",
-          "height": 200
-        }
-      ]
-    ],
-    "tags": "green signal line power strength antenna kerbnet"
-  },
+
   {
     "title": "Zoom Indicator",
     "simpleExplanation": "Displays the current zoom level.",
@@ -132,49 +74,7 @@
     ],
     "tags": "scale size view see moon camera zoom"
   },
-  {
-    "title": "Green Signal Lines",
-    "simpleExplanation": "These represent CommNet connections between different craft and tracking stations.",
-    "advancedExplanations": [
-      [
-        {
-          "type": "span",
-          "content": "The solid green line mimics the similar green line in-game: It is a measure of the direct connection capability (in contrast to the "
-        },
-        {
-          "type": "search",
-          "content": "relay-only connection",
-          "query": "relay specifics"
-        },
-        {
-          "type": "span",
-          "content": ")."
-        }
-      ],
-      [
-        {
-          "type": "span",
-          "content": "The direct connection is calculated from the combined power of all antennae on the craft, which is required for a connection to a tracking station (like the KSC), or a relay satellite. The relay connection is calculated from only the relay type antennae on the craft, this is required for relaying connections from other craft."
-        }
-      ],
-      [
-        {
-          "type": "span",
-          "content": "Here, probe A has a complete connection through to probe C, because probe B is relaying the connection. If probe C could relay to the KSC, we would have a usable control signal in-game."
-        }
-      ],
-      [
-        {
-          "type": "image",
-          "content": "Three craft connected",
-          "src": "assets/faq/signal-lines.jpg",
-          "alt": "An image of three satellites connected with green lines.",
-          "height": 120
-        }
-      ]
-    ],
-    "tags": "relay direct connection craft"
-  },
+
   {
     "title": "Sphere of Influence Bubbles",
     "simpleExplanation": "When dragging craft around, colored bubbles appear around the closest planet or moon. Dropping the craft inside these, will lock it into \"orbit\" there. Sphere of influence is also known as SOI.",
@@ -203,6 +103,7 @@
     ],
     "tags": "soi lock bubble relative move drag"
   },
+
   {
     "title": "Camera",
     "simpleExplanation": "Move and zoom the camera around the universe with these controls:",

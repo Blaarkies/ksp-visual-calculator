@@ -2,11 +2,18 @@ import { WizardMessageComponent } from './wizard-message.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { Vector2 } from '../../common/domain/vector2';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { ineeda } from 'ineeda';
+import { of } from 'rxjs';
 
 let componentType = WizardMessageComponent;
 describe('WizardMessageComponent', () => {
 
-  beforeEach(() => MockBuilder(componentType).mock(AppModule));
+  beforeEach(() => MockBuilder(componentType)
+    .mock(AppModule)
+    .mock(BreakpointObserver, ineeda<BreakpointObserver>({
+      observe: (options) => of({matches: false} as any),
+    })));
 
   let location = new Vector2();
 

@@ -21,6 +21,11 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
+              {
+                "glob": "mdi.svg",
+                "input": "./node_modules/@mdi/angular-material",
+                "output": "./assets"
+              },
               "src/assets"
             ],
             "styles": [

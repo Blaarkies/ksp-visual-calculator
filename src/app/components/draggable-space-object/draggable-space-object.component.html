@@ -3,6 +3,8 @@
      [style.left.px]="scale * spaceObject.location.x"
      [style.top.px]="scale * spaceObject.location.y"
      (pointerdown)="dragSpaceObject.emit($event)"
+     (touchstart)="$event.stopImmediatePropagation()"
+     (mousedown)="$event.buttons.bitwiseIncludes(1) && $event.stopImmediatePropagation()"
      cpDoublePointerAction (doubleAction)="focusObject.emit($event)"
      cpMouseHover (hoverChange)="buttonHover$.next($event); spaceObject.draggableHandle.isHover$.next($event)">
 
@@ -12,11 +14,11 @@
 
   <button class="edit-icon-space-object"
           mat-icon-button
-          [@animateFade]
-          *ngIf="buttonHover$ | async"
+          [@fade]
+          *ngIf="allowEdit && buttonHover$ | async"
           (click)="editSpaceObject.next()"
           (mousedown)="$event.stopPropagation()">
-    <mat-icon>{{icons.Edit}}</mat-icon>
+    <mat-icon [svgIcon]="icons.Edit"></mat-icon>
   </button>
 
 </div>

@@ -1,0 +1,66 @@
+<div class="list-layout">
+  <div *ngFor="let checkpoint of missionCheckpoints; trackBy: getNode"
+       [@height]>
+    <cp-msp-edge *ngIf="checkpoint.edge"
+                 [details]="checkpoint.edge"></cp-msp-edge>
+
+    <cp-msp-node [details]="checkpoint.node"
+                 (remove)="removeNode.emit(checkpoint)"
+                 (update)="updateNode.emit(checkpoint)"></cp-msp-node>
+  </div>
+
+  <div [@height] *ngIf="missionCheckpoints.length" class="divider"></div>
+</div>
+
+<div class="destination-controls">
+
+  <div class="inline-children">
+      <button class="button-lock-mode"
+              mat-flat-button
+              color="primary"
+              [matTooltip]="(isTapCheckpointMode ? 'Disable' : 'Enable') + ' tap-checkpoint mode'"
+              (click)="toggleTapCheckpointMode()">
+          <mat-icon [svgIcon]="isTapCheckpointMode ? icons.Lock : icons.Unlock"></mat-icon>
+      </button>
+
+      <button class="button-single-checkpoint"
+              mat-flat-button
+              id="add-dv-mission-checkpoint-button"
+              color="primary"
+              [matTooltip]="'Add new checkpoint'"
+              (click)="addCheckpoint()">
+        <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>
+        <ng-template #isBusy>
+          <div class="animate-flashing">Tap a planet</div>
+        </ng-template>
+        <ng-template #idleIcon>
+          <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+        </ng-template>
+      </button>
+  </div>
+
+  <button mat-button
+          id="clear-dv-mission-button"
+          class="fix-disabled-color"
+          color="warn"
+          [matTooltip]="'Clear entire mission'"
+          [disabled]="!missionCheckpoints.length"
+          (click)="resetMission()">
+    <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
+  </button>
+</div>
+
+<div class="totals-layout text-white" *ngIf="missionCheckpoints.length">
+  <div>Total delta-v</div>
+  <div>{{deltaVTotal}} m/s</div>
+
+  <!--  <div>Minimum TWR required</div>-->
+  <!--  <div>{{twrMinimum}}</div>-->
+</div>
+
+<div [@height]="!missionCheckpoints.length"
+     class="text-mute empty-state-msp">
+  No checkpoints selected. <br>
+  Start by adding your <br>
+  first checkpoint.
+</div>

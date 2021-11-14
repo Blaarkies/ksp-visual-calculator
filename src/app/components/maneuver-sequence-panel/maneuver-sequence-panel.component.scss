@@ -1,0 +1,92 @@
+.panel-layout {
+  background-color: #6662;
+  min-height: 200px;
+  min-width: 200px;
+  padding: 8px;
+
+  display: grid;
+  grid-auto-rows: max-content;
+  gap: 4px;
+
+  --border-radius: 12px;
+  border-bottom-left-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
+
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    mat-icon {
+      color: #fffc;
+    }
+  }
+
+  .options {
+    display: grid;
+    gap: .4em;
+
+    cp-input-toggle {
+      padding-left: 2px;
+      position: relative;
+
+      &:before { // highlight the checkbox
+        background-color: #fff2;
+        content: "";
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        border-radius: 4px;
+        transform: translate(-2px, 2px);
+      }
+    }
+
+    --color-text-active: #afa;
+
+    .chip-button {
+      margin-right: .5em;
+      padding: 0 6px;
+      background-color: #fff4;
+      color: var(--color-text-active);
+      min-width: unset;
+      line-height: unset;
+    }
+
+    .plane-change-control {
+      display: grid;
+      grid-template-columns: 0 max-content auto;
+      align-items: center;
+    }
+
+    .flight-situation {
+      display: grid;
+      grid-template-columns: 0 max-content auto;
+    }
+
+    .route-type {
+      display: grid;
+      grid-template-columns: 0 max-content auto;
+    }
+
+    .button-select {
+      margin-right: .5em;
+
+      justify-self: center;
+      color: var(--color-text-active);
+
+      background-color: #fff4;
+      padding: .1em .4em;
+      line-height: unset;
+      width: max-content;
+    }
+
+    .hidden {
+      visibility: hidden;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+  }
+
+}

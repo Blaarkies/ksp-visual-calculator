@@ -1,10 +1,11 @@
 <div *ngIf="isHandset$ | async; else desktopScreen"
      class="handset-layout">
 
-  <ng-container *ngTemplateOutlet="faqButton"></ng-container>
+  <ng-container *ngTemplateOutlet="pageContext"></ng-container>
   <ng-container *ngTemplateOutlet="profile"></ng-container>
   <ng-container *ngTemplateOutlet="zoom"></ng-container>
   <ng-container *ngTemplateOutlet="focus"></ng-container>
+  <ng-container *ngTemplateOutlet="dv"></ng-container>
 
   <div class="fab-buttons">
     <cp-action-fab color="green"
@@ -42,7 +43,7 @@
                      startTitle="KSP Visual Calculator"
                      [options]="navigationOptions"></cp-action-panel>
 
-    <ng-container *ngTemplateOutlet="faqButton"></ng-container>
+    <ng-container *ngTemplateOutlet="pageContext"></ng-container>
 
     <cp-action-panel class="information"
                      startTitle="Information"
@@ -54,8 +55,9 @@
 
     <ng-container *ngTemplateOutlet="zoom"></ng-container>
     <ng-container *ngTemplateOutlet="focus"></ng-container>
+    <ng-container *ngTemplateOutlet="dv"></ng-container>
 
-    <cp-action-panel class="context"
+    <cp-action-panel class="menu-context"
                      id="context-panel"
                      *ngIf="contextPanel$ | async as details"
                      [startTitle]="details.startTitle"
@@ -74,10 +76,31 @@
   </div>
 </ng-template>
 
-<ng-template #faqButton>
-  <button class="faq" mat-mini-fab color="accent" (click)="openFaq()">
-    <mat-icon>{{icons.Help}}</mat-icon>
-  </button>
+<ng-template #pageContext>
+  <div class="page-context">
+    <button class="faq"
+            mat-icon-button
+            color="accent"
+            (click)="openFaq()">
+      <mat-icon [svgIcon]="icons.Help"></mat-icon>
+    </button>
+
+    <div class="page-icon">
+      <mat-icon [matTooltip]="pageContextInfo?.tooltip"
+                color="accent"
+                [svgIcon]="pageContextInfo?.icon"></mat-icon>
+    </div>
+
+    <button *ngIf="hasBoughtCoffee$ | async | not"
+            [@fade]
+            class="buy-me-a-coffee"
+            mat-icon-button
+            [matTooltip]="'Support the developer'"
+            (click)="openBuyMeACoffee()">
+      <mat-icon [svgIcon]="icons.Gift"></mat-icon>
+      <span matBadge="!" matBadgeColor="warn"></span>
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #zoom>
@@ -89,4 +112,9 @@
 
 <ng-template #focus>
   <cp-focus-jump-to-panel class="focus"></cp-focus-jump-to-panel>
+</ng-template>
+
+<ng-template #dv>
+  <cp-maneuver-sequence-panel class="dv" *ngIf="(context$ | async) === contextTypes.DvPlanner">
+  </cp-maneuver-sequence-panel>
 </ng-template>

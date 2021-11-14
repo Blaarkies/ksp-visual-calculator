@@ -1,48 +1,24 @@
-<div #screen class="text-white">
+<cp-universe-map #universe
+                 (update)="updateUniverse($event)">
 
-  <cp-camera #camera>
-
-    <ng-container *ngFor="let orbit of orbits$ | async">
-      <cp-orbit-line [@animateFade]
-                     *ngIf="orbit.type === spaceObjectTypes.Planet
-                         || orbit.type === spaceObjectTypes.Star
-                         || camera.scale > scaleToShowMoons"
-                     [orbit]="orbit"
-                     [scale]="camera.scale"></cp-orbit-line>
-    </ng-container>
-
-    <cp-transmission-line [@animateFade]
+  <ng-container aboveOrbits>
+    <cp-transmission-line [@fade]
                           *ngFor="let line of transmissionLines$ | async"
                           [transmissionLine]="line"
-                          [scale]="camera.scale"></cp-transmission-line>
+                          [scale]="universe.camera.scale"></cp-transmission-line>
+  </ng-container>
 
-    <ng-container *ngFor="let body of celestialBodies$ | async">
-      <cp-draggable-space-object [@animateFade]
-                                 *ngIf="body.type === spaceObjectTypes.Planet
-                                     || body.type === spaceObjectTypes.Star
-                                     || camera.scale > scaleToShowMoons"
-                                 [spaceObject]="body"
-                                 [scale]="camera.scale"
-                                 (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
-                                 (focusObject)="focusBody(body, $event)"
-                                 (editSpaceObject)="editCelestialBody(body)">
-        <div class="div-as-image"
-             draggable="false"
-             [style.background]="body.draggableHandle.imageUrl"
-             [style.width.px]="body.size"
-             [style.height.px]="body.size"></div>
-
-        <cp-soi-circle [scale]="camera.scale"
-                       [body]="body"></cp-soi-circle>
-      </cp-draggable-space-object>
-    </ng-container>
-
-    <cp-draggable-space-object [@animateFade]
+  <ng-container abovePlanets>
+    <cp-draggable-space-object [@fade]
                                *ngFor="let craft of crafts$ | async"
                                [spaceObject]="craft"
-                               [scale]="camera.scale"
-                               (dragSpaceObject)="startBodyDrag(craft, $event, screen, camera)"
-                               (focusObject)="focusBody(craft, $event)"
+                               [scale]="universe.camera.scale"
+                               (dragSpaceObject)="universe.startBodyDrag(
+                                   craft,
+                                   $event,
+                                   universe.screen.nativeElement,
+                                   universe.camera)"
+                               (focusObject)="universe.focusBody(craft, $event)"
                                (editSpaceObject)="editCraft(craft)">
       <div class="craft-icon-sprite-image"
            draggable="false"
@@ -51,12 +27,12 @@
            [style.background-position-y.px]="craft.spriteLocation.y"
            [style.zoom]="craft.size * .025"></div>
 
-      <div [@animateFade]
+      <div [@fade]
            *ngIf="craft.draggableHandle.isHover$ | async"
            class="altitude-text">
         {{craft.displayAltitude}}
       </div>
     </cp-draggable-space-object>
-  </cp-camera>
+  </ng-container>
 
-</div>
+</cp-universe-map>

@@ -14,7 +14,7 @@ import { CustomAnimation } from '../../../common/domain/custom-animation';
   selector: 'cp-input-select',
   templateUrl: './input-select.component.html',
   styleUrls: ['./input-select.component.scss'],
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputSelectComponent),

@@ -1,5 +1,6 @@
-<ng-container *ngFor="let inputField of inputFields"
-              [ngSwitch]="inputField.controlMeta.type">
+<div [@height]
+     *ngFor="let inputField of inputFields"
+     [ngSwitch]="inputField.controlMeta.type">
 
   <cp-input-field *ngSwitchCase="controlMetaTypes.Input"
                   [type]="$any(inputField.controlMeta).inputType"
@@ -39,4 +40,4 @@
                        [label]="inputField.label"
                        [formControl]="inputField.control"
                        [errors]="inputField.control.touched && inputField.control.errors"></cp-antenna-selector>
-</ng-container>
+</div>

@@ -6,7 +6,10 @@
 
   > mat-button-toggle-group {
     grid-column: 1 / 3;
-    width: max-content;
+
+    width: auto;
+    display: grid;
+    grid-auto-flow: column;
   }
 
   > cp-input-field-list {

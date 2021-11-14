@@ -7,9 +7,17 @@ import { UsableRoutes } from '../../usable-routes';
 import * as savegameJson from 'src/test-resources/ksp-cp-savegame.json';
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
+import { interval } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
 
 let componentType = StateDisplayComponent;
 describe('StateDisplayComponent', () => {
+
+  beforeAll(async () =>
+    await interval(10).pipe(
+      filter(() => (savegameJson as any).default),
+      take(1))
+      .toPromise());
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 
@@ -40,7 +48,7 @@ describe('StateDisplayComponent', () => {
     expect((component as any).updateProperties).toHaveBeenCalled();
   });
 
-  it('given a state string, it should populate the correct properties', () => {
+  it('given a state string, it should populate the correct properties', async () => {
     let fixture = MockRender(componentType, {
       context: UsableRoutes.SignalCheck,
       state: {

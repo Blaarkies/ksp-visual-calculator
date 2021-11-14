@@ -1,15 +1,3 @@
-:host > div {
-  background-color: #111;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.div-as-image {
-  background-size: contain !important;
-  background-repeat: no-repeat !important;
-}
-
 .craft-icon-sprite-image {
   width: 65px;
   height: 65px;
@@ -22,7 +10,7 @@
 }
 
 .altitude-text {
-  color: var(--text-map-green);
+  color: var(--color-text-map-green);
   position: absolute;
   top: -40%;
   left: 0;

@@ -66,6 +66,8 @@ declare global {
 
     sum(this: Array<number>): number;
 
+    add(this: Array<T>, fresh: T): Array<T>;
+
     replace(this: Array<T>, stale: T, fresh: T, addIfAbsent?: boolean): Array<T>;
 
     remove(this: Array<T>, stale: T): Array<T>;
@@ -77,6 +79,8 @@ declare global {
     joinSelf(this: Array<T>): Array<Array<T>>;
 
     except(this: Array<T>, other: Array<any>, selector?: (item: any) => any): Array<T>;
+
+    windowed(this: Array<T>, size: number, step?: number, partialWindows?: boolean): Array<Array<T>>;
   }
 
   // interface Object {

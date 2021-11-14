@@ -13,13 +13,6 @@
   }
 }
 
-.subtitle {
-  margin-top: -10px;
-  color: var(--color-text-muted);
-  font-style: italic;
-  padding-left: 12px;
-}
-
 .archive-layout {
   display: grid;
   gap: 20px;
@@ -121,7 +114,7 @@
 .link {
   justify-self: end;
   text-decoration: none;
-  color: var(--color-hyperlink-text);
+  color: var(--color-text-hyperlink);
 
   min-width: 0;
   border-radius: 10px;

@@ -25,7 +25,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputFieldComponent),

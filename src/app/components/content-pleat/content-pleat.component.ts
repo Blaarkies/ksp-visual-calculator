@@ -7,7 +7,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
   templateUrl: './content-pleat.component.html',
   styleUrls: ['./content-pleat.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.animateFade],
+  animations: [CustomAnimation.fade],
 })
 export class ContentPleatComponent {
 
