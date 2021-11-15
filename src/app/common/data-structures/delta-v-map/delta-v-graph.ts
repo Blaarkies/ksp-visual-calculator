@@ -44,8 +44,8 @@ export class DeltaVGraph {
    * but single edges for complex conditions.
    */
   private setupEdges(nodeA: string, nodeB: string, specialTravelConditions: string[], weight: number) {
-    let [ , conditionA, ] = nodeA.split(SEP);
-    let [ , conditionB, ] = nodeB.split(SEP);
+    let [, conditionA,] = nodeA.split(SEP);
+    let [, conditionB,] = nodeB.split(SEP);
 
     if (specialTravelConditions.includes(conditionA)
       || specialTravelConditions.includes(conditionB)) {
@@ -93,18 +93,13 @@ export class DeltaVGraph {
       ...StepMaker.starToPlanet(kerbol, eeloo, 27540, 3010),
     ];
 
-    let mohoOut = [
-      ...StepMaker.self(moho, 870),
-    ];
+    let mohoOut = [...StepMaker.self(moho, 870)];
 
     let eveOut = [
       ...StepMaker.self(eve, 8000),
       ...StepMaker.parentToMoon(eve, gilly, 0, 1287, 191),
     ];
-
-    let gillyOut = [
-      ...StepMaker.self(gilly, 30),
-    ];
+    let gillyOut = [...StepMaker.self(gilly, 30)];
 
     let kerbinOut = [
       ...StepMaker.self(kerbin, 3400),
@@ -113,27 +108,16 @@ export class DeltaVGraph {
       ...StepMaker.parentToMoon(kerbin, mun, 0, 852, 71.8),
       ...StepMaker.parentToMoon(kerbin, minmus, 0, 921, 98),
     ];
-
-    let munOut = [
-      ...StepMaker.self(mun, 580),
-    ];
-
-    let minmusOut = [
-      ...StepMaker.self(minmus, 180),
-    ];
+    let munOut = [...StepMaker.self(mun, 580)];
+    let minmusOut = [...StepMaker.self(minmus, 180)];
 
     let dunaOut = [
       ...StepMaker.self(duna, 1450),
       ...StepMaker.parentToMoon(duna, ike, 0, 282, 10.8),
     ];
+    let ikeOut = [...StepMaker.self(ike, 390)];
 
-    let ikeOut = [
-      ...StepMaker.self(ike, 390),
-    ];
-
-    let dresOut = [
-      ...StepMaker.self(dres, 430),
-    ];
+    let dresOut = [...StepMaker.self(dres, 430)];
 
     let joolOut = [
       ...StepMaker.self(jool, 14000),
@@ -143,10 +127,13 @@ export class DeltaVGraph {
       ...StepMaker.parentToMoon(jool, bop, 0, 2608, 647),
       ...StepMaker.parentToMoon(jool, pol, 0, 2655, 643),
     ];
+    let laytheOut = [...StepMaker.self(laythe, 2900)];
+    let vallOut = [...StepMaker.self(vall, 860)];
+    let tyloOut = [...StepMaker.self(tylo, 2270)];
+    let bopOut = [...StepMaker.self(bop, 230)];
+    let polOut = [...StepMaker.self(pol, 130)];
 
-    let eelooOut = [
-      ...StepMaker.self(eeloo, 620),
-    ];
+    let eelooOut = [...StepMaker.self(eeloo, 620)];
 
     /**
      * Handles the transfers for all bodies, from the body's elliptical orbit, into a capture of
@@ -162,16 +149,28 @@ export class DeltaVGraph {
 
     let fullList = [
       ...kerbolOut,
+
       ...mohoOut,
+
       ...eveOut,
       ...gillyOut,
+
       ...kerbinOut,
       ...munOut,
       ...minmusOut,
+
       ...dunaOut,
       ...ikeOut,
+
       ...dresOut,
+
       ...joolOut,
+      ...laytheOut,
+      ...vallOut,
+      ...tyloOut,
+      ...bopOut,
+      ...polOut,
+
       ...eelooOut,
 
       ...interBodyTransfers,
