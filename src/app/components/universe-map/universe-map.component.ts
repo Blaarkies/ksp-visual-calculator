@@ -5,6 +5,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   ViewChild
 } from '@angular/core';
@@ -28,7 +29,7 @@ import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData
 } from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
-import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../../common/global-style-class';
 
 @Component({
   selector: 'cp-universe-map',
@@ -37,13 +38,13 @@ import { GlobalStyleClass } from '../../common/GlobalStyleClass';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [CustomAnimation.fade],
 })
-export class UniverseMapComponent extends WithDestroy() {
+export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
 
   @Input() allowEdit = true;
 
   @Output() update = new EventEmitter<SpaceObject>();
   @Output() startDrag = new EventEmitter<SpaceObject>();
-  @Output() hoverBody = new EventEmitter<{body: SpaceObject, hover: boolean}>();
+  @Output() hoverBody = new EventEmitter<{ body: SpaceObject, hover: boolean }>();
 
   orbits$: Observable<Orbit[]>;
   celestialBodies$: Observable<SpaceObject[]>;
@@ -71,16 +72,15 @@ export class UniverseMapComponent extends WithDestroy() {
 
   startBodyDrag(body: SpaceObject, event: PointerEvent, screen: HTMLDivElement, camera: CameraComponent) {
     body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
+    this.startDrag.emit(body);
 
-    this.analyticsService.logEvent('Drag body', {
+    this.analyticsService.throttleEvent(EventLogs.Name.DragBody, {
       category: EventLogs.Category.CelestialBody,
       touch: event.pointerType === 'touch',
       details: {
         label: EventLogs.Sanitize.anonymize(body.label),
       },
     });
-
-    this.startDrag.emit(body);
   }
 
   private updateUniverse(dragged: SpaceObject) {

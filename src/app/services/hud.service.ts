@@ -27,7 +27,7 @@ import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialo
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
 import { TutorialService } from './tutorial.service';
-import { GlobalStyleClass } from '../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../common/global-style-class';
 import { EventLogs } from './event-logs';
 
 @Injectable({
@@ -188,7 +188,7 @@ export class HudService {
     let options = [
       new ActionOption('New Craft', Icons.Craft, {
         action: () => {
-          this.analyticsService.logEvent('Call new craft dialog', {
+          this.analyticsService.throttleEvent(EventLogs.Name.CallNewCraftDialog, {
             category: EventLogs.Category.Craft,
           });
 

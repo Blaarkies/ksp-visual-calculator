@@ -7,7 +7,7 @@ import { AccountDialogComponent } from '../../overlays/account-dialog/account-di
 import { takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
-import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../../common/global-style-class';
 
 @Component({
   selector: 'cp-user-profile',

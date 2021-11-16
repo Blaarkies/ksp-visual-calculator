@@ -259,7 +259,7 @@ export class TutorialService {
         startTutorial.dialogTitle = 'Delta-v Mission Tutorial';
         startTutorial.dialogMessages = [
           'This page calculates the required amount of delta-v a rocket needs to reach a specific destination.',
-          'Multiple checkpoints can be added with aerobraking rules for each, to calculate the total delta-v required.',
+          'Multiple checkpoints can be added with aerobraking rules for each to calculate the total delta-v required.',
         ];
         startTutorial.dialogIcon = Icons.DeltaV;
         break;

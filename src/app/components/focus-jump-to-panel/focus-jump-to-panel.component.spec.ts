@@ -7,7 +7,6 @@ import { BehaviorSubject, of } from 'rxjs';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { CameraService } from '../../services/camera.service';
-import { AnalyticsService } from '../../services/analytics.service';
 import { Draggable } from '../../common/domain/space-objects/draggable';
 import { MatButton } from '@angular/material/button';
 import createSpy = jasmine.createSpy;
@@ -52,16 +51,16 @@ describe('FocusJumpToPanelComponent', () => {
   it('list item actions should call CameraService.focusSpaceObject()', () => {
     let celestialBodies$ = new BehaviorSubject<SpaceObject[]>([spaceObjects[0]]);
     MockInstance(SpaceObjectService, 'celestialBodies$', celestialBodies$);
-    let spyFocusSpaceObject = MockInstance(CameraService, 'focusSpaceObject', createSpy());
-    let spyLogEvent = MockInstance(AnalyticsService, 'logEvent', createSpy());
+    let spyFocusSpaceObject = MockInstance(CameraService, 'focusSpaceObject', createSpy('spyFocusSpaceObject'));
 
     let fixture = MockRender(componentType);
     let component = fixture.point.componentInstance;
 
     component.list[0].itemAction();
 
+    fixture.detectChanges();
+
     expect(spyFocusSpaceObject).toHaveBeenCalled();
-    expect(spyLogEvent).toHaveBeenCalled();
     celestialBodies$.complete();
   });
 

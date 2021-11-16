@@ -6,14 +6,31 @@ import { FormControl, Validators } from '@angular/forms';
 import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
-import { catchError, finalize, mapTo, mergeAll, startWith, switchMap, take, takeUntil, timeout } from 'rxjs/operators';
+import {
+  catchError,
+  filter,
+  finalize,
+  mapTo,
+  mergeAll,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap,
+  timeout
+} from 'rxjs/operators';
 import { AuthErrorCode } from './auth-error-code';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { User } from '../../services/data.service';
 import { InputFieldComponent } from '../controls/input-field/input-field.component';
 import { EventLogs } from '../../services/event-logs';
 import { AnalyticsService } from '../../services/analytics.service';
-import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../../common/global-style-class';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  UploadImageDialogComponent,
+  UploadImageDialogData
+} from '../../overlays/upload-image-dialog/upload-image-dialog.component';
 
 @Component({
   selector: 'cp-account-details',
@@ -63,7 +80,8 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
   constructor(private snackBar: MatSnackBar,
               private authService: AuthService,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private dialog: MatDialog) {
     super();
 
     this.user$
@@ -184,9 +202,42 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   }
 
   async uploadImage(user: User) {
-    this.snackBar.open(`Custom profile pictures coming soon!`);
+    this.analyticsService.logEvent('Upload image start', {
+      category: EventLogs.Category.Account,
+    });
 
-    this.analyticsService.logEvent('Upload profile image', {
+    this.uploadingImage$.next(true);
+
+    let imageData = await this.dialog
+      .open(UploadImageDialogComponent, {
+        data: {} as UploadImageDialogData,
+      })
+      .afterClosed()
+      .pipe(
+        tap(ok => {
+          if (!ok) {
+            this.analyticsService.logEvent('Upload image canceled', {
+              category: EventLogs.Category.Account,
+            });
+
+            this.uploadingImage$.next(false);
+          }
+        }),
+        filter(ok => ok),
+        take(1),
+        takeUntil(this.destroy$))
+      .toPromise();
+
+    await this.authService.editUserData({
+      ...user,
+      photoURL: imageData,
+    });
+
+    this.uploadingImage$.next(false);
+
+    this.snackBar.open(`Uploaded new profile picture`);
+
+    this.analyticsService.logEvent('Upload image end', {
       category: EventLogs.Category.Account,
     });
   }

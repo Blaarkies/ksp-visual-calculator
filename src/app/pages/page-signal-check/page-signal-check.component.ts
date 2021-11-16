@@ -17,7 +17,7 @@ import { Icons } from '../../common/domain/icons';
 import { StateService } from '../../services/state.service';
 import { UsableRoutes } from '../../usable-routes';
 import { HudService } from '../../services/hud.service';
-import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../../common/global-style-class';
 import { EventLogs } from '../../services/event-logs';
 
 @Component({

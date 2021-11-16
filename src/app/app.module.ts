@@ -87,6 +87,9 @@ import { MspEdgeComponent } from './components/maneuver-sequence-panel/msp-edge/
 import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { NegatePipe } from './common/negate.pipe';
+import { UploadImageDialogComponent } from './overlays/upload-image-dialog/upload-image-dialog.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   declarations: [
@@ -126,6 +129,7 @@ import { NegatePipe } from './common/negate.pipe';
     ContentPleatComponent,
     UserProfileComponent,
     ManageStateDialogComponent,
+    UploadImageDialogComponent,
     StateDisplayComponent,
     StateEditNameRowComponent,
     FileDropDirective,
@@ -179,6 +183,8 @@ import { NegatePipe } from './common/negate.pipe';
     MatProgressBarModule,
     MatBottomSheetModule,
     OverlayModule,
+    ImageCropperModule,
+    MatStepperModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

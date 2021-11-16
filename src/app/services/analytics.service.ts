@@ -2,20 +2,51 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import firebase from 'firebase/app';
 import 'firebase/analytics';
-import { EventLogs } from './event-logs';
+import { AnalyticsEventName, EventLogs } from './event-logs';
 import Analytics = firebase.analytics.Analytics;
+import { Subject } from 'rxjs';
+import { throttleTime } from 'rxjs/operators';
 
 let localStorageKeys = {
   doNotTrack: 'ksp-commnet-planner-user-opted-out-of-tracking',
 };
+
+class ThrottledEvents {
+
+  private eventMap = new Map<AnalyticsEventName, Subject<any>>();
+
+  constructor(private analyticsService: AnalyticsService) {
+  }
+
+  addEvent(eventName: AnalyticsEventName, details: any, duration: number) {
+    let event$ = this.eventMap.get(eventName);
+    if (!event$) {
+      let subject$ = new Subject<any>();
+      this.eventMap.set(eventName, subject$);
+      subject$
+        .pipe(throttleTime(duration))
+        .subscribe(payload => this.analyticsService.logEvent(eventName.toString(), payload));
+      subject$.next(details);
+      return;
+    }
+
+    event$.next(details);
+  }
+
+  destroy() {
+    this.eventMap.forEach(value => value.complete());
+  }
+
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AnalyticsService {
 
-  private analytics: Analytics;
   isTracking: boolean;
+  private analytics: Analytics;
+  private throttledEvents = new ThrottledEvents(this);
 
   constructor() {
     let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
@@ -83,6 +114,14 @@ export class AnalyticsService {
               [keyPrefix + key]: value,
             };
         }, {});
+  }
+
+  throttleEvent(eventName: AnalyticsEventName, details: any, throttleDuration: number = 60e3) {
+    this.throttledEvents.addEvent(eventName, details, throttleDuration);
+  }
+
+  destroy() {
+    this.throttledEvents.destroy();
   }
 
 }

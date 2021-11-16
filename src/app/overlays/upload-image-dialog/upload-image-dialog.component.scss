@@ -1,0 +1,40 @@
+.layout {
+
+}
+
+.file-drop {
+  border: 2px dotted #0006;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+
+  mat-icon {
+    color: var(--color-text-muted);
+  }
+}
+
+.cropper-layout {
+  margin: 8px;
+  max-width: 600px;
+  max-height: 400px;
+  aspect-ratio: 1;
+}
+
+.image-layout {
+  display: block;
+  margin: 10px auto;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 5px #0004;
+}
+
+.confirm-buttons-layout {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: max-content auto max-content;
+  width: 100%;
+  justify-items: start;
+}

@@ -46,7 +46,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
             icon: so.type.icon,
             label: so.label,
             itemAction: () => {
-              this.analyticsService.logEvent('Focus body with button', {
+              this.analyticsService.throttleEvent(EventLogs.Name.FocusBodyWithButton, {
                 category: EventLogs.Category.Camera,
                 body: EventLogs.Sanitize.anonymize(so.label),
               });
