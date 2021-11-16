@@ -1,0 +1,23 @@
+.text {
+
+  &.start {
+    text-align: start;
+  }
+
+  &.center {
+    text-align: center;
+  }
+
+  &.end {
+    text-align: end;
+  }
+
+}
+
+.text-white {
+  color: white;
+}
+
+.text-mute {
+  color: var(--color-text-muted);
+}

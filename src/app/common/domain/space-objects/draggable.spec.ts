@@ -6,10 +6,10 @@ import { CameraComponent } from '../../../components/camera/camera.component';
 import { ineeda } from 'ineeda';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { Component } from '@angular/core';
-import { BehaviorSubject, of, timer } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
 import { Vector2 } from '../vector2';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import { Common } from '../../common';
 import createSpy = jasmine.createSpy;
 
 let nameA = 'A';
@@ -257,7 +257,7 @@ describe('Draggable class', () => {
       draggable.location.set([0, 0]);
 
       let fixture = MockRender(TestDivComponent);
-      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div');
+      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('*');
 
       spyOn(draggable as any, 'getEventObservable')
         .and.returnValue(new BehaviorSubject({
@@ -293,7 +293,7 @@ describe('Draggable class', () => {
         }),
       );
 
-      await timer(100).pipe(take(1)).toPromise();
+      await Common.waitPromise();
 
       expect(fakePlanet.showSoi).toBe(true);
 

@@ -36,7 +36,19 @@ class Sanitize {
 
 }
 
+class Name {
+  static DragBody = 'Drag body';
+  static CallNewCraftDialog = 'Call new craft dialog';
+  static FocusBodyWithButton = 'Focus body with button';
+  static ToggleCheckpointLockMode = 'Toggle checkpoint lock mode';
+  static RemoveCheckpoint = 'Remove checkpoint';
+  static AddCheckpoint = 'Add checkpoint';
+}
+
+export type AnalyticsEventName = Name;
+
 export class EventLogs {
   static Category = Category;
   static Sanitize = Sanitize;
+  static Name = Name;
 }

@@ -3,7 +3,16 @@
 
   <div mat-dialog-content class="details-layout">
     <div class="display-details-layout">
-      <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'" />
+
+      <div class="avatar-layout overlap-container">
+        <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'" />
+        <span class="premium-sash"
+              [matTooltip]="'Thank you for supporting! 😁'"
+              [@fade]
+              *ngIf="user.isCustomer">
+          Supporter
+        </span>
+      </div>
 
       <div class="user-details">
         <div>
@@ -27,12 +36,12 @@
       <div>
         <div [matTooltip]="user.isCustomer
                   ? 'Thank you for supporting! 😁'
-                  : 'Checks whether \'' + user.email + '\' has already supported at buymeacoffee.com/Blaarkies'">
+                  : 'Verifies if this account is a supporter at buymeacoffee.com/Blaarkies'">
           <button class="button-loader"
                   mat-button
                   [disabled]="user.isCustomer || (validatingCustomer$ | async)"
                   (click)="validateAccount(user)">
-            {{user.isCustomer ? 'Account Verified' : 'Verify Account'}}
+            {{user.isCustomer ? 'Account Is Verified' : 'Verify Account'}}
             <mat-progress-bar [@fade] *ngIf="validatingCustomer$ | async" mode="query"></mat-progress-bar>
           </button>
         </div>

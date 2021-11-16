@@ -43,7 +43,7 @@ export class TravelService {
   }
 
   setCheckpointMode(isLocked: boolean) {
-    this.analyticsService.logEvent('Toggle checkpoint lock mode', {
+    this.analyticsService.throttleEvent(EventLogs.Name.ToggleCheckpointLockMode, {
       category: EventLogs.Category.DeltaV,
       isLocked,
     });
@@ -78,7 +78,7 @@ export class TravelService {
 
     this.updateCheckpoints(newList);
 
-    this.analyticsService.logEvent('Add checkpoint', {
+    this.analyticsService.throttleEvent(EventLogs.Name.AddCheckpoint, {
       category: EventLogs.Category.DeltaV,
       checkpoints: newList.map(n => n.node.name),
       inputMode,
@@ -115,7 +115,7 @@ export class TravelService {
 
     this.stopCheckpointSelection();
 
-    this.analyticsService.logEvent('Reset checkpoints', {
+    this.analyticsService.throttleEvent(EventLogs.Name.RemoveCheckpoint, {
       category: EventLogs.Category.DeltaV,
       checkpoint: checkpoint.node.name,
     });

@@ -1,4 +1,13 @@
-import { Component, ElementRef, Inject, QueryList, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+  ViewEncapsulation
+} from '@angular/core';
 import { delay, filter, finalize, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsableRoutes } from '../../usable-routes';
@@ -28,7 +37,7 @@ export class ManageStateDialogData {
   encapsulation: ViewEncapsulation.None,
   animations: [CustomAnimation.fade, CustomAnimation.height],
 })
-export class ManageStateDialogComponent extends WithDestroy() {
+export class ManageStateDialogComponent extends WithDestroy() implements OnDestroy {
 
   context: UsableRoutes = this.data.context;
   contextTitle = '';
@@ -66,6 +75,12 @@ export class ManageStateDialogComponent extends WithDestroy() {
       .subscribe(() => this.stateList.selectedOptions.select(this.stateList.options.first));
 
     this.contextTitle = this.getContextTitle(this.data.context);
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    Object.values(this.buttonLoaders)
+      .forEach(subject$ => subject$.complete());
   }
 
   async editStateName(oldName: string, state: StateRow) {

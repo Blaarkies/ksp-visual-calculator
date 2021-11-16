@@ -1,0 +1,124 @@
+<h1 mat-dialog-title>Upload Image</h1>
+
+<div mat-dialog-content class="layout">
+
+  <mat-horizontal-stepper #stepper
+                          class="upload-image-dialog-component-stepper"
+                          linear
+                          [formGroup]="formArrayStepper">
+    <mat-step [stepControl]="controlSelect" label="Select">
+      <ng-container *ngTemplateOutlet="selectFile"></ng-container>
+    </mat-step>
+
+    <mat-step [stepControl]="controlCrop" label="Crop">
+      <ng-container *ngTemplateOutlet="cropImage"></ng-container>
+    </mat-step>
+
+    <mat-step label="Confirm">
+      <ng-container *ngTemplateOutlet="confirmImage"></ng-container>
+    </mat-step>
+
+  </mat-horizontal-stepper>
+
+
+  <ng-template #selectFile>
+    <div class="file-drop"
+         [matTooltip]="'Drag and drop an image file here'"
+         cpFileDrop
+         [fileTypeWhitelist]="['image/jpeg', 'image/png', 'image/bmp']"
+         (fileDrop)="importFile($event)">
+      <mat-icon [svgIcon]="icons.Upload"></mat-icon>
+      <button class="button-loader"
+              mat-stroked-button
+              color="primary"
+              (click)="fileUploadInput.click()">
+        Select File
+        <mat-progress-bar [@fade]
+                          *ngIf="buttonLoaders.import$ | async"
+                          mode="indeterminate"></mat-progress-bar>
+        <input #fileUploadInput
+               [style.display]="'none'"
+               type="file"
+               [accept]="'image/jpeg, image/png, image/bmp'"
+               (change)="uploadFileSelected($event)">
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #cropImage>
+    <div class="cropper-layout">
+      <image-cropper
+        [imageBase64]="controlSelect.value"
+
+        [resizeToWidth]="100"
+        [resizeToHeight]="100"
+
+        [roundCropper]="true"
+        [imageQuality]="80"
+        format="jpeg"
+
+        (imageCropped)="controlCrop.setValue($event.base64)"
+        (loadImageFailed)="loadImageFailed()"
+      ></image-cropper>
+    </div>
+  </ng-template>
+
+  <ng-template #confirmImage>
+    <img [src]="controlCrop.value" height="200" class="image-layout" />
+  </ng-template>
+
+</div>
+
+<div mat-dialog-actions>
+  <ng-container [ngSwitch]="stepper.selectedIndex">
+
+    <ng-container *ngSwitchCase="0">
+      <button color="accent" class="justify-self-start"
+              mat-button
+              [mat-dialog-close]="null">
+        Cancel
+      </button>
+    </ng-container>
+
+    <div *ngSwitchCase="1" class="confirm-buttons-layout">
+      <button color="accent"
+              mat-button
+              [mat-dialog-close]="null">
+        Cancel
+      </button>
+
+      <button mat-button
+              (click)="stepper.steps.get(0).select();">
+        Back
+      </button>
+
+      <button color="primary"
+              mat-stroked-button
+              [disabled]="controlCrop.invalid"
+              (click)="stepper.steps.get(2).select();">
+        Next
+      </button>
+    </div>
+
+    <div *ngSwitchCase="2" class="confirm-buttons-layout">
+      <button color="accent"
+              mat-button
+              [mat-dialog-close]="null">
+        Cancel
+      </button>
+
+      <button mat-button
+              (click)="stepper.steps.get(1).select();">
+        Back
+      </button>
+
+      <button color="primary"
+              mat-stroked-button
+              [disabled]="formArrayStepper.invalid"
+              [mat-dialog-close]="controlCrop.value">
+        Save
+      </button>
+    </div>
+  </ng-container>
+
+</div>

@@ -14,7 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
 import UserCredential = firebase.auth.UserCredential;
 import { AuthErrorCode } from '../components/account-details/auth-error-code';
-import { GlobalStyleClass } from '../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../common/global-style-class';
 
 @Injectable({
   providedIn: 'root',
@@ -142,17 +142,14 @@ export class AuthService {
   }
 
   async editUserData(user: User | firebase.User): Promise<User> {
-    let dbUser = await this.dataService.read<User>('users', user.uid);
-
     const data = {
-      ...dbUser,
       displayName: user.displayName,
       photoURL: user.photoURL,
     };
 
-    await this.dataService.write('users', data);
+    await this.dataService.write('users', data, {merge: true});
 
-    return data;
+    return user as User;
   }
 
   async resetPassword(email: string): Promise<void> {

@@ -34,7 +34,7 @@ import { TravelService } from './travel.service';
 import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
-import { GlobalStyleClass } from '../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../common/global-style-class';
 
 @Injectable({
   providedIn: 'root',

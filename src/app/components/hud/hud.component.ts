@@ -16,7 +16,7 @@ import {
   ActionBottomSheetComponent,
   ActionBottomSheetData
 } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
-import { GlobalStyleClass } from '../../common/GlobalStyleClass';
+import { GlobalStyleClass } from '../../common/global-style-class';
 import { EventLogs } from '../../services/event-logs';
 import { UsableRoutes } from '../../usable-routes';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';

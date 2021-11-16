@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './services/auth.service';
 import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
-import { GlobalStyleClass } from './common/GlobalStyleClass';
+import { GlobalStyleClass } from './common/global-style-class';
 
 @Component({
   selector: 'cp-root',
@@ -28,10 +28,11 @@ export class AppComponent extends WithDestroy() implements OnInit {
     this.authService
       .user$
       .pipe(
-        filter(user => user === null),
         take(1),
+        filter(user => user === null),
         takeUntil(this.destroy$))
-      .subscribe(() => this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly}));
+      .subscribe(() => this.dialog.open(AccountDialogComponent,
+        {backdropClass: GlobalStyleClass.MobileFriendly}));
   }
 
   ngOnInit() {

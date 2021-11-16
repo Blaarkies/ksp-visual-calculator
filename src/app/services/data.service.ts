@@ -15,6 +15,8 @@ export interface User {
   isCustomer: boolean;
 }
 
+export type TableName = 'users' | 'states';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -35,29 +37,27 @@ export class DataService {
       : reject('No user signed in, cannot use database without user authentication.'));
   }
 
-  async write(table: 'users' | 'states',
-              fields: {},
-              options: SetOptions = {}): Promise<void> {
+  async write(table: TableName, fields: {}, options: SetOptions = {}): Promise<void> {
     await this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`)
       .set(fields, options);
   }
 
-  async delete(table: 'users' | 'states', field: string): Promise<void> {
+  async delete(table: TableName, field: string): Promise<void> {
     await this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`)
       .update({[field]: FieldValue.delete()});
   }
 
-  async deleteAll(table: 'users' | 'states'): Promise<void> {
+  async deleteAll(table: TableName): Promise<void> {
     await this.checkUserSignIn();
 
     return this.afs.doc(`${table}/${this.userId$.value}`).delete();
   }
 
-  async read<T>(table: 'users' | 'states', id: string, options: GetOptions = {}): Promise<T> {
+  async read<T>(table: TableName, id: string, options: GetOptions = {}): Promise<T> {
     await this.checkUserSignIn();
 
     let entry = await this.afs.doc<T>(`${table}/${id}`)
@@ -66,7 +66,7 @@ export class DataService {
     return entry.data();
   }
 
-  async readAll<T>(table: 'users' | 'states', options: GetOptions = {}): Promise<T[]> {
+  async readAll<T>(table: TableName, options: GetOptions = {}): Promise<T[]> {
     await this.checkUserSignIn();
 
     let userUid = this.userId$.value;
