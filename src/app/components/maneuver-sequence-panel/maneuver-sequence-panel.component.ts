@@ -44,8 +44,11 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
 
   aerobrakeControl = new FormControl(this.setupService.checkpointPreferences$.value.aerobraking);
 
+  errorMarginControl = new FormControl(this.setupService.checkpointPreferences$.value.errorMargin);
+  errorMarginControlMeta = new ControlMetaNumber(0, 150, 2);
+
   planeChangeControl = new FormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
-  planeChangeControlMeta = new ControlMetaNumber(0, 100, 1);
+  planeChangeControlMeta = new ControlMetaNumber(0, 100, 1.5);
 
   preferredCondition$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.condition);
   routeType$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.routeType);
@@ -57,6 +60,7 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
 
     let preferencesDebouncer$ = new Subject<CheckpointPreferences>();
     combineLatest([
+      this.errorMarginControl.valueChanges.pipe(startWith(this.errorMarginControl.value as boolean)),
       this.aerobrakeControl.valueChanges.pipe(startWith(this.aerobrakeControl.value as boolean)),
       this.planeChangeControl.valueChanges.pipe(startWith(this.planeChangeControl.value as number)),
       this.preferredCondition$,
@@ -65,8 +69,8 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
         sampleTime(50),
         distinctUntilChanged((x, y) => x.every((argument, i) => argument === y[i])),
         takeUntil(this.destroy$))
-      .subscribe(([aerobraking, planeChangeCost, condition, routeType]) => {
-        let preferences = {aerobraking, planeChangeCost, condition, routeType} as CheckpointPreferences;
+      .subscribe(([errorMargin, aerobraking, planeChangeCost, condition, routeType]) => {
+        let preferences = {errorMargin, aerobraking, planeChangeCost, condition, routeType} as CheckpointPreferences;
         this.updatePreferences(preferences);
         preferencesDebouncer$.next(preferences);
       });
@@ -74,6 +78,7 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     this.setupService.checkpointPreferences$
       .pipe(takeUntil(this.destroy$))
       .subscribe(cp => {
+        this.errorMarginControl.setValue(cp.errorMargin);
         this.aerobrakeControl.setValue(cp.aerobraking);
         this.planeChangeControl.setValue(cp.planeChangeCost);
         this.preferredCondition$.next(cp.condition);
