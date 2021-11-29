@@ -1,0 +1,29 @@
+.panel-layout {
+  position: relative;
+  overflow: visible !important;
+
+  border: 1px solid #fff7;
+  border-radius: 8px;
+  padding: 2px;
+  background-color: #fff3;
+}
+
+.panel-button {
+  color: var(--color-icon-white);
+
+  position: absolute;
+  top: -35px;
+  background-color: #fff3;
+  border-radius: 8px;
+  padding: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 0 80%);
+}
+
+.panel-space {
+  width: 300px;
+  height: 300px;
+  //min-width: 300px;
+  //min-height: 300px;
+  //max-width: 300px;
+  //max-height: 300px;
+}

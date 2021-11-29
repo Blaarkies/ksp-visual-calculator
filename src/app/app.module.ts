@@ -90,6 +90,7 @@ import { NegatePipe } from './common/negate.pipe';
 import { UploadImageDialogComponent } from './overlays/upload-image-dialog/upload-image-dialog.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { MatStepperModule } from '@angular/material/stepper';
+import { BasePanelComponent } from './components/base-panel/base-panel.component';
 
 @NgModule({
   declarations: [
@@ -148,6 +149,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     MspEdgeComponent,
     MissionJourneyComponent,
     NegatePipe,
+    BasePanelComponent,
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebase),

@@ -1,0 +1,28 @@
+<div [@height]="isOpen" *ngIf="isOpen" class="stack panel-layout"
+     [matTooltip]="'No ads are shown to Buy Me a Coffee supporters'"
+     [matTooltipClass]="'tooltip-base-panel'">
+
+  <div class="panel-button">
+    <button mat-icon-button
+            (click)="closePanel()">
+      <mat-icon [svgIcon]="icons.ChevronDown"></mat-icon>
+    </button>
+
+    <button mat-icon-button
+            (click)="openCoffeeDialog()">
+      <mat-icon [svgIcon]="icons.Coffee"></mat-icon>
+    </button>
+  </div>
+
+  <div class="panel-space">
+    <!--    <script type="application/javascript"-->
+    <!--            data-idzone="4509002"-->
+    <!--            src="https://a.exdynsrv.com/nativeads-v2.js">-->
+    <!--    </script>-->
+
+    <script type="application/javascript" data-idzone="4510312" src="https://a.exdynsrv.com/nativeads-v2.js"></script>
+
+    <img src="https://picsum.photos/300/300" />
+  </div>
+
+</div>
