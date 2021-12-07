@@ -1,10 +1,14 @@
 <h1 mat-dialog-title>Do you want to support this?</h1>
 
 <div mat-dialog-content class="layout">
-  <span class="credits-explained">
-    <p>Does this tool make your kerbals' lives easier, do you like using it and want to support me making this better?</p>
+  <div class="support-explained">
+    <p>
+      Does this tool make your kerbals' lives easier, do you like using it and want to support me making this better?
+    </p>
 
     <p>You can buy me a coffee with the big coffee button link below</p>
+
+    <p class="text accent">Use the same email address at buymeacoffee to automate the supporter process</p>
 
     <p>
       <a href="https://www.buymeacoffee.com/Blaarkies"
@@ -17,7 +21,22 @@
     </p>
 
     <p>Thanks either way, I appreciate your visit</p>
-  </span>
+  </div>
+
+  <div *ngIf="didClickLink" [@fade] class="after-click">
+    <p class="text warn"
+       [matTooltip]="'We will use your buymeacoffee email address to get in touch with you if any problems persist'">
+      If premium features do not show up yet, please try to sign out and sign back in again
+    </p>
+
+    <div class="text primary">Premium accounts enjoy premium features</div>
+    <ul class="premium-list text indent-1 primary">
+      <li>Access multiple save games</li>
+      <li>Import/export save games</li>
+      <li>Load save games from different computers/tablets/phones</li>
+      <li>No ads</li>
+    </ul>
+  </div>
 </div>
 
 <div mat-dialog-actions>

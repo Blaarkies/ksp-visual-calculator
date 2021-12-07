@@ -1,10 +1,13 @@
-<div [@height]="isOpen" *ngIf="isOpen" class="stack panel-layout"
-     [matTooltip]="'No ads are shown to Buy Me a Coffee supporters'"
+<div [@height]="isOpen"
+     class="stack panel-layout"
+     [class.hide-borders]="!isOpen"
+     [class.display-panel]="initialized"
+     [matTooltip]="'\'Buy Me a Coffee\' supporters help to keep this app in orbit'"
      [matTooltipClass]="'tooltip-base-panel'">
 
-  <div class="panel-button">
+  <div class="panel-button" *ngIf="isOpen">
     <button mat-icon-button
-            (click)="closePanel()">
+            (click)="buttonClosePanel()">
       <mat-icon [svgIcon]="icons.ChevronDown"></mat-icon>
     </button>
 
@@ -14,15 +17,15 @@
     </button>
   </div>
 
-  <div class="panel-space">
-    <!--    <script type="application/javascript"-->
-    <!--            data-idzone="4509002"-->
-    <!--            src="https://a.exdynsrv.com/nativeads-v2.js">-->
-    <!--    </script>-->
+  <div class="panel-space" id="placementSpace">
 
-    <script type="application/javascript" data-idzone="4510312" src="https://a.exdynsrv.com/nativeads-v2.js"></script>
+    <div *ngIf="nothingToDisplay" class="need-support-message">
+      <h3>This website needs your support</h3>
 
-    <img src="https://picsum.photos/300/300" />
+      <div>Please consider disabling ad blockers, or supporting on</div>
+      <a href="https://www.buymeacoffee.com/Blaarkies">Buy Me a Coffee</a>
+      <div>to remove all ads and unlock premium features.</div>
+    </div>
   </div>
 
 </div>

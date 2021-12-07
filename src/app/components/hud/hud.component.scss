@@ -129,6 +129,9 @@
 .base {
   grid-area: base;
   z-index: 1;
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+  place-self: end end;
 }
 //.clippy {grid-area: clippy}
 
@@ -170,7 +173,12 @@
     justify-self: end;
 
     display: flex;
+    align-items: flex-end;
     gap: 10px;
+  }
+
+  .base {
+    place-self: end start;
   }
 }
 

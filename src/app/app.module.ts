@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { BrowserModule, DomSanitizer, HammerModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -91,6 +91,7 @@ import { UploadImageDialogComponent } from './overlays/upload-image-dialog/uploa
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { MatStepperModule } from '@angular/material/stepper';
 import { BasePanelComponent } from './components/base-panel/base-panel.component';
+import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
   declarations: [
@@ -187,6 +188,8 @@ import { BasePanelComponent } from './components/base-panel/base-panel.component
     OverlayModule,
     ImageCropperModule,
     MatStepperModule,
+    HammerModule,
+    PortalModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

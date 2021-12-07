@@ -143,7 +143,11 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         }),
         finalize(() => this.signingInWithEmail$.next(false)),
         takeUntil(this.destroy$))
-      .subscribe(credential => this.snackBar.open(`Signed in with "${credential.user.email}"`));
+      .subscribe(credential => {
+        this.snackBar.open(`Signed in with "${credential.user.email}"`);
+        this.controlEmail.reset();
+        this.controlPassword.reset();
+      });
   }
 
   private setErrorMessageUntilInput(message: string) {

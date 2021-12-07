@@ -128,6 +128,8 @@ export class TravelService {
   }
 
   updatePreferences(newPreferences: CheckpointPreferences) {
+    let preferredAerobrakingChanged =
+      newPreferences.aerobraking !== this.setupService.checkpointPreferences$.value.aerobraking;
     let preferredConditionChanged =
       newPreferences.condition !== this.setupService.checkpointPreferences$.value.condition;
 
@@ -136,7 +138,9 @@ export class TravelService {
       return;
     }
 
-    this.checkpoints$.value.forEach(({node}) => node.aerobraking = newPreferences.aerobraking);
+    if (preferredAerobrakingChanged) {
+      this.checkpoints$.value.forEach(({node}) => node.aerobraking = newPreferences.aerobraking);
+    }
 
     if (preferredConditionChanged) {
       this.checkpoints$.value.forEach(({node}) => {

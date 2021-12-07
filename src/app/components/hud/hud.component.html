@@ -6,7 +6,7 @@
   <ng-container *ngTemplateOutlet="zoom"></ng-container>
   <ng-container *ngTemplateOutlet="focus"></ng-container>
   <ng-container *ngTemplateOutlet="dv"></ng-container>
-  <ng-container *ngTemplateOutlet="base"></ng-container>
+  <ng-template [cdkPortalOutlet]="domPortal"></ng-template>
 
   <div class="fab-buttons">
     <cp-action-fab color="green"
@@ -57,7 +57,7 @@
     <ng-container *ngTemplateOutlet="zoom"></ng-container>
     <ng-container *ngTemplateOutlet="focus"></ng-container>
     <ng-container *ngTemplateOutlet="dv"></ng-container>
-    <ng-container *ngTemplateOutlet="base"></ng-container>
+    <ng-template [cdkPortalOutlet]="domPortal"></ng-template>
 
     <cp-action-panel class="menu-context"
                      id="context-panel"
@@ -121,6 +121,6 @@
   </cp-maneuver-sequence-panel>
 </ng-template>
 
-<ng-template #base>
-  <cp-base-panel class="base"></cp-base-panel>
-</ng-template>
+<div #baseContent class="base">
+  <cp-base-panel></cp-base-panel>
+</div>
