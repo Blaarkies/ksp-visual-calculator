@@ -6,8 +6,9 @@ import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaFreeText } from '../../common/domain/input-fields/control-meta-free-text';
 import { AnalyticsService } from '../../services/analytics.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { finalize, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
+import { HttpClient } from '@angular/common/http';
+import { CustomAnimation } from '../../common/domain/custom-animation';
 
 export class FeedbackSubmissionForm {
 
@@ -24,6 +25,7 @@ export class FeedbackSubmissionForm {
   templateUrl: './feedback-dialog.component.html',
   styleUrls: ['./feedback-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  animations: [CustomAnimation.height],
 })
 export class FeedbackDialogComponent extends WithDestroy() {
 
@@ -47,35 +49,49 @@ export class FeedbackDialogComponent extends WithDestroy() {
   inputFieldsList = Object.values(this.inputFields);
 
   form = new FormArray(this.inputFieldsList.map(field => field.control));
-  isTracking = this.analyticsService.isTracking;
 
-  readonly messageCannotSubmit = 'Cannot submit feedback while Anonymous Usage Tracking is disabled';
+  feedbackState: 'nothing' | 'waiting' | 'success' | 'failed' = 'nothing';
 
   constructor(private dialogRef: MatDialogRef<FeedbackDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any,
               private analyticsService: AnalyticsService,
-              snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private http: HttpClient) {
     super();
-
-    if (!this.analyticsService.isTracking) {
-      snackBar.open(this.messageCannotSubmit, 'Enable', {duration: 60e3})
-        .onAction()
-        .pipe(
-          finalize(() => snackBar.dismiss()),
-          takeUntil(dialogRef.afterClosed()),
-          takeUntil(this.destroy$))
-        .subscribe(() => {
-          this.analyticsService.setActive(true);
-          this.isTracking = this.analyticsService.isTracking;
-        });
-    }
   }
 
-  submitFeedback() {
+  async submitFeedback() {
     let feedbackForm = new FeedbackSubmissionForm(
       this.inputFields.name.control.value,
       this.inputFields.contact.control.value,
       this.inputFields.feedback.control.value);
-    this.dialogRef.close(feedbackForm.feedback ? feedbackForm : null);
+
+    this.feedbackState = 'waiting';
+    let success = await this.sendFeedback(feedbackForm);
+    this.feedbackState = success === true ? 'success' : 'failed';
+
+    if (success === true) {
+      this.snackBar.open('Feedback has been saved');
+      this.form.reset();
+    } else {
+      this.snackBar.open('Could not save feedback');
+    }
+  }
+
+  /**
+   * Calls functions/src/admin **captureFeedback** to save user feedback into firestore.
+   * @param feedback Object
+   */
+  private async sendFeedback(feedback: FeedbackSubmissionForm): Promise<any> {
+    let projectId = 'ksp-commnet-planner';
+    let endpoint = 'captureFeedback';
+
+    let result = await this.http
+      .post(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`,
+        {...feedback})
+      .toPromise()
+      .catch(error => error.status === 200 ? true : error);
+
+    return result;
   }
 }

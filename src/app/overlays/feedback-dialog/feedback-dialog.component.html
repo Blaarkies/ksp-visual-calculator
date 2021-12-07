@@ -2,31 +2,31 @@
 
 <div mat-dialog-content class="feedback-layout">
   <p>
-    Thank you for taking the time to provide feedback on this application. This is appreciated and very helpful to me.
+    Thank you for taking the time to provide feedback on this application.
   </p>
 
-  <p>Please let me know what you liked about KSP Visual Calculator, what features were most useful, and any ideas for
-    features I should add to future development.</p>
+  <p>Please let me know what you like about KSP Visual Calculator, what features are most useful, or any ideas for
+    features to add to future development.</p>
 
   <p>Bugs, issues, and feature requests are consolidated at the
-    <a href="https://github.com/Blaarkies/ksp-commnet-planner/issues">GitHub repo</a> if you want to take a look
-    at what is already there.</p>
+    <a href="https://github.com/Blaarkies/ksp-commnet-planner/issues">GitHub repo</a>
+    if you want to take a look at what is already there.
+  </p>
 
   <p>Or you can simply submit the following feedback form</p>
 
   <cp-input-field-list [inputFields]="inputFieldsList"></cp-input-field-list>
 </div>
 
-<div mat-dialog-actions>
+<div mat-dialog-actions class="feedback-actions-layout">
+  <mat-progress-bar class="feedback-progress-bar" mode="indeterminate" [@height] *ngIf="feedbackState === 'waiting'"></mat-progress-bar>
+
   <button mat-button [mat-dialog-close]>Cancel</button>
 
-  <div [matTooltip]="messageCannotSubmit"
-       [matTooltipDisabled]="isTracking">
-    <button color="primary"
-            mat-stroked-button
-            [disabled]="form.invalid || !isTracking"
-            (click)="submitFeedback()">
-      Submit
-    </button>
-  </div>
+  <button color="primary"
+          mat-stroked-button
+          [disabled]="form.invalid || feedbackState === 'waiting'"
+          (click)="submitFeedback()">
+    Submit
+  </button>
 </div>
