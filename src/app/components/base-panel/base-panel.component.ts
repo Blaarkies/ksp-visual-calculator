@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'cp-base-panel',
@@ -47,6 +48,10 @@ export class BasePanelComponent extends WithDestroy() {
   }
 
   closePanel(delay: number = 90e3) {
+    if (!environment.production) {
+      return;
+    }
+
     this.moveElement();
     this.isOpen = false;
     this.unsubscribePanel$.next();

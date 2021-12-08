@@ -1,23 +1,18 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormArray, FormControl, Validators } from '@angular/forms';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaFreeText } from '../../common/domain/input-fields/control-meta-free-text';
-import { AnalyticsService } from '../../services/analytics.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
 import { HttpClient } from '@angular/common/http';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 
 export class FeedbackSubmissionForm {
-
-  constructor(
-    public name: string,
-    public contact: string,
-    public feedback: string) {
-  }
-
+  name: string;
+  contact: string;
+  feedback: string;
 }
 
 @Component({
@@ -52,19 +47,18 @@ export class FeedbackDialogComponent extends WithDestroy() {
 
   feedbackState: 'nothing' | 'waiting' | 'success' | 'failed' = 'nothing';
 
-  constructor(private dialogRef: MatDialogRef<FeedbackDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-              private analyticsService: AnalyticsService,
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
               private snackBar: MatSnackBar,
               private http: HttpClient) {
     super();
   }
 
   async submitFeedback() {
-    let feedbackForm = new FeedbackSubmissionForm(
-      this.inputFields.name.control.value,
-      this.inputFields.contact.control.value,
-      this.inputFields.feedback.control.value);
+    let feedbackForm: FeedbackSubmissionForm = {
+      name: this.inputFields.name.control.value,
+      contact: this.inputFields.contact.control.value,
+      feedback: this.inputFields.feedback.control.value,
+    };
 
     this.feedbackState = 'waiting';
     let success = await this.sendFeedback(feedbackForm);

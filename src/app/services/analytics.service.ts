@@ -103,17 +103,15 @@ export class AnalyticsService {
     return !object // don't traverse null values
       ? object
       : Object.entries(object)
-        .reduce((sum, [key, value]) => {
-          return (typeof value === 'object')
-            ? {
-              ...sum,
-              ...this.flattenObject(value, key),
-            }
-            : {
-              ...sum,
-              [keyPrefix + key]: value,
-            };
-        }, {});
+        .reduce((sum, [key, value]) => (typeof value === 'object')
+          ? {
+            ...sum,
+            ...this.flattenObject(value, key),
+          }
+          : {
+            ...sum,
+            [keyPrefix + key]: value,
+          }, {});
   }
 
   throttleEvent(eventName: AnalyticsEventName, details: any, throttleDuration: number = 60e3) {

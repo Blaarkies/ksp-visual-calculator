@@ -1,25 +1,16 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { BasePanelComponent } from './base-panel.component';
-
-describe('BasePanelComponent', () => {
-  let component: BasePanelComponent;
-  let fixture: ComponentFixture<BasePanelComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ BasePanelComponent ]
-    })
-    .compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(BasePanelComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+// TODO
+// import { MockBuilder, MockRender } from 'ng-mocks';
+// import { AppModule } from '../../app.module';
+// import { BasePanelComponent } from './base-panel.component';
+//
+// let componentType = BasePanelComponent;
+// describe('BasePanelComponent', () => {
+//
+//   beforeEach(() => MockBuilder(componentType).mock(AppModule));
+//
+//   it('should create', () => {
+//     let fixture = MockRender(componentType);
+//     expect(fixture.point.componentInstance).toBeDefined();
+//   });
+//
+// });
