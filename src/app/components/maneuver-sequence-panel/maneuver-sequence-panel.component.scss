@@ -52,6 +52,12 @@
       line-height: unset;
     }
 
+    .error-margin-control {
+      display: grid;
+      grid-template-columns: 0 max-content auto;
+      align-items: center;
+    }
+
     .plane-change-control {
       display: grid;
       grid-template-columns: 0 max-content auto;

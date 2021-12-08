@@ -223,7 +223,7 @@ describe('Draggable class', () => {
       draggable.location.set([0, 0]);
 
       let fixture = MockRender(TestDivComponent);
-      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div');
+      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('*');
 
       spyOn(draggable as any, 'getEventObservable')
         .and.returnValue(of({
@@ -257,7 +257,8 @@ describe('Draggable class', () => {
       draggable.location.set([0, 0]);
 
       let fixture = MockRender(TestDivComponent);
-      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('*');
+      fixture.detectChanges();
+      let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.parentElement.querySelector('*');
 
       spyOn(draggable as any, 'getEventObservable')
         .and.returnValue(new BehaviorSubject({

@@ -227,7 +227,11 @@ export class DeltaVGraph {
 
   getTripDetails(nodeA: CheckpointNode,
                  nodeB: CheckpointNode,
-                 options: { planeChangeFactor?: number, routeType?: DvRouteType } = {}): TripDetails {
+                 options: {
+                   errorMarginFactor?: number,
+                   planeChangeFactor?: number,
+                   routeType?: DvRouteType,
+                 } = {}): TripDetails {
     let graph = options.routeType === DvRouteType.lessDv
       ? this.graphWeighted
       : this.graphWeightless;
@@ -247,7 +251,12 @@ export class DeltaVGraph {
 
         let dvCost = this.getDvCostWithOptions(
           value,
-          {aerobraking, planeChangeFactor: options.planeChangeFactor, endCondition: b.condition});
+          {
+            errorMarginFactor: options.errorMarginFactor,
+            aerobraking,
+            planeChangeFactor: options.planeChangeFactor,
+            endCondition: b.condition,
+          });
         return ({
           startNode: a.name,
           startCondition: a.condition,
@@ -288,14 +297,23 @@ export class DeltaVGraph {
   }
 
   private getDvCostWithOptions(maxDvCost: number,
-                               options: { planeChangeFactor: number; aerobraking: boolean; endCondition: string }) {
+                               options: {
+                                 errorMarginFactor: number,
+                                 planeChangeFactor: number;
+                                 aerobraking: boolean;
+                                 endCondition: string
+                               }) {
+    let dvCost;
+
     if (options.endCondition === TravelCondition.PlaneWith) {
-      return maxDvCost * options.planeChangeFactor;
+      dvCost = maxDvCost * options.planeChangeFactor;
     } else if (options.aerobraking) {
-      return 0;
+      dvCost = 0;
     } else {
-      return maxDvCost;
+      dvCost = maxDvCost;
     }
+
+    return dvCost * options.errorMarginFactor;
   }
 
 }

@@ -13,6 +13,7 @@ class Category {
   static Help = 'help';
   static Camera = 'camera';
   static State = 'state';
+  static Ads = 'Ads';
 }
 
 class Sanitize {

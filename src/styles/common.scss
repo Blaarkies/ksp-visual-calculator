@@ -1,4 +1,13 @@
+.stack {
+  display: grid;
 
+  > * {
+    grid-row: 1/1;
+    grid-column: 1/1;
+  }
+}
+
+/** @deprecated - use .stack instead */
 .overlap-container {
   display: grid;
 

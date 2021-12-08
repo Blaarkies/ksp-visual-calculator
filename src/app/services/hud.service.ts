@@ -152,15 +152,13 @@ export class HudService {
             .subscribe();
         },
       }),
-      new ActionOption('Buy me a Coffee', Icons.Coffee, {
+      new ActionOption('Buy Me a Coffee', Icons.Coffee, {
           action: () => {
-            this.analyticsService.logEvent('Call coffee dialog', {
+            this.analyticsService.logEvent('Call coffee dialog from Information', {
               category: EventLogs.Category.Coffee,
             });
 
-            this.dialog.open(BuyMeACoffeeDialogComponent)
-              .afterClosed()
-              .subscribe();
+            this.dialog.open(BuyMeACoffeeDialogComponent);
           },
         },
         'A platform for supporting the developer'),
@@ -170,15 +168,7 @@ export class HudService {
             category: EventLogs.Category.Feedback,
           });
 
-          this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})
-            .afterClosed()
-            .pipe(
-              filter(ok => ok))
-            .subscribe(details => this.analyticsService.logEvent('User feedback', {
-                category: EventLogs.Category.Feedback,
-                ...details,
-              }),
-            );
+          this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
         },
       }),
     ];

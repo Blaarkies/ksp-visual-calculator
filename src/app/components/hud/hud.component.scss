@@ -3,11 +3,11 @@
 
   display: grid;
   grid-template-columns: max-content max-content auto max-content;
-  grid-template-rows: minmax(200px, max-content) 1fr auto max-content;
+  grid-template-rows: minmax(200px, max-content) auto max-content;
   grid-template-areas:
 'nav          page    zoom info'
 'focus        .       .    dv'
-'menu-context .       .    clippy';
+'menu-context .       .    base';
 
   .zoom {
     max-width: 800px;
@@ -18,12 +18,12 @@
 @media screen and (max-width: 1000px) {
   .hud-layout {
     grid-template-columns: max-content auto max-content;
-    grid-template-rows: max-content max-content 1fr auto max-content;
+    grid-template-rows: max-content max-content auto max-content;
     grid-template-areas:
-'nav          page  info'
+'nav          page     info'
 'zoom         zoom     zoom'
 'focus        .        dv'
-'menu-context .        clippy';
+'menu-context .        base';
 
     .zoom {
       max-width: 600px;
@@ -100,7 +100,11 @@
   }
 }
 
-.information {grid-area: info;}
+.information {
+  grid-area: info;
+  width: max-content;
+  justify-self: end;
+}
 
 .zoom {
   grid-area: zoom;
@@ -117,8 +121,18 @@
   justify-self: end;
 }
 
-.menu-context {grid-area: menu-context;}
+.menu-context {
+  grid-area: menu-context;
+  align-self: end;
+}
 
+.base {
+  grid-area: base;
+  z-index: 1;
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+  place-self: end end;
+}
 //.clippy {grid-area: clippy}
 
 .profile-icon {
@@ -136,7 +150,7 @@
 'page    profile'
 'zoom    zoom'
 'focus   dv'
-'clippy  fab-buttons';
+'base    fab-buttons';
 
   .page-context {
     grid-area: page;
@@ -159,7 +173,12 @@
     justify-self: end;
 
     display: flex;
+    align-items: flex-end;
     gap: 10px;
+  }
+
+  .base {
+    place-self: end start;
   }
 }
 

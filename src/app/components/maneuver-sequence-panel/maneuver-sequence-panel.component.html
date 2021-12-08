@@ -10,6 +10,19 @@
   <div [@height]="isOptionsOpen" class="options text-white">
     <div class="text-white">Preferences</div>
 
+    <div class="error-margin-control">
+      <cp-input-number #errorMargin class="hidden" style="transform: translateY(-1em);"
+                       [formControl]="errorMarginControl"
+                       [controlMeta]="errorMarginControlMeta"></cp-input-number>
+
+      <button mat-button
+              class="chip-button"
+              (click)="errorMargin.focus()">
+        {{errorMarginControl.value}}%
+      </button>
+      <div class="text-white">Margin of Error</div>
+    </div>
+
     <cp-input-toggle label="Aerobraking" [formControl]="aerobrakeControl"></cp-input-toggle>
 
     <div class="plane-change-control">

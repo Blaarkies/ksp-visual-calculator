@@ -12,6 +12,22 @@
     text-align: end;
   }
 
+  &.indent-1 {
+    padding-left: 1em;
+  }
+
+  &.primary {
+    color: var(--color-text-primary);
+  }
+
+  &.accent {
+    color: var(--color-text-accent);
+  }
+
+  &.warn {
+    color: var(--color-text-warn);
+  }
+
 }
 
 .text-white {

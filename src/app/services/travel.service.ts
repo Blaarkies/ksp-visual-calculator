@@ -128,19 +128,28 @@ export class TravelService {
   }
 
   updatePreferences(newPreferences: CheckpointPreferences) {
-    this.setupService.updateCheckpointPreferences(newPreferences);
+    let preferredAerobrakingChanged =
+      newPreferences.aerobraking !== this.setupService.checkpointPreferences$.value.aerobraking;
+    let preferredConditionChanged =
+      newPreferences.condition !== this.setupService.checkpointPreferences$.value.condition;
 
+    this.setupService.updateCheckpointPreferences(newPreferences);
     if (!this.checkpoints$.value.length) {
       return;
     }
 
-    this.checkpoints$.value.forEach(({node}) => {
-      node.aerobraking = newPreferences.aerobraking;
-      let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
-      node.condition = availableConditions.find(c =>
-          c === this.setupService.checkpointPreferences$.value.condition)?.toString()
-        ?? node.condition;
-    });
+    if (preferredAerobrakingChanged) {
+      this.checkpoints$.value.forEach(({node}) => node.aerobraking = newPreferences.aerobraking);
+    }
+
+    if (preferredConditionChanged) {
+      this.checkpoints$.value.forEach(({node}) => {
+        let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
+        node.condition = availableConditions.find(c =>
+            c === this.setupService.checkpointPreferences$.value.condition)?.toString()
+          ?? node.condition;
+      });
+    }
 
     this.updateCheckpoints(this.checkpoints$.value);
 
@@ -177,6 +186,7 @@ export class TravelService {
           a,
           b,
           {
+            errorMarginFactor: 1 + checkpointPreferences.errorMargin * .01,
             planeChangeFactor: checkpointPreferences.planeChangeCost * .01,
             routeType: checkpointPreferences.routeType,
           });

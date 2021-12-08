@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { HudService } from '../../services/hud.service';
@@ -22,6 +22,7 @@ import { UsableRoutes } from '../../usable-routes';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { DomPortal } from '@angular/cdk/portal';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -42,7 +43,7 @@ export class ActionGroupType {
   styleUrls: ['./hud.component.scss'],
   animations: [CustomAnimation.fade],
 })
-export class HudComponent extends WithDestroy() {
+export class HudComponent extends WithDestroy() implements AfterViewInit {
 
   navigationOptions = this.hudService.navigationOptions;
   infoOptions = this.hudService.infoOptions;
@@ -61,6 +62,9 @@ export class HudComponent extends WithDestroy() {
   scaleToShowMoons = CameraService.scaleToShowMoons;
   pageContextInfo: { icon, tooltip };
   hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
+
+  @ViewChild('baseContent') baseContent: ElementRef<HTMLElement>;
+  domPortal: DomPortal;
 
   get scale(): number {
     return this.cameraService.scale;
@@ -95,6 +99,10 @@ export class HudComponent extends WithDestroy() {
     hudService.pageContextChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe(context => this.pageContextInfo = contextVisualMap[context]);
+  }
+
+  ngAfterViewInit() {
+    this.domPortal = new DomPortal(this.baseContent);
   }
 
   openFaq() {
@@ -149,7 +157,7 @@ export class HudComponent extends WithDestroy() {
   }
 
   openBuyMeACoffee() {
-    this.analyticsService.logEvent('Call coffee dialog', {
+    this.analyticsService.logEvent('Call coffee dialog from hud', {
       category: EventLogs.Category.Coffee,
     });
 

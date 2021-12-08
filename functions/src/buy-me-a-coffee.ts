@@ -1,16 +1,11 @@
 import * as cors from 'cors';
 import * as functions from 'firebase-functions';
 import axios from 'axios';
-import { initializeApp } from 'firebase-admin';
 import { log } from 'firebase-functions/lib/logger';
+import { db } from './common/singletons';
+import { TableName } from './common/types';
 
-const app = initializeApp();
-const db = app.firestore();
-
-export type TableName = 'users' | 'states';
-
-/** Function is replaced by webhook.
- * Can be used for manual validation by the user (or if user does not have an account yet, but already supported)
+/** Used for manual validation by the user (or if user does not have an account yet, but already supported)
  */
 export const isEmailACustomer = functions.https.onRequest(async (req, res) => {
   cors()(req, res, async () => {
@@ -28,6 +23,10 @@ export const isEmailACustomer = functions.https.onRequest(async (req, res) => {
   });
 });
 
+/**
+ * Webhook called by BuyMeACoffee when a new purchase was made. This in turn will immediately update
+ * the user's KSP Visual Calculator account to premium status.
+ */
 export const webhookNewSupporter = functions.https.onRequest(async (req, res) => {
   cors()(req, res, async () => {
     let apiKey = functions.config().buymeacoffeeapi.id;

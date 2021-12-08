@@ -8,13 +8,22 @@
     gap: 20px 40px;
     grid-template-columns: auto auto;
 
-    cp-input-text-area {
+    div:last-child {
       grid-column: 1/3;
 
       mat-form-field {
         width: 100%;
       }
     }
+  }
+}
+
+.feedback-actions-layout {
+  position: relative;
+
+  .feedback-progress-bar {
+    position: absolute;
+    top: 2px;
   }
 }
 
