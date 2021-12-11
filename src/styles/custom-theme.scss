@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import 'node_modules/@angular/material/theming';
 
 //$a: #BADA55;
@@ -36,13 +37,13 @@ $cp-kerbal: (
 );
 
 
-@include mat-core();
+@include mat.core();
 
-$cp-primary: mat-palette($cp-kerbal);
-$cp-accent: mat-palette($mat-amber, A700, 300, 900);
-$cp-warn: mat-palette($mat-deep-orange);
+$cp-primary: mat.define-palette($cp-kerbal);
+$cp-accent: mat.define-palette(mat.$amber-palette, A700, 300, 900);
+$cp-warn: mat.define-palette(mat.$deep-orange-palette);
 
-$cp-theme: mat-light-theme((
+$cp-theme: mat.define-light-theme((
   color: (
     primary: $cp-primary,
     accent: $cp-accent,
@@ -50,7 +51,7 @@ $cp-theme: mat-light-theme((
   )
 ));
 
-@include angular-material-theme($cp-theme);
+@include mat.all-component-themes($cp-theme);
 
 :root {
   --green: 119, 184, 46;
