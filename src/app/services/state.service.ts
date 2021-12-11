@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { UsableRoutes } from '../usable-routes';
 import { SetupService } from './setup.service';
 import { StateSignalCheck } from './json-interfaces/state-signal-check';
-import { version as APP_VERSION } from '../../../package.json';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { StateCraft } from './json-interfaces/state-craft';
 import { SpaceObjectContainerService } from './space-object-container.service';
@@ -35,6 +34,7 @@ import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 import { GlobalStyleClass } from '../common/global-style-class';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -81,7 +81,7 @@ export class StateService {
       name: this.name || Uid.new,
       timestamp: new Date(),
       context: this.context,
-      version: APP_VERSION.split('.').map(t => t.toNumber()),
+      version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
       celestialBodies: this.spaceObjectContainerService.celestialBodies$.value
         .map(b => b.toJson()) as StateSpaceObject[],
     };
