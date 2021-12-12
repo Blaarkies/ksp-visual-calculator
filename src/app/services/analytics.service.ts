@@ -7,7 +7,7 @@ import { getApp } from '@angular/fire/app';
 import { Analytics, initializeAnalytics, logEvent, setAnalyticsCollectionEnabled } from '@angular/fire/analytics';
 
 let localStorageKeys = {
-  doNotTrack: 'ksp-commnet-planner-user-opted-out-of-tracking',
+  doNotTrack: 'ksp-visual-calculator-user-opted-out-of-tracking',
 };
 
 class ThrottledEvents {

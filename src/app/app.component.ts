@@ -10,11 +10,13 @@ import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
 import { GlobalStyleClass } from './common/global-style-class';
 
+let localStorageKeyFirstVisitDeprecated = 'ksp-visual-calculator-first-visit';
+let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';
+
 @Component({
   selector: 'cp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent extends WithDestroy() implements OnInit {
 
@@ -36,8 +38,8 @@ export class AppComponent extends WithDestroy() implements OnInit {
   }
 
   ngOnInit() {
-    if (!localStorage.getItem('ksp-commnet-planner-first-visit')) {
-      localStorage.setItem('ksp-commnet-planner-first-visit', true.toString());
+    if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
+      localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
       this.triggerFirstVisitDialog();
     }
   }
@@ -64,7 +66,7 @@ export class AppComponent extends WithDestroy() implements OnInit {
         filter(ok => ok),
         takeUntil(this.destroy$))
       .subscribe(() => {
-        localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString());
+        localStorage.setItem(localStorageKeyTutorialViewed, true.toString());
         this.tutorialService.startFullTutorial(this.hudService.pageContext);
       });
   }

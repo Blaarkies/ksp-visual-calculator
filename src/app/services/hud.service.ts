@@ -30,6 +30,12 @@ import { TutorialService } from './tutorial.service';
 import { GlobalStyleClass } from '../common/global-style-class';
 import { EventLogs } from './event-logs';
 
+let storageKeys = {
+  firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
+  tutorialViewed: 'ksp-visual-calculator-tutorial-viewed',
+  privacyViewed: 'ksp-visual-calculator-privacy-viewed',
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -126,8 +132,8 @@ export class HudService {
           },
         },
         undefined,
-        !localStorage.getItem('ksp-commnet-planner-tutorial-viewed'),
-        () => localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString())),
+        !localStorage.getItem(storageKeys.tutorialViewed),
+        () => localStorage.setItem(storageKeys.tutorialViewed, true.toString())),
       new ActionOption('Privacy', Icons.Analytics, {
           action: () => {
             this.analyticsService.logEvent('Call privacy dialog', {
@@ -138,8 +144,8 @@ export class HudService {
           },
         },
         'View privacy statement and settings',
-        !localStorage.getItem('ksp-commnet-planner-privacy-viewed'),
-        () => localStorage.setItem('ksp-commnet-planner-privacy-viewed', true.toString())),
+        !localStorage.getItem(storageKeys.privacyViewed),
+        () => localStorage.setItem(storageKeys.privacyViewed, true.toString())),
       new ActionOption('Credits', Icons.Credits, {
         action: () => {
           this.analyticsService.logEvent('Call Credits dialog', {

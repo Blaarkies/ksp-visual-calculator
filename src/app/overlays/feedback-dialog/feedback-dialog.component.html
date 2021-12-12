@@ -9,7 +9,7 @@
     features to add to future development.</p>
 
   <p>Bugs, issues, and feature requests are consolidated at the
-    <a href="https://github.com/Blaarkies/ksp-commnet-planner/issues">GitHub repo</a>
+    <a href="https://github.com/Blaarkies/ksp-visual-calculator/issues">GitHub repo</a>
     if you want to take a look at what is already there.
   </p>
 
@@ -19,7 +19,11 @@
 </div>
 
 <div mat-dialog-actions class="feedback-actions-layout">
-  <mat-progress-bar class="feedback-progress-bar" mode="indeterminate" [@height] *ngIf="feedbackState === 'waiting'"></mat-progress-bar>
+  <mat-progress-bar class="feedback-progress-bar"
+                    mode="indeterminate"
+                    [@height]
+                    *ngIf="feedbackState === 'waiting'">
+  </mat-progress-bar>
 
   <button mat-button [mat-dialog-close]>Cancel</button>
 
