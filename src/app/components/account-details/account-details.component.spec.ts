@@ -4,7 +4,7 @@ import { AccountDetailsComponent } from './account-details.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { of } from 'rxjs';
-import { User } from '../../services/data.service';
+import { UserData } from '../../services/data.service';
 import { fakeAsync } from '@angular/core/testing';
 import { ineeda } from 'ineeda';
 import { InputFieldComponent } from '../controls/input-field/input-field.component';
@@ -28,7 +28,7 @@ describe('AccountDetailsComponent', () => {
 
   describe('authService.user$ signed in', () => {
 
-    let mockUser: User = {uid: 'a', email: 'email', displayName: 'name', photoURL: 'http me', isCustomer: false};
+    let mockUser: UserData = {uid: 'a', email: 'email', displayName: 'name', photoURL: 'http me', isCustomer: false};
 
     it('show user details', async () => {
       MockInstance(AuthService, 'user$', of(mockUser));

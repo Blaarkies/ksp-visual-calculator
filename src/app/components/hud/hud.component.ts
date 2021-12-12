@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { HudService } from '../../services/hud.service';
@@ -76,7 +76,8 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
               private dialog: MatDialog,
               private cameraService: CameraService,
               breakpointObserver: BreakpointObserver,
-              private bottomSheet: MatBottomSheet) {
+              private bottomSheet: MatBottomSheet,
+              private cdr: ChangeDetectorRef) {
     super();
 
     this.isHandset$ = breakpointObserver.observe([
@@ -103,6 +104,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
 
   ngAfterViewInit() {
     this.domPortal = new DomPortal(this.baseContent);
+    this.cdr.detectChanges();
   }
 
   openFaq() {
@@ -161,10 +163,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
       category: EventLogs.Category.Coffee,
     });
 
-    this.dialog.open(BuyMeACoffeeDialogComponent)
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.dialog.open(BuyMeACoffeeDialogComponent);
   }
 
 }

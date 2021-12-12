@@ -55,7 +55,7 @@
                 [matTooltip]="editingDetails$.value ? 'Click to save changes' : ''"
                 [matTooltipDisabled]="!editingDetails$.value"
                 (click)="editDetails(user)">
-          {{editingDetails$.value ? 'Save Details' : 'Edit Details'}}
+          {{editingDetails$.value ? 'Finish Editing' : 'Edit Details'}}
           <mat-progress-bar [@fade] *ngIf="editingDetails$ | async" mode="buffer"></mat-progress-bar>
         </button>
 

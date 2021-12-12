@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import firebase from 'firebase/app';
-import 'firebase/analytics';
 import { AnalyticsEventName, EventLogs } from './event-logs';
-import Analytics = firebase.analytics.Analytics;
 import { Subject } from 'rxjs';
 import { throttleTime } from 'rxjs/operators';
+import { getApp } from '@angular/fire/app';
+import { Analytics, initializeAnalytics, logEvent, setAnalyticsCollectionEnabled } from '@angular/fire/analytics';
 
 let localStorageKeys = {
   doNotTrack: 'ksp-commnet-planner-user-opted-out-of-tracking',
@@ -45,18 +44,13 @@ class ThrottledEvents {
 export class AnalyticsService {
 
   isTracking: boolean;
-  private analytics: Analytics;
+  private analyticsInstance: Analytics;
   private throttledEvents = new ThrottledEvents(this);
 
   constructor() {
     let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
     if (optedOut?.toBoolean()) {
       this.isTracking = false;
-      this.analytics = {
-        isMockAnalytics: true,
-        setAnalyticsCollectionEnabled: () => void 0,
-        logEvent: (eventName, eventParams) => void 0,
-      } as any as Analytics;
       return;
     }
 
@@ -64,23 +58,19 @@ export class AnalyticsService {
   }
 
   private setupAnalytics() {
-    firebase.apps.length
-      ? firebase.app()
-      : firebase.initializeApp(environment.firebase);
-
-    this.analytics = firebase.analytics();
+    this.analyticsInstance = initializeAnalytics(getApp());
     this.isTracking = true;
   }
 
   setActive(isTracking: boolean) {
-    if ((this.analytics as any).isMockAnalytics) {
+    if (this.isTracking === false) {
       this.setupAnalytics();
     }
 
     this.logEvent(`Set tracking ${isTracking.toString('on')}`, {category: EventLogs.Category.Privacy});
     setTimeout(() => {
       // Wait for previous event to finish sending before turning off
-      this.analytics.setAnalyticsCollectionEnabled(isTracking);
+      setAnalyticsCollectionEnabled(this.analyticsInstance, isTracking);
       this.isTracking = isTracking;
       localStorage.setItem(localStorageKeys.doNotTrack, (!isTracking).toString());
     });
@@ -92,7 +82,7 @@ export class AnalyticsService {
       environment: environment.production ? 'prod' : 'dev',
     };
     newDetails.environment === 'prod'
-      ? this.analytics.logEvent(name, newDetails)
+      ? logEvent(this.analyticsInstance, name, newDetails)
       // tslint:disable-next-line:no-console
       : console.info('%c analytics.logEvent()', 'color: #9ff',
         name, newDetails);
@@ -114,7 +104,7 @@ export class AnalyticsService {
           }, {});
   }
 
-  throttleEvent(eventName: AnalyticsEventName, details: any, throttleDuration: number = 60e3) {
+  logEventThrottled(eventName: AnalyticsEventName, details: any, throttleDuration: number = 60e3) {
     this.throttledEvents.addEvent(eventName, details, throttleDuration);
   }
 

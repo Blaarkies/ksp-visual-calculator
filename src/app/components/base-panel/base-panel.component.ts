@@ -72,10 +72,7 @@ export class BasePanelComponent extends WithDestroy() {
   }
 
   openCoffeeDialog() {
-    this.dialog.open(BuyMeACoffeeDialogComponent)
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.dialog.open(BuyMeACoffeeDialogComponent);
 
     this.analyticsService.logEvent('Call coffee dialog from ad',
       {category: EventLogs.Category.Coffee});

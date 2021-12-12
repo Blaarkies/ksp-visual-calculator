@@ -89,6 +89,7 @@ export class HudService {
         Icons.Relay,
         {route: UsableRoutes.SignalCheck},
         'Page that calculates CommNet ranges'),
+      new ActionOption('', '', {divider: true}),
       new ActionOption(
         'Source Code - GitHub',
         Icons.SourceCode,
@@ -133,9 +134,7 @@ export class HudService {
               category: EventLogs.Category.Privacy,
             });
 
-            this.dialog.open(PrivacyDialogComponent)
-              .afterClosed()
-              .subscribe();
+            this.dialog.open(PrivacyDialogComponent);
           },
         },
         'View privacy statement and settings',
@@ -147,9 +146,7 @@ export class HudService {
             category: EventLogs.Category.Credits,
           });
 
-          this.dialog.open(CreditsDialogComponent)
-            .afterClosed()
-            .subscribe();
+          this.dialog.open(CreditsDialogComponent);
         },
       }),
       new ActionOption('Buy Me a Coffee', Icons.Coffee, {
@@ -178,7 +175,7 @@ export class HudService {
     let options = [
       new ActionOption('New Craft', Icons.Craft, {
         action: () => {
-          this.analyticsService.throttleEvent(EventLogs.Name.CallNewCraftDialog, {
+          this.analyticsService.logEventThrottled(EventLogs.Name.CallNewCraftDialog, {
             category: EventLogs.Category.Craft,
           });
 

@@ -29,10 +29,7 @@ export class UserProfileComponent extends WithDestroy() {
       category: EventLogs.Category.Account,
     });
 
-    this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly})
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
   }
 
 }

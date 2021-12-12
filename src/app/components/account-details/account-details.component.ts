@@ -7,7 +7,7 @@ import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import {
-  catchError,
+  catchError, debounceTime,
   filter,
   finalize,
   mapTo,
@@ -17,11 +17,11 @@ import {
   take,
   takeUntil,
   tap,
-  timeout
+  timeout, withLatestFrom
 } from 'rxjs/operators';
 import { AuthErrorCode } from './auth-error-code';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { User } from '../../services/data.service';
+import { UserData } from '../../services/data.service';
 import { InputFieldComponent } from '../controls/input-field/input-field.component';
 import { EventLogs } from '../../services/event-logs';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -86,8 +86,21 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
     this.user$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(user => this.nameControl.setValue(user?.displayName));
+      .subscribe(user => this.nameControl.setValue(user?.displayName, {emitEvent: false}));
     this.nameControl.disable();
+
+    this.nameControl.valueChanges
+      .pipe(
+        debounceTime(1000),
+        withLatestFrom(this.user$),
+        switchMap(([newName, user]) => {
+          this.analyticsService.logEventThrottled('Save edit user data via debounce',
+            {category: EventLogs.Category.Account});
+
+          return this.authService.editUserData({...user, displayName: newName});
+        }),
+        takeUntil(this.destroy$))
+      .subscribe();
   }
 
   ngOnDestroy() {
@@ -187,7 +200,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
     this.signingInWithGoogle$.next(false);
   }
 
-  async validateAccount(user: User) {
+  async validateAccount(user: UserData) {
     this.validatingCustomer$.next(true);
     let newUserData = await this.authService.updateUserData(user);
     if (newUserData.isCustomer) {
@@ -205,7 +218,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
     });
   }
 
-  async uploadImage(user: User) {
+  async uploadImage(user: UserData) {
     this.analyticsService.logEvent('Upload image start', {
       category: EventLogs.Category.Account,
     });
@@ -246,7 +259,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
     });
   }
 
-  async editDetails(user: User) {
+  async editDetails(user: UserData) {
     let isEditing = this.editingDetails$.value;
     if (isEditing) {
       this.analyticsService.logEvent('Complete edit user data', {
@@ -258,7 +271,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       });
 
       this.editingDetails$.next(false);
-      this.nameControl.disable();
+      this.nameControl.disable({emitEvent: false});
 
       this.snackBar.open(`Details have been updated`);
     } else {
@@ -266,14 +279,14 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         category: EventLogs.Category.Account,
       });
 
-      this.nameControl.setValue(user.displayName);
+      this.nameControl.setValue(user.displayName, {emitEvent: false});
       this.editingDetails$.next(true);
-      this.nameControl.enable();
+      this.nameControl.enable({emitEvent: false});
       this.fieldDisplayName.focus();
     }
   }
 
-  async deleteAccount(user: User) {
+  async deleteAccount(user: UserData) {
     this.analyticsService.logEvent('Started account deletion', {
       category: EventLogs.Category.Account,
     });

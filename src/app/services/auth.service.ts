@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import firebase from 'firebase/app';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable, of, timer, zip } from 'rxjs';
 import { Router } from '@angular/router';
 import { distinctUntilChanged, filter, map, publishReplay, refCount, switchMap, take, tap } from 'rxjs/operators';
-import { DataService, User } from './data.service';
+import { DataService, UserData } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -12,18 +10,29 @@ import { EventLogs } from './event-logs';
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
-import UserCredential = firebase.auth.UserCredential;
 import { AuthErrorCode } from '../components/account-details/auth-error-code';
 import { GlobalStyleClass } from '../common/global-style-class';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
+  UserCredential,
+} from '@angular/fire/auth';
+import { authState, user } from 'rxfire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
 
-  user$: Observable<User>;
+  user$: Observable<UserData>;
 
-  constructor(private afAuth: AngularFireAuth,
+  constructor(private auth: Auth,
               private router: Router,
               private dataService: DataService,
               private stateService: StateService,
@@ -31,14 +40,14 @@ export class AuthService {
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               private http: HttpClient) {
-    this.user$ = afAuth.authState
+    this.user$ = authState(auth)
       .pipe(
         map(user => user?.uid),
         distinctUntilChanged(),
         tap(uid => this.dataService.updateUserId(uid)),
-        switchMap(uid => uid
-          ? this.dataService.getRef<User>(`users/${uid}`).valueChanges()
-          : of(null)),
+        switchMap(uid => (uid
+          ? this.dataService.getChanges<UserData>(`users/${uid}`)
+          : of(null)) as Observable<UserData>),
         publishReplay(1),
         refCount());
 
@@ -91,8 +100,7 @@ export class AuthService {
   }
 
   async googleSignIn() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    const credential = await this.afAuth.signInWithPopup(provider);
+    const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
     await this.updateDataService(credential);
 
     await this.updateUserData(credential.user);
@@ -100,7 +108,7 @@ export class AuthService {
   }
 
   async emailSignIn(email: string, password: string): Promise<UserCredential> {
-    let credential = await this.afAuth.signInWithEmailAndPassword(email, password);
+    let credential = await signInWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
     await this.updateUserData(credential.user);
@@ -109,7 +117,7 @@ export class AuthService {
   }
 
   async emailSignUp(email: string, password: string): Promise<UserCredential> {
-    let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+    let credential = await createUserWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
     await this.updateUserData(credential.user);
@@ -118,14 +126,14 @@ export class AuthService {
   }
 
   async signOut() {
-    await this.afAuth.signOut();
+    await signOut(this.auth);
     await this.router.navigate(['/']);
     await this.stateService.loadState().pipe(take(1)).toPromise();
     this.stateService.setStateRecord();
   }
 
-  async updateUserData(user: User | firebase.User): Promise<User> {
-    let dbUser = await this.dataService.read<User>('users', user.uid);
+  async updateUserData(user: UserData | User): Promise<UserData> {
+    let dbUser = await this.dataService.read<UserData>('users', user.uid);
     let isCustomer = dbUser?.isCustomer || await this.isCustomer(user.email);
 
     const data = {
@@ -141,7 +149,7 @@ export class AuthService {
     return data;
   }
 
-  async editUserData(user: User | firebase.User): Promise<User> {
+  async editUserData(user: UserData): Promise<UserData> {
     const data = {
       displayName: user.displayName,
       photoURL: user.photoURL,
@@ -149,7 +157,7 @@ export class AuthService {
 
     await this.dataService.write('users', data, {merge: true});
 
-    return user as User;
+    return user as UserData;
   }
 
   async resetPassword(email: string): Promise<void> {
@@ -157,7 +165,7 @@ export class AuthService {
       return;
     }
 
-    return await this.afAuth.sendPasswordResetEmail(email);
+    return await sendPasswordResetEmail(this.auth, email);
   }
 
   private async loadUserLastSaveGame(): Promise<void> {
@@ -210,13 +218,17 @@ export class AuthService {
     return this.dataService.updateUserId(credential.user.uid);
   }
 
+  private async getSignedInUser(): Promise<User> {
+    return user(this.auth).pipe(take(1)).toPromise();
+  }
+
   async reloadUserSignIn(): Promise<void> {
-    let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
+    let signedInUser = await this.getSignedInUser();
     await signedInUser.reload();
   }
 
-  async deleteAccount(user: User): Promise<void> {
-    let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
+  async deleteAccount(user: UserData): Promise<void> {
+    let signedInUser = await this.getSignedInUser();
     await this.dataService.deleteAll('users');
     await this.dataService.deleteAll('states');
     await signedInUser.delete().catch(e => {

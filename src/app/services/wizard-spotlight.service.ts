@@ -126,13 +126,14 @@ export class WizardSpotlightService {
         stepType: stepDetails.stepType,
       } as WizardMessage);
 
-    timer(0).pipe(
-      // dialogs on screen edge have compressed text
-      tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
-      delay(0),
-      // dialog size changed by now, re-check positioning
-      tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
-    ).subscribe();
+    timer(0)
+      .pipe(
+        // dialogs on screen edge have compressed text
+        tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
+        delay(0),
+        // dialog size changed by now, re-check positioning
+        tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)))
+      .subscribe();
 
     return [wizardMarker, wizardMessage].filter(comp => comp);
   }

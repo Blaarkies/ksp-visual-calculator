@@ -49,8 +49,6 @@ import { InputTextAreaComponent } from './components/controls/input-text-area/in
 import { WizardMessageComponent } from './components/wizard-message/wizard-message.component';
 import { MatCardModule } from '@angular/material/card';
 import { WizardMarkerComponent } from './components/wizard-marker/wizard-marker.component';
-import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
-import { AngularFireModule } from '@angular/fire';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ZoomIndicatorComponent } from './components/zoom-indicator/zoom-indicator.component';
@@ -61,8 +59,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FocusJumpToPanelComponent } from './components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { FaqDialogComponent } from './overlays/faq-dialog/faq-dialog.component';
 import { ContentPleatComponent } from './components/content-pleat/content-pleat.component';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { ManageStateDialogComponent } from './overlays/manage-state-dialog/manage-state-dialog.component';
 import { StateDisplayComponent } from './components/state-display/state-display.component';
@@ -74,8 +70,6 @@ import { HudComponent } from './components/hud/hud.component';
 import { ActionBottomSheetComponent } from './overlays/list-bottom-sheet/action-bottom-sheet.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { ActionListComponent } from './components/action-list/action-list.component';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
-import { environment } from '../environments/environment';
 import { ActionFabComponent } from './components/hud/action-fab/action-fab.component';
 import { FaqSectionComponent } from './overlays/faq-dialog/faq-section/faq-section.component';
 import { PageDvPlannerComponent } from './pages/page-dv-planner/page-dv-planner.component';
@@ -92,6 +86,12 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { MatStepperModule } from '@angular/material/stepper';
 import { BasePanelComponent } from './components/base-panel/base-panel.component';
 import { PortalModule } from '@angular/cdk/portal';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -153,10 +153,10 @@ import { PortalModule } from '@angular/cdk/portal';
     BasePanelComponent,
   ],
   imports: [
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAnalyticsModule,
-    AngularFirestoreModule,
-    AngularFireAuthModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAnalytics(() => getAnalytics()),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
     DragDropModule,
     BrowserModule,
     BrowserAnimationsModule,
@@ -193,6 +193,8 @@ import { PortalModule } from '@angular/cdk/portal';
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},
+    ScreenTrackingService,
+    UserTrackingService,
   ],
   bootstrap: [AppComponent],
 })
@@ -200,8 +202,7 @@ export class AppModule {
 
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
     matIconRegistry.addSvgIconSet(
-      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg')
-    );
+      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
   }
 
 }

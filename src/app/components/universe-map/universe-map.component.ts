@@ -74,7 +74,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
     body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
     this.startDrag.emit(body);
 
-    this.analyticsService.throttleEvent(EventLogs.Name.DragBody, {
+    this.analyticsService.logEventThrottled(EventLogs.Name.DragBody, {
       category: EventLogs.Category.CelestialBody,
       touch: event.pointerType === 'touch',
       details: {
