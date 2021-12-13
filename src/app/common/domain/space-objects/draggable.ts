@@ -1,5 +1,4 @@
-import { fromEvent, Observable, Subject } from 'rxjs';
-import { filter, finalize, map, takeUntil, throttleTime } from 'rxjs/operators';
+import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, throttleTime } from 'rxjs';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
 import { CameraComponent } from '../../../components/camera/camera.component';

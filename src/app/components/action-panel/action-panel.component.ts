@@ -2,8 +2,7 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Icons } from '../../common/domain/icons';
 import { ActionOption } from '../../common/domain/action-option';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { fromEvent } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { fromEvent, take, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 
 export type ActionPanelColors = 'green' | 'orange' | 'cosmic-blue';

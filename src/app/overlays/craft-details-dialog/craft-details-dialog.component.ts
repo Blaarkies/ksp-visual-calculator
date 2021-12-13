@@ -28,7 +28,7 @@ import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { AdvancedPlacement } from './advanced-placement';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];

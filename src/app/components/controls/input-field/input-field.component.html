@@ -6,7 +6,7 @@
          matInput
          [type]="type"
          (focus)="isActive = true; touch()"
-         (blur)="isActive = false"/>
+         (blur)="isActive = false" />
   <mat-hint [@fade]
             *ngIf="hint && (value === null || value === '')">{{hint}}</mat-hint>
   <span [@fade]

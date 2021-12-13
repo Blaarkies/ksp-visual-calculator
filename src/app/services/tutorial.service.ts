@@ -1,8 +1,23 @@
 import { Injectable } from '@angular/core';
 import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
-import { defer, fromEvent, interval, Observable, of, Subject, timer } from 'rxjs';
-import { delay, filter, map, mapTo, scan, skip, take, takeUntil } from 'rxjs/operators';
+import {
+  defer,
+  delay,
+  filter, firstValueFrom,
+  fromEvent,
+  interval,
+  map,
+  mapTo,
+  Observable,
+  of,
+  scan,
+  skip,
+  Subject,
+  take,
+  takeUntil,
+  timer
+} from 'rxjs';
 import { AnalyticsService } from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
 import { EventLogs } from './event-logs';
@@ -14,7 +29,7 @@ import { StateService } from './state.service';
 })
 export class TutorialService {
 
-  resetTutorial$ = new Subject<boolean>();
+  resetTutorial$ = new Subject<void>();
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
               private analyticsService: AnalyticsService,
@@ -28,7 +43,7 @@ export class TutorialService {
     });
 
     // reset universe
-    await this.stateService.loadState().pipe(take(1)).toPromise();
+    await firstValueFrom(this.stateService.loadState());
 
     this.resetTutorial$.next();
     let compiledSteps = this.getCompiledSteps(context);
@@ -224,7 +239,7 @@ export class TutorialService {
   }
 
   private getStepStartOfTutorial(context: UsableRoutes): StepDetails {
-    let startTutorialNext$ = new Subject();
+    let startTutorialNext$ = new Subject<void>();
     let startTutorial = {
       stepType: 'waitForNext',
       nextButton$: startTutorialNext$,

@@ -1,9 +1,8 @@
-import { interval, Subject } from 'rxjs';
-import { map, startWith, take, takeUntil } from 'rxjs/operators';
+import { interval, map, startWith, Subject, take, takeUntil } from 'rxjs';
 
 export class SmoothSetter<T> {
 
-  unsubscribe$ = new Subject();
+  unsubscribe$ = new Subject<void>();
 
   constructor(public value: T,
               private intervalTime: number,

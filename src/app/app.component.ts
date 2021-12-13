@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './overlays/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
-import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './services/auth.service';
 import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
 import { GlobalStyleClass } from './common/global-style-class';
+import { filter, take, takeUntil, tap } from 'rxjs';
 
 let localStorageKeyFirstVisitDeprecated = 'ksp-visual-calculator-first-visit';
 let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';

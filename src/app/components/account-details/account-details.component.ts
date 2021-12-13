@@ -3,22 +3,28 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { FormControl, Validators } from '@angular/forms';
-import { BehaviorSubject, EMPTY, from, Observable, of } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { AuthService } from '../../services/auth.service';
 import {
-  catchError, debounceTime,
+  BehaviorSubject,
+  catchError,
+  debounceTime,
+  EMPTY,
   filter,
-  finalize,
+  finalize, firstValueFrom,
+  from,
   mapTo,
   mergeAll,
+  Observable,
+  of,
   startWith,
   switchMap,
   take,
   takeUntil,
   tap,
-  timeout, withLatestFrom
-} from 'rxjs/operators';
+  timeout,
+  withLatestFrom
+} from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../services/auth.service';
 import { AuthErrorCode } from './auth-error-code';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UserData } from '../../services/data.service';
@@ -225,7 +231,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
     this.uploadingImage$.next(true);
 
-    let imageData = await this.dialog
+    let dialogResult$ = this.dialog
       .open(UploadImageDialogComponent, {
         data: {} as UploadImageDialogData,
       })
@@ -241,9 +247,9 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
           }
         }),
         filter(ok => ok),
-        take(1),
-        takeUntil(this.destroy$))
-      .toPromise();
+        takeUntil(this.destroy$));
+
+    let imageData = await firstValueFrom(dialogResult$);
 
     await this.authService.editUserData({
       ...user,

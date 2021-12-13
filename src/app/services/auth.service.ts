@@ -1,7 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, timer, zip } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  publishReplay,
+  refCount,
+  switchMap,
+  take,
+  tap,
+  timer,
+  zip
+} from 'rxjs';
 import { Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, publishReplay, refCount, switchMap, take, tap } from 'rxjs/operators';
 import { DataService, UserData } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -128,7 +141,7 @@ export class AuthService {
   async signOut() {
     await signOut(this.auth);
     await this.router.navigate(['/']);
-    await this.stateService.loadState().pipe(take(1)).toPromise();
+    await firstValueFrom(this.stateService.loadState());
     this.stateService.setStateRecord();
   }
 
@@ -169,29 +182,26 @@ export class AuthService {
   }
 
   private async loadUserLastSaveGame(): Promise<void> {
-    await this.user$.pipe(take(1)).toPromise();
+    await firstValueFrom(this.user$);
 
-    let states = await this.stateService
-      .getStatesInContext()
-      .pipe(take(1))
-      .toPromise();
+    let states = await firstValueFrom(this.stateService.getStatesInContext());
     let newestState = states[0];
     if (!newestState) {
       return;
     }
 
     if (this.stateService.stateIsUnsaved) {
-      let {dismissedByAction} = await this.snackBar
+      let snackbarResult$ = this.snackBar
         .open(`Latest save game found, discard current changes and load "${newestState?.name}"?`,
           'Discard Changes', {duration: 15e3})
-        .afterDismissed()
-        .toPromise();
+        .afterDismissed();
+      let {dismissedByAction} = await firstValueFrom(snackbarResult$);
       if (!dismissedByAction) {
         return;
       }
     }
 
-    await this.stateService.loadState(newestState?.state).pipe(take(1)).toPromise();
+    await firstValueFrom(this.stateService.loadState(newestState?.state));
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
@@ -205,13 +215,14 @@ export class AuthService {
     let projectId = 'ksp-commnet-planner';
     let endpoint = 'isEmailACustomer';
 
-    return await this.http
+    let isCustomer$ = this.http
       .get<{ isCustomer: boolean }>(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`, {
         params: new HttpParams()
           .append('email', email),
       })
-      .pipe(map(result => result.isCustomer))
-      .toPromise();
+      .pipe(map(result => result.isCustomer));
+
+    return await firstValueFrom(isCustomer$);
   }
 
   private updateDataService(credential: UserCredential): Promise<void> {
@@ -219,7 +230,7 @@ export class AuthService {
   }
 
   private async getSignedInUser(): Promise<User> {
-    return user(this.auth).pipe(take(1)).toPromise();
+    return firstValueFrom(user(this.auth));
   }
 
   async reloadUserSignIn(): Promise<void> {

@@ -1,3 +1,3 @@
 export class FormControlError {
-    [key: string]: any;
+  [key: string]: any;
 }

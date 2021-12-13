@@ -1,10 +1,9 @@
 import { Component, ElementRef, Input } from '@angular/core';
 import { Vector2 } from '../../common/domain/vector2';
-import { Observable, Subject } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
 import { StepType } from '../../services/wizard-spotlight.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { map } from 'rxjs/operators';
 
 export interface WizardMessage {
   title: string;

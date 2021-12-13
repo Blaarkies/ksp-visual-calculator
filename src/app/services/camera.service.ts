@@ -17,29 +17,33 @@ export class CameraService {
   static zoomLimits = [2e-9, 23e-5];
   static scaleToShowMoons = 2e-6;
 
-  private scaleSmoothSetter = new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
-    (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
-    () => this.cdr.markForCheck());
+  private scaleSmoothSetter = defaultScale;
+    // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
+    // (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
+    // () => this.cdr.markForCheck());
 
   get scale(): number {
-    return this.scaleSmoothSetter.value;
+    // return this.scaleSmoothSetter.value;
+    return this.scaleSmoothSetter;
   }
 
   set scale(value: number) {
     let limitedValue = value.coerceIn(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
-    this.scaleSmoothSetter.set(limitedValue);
+    this.scaleSmoothSetter = limitedValue;
   }
 
-  private locationSmoothSetter = new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
-    (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
-    () => this.cdr.markForCheck());
+  private locationSmoothSetter = defaultLocation.clone();
+    // new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
+    // (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
+    // () => this.cdr.markForCheck());
 
   get location(): Vector2 {
-    return this.locationSmoothSetter.value;
+    // return this.locationSmoothSetter.value;
+    return this.locationSmoothSetter;
   }
 
   set location(value: Vector2) {
-    this.locationSmoothSetter.set(value);
+    this.locationSmoothSetter = value;
   }
 
   get screenCenterOffset(): Vector2 {
@@ -70,8 +74,8 @@ export class CameraService {
   cameraController: ElementRef<HTMLDivElement>;
 
   reset(scale?: number, location?: Vector2) {
-    this.scaleSmoothSetter.value = scale ?? defaultScale;
-    this.locationSmoothSetter.value = location ?? defaultLocation.clone();
+    this.scaleSmoothSetter = scale ?? defaultScale;
+    this.locationSmoothSetter = location ?? defaultLocation.clone();
     this.cdr.markForCheck();
   }
 
@@ -131,8 +135,8 @@ export class CameraService {
   }
 
   destroy() {
-    this.scaleSmoothSetter.destroy();
-    this.locationSmoothSetter.destroy();
+    // this.scaleSmoothSetter.destroy();
+    // this.locationSmoothSetter.destroy();
   }
 
 }

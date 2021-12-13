@@ -2,7 +2,7 @@ import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { AuthService } from './auth.service';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { of } from 'rxjs';
+import { of, take } from 'rxjs';
 import { DataService } from './data.service';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { StateService } from './state.service';
@@ -11,11 +11,10 @@ import { Router } from '@angular/router';
 import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import createSpy = jasmine.createSpy;
-import objectContaining = jasmine.objectContaining;
 import { HttpClient } from '@angular/common/http';
 import { ineeda } from 'ineeda';
-import { take } from 'rxjs/operators';
+import createSpy = jasmine.createSpy;
+import objectContaining = jasmine.objectContaining;
 
 let serviceType = AuthService;
 describe('AuthService', () => {

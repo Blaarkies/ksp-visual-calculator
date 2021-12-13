@@ -6,8 +6,7 @@ import { InputFieldComponent } from '../input-field/input-field.component';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { MatSelect } from '@angular/material/select';
 import { Icons } from '../../../common/domain/icons';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, map, Subject, takeUntil } from 'rxjs';
 import { CustomAnimation } from '../../../common/domain/custom-animation';
 
 @Component({
@@ -52,7 +51,7 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
   icons = Icons;
   searchValue$ = new BehaviorSubject<string>(null);
   filteredOptions: LabeledOption<any>[];
-  private unsubscribe$ = new Subject();
+  private unsubscribe$ = new Subject<void>();
 
   constructor() {
     super();

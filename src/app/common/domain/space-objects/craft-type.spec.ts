@@ -10,7 +10,7 @@ describe('CraftType class', () => {
     });
 
     it('bad cased string should throw error', () => {
-        expect(() => CraftType.fromString('debris')).toThrow();
+      expect(() => CraftType.fromString('debris')).toThrow();
     });
 
     it('wrong string should throw error', () => {

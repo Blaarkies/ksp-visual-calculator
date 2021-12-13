@@ -10,10 +10,10 @@ import { SpaceObjectService } from '../../services/space-object.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { CraftDetailsDialogComponent } from '../../overlays/craft-details-dialog/craft-details-dialog.component';
+import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import createSpy = jasmine.createSpy;
 import objectContaining = jasmine.objectContaining;
 import arrayContaining = jasmine.arrayContaining;
-import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 
 let componentType = PageSignalCheckComponent;
 describe('PageSignalCheckComponent', () => {

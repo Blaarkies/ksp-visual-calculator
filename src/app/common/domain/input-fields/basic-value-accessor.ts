@@ -7,9 +7,16 @@ export class BasicValueAccessor implements ControlValueAccessor {
   onTouched: (value: any) => void;
   disabled: boolean;
 
-  writeValue(value: any) {}
-  registerOnChange(fn: any) {}
-  registerOnTouched(fn: any) {}
-  setDisabledState(isDisabled: boolean) {}
+  writeValue(value: any) {
+  }
+
+  registerOnChange(fn: any) {
+  }
+
+  registerOnTouched(fn: any) {
+  }
+
+  setDisabledState(isDisabled: boolean) {
+  }
 
 }

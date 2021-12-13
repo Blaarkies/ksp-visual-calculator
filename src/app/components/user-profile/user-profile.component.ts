@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Icons } from '../../common/domain/icons';
-import { AnalyticsService} from '../../services/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDialogComponent } from '../../overlays/account-dialog/account-dialog.component';
-import { takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
 import { GlobalStyleClass } from '../../common/global-style-class';

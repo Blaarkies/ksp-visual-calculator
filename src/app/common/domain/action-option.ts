@@ -53,9 +53,9 @@ export class ActionOptionType {
     let typeDetermined =
       actionMeta.divider !== undefined ? ActionOptionType.Divider
         : actionMeta.action !== undefined ? ActionOptionType.Action
-        : actionMeta.route !== undefined ? ActionOptionType.Route
-        : actionMeta.externalRoute !== undefined ? ActionOptionType.ExternalRoute
-          : null;
+          : actionMeta.route !== undefined ? ActionOptionType.Route
+            : actionMeta.externalRoute !== undefined ? ActionOptionType.ExternalRoute
+              : null;
     if (!typeDetermined) {
       throw new Error(`ActionOptionType for ${JSON.stringify(actionMeta)} could not be determined`);
     }

@@ -1,5 +1,4 @@
-import { timer } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { firstValueFrom, take, timer } from 'rxjs';
 
 export class Common {
 
@@ -21,7 +20,7 @@ export class Common {
   }
 
   static waitPromise(duration = 100): Promise<void> {
-    return timer(duration).pipe(take(1)).toPromise() as any;
+    return firstValueFrom(timer(duration)) as any;
   }
 
 }

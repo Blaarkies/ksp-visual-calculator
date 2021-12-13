@@ -9,8 +9,7 @@ import {
 import { Vector2 } from '../common/domain/vector2';
 import { WizardMessage, WizardMessageComponent } from '../components/wizard-message/wizard-message.component';
 import { WizardMarker, WizardMarkerComponent } from '../components/wizard-marker/wizard-marker.component';
-import { concat, from, Observable, of, Subject, timer } from 'rxjs';
-import { concatMap, delay, finalize, reduce, takeUntil, tap } from 'rxjs/operators';
+import { concat, concatMap, delay, finalize, from, Observable, of, reduce, Subject, takeUntil, tap, timer } from 'rxjs';
 
 export type StepType = 'waitForNext' | 'end';
 export type Positions = 'left' | 'right' | 'top' | 'bottom' | 'center';

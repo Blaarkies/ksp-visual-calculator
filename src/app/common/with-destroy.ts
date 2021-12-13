@@ -7,7 +7,7 @@ export function WithDestroy<T extends Constructor<{}>>(Base: T = (class {
 } as any)) {
 
   return class extends Base implements OnDestroy {
-    destroy$ = new Subject();
+    destroy$ = new Subject<void>();
 
     ngOnDestroy() {
       this.destroy$.next();

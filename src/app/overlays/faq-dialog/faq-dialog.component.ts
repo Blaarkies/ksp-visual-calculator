@@ -2,8 +2,19 @@ import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { WithDestroy } from '../../common/with-destroy';
-import { debounceTime, map, publishReplay, refCount, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { Observable, of, zip } from 'rxjs';
+import {
+  debounceTime,
+  map,
+  Observable,
+  of,
+  publishReplay,
+  refCount,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+  zip
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Section } from './faq-section/faq-section.component';
 import { BreakpointObserver } from '@angular/cdk/layout';

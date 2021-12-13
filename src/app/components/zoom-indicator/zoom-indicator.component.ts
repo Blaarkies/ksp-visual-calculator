@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { CameraService } from '../../services/camera.service';
-import { Subject } from 'rxjs';
-import { debounceTime, finalize, skip, tap } from 'rxjs/operators';
+import { debounceTime, finalize, skip, Subject, tap } from 'rxjs';
 
 @Component({
   selector: 'cp-zoom-indicator',
@@ -38,7 +37,7 @@ export class ZoomIndicatorComponent implements OnDestroy {
 
   private limits: number[];
   private range: number;
-  private zoomChange$ = new Subject();
+  private zoomChange$ = new Subject<void>();
 
   constructor(cdr: ChangeDetectorRef) {
     this.zoomChange$

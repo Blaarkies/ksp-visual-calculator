@@ -4,13 +4,21 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Icons } from '../../common/domain/icons';
 import { FormControl } from '@angular/forms';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
-import { debounceTime, distinctUntilChanged, sampleTime, startWith, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  sampleTime,
+  startWith,
+  Subject,
+  takeUntil
+} from 'rxjs';
 import { PathDetailsReader } from './msp-edge/path-details-reader';
 import { MatSelectChange } from '@angular/material/select';
 import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
-import { CheckpointPreferences} from '../../common/domain/checkpoint-preferences';
+import { CheckpointPreferences } from '../../common/domain/checkpoint-preferences';
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';

@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
 import { HttpClient } from '@angular/common/http';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { firstValueFrom } from 'rxjs';
 
 export class FeedbackSubmissionForm {
   name: string;
@@ -80,10 +81,10 @@ export class FeedbackDialogComponent extends WithDestroy() {
     let projectId = 'ksp-commnet-planner';
     let endpoint = 'captureFeedback';
 
-    let result = await this.http
+    let httpResult$ = this.http
       .post(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`,
-        {...feedback})
-      .toPromise()
+        {...feedback});
+    let result = await firstValueFrom(httpResult$)
       .catch(error => error.status === 200 ? true : error);
 
     return result;

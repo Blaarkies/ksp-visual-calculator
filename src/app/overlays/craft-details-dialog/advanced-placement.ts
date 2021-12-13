@@ -19,8 +19,8 @@ export class AdvancedPlacement {
       angleConvert === 'deg->rad'
         ? object.angle * .017453293
         : angleConvert === 'rad->deg'
-        ? object.angle * 57.295779513
-        : object.angle);
+          ? object.angle * 57.295779513
+          : object.angle);
   }
 
 }

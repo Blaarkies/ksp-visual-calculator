@@ -10,7 +10,7 @@ describe('SpaceObjectType class', () => {
     });
 
     it('bad cased string should throw error', () => {
-        expect(() => SpaceObjectType.fromString('Star')).toThrow();
+      expect(() => SpaceObjectType.fromString('Star')).toThrow();
     });
 
     it('wrong string should throw error', () => {

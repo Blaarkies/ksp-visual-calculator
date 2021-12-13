@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { AnalyticsEventName, EventLogs } from './event-logs';
-import { Subject } from 'rxjs';
-import { throttleTime } from 'rxjs/operators';
+import { Subject, throttleTime } from 'rxjs';
 import { getApp } from '@angular/fire/app';
 import { Analytics, initializeAnalytics, logEvent, setAnalyticsCollectionEnabled } from '@angular/fire/analytics';
 

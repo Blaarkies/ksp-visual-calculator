@@ -1,7 +1,6 @@
 import { Uid } from './uid';
 import { WithDestroy } from './with-destroy';
-import { Subject } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, Subject } from 'rxjs';
 import { fakeAsync } from '@angular/core/testing';
 
 describe('Uid class', () => {

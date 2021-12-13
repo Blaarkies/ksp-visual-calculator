@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, mapTo, Observable, timer } from 'rxjs';
 import {
   deleteDoc,
   deleteField,
@@ -98,7 +97,7 @@ export class DataService {
 
   async updateUserId(uid: string): Promise<void> {
     this.userId$.next(uid);
-    return timer(0).pipe(mapTo(void 0)).toPromise();
+    return firstValueFrom(timer(0).pipe(mapTo(void 0)));
   }
 
 }

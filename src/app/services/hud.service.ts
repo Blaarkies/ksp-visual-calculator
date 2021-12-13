@@ -1,5 +1,16 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  take,
+  takeUntil
+} from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
@@ -9,7 +20,6 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
 } from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import {
   ManageStateDialogComponent,
@@ -45,7 +55,7 @@ export class HudService {
   private contextChange$ = new BehaviorSubject<UsableRoutes>(null);
   context$ = this.contextChange$.asObservable();
   // fix dialog takeUntil using BehaviorSubject, because it cancels the stream immediately
-  unsubscribeDialog$ = new Subject();
+  unsubscribeDialog$ = new Subject<void>();
 
   get pageContext(): UsableRoutes {
     return this.contextChange$.value;
@@ -274,7 +284,7 @@ export class HudService {
         unavailable$: this.authService.user$.pipe(map(user => user === null || !user?.isCustomer), startWith(true)),
         tooltip: `Save games are only available after supporting on 'buymeacoffee.com/Blaarkies'`,
         action: async () => {
-          let user = await this.authService.user$.pipe(take(1)).toPromise();
+          let user = await firstValueFrom(this.authService.user$);
 
           if (!user) {
             this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
