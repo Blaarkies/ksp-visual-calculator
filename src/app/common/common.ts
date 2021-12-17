@@ -1,4 +1,4 @@
-import { firstValueFrom, take, timer } from 'rxjs';
+import { firstValueFrom, timer } from 'rxjs';
 
 export class Common {
 
@@ -22,5 +22,23 @@ export class Common {
   static waitPromise(duration = 100): Promise<void> {
     return firstValueFrom(timer(duration)) as any;
   }
+
+  static randomNumber(min = 0, max = 10): number {
+    let difference = Math.abs(max) - Math.abs(min);
+    return Math.random() * difference + min;
+  }
+
+  static randomInt(min = 0, max = 10): number {
+    return this.randomNumber(min, max).toInt();
+  }
+
+  static listNumbers(count = 3): number[] {
+    return [...Array(count).keys()];
+  }
+
+  static randomIntList(count = 3, min = 0, max = 10): number[] {
+    return this.listNumbers(count).map(() => this.randomNumber(min, max).toInt());
+  }
+
 
 }

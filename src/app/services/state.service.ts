@@ -15,7 +15,8 @@ import {
   combineLatestAll,
   delay,
   EMPTY,
-  filter, firstValueFrom,
+  filter,
+  firstValueFrom,
   from,
   interval,
   map,
@@ -41,6 +42,7 @@ import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 import { GlobalStyleClass } from '../common/global-style-class';
 import { environment } from '../../environments/environment';
+import { Namer } from '../common/namer';
 
 @Injectable({
   providedIn: 'root',
@@ -84,7 +86,7 @@ export class StateService {
 
   get state(): StateGame | StateSignalCheck | StateDvPlanner {
     let state: StateGame = {
-      name: this.name || Uid.new,
+      name: this.name || Namer.savegame,
       timestamp: new Date(),
       context: this.context,
       version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
@@ -178,7 +180,7 @@ export class StateService {
       this.setContextualProperties({state, context: parsedState.context, parsedState});
       buildStateResult = this.spaceObjectService.buildState(state, parsedState.context);
     } else {
-      this.name = Uid.new;
+      this.name = Namer.savegame;
       this.setContextualProperties({state, context: this.context});
       buildStateResult = this.spaceObjectService.buildStockState(this.context);
     }
