@@ -10,7 +10,7 @@ import {
   EMPTY,
   filter,
   finalize, firstValueFrom,
-  from,
+  from, fromEvent,
   mapTo,
   mergeAll,
   Observable,
@@ -37,6 +37,7 @@ import {
   UploadImageDialogComponent,
   UploadImageDialogData
 } from '../../overlays/upload-image-dialog/upload-image-dialog.component';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'cp-account-details',
@@ -72,7 +73,8 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   editingDetails$ = new BehaviorSubject<boolean>(false);
   deletingAccount$ = new BehaviorSubject<boolean>(false);
 
-  nameControl = new FormControl(null, [Validators.required]);
+  controlName = new FormControl(null, [Validators.required]);
+  controlPolicy = new FormControl(false, [Validators.requiredTrue]);
 
   user$ = this.authService.user$;
 
@@ -92,10 +94,10 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
     this.user$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(user => this.nameControl.setValue(user?.displayName, {emitEvent: false}));
-    this.nameControl.disable();
+      .subscribe(user => this.controlName.setValue(user?.displayName, {emitEvent: false}));
+    this.controlName.disable();
 
-    this.nameControl.valueChanges
+    this.controlName.valueChanges
       .pipe(
         debounceTime(1000),
         withLatestFrom(this.user$),
@@ -107,6 +109,14 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         }),
         takeUntil(this.destroy$))
       .subscribe();
+  }
+
+  listenClickAway() {
+    fromEvent(window, 'pointerup')
+      .pipe(
+        take(1),
+        takeUntil(this.destroy$))
+      .subscribe(() => this.isPromoteOpen = false);
   }
 
   ngOnDestroy() {
@@ -273,11 +283,11 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       });
       await this.authService.editUserData({
         ...user,
-        displayName: this.nameControl.value,
+        displayName: this.controlName.value,
       });
 
       this.editingDetails$.next(false);
-      this.nameControl.disable({emitEvent: false});
+      this.controlName.disable({emitEvent: false});
 
       this.snackBar.open(`Details have been updated`);
     } else {
@@ -285,9 +295,9 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         category: EventLogs.Category.Account,
       });
 
-      this.nameControl.setValue(user.displayName, {emitEvent: false});
+      this.controlName.setValue(user.displayName, {emitEvent: false});
       this.editingDetails$.next(true);
-      this.nameControl.enable({emitEvent: false});
+      this.controlName.enable({emitEvent: false});
       this.fieldDisplayName.focus();
     }
   }

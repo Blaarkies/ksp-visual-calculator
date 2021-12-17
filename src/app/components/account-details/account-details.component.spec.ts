@@ -40,7 +40,7 @@ describe('AccountDetailsComponent', () => {
 
       let innerText = nativeElement.innerText;
       expect(innerText.includes(mockUser.email)).toBeTrue();
-      expect(fixture.componentInstance.nameControl.value).toBe(mockUser.displayName);
+      expect(fixture.componentInstance.controlName.value).toBe(mockUser.displayName);
     });
   });
 

@@ -39,11 +39,13 @@ import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-di
 import { TutorialService } from './tutorial.service';
 import { GlobalStyleClass } from '../common/global-style-class';
 import { EventLogs } from './event-logs';
+import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
 
 let storageKeys = {
   firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
   tutorialViewed: 'ksp-visual-calculator-tutorial-viewed',
-  privacyViewed: 'ksp-visual-calculator-privacy-viewed',
+  analyticsViewed: 'ksp-visual-calculator-analytics-viewed',
+  privacyPolicyViewed: 'ksp-visual-calculator-privacy-policy-viewed',
 };
 
 @Injectable({
@@ -144,9 +146,9 @@ export class HudService {
         undefined,
         !localStorage.getItem(storageKeys.tutorialViewed),
         () => localStorage.setItem(storageKeys.tutorialViewed, true.toString())),
-      new ActionOption('Privacy', Icons.Analytics, {
+      new ActionOption('Analytics', Icons.Analytics, {
           action: () => {
-            this.analyticsService.logEvent('Call privacy dialog', {
+            this.analyticsService.logEvent('Call analytics dialog', {
               category: EventLogs.Category.Privacy,
             });
 
@@ -154,8 +156,8 @@ export class HudService {
           },
         },
         'View privacy statement and settings',
-        !localStorage.getItem(storageKeys.privacyViewed),
-        () => localStorage.setItem(storageKeys.privacyViewed, true.toString())),
+        !localStorage.getItem(storageKeys.analyticsViewed),
+        () => localStorage.setItem(storageKeys.analyticsViewed, true.toString())),
       new ActionOption('Credits', Icons.Credits, {
         action: () => {
           this.analyticsService.logEvent('Call Credits dialog', {
@@ -184,6 +186,18 @@ export class HudService {
           this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
         },
       }),
+      new ActionOption('Privacy Policy', Icons.Policy, {
+        action: () => {
+          this.analyticsService.logEvent('Call privacy policy dialog', {
+            category: EventLogs.Category.Policy,
+          });
+
+          this.dialog.open(PolicyDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+        },
+      },
+        undefined,
+        !localStorage.getItem(storageKeys.privacyPolicyViewed),
+        () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
     ];
   }
 

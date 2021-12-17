@@ -17,7 +17,7 @@
       <div class="user-details">
         <div>
           <cp-input-field class="input-field-dark-text"
-                          [formControl]="nameControl"
+                          [formControl]="controlName"
                           label="Name"
                           (keyup.enter)="editDetails(user)"></cp-input-field>
           <div>{{user.email}}</div>
@@ -84,7 +84,7 @@
 <ng-template #noUser>
   <h1 mat-dialog-title>Sign Up / Sign In</h1>
 
-  <div mat-dialog-content class="sign-in-layout" (click)="isPromoteOpen = false">
+  <div mat-dialog-content class="sign-in-layout">
     <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png" />
 
     <div class="promote-sign-in">
@@ -93,7 +93,7 @@
         <button mat-icon-button
                 #buttonWhy
                 (focus)="buttonWhy._elementRef.nativeElement.blur()"
-                (click)="isPromoteOpen = !isPromoteOpen; $event.stopPropagation()">
+                (click)="isPromoteOpen = !isPromoteOpen; $event.stopPropagation(); listenClickAway()">
           <mat-icon [svgIcon]="icons.ChevronDown" [@flipVertical]="isPromoteOpen"></mat-icon>
         </button>
 
@@ -135,13 +135,21 @@
               (click)="forgotPassword()">
         Forgot password?
       </button>
+
+      <div class="policy-layout">
+        <cp-input-toggle label="I agree to the" [formControl]="controlPolicy"></cp-input-toggle>
+        <a href="https://ksp-visual-calculator.blaarkies.com/policy" target="_blank">Privacy Policy</a>
+      </div>
     </div>
 
     <div class="sign-in-button-email-container">
       <button mat-stroked-button
               class="button-loader"
               (click)="signInWithEmailAddress()"
-              [disabled]="controlEmail.invalid || controlPassword.invalid || (signingInWithEmail$ | async)"
+              [disabled]="controlEmail.invalid
+                          || controlPassword.invalid
+                          || controlPolicy.invalid
+                          || (signingInWithEmail$ | async)"
               [matTooltip]="'If you do not have an account, this will create one'">
         <mat-icon [svgIcon]="icons.Email"></mat-icon>
         <span>Sign in with email address</span>
@@ -154,7 +162,7 @@
 
     <button mat-stroked-button
             class="button-loader"
-            [disabled]="signingInWithGoogle$ | async"
+            [disabled]="controlPolicy.invalid || (signingInWithGoogle$ | async)"
             (click)="signInWithGoogle()">
       <img class="google-g-logo" src="assets/logos/google-g.svg" />
       <span>Sign in with Google</span>

@@ -9,6 +9,9 @@ import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
 import { GlobalStyleClass } from './common/global-style-class';
 import { filter, take, takeUntil, tap } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
+import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
 
 let localStorageKeyFirstVisitDeprecated = 'ksp-visual-calculator-first-visit';
 let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';
@@ -24,8 +27,20 @@ export class AppComponent extends WithDestroy() implements OnInit {
               private tutorialService: TutorialService,
               private snackBar: MatSnackBar,
               private authService: AuthService,
-              private hudService: HudService) {
+              private hudService: HudService,
+              router: Router) {
     super();
+
+    let specialRoutes = {
+      '/policy': () => this.dialog.open(PolicyDialogComponent),
+      '/feedback': () => this.dialog.open(FeedbackDialogComponent),
+    };
+
+    router.events
+      .pipe(
+        filter(e => e instanceof NavigationEnd),
+        takeUntil(this.destroy$))
+      .subscribe((e: NavigationEnd) => specialRoutes[e.url]?.());
 
     this.authService
       .user$

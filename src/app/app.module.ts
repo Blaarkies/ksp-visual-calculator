@@ -92,6 +92,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../environments/environment';
+import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import { environment } from '../environments/environment';
     InputFieldListComponent,
     DifficultySettingsDialogComponent,
     PrivacyDialogComponent,
+    PolicyDialogComponent,
     AccountDialogComponent,
     CreditsDialogComponent,
     BuyMeACoffeeDialogComponent,
