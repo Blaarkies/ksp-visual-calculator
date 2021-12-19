@@ -1,8 +1,18 @@
 import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { DataService } from './data.service';
-import { AngularFirestore } from '@angular/fire/firestore';
 import { of } from 'rxjs';
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  Firestore,
+  getDoc,
+  onSnapshot,
+  setDoc,
+  SetOptions,
+  updateDoc
+} from '@angular/fire/firestore';
 import createSpy = jasmine.createSpy;
 
 let serviceType = DataService;
@@ -17,7 +27,7 @@ describe('DataService', () => {
   });
 
   it('getRef() should return doc', () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy());
+    let spyDoc = MockInstance(doc, 'doc', createSpy());
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
@@ -28,7 +38,7 @@ describe('DataService', () => {
   });
 
   it('write() should fail if user is not signed in', async () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy()
+    let spyDoc = MockInstance(doc, 'doc', createSpy()
       .and.returnValue({set: () => void 0}));
 
     let fixture = MockRender(serviceType);
@@ -42,7 +52,7 @@ describe('DataService', () => {
   });
 
   it('write() should call doc.set if user is signed in', async () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy()
+    let spyDoc = MockInstance(doc, 'doc', createSpy()
       .and.returnValue({set: () => void 0}));
 
     let fixture = MockRender(serviceType);
@@ -57,7 +67,7 @@ describe('DataService', () => {
   });
 
   it('delete() should fail if user is not signed in', async () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy()
+    let spyDoc = MockInstance(doc, 'doc', createSpy()
       .and.returnValue({update: () => void 0}));
 
     let fixture = MockRender(serviceType);
@@ -71,7 +81,7 @@ describe('DataService', () => {
   });
 
   it('delete() should call doc.update if user is signed in', async () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy()
+    let spyDoc = MockInstance(doc, 'doc', createSpy()
       .and.returnValue({update: () => void 0}));
 
     let fixture = MockRender(serviceType);
@@ -86,7 +96,7 @@ describe('DataService', () => {
   });
 
   it('readAll() should fail if user is not signed in', async () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy()
+    let spyDoc = MockInstance(doc, 'doc', createSpy()
       .and.returnValue({get: () => of({data: createSpy()})}));
 
     let fixture = MockRender(serviceType);
@@ -100,7 +110,7 @@ describe('DataService', () => {
   });
 
   it('readAll() should call doc.update if user is signed in', async () => {
-    let spyDoc = MockInstance(AngularFirestore, 'doc', createSpy()
+    let spyDoc = MockInstance(doc, 'doc', createSpy()
       .and.returnValue({get: () => of({data: createSpy()})}));
 
     let fixture = MockRender(serviceType);
