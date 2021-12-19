@@ -93,6 +93,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { environment } from '../environments/environment';
 import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
+import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/holiday-theme-sprite.component';
 
 @NgModule({
   declarations: [
@@ -153,6 +154,7 @@ import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.co
     MissionJourneyComponent,
     NegatePipe,
     BasePanelComponent,
+    HolidayThemeSpriteComponent,
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),

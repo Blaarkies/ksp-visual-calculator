@@ -1,8 +1,11 @@
-<div class="app-layout overlap-container">
+<div class="app-layout stack">
 
   <div>
     <router-outlet></router-outlet>
   </div>
+
+  <cp-holiday-theme-sprite *ngIf="showHolidayTheme"
+                           (noThemeDetected)="unsubscribeHoliday$.next()"></cp-holiday-theme-sprite>
 
   <cp-hud></cp-hud>
 

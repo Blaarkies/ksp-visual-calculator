@@ -1,0 +1,35 @@
+.sprite-container {
+  animation: kf-blur-out 1s ease-in-out;
+}
+
+.image-sprite {
+  position: absolute;
+  cursor: grab;
+  pointer-events: all;
+
+  animation: kf-offset-path-move;
+}
+
+@supports not (offset-path: path('')) {
+  .image-sprite {
+    display: none;
+  }
+}
+
+@keyframes kf-blur-out {
+  0% {
+    filter: blur(0);
+  }
+  100% {
+    filter: blur(10px);
+  }
+}
+
+@keyframes kf-offset-path-move {
+  0% {
+    offset-distance: 0;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}

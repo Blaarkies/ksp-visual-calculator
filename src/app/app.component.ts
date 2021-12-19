@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './overlays/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
@@ -8,7 +8,7 @@ import { AuthService } from './services/auth.service';
 import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
 import { GlobalStyleClass } from './common/global-style-class';
-import { filter, take, takeUntil, tap } from 'rxjs';
+import { filter, Subject, take, takeUntil, tap, timer } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
 import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
@@ -21,14 +21,18 @@ let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent extends WithDestroy() implements OnInit {
+export class AppComponent extends WithDestroy() implements OnInit, OnDestroy {
+
+  showHolidayTheme = false;
+  unsubscribeHoliday$ = new Subject<void>();
 
   constructor(private dialog: MatDialog,
               private tutorialService: TutorialService,
               private snackBar: MatSnackBar,
               private authService: AuthService,
               private hudService: HudService,
-              router: Router) {
+              router: Router,
+              cdr: ChangeDetectorRef) {
     super();
 
     let specialRoutes = {
@@ -50,6 +54,23 @@ export class AppComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(() => this.dialog.open(AccountDialogComponent,
         {backdropClass: GlobalStyleClass.MobileFriendly}));
+
+    timer(30e3, 300e3)
+      .pipe(
+        takeUntil(this.unsubscribeHoliday$),
+        takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.showHolidayTheme = false;
+        cdr.detectChanges();
+        this.showHolidayTheme = true;
+      });
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.unsubscribeHoliday$.next();
+    this.unsubscribeHoliday$.complete();
   }
 
   ngOnInit() {
@@ -85,4 +106,5 @@ export class AppComponent extends WithDestroy() implements OnInit {
         this.tutorialService.startFullTutorial(this.hudService.pageContext);
       });
   }
+
 }

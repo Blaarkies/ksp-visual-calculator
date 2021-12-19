@@ -1,0 +1,23 @@
+<ng-container *ngFor="let sprite of sprites">
+  <div class="stack sprite-container"
+       [@blurOut]
+       *ngIf="!sprite.touched"
+       [style.animation-delay.s]="sprite.pathController.duration - 1">
+    <img [src]="sprite.source"
+         [style.height.px]="sprite.pathController.height"
+         [style.offset-path]="sprite.pathController.path"
+         [style.animation-duration.s]="sprite.pathController.duration"
+         [style.opacity]="sprite.opacity"
+         alt="Holiday decorations falling down the screen"
+         class="image-sprite"
+         (pointerenter)="sprite.touched = true" />
+
+    <!--    <svg style="    overflow: visible; position: absolute;">-->
+    <!--      <path-->
+    <!--        stroke="white"-->
+    <!--        stroke-width="3"-->
+    <!--        fill="none"-->
+    <!--        [attr.d]="sprite.pathController.path.slice(6, -2)" />-->
+    <!--    </svg>-->
+  </div>
+</ng-container>
