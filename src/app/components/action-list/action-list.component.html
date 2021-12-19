@@ -29,6 +29,12 @@
       </ng-template>
     </ng-template>
 
+    <mat-list-option *ngSwitchCase="actionTypes.Divider"
+                     [value]="option"
+                     class="divider-list-option">
+      <mat-divider></mat-divider>
+    </mat-list-option>
+
     <mat-list-option *ngSwitchCase="actionTypes.Action"
                      [value]="option"
                      (click)="action.emit();

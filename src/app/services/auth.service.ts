@@ -1,10 +1,21 @@
 import { Injectable } from '@angular/core';
-import firebase from 'firebase/app';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable, of, timer, zip } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  publishReplay,
+  refCount,
+  switchMap,
+  take,
+  tap,
+  timer,
+  zip
+} from 'rxjs';
 import { Router } from '@angular/router';
-import { distinctUntilChanged, filter, map, publishReplay, refCount, switchMap, take, tap } from 'rxjs/operators';
-import { DataService, User } from './data.service';
+import { DataService, UserData } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -12,18 +23,29 @@ import { EventLogs } from './event-logs';
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
-import UserCredential = firebase.auth.UserCredential;
 import { AuthErrorCode } from '../components/account-details/auth-error-code';
 import { GlobalStyleClass } from '../common/global-style-class';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
+  UserCredential,
+} from '@angular/fire/auth';
+import { authState, user } from 'rxfire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
 
-  user$: Observable<User>;
+  user$: Observable<UserData>;
 
-  constructor(private afAuth: AngularFireAuth,
+  constructor(private auth: Auth,
               private router: Router,
               private dataService: DataService,
               private stateService: StateService,
@@ -31,14 +53,14 @@ export class AuthService {
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               private http: HttpClient) {
-    this.user$ = afAuth.authState
+    this.user$ = authState(auth)
       .pipe(
         map(user => user?.uid),
         distinctUntilChanged(),
         tap(uid => this.dataService.updateUserId(uid)),
-        switchMap(uid => uid
-          ? this.dataService.getRef<User>(`users/${uid}`).valueChanges()
-          : of(null)),
+        switchMap(uid => (uid
+          ? this.dataService.getChanges<UserData>(`users/${uid}`)
+          : of(null)) as Observable<UserData>),
         publishReplay(1),
         refCount());
 
@@ -90,42 +112,41 @@ export class AuthService {
       .subscribe();
   }
 
-  async googleSignIn() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    const credential = await this.afAuth.signInWithPopup(provider);
+  async googleSignIn(agreedPolicy: boolean) {
+    const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user);
+    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
     await this.loadUserLastSaveGame();
   }
 
-  async emailSignIn(email: string, password: string): Promise<UserCredential> {
-    let credential = await this.afAuth.signInWithEmailAndPassword(email, password);
+  async emailSignIn(email: string, password: string, agreedPolicy: boolean): Promise<UserCredential> {
+    let credential = await signInWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user);
+    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
     await this.loadUserLastSaveGame();
     return credential;
   }
 
-  async emailSignUp(email: string, password: string): Promise<UserCredential> {
-    let credential = await this.afAuth.createUserWithEmailAndPassword(email, password);
+  async emailSignUp(email: string, password: string, agreedPolicy: boolean): Promise<UserCredential> {
+    let credential = await createUserWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user);
+    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
     // todo: check that current "tutorial" game is saved
     return credential;
   }
 
   async signOut() {
-    await this.afAuth.signOut();
+    await signOut(this.auth);
     await this.router.navigate(['/']);
-    await this.stateService.loadState().pipe(take(1)).toPromise();
+    await firstValueFrom(this.stateService.loadState());
     this.stateService.setStateRecord();
   }
 
-  async updateUserData(user: User | firebase.User): Promise<User> {
-    let dbUser = await this.dataService.read<User>('users', user.uid);
+  async updateUserData(user: UserData | User, extra?: {userAgreedToPrivacyPolicy: boolean}): Promise<UserData> {
+    let dbUser = await this.dataService.read<UserData>('users', user.uid);
     let isCustomer = dbUser?.isCustomer || await this.isCustomer(user.email);
 
     const data = {
@@ -134,6 +155,7 @@ export class AuthService {
       displayName: dbUser?.displayName || user.displayName,
       photoURL: dbUser?.photoURL || user.photoURL,
       isCustomer,
+      ...extra,
     };
 
     await this.dataService.write('users', data);
@@ -141,7 +163,7 @@ export class AuthService {
     return data;
   }
 
-  async editUserData(user: User | firebase.User): Promise<User> {
+  async editUserData(user: UserData): Promise<UserData> {
     const data = {
       displayName: user.displayName,
       photoURL: user.photoURL,
@@ -149,7 +171,7 @@ export class AuthService {
 
     await this.dataService.write('users', data, {merge: true});
 
-    return user as User;
+    return user as UserData;
   }
 
   async resetPassword(email: string): Promise<void> {
@@ -157,33 +179,30 @@ export class AuthService {
       return;
     }
 
-    return await this.afAuth.sendPasswordResetEmail(email);
+    return await sendPasswordResetEmail(this.auth, email);
   }
 
   private async loadUserLastSaveGame(): Promise<void> {
-    await this.user$.pipe(take(1)).toPromise();
+    await firstValueFrom(this.user$);
 
-    let states = await this.stateService
-      .getStatesInContext()
-      .pipe(take(1))
-      .toPromise();
+    let states = await firstValueFrom(this.stateService.getStatesInContext());
     let newestState = states[0];
     if (!newestState) {
       return;
     }
 
     if (this.stateService.stateIsUnsaved) {
-      let {dismissedByAction} = await this.snackBar
+      let snackbarResult$ = this.snackBar
         .open(`Latest save game found, discard current changes and load "${newestState?.name}"?`,
           'Discard Changes', {duration: 15e3})
-        .afterDismissed()
-        .toPromise();
+        .afterDismissed();
+      let {dismissedByAction} = await firstValueFrom(snackbarResult$);
       if (!dismissedByAction) {
         return;
       }
     }
 
-    await this.stateService.loadState(newestState?.state).pipe(take(1)).toPromise();
+    await firstValueFrom(this.stateService.loadState(newestState?.state));
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
@@ -197,26 +216,31 @@ export class AuthService {
     let projectId = 'ksp-commnet-planner';
     let endpoint = 'isEmailACustomer';
 
-    return await this.http
+    let isCustomer$ = this.http
       .get<{ isCustomer: boolean }>(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`, {
         params: new HttpParams()
           .append('email', email),
       })
-      .pipe(map(result => result.isCustomer))
-      .toPromise();
+      .pipe(map(result => result.isCustomer));
+
+    return await firstValueFrom(isCustomer$);
   }
 
   private updateDataService(credential: UserCredential): Promise<void> {
     return this.dataService.updateUserId(credential.user.uid);
   }
 
+  private async getSignedInUser(): Promise<User> {
+    return firstValueFrom(user(this.auth));
+  }
+
   async reloadUserSignIn(): Promise<void> {
-    let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
+    let signedInUser = await this.getSignedInUser();
     await signedInUser.reload();
   }
 
-  async deleteAccount(user: User): Promise<void> {
-    let signedInUser = await this.afAuth.user.pipe(take(1)).toPromise();
+  async deleteAccount(user: UserData): Promise<void> {
+    let signedInUser = await this.getSignedInUser();
     await this.dataService.deleteAll('users');
     await this.dataService.deleteAll('states');
     await signedInUser.delete().catch(e => {

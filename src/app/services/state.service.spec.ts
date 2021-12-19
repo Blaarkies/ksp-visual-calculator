@@ -3,9 +3,8 @@ import { AppModule } from '../app.module';
 import { StateService } from './state.service';
 import { UsableRoutes } from '../usable-routes';
 import { SetupService } from './setup.service';
-import { EMPTY, of, Subject } from 'rxjs';
+import { catchError, EMPTY, firstValueFrom, of, Subject, take, timeout } from 'rxjs';
 import { SpaceObjectContainerService } from './space-object-container.service';
-import { catchError, take, timeout } from 'rxjs/operators';
 import { ineeda } from 'ineeda';
 import { Antenna } from '../common/domain/antenna';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
@@ -82,8 +81,8 @@ describe('StateService', () => {
   });
 
   it('earlyState should wait on setupService assets to be available', async (done) => {
-    let stockPlanets$ = new Subject();
-    let availableAntennae$ = new Subject();
+    let stockPlanets$ = new Subject<SpaceObject[]>();
+    let availableAntennae$ = new Subject<Antenna[]>();
     MockInstance(SetupService, instance => ({
       ...instance,
       stockPlanets$,
@@ -101,9 +100,9 @@ describe('StateService', () => {
     spyOnProperty(service, 'state', 'get')
       .and.returnValue({name: 'test-name'});
 
-    let noAssetsResult = await service.earlyState
-      .pipe(timeout(10), catchError(() => of('timeout')))
-      .toPromise();
+    let timeout$ = service.earlyState
+      .pipe(timeout(10), catchError(() => of('timeout')));
+    let noAssetsResult = await firstValueFrom(timeout$);
 
     expect(noAssetsResult).toBe('timeout');
 
@@ -274,7 +273,7 @@ describe('StateService', () => {
 
   it('removeStateFromStore() should call dataService.delete', async () => {
     let spyDelete = MockInstance(DataService, 'delete', createSpy()
-      .and.returnValue(EMPTY.toPromise()));
+      .and.returnValue(firstValueFrom(EMPTY)));
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
@@ -334,7 +333,7 @@ describe('StateService', () => {
 
     service.pageContext = testContext;
 
-    let contextStates = await service.getStatesInContext().pipe(take(1)).toPromise();
+    let contextStates = await firstValueFrom(service.getStatesInContext());
     expect(contextStates).toEqual(arrayContaining([
       objectContaining({name: 'test-name-a'}),
       objectContaining({name: 'test-name-c'}),

@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { SpaceObjectService } from '../../services/space-object.service';
-import { combineLatest, fromEvent } from 'rxjs';
+import { combineLatest, filter, fromEvent, take, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
-import { filter, take, takeUntil } from 'rxjs/operators';
 import { CameraService } from '../../services/camera.service';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { MatButton } from '@angular/material/button';
-import { AnalyticsService} from '../../services/analytics.service';
+import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 
 interface FocusItem {
@@ -46,7 +45,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
             icon: so.type.icon,
             label: so.label,
             itemAction: () => {
-              this.analyticsService.throttleEvent(EventLogs.Name.FocusBodyWithButton, {
+              this.analyticsService.logEventThrottled(EventLogs.Name.FocusBodyWithButton, {
                 category: EventLogs.Category.Camera,
                 body: EventLogs.Sanitize.anonymize(so.label),
               });
@@ -88,7 +87,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
     let lastDraggable = this.cameraService.lastFocusObject ?? this.list[0];
     let nextBodyIndex = this.list.findIndex(so =>
-      (so.source as SpaceObject).draggableHandle === lastDraggable)
+        (so.source as SpaceObject).draggableHandle === lastDraggable)
       + (shiftKey ? -1 : 1);
     let index = (nextBodyIndex + this.list.length) % this.list.length;
     let nextBody = this.list[index];

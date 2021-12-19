@@ -2,7 +2,7 @@ import { SpaceObjectService } from './space-object.service';
 import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { SetupService } from './setup.service';
-import { BehaviorSubject, interval, of } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, interval, of } from 'rxjs';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { Craft } from '../common/domain/space-objects/craft';
@@ -19,7 +19,6 @@ import { CameraService } from './camera.service';
 import { CelestialBodyDetails } from '../overlays/celestial-body-details-dialog/celestial-body-details';
 import { CraftDetails } from '../overlays/craft-details-dialog/craft-details';
 import { Draggable } from '../common/domain/space-objects/draggable';
-import { filter, take } from 'rxjs/operators';
 import { UsableRoutes } from '../usable-routes';
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
@@ -30,10 +29,9 @@ let serviceType = SpaceObjectService;
 describe('SpaceObjectService', () => {
 
   beforeAll(async () =>
-    await interval(10).pipe(
-      filter(() => (savegameJson as any).default),
-      take(1))
-      .toPromise());
+    await firstValueFrom(
+      interval(10)
+        .pipe(filter(() => (savegameJson as any).default))));
 
   beforeEach(() => MockBuilder(serviceType)
     .mock(SetupService, {
@@ -70,7 +68,7 @@ describe('SpaceObjectService', () => {
 
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await service.buildStockState(UsableRoutes.SignalCheck).toPromise();
+    await firstValueFrom(service.buildStockState(UsableRoutes.SignalCheck));
 
     expect(service.orbits$.value.length).toBe(1);
     expect(service.celestialBodies$.value.length).toBe(1);
@@ -104,7 +102,7 @@ describe('SpaceObjectService', () => {
 
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await service.buildStockState(UsableRoutes.SignalCheck).toPromise();
+    await firstValueFrom(service.buildStockState(UsableRoutes.SignalCheck));
 
     let planets = service.celestialBodies$.value;
     let groundStationPlanet = planets.find(p => p.hasDsn);
@@ -137,7 +135,7 @@ describe('SpaceObjectService', () => {
     let lastStateString = JSON.stringify((savegameJson as any).default);
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await service.buildState(lastStateString, UsableRoutes.SignalCheck).toPromise();
+    await firstValueFrom(service.buildState(lastStateString, UsableRoutes.SignalCheck));
 
     let orbitsResult = service.orbits$.value;
     let celestialBodiesResult = service.celestialBodies$.value;

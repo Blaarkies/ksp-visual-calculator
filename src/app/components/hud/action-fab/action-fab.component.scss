@@ -4,13 +4,27 @@
 }
 
 @keyframes kf-animate-opacity-wobble {
-  0% {opacity: 0}
-  25% {opacity: 1}
-  45% {opacity: 1}
-  50% {opacity: .5}
-  60% {opacity: 1}
-  90% {opacity: 1}
-  100% {opacity: 0}
+  0% {
+    opacity: 0
+  }
+  25% {
+    opacity: 1
+  }
+  45% {
+    opacity: 1
+  }
+  50% {
+    opacity: .5
+  }
+  60% {
+    opacity: 1
+  }
+  90% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0
+  }
 }
 
 button {

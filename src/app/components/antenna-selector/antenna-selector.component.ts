@@ -4,9 +4,8 @@ import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
 import { Icons } from '../../common/domain/icons';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { Antenna } from '../../common/domain/antenna';
-import { takeUntil } from 'rxjs/operators';
 import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
@@ -48,7 +47,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   antennaInputs: AntennaInput[] = [];
   mapIcons: Map<Antenna, string>;
 
-  private unsubscribe$ = new Subject();
+  private unsubscribe$ = new Subject<void>();
 
   constructor() {
     super();

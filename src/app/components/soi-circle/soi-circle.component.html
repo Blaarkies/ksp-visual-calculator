@@ -5,10 +5,10 @@
      [style.height.px]="scale * 2 * body.sphereOfInfluence">
   <defs>
     <radialGradient [id]="'grad1' + body.label" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-      <stop offset="60%" [style.stop-opacity]="0"/>
+      <stop offset="60%" [style.stop-opacity]="0" />
       <stop offset="100%"
             [style.stop-color]="body.draggableHandle.orbit.color + '30'"
-            [style.stop-opacity]="1"/>
+            [style.stop-opacity]="1" />
     </radialGradient>
   </defs>
   <circle [@fade]
@@ -16,5 +16,5 @@
           cx="50%"
           cy="50%"
           [attr.r]="scale * body.sphereOfInfluence"
-          [attr.fill]="'url(#grad1' + body.label + ')'"/>
+          [attr.fill]="'url(#grad1' + body.label + ')'" />
 </svg>

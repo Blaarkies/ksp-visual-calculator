@@ -42,6 +42,7 @@ export class Icons {
   static Coffee = 'coffee';
   static Gift = 'account-cash';
   static Feedback = 'comment-text';
+  static Policy = 'scale-balance';
   static Help = 'help-circle';
   static Info = 'information';
   static Camera = 'video-vintage';

@@ -17,8 +17,7 @@ import { MatSlider } from '@angular/material/slider';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { fromEvent, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, fromEvent, map, Subject, takeUntil } from 'rxjs';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
 
 @Component({
@@ -59,7 +58,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
 
   // tslint:disable-next-line:no-unused-variable
   private isActive: boolean;
-  private unsubscribe$ = new Subject();
+  private unsubscribe$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef,
               private self: ElementRef) {

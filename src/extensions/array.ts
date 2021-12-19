@@ -104,3 +104,8 @@ Array.prototype.windowed = function (this: Array<any>,
   }, {sum: [], last: null})
     .sum;
 };
+
+Array.prototype.random = function (this: Array<any>): any {
+  let randomIndex = Math.round(Math.random() * (this.length - 1));
+  return this[randomIndex];
+};

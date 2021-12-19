@@ -2,9 +2,9 @@ import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { UserProfileComponent } from './user-profile.component';
 import { AnalyticsService } from '../../services/analytics.service';
-import createSpy = jasmine.createSpy;
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
+import createSpy = jasmine.createSpy;
 
 let componentType = UserProfileComponent;
 describe('UserProfileComponent', () => {

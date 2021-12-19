@@ -156,6 +156,10 @@
   }
 }
 
+.sign-in-button-google-container {
+  display: grid;
+}
+
 .button-loader {
   mat-progress-bar {
     position: absolute;
@@ -177,4 +181,11 @@
   width: 13em;
   padding: 16px 0;
   justify-self: end;
+}
+
+.policy-layout {
+  display: flex;
+  gap: .4em;
+  align-items: center;
+  padding-left: 4px;
 }

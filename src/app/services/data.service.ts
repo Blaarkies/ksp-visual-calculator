@@ -1,12 +1,19 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreDocument, SetOptions } from '@angular/fire/firestore';
-import { BehaviorSubject, timer } from 'rxjs';
-import { map, mapTo, take } from 'rxjs/operators';
-import firebase from 'firebase/app';
-import FieldValue = firebase.firestore.FieldValue;
-import GetOptions = firebase.firestore.GetOptions;
+import { BehaviorSubject, firstValueFrom, mapTo, Observable, timer } from 'rxjs';
+import {
+  deleteDoc,
+  deleteField,
+  doc,
+  Firestore,
+  getDoc,
+  onSnapshot,
+  setDoc,
+  SetOptions,
+  updateDoc
+} from '@angular/fire/firestore';
+import { DocumentData, DocumentReference } from 'rxfire/firestore/interfaces';
 
-export interface User {
+export interface UserData {
   uid: string;
   email: string;
   photoURL?: string;
@@ -24,11 +31,23 @@ export class DataService {
 
   private userId$ = new BehaviorSubject<string>(undefined);
 
-  constructor(private afs: AngularFirestore) {
+  constructor(private afs: Firestore) {
   }
 
-  getRef<T>(path: string): AngularFirestoreDocument<T> {
-    return this.afs.doc<T>(path);
+  getRef<T>(path: string): DocumentReference<DocumentData> {
+    return doc(this.afs, path);
+  }
+
+  getChanges<T>(path: string) {
+    return new Observable(subscriber => {
+      let unsubscribeSnapshot = onSnapshot(
+        this.getRef<T>(path),
+        {},
+        s => subscriber.next(s.data()),
+        e => subscriber.error(e));
+
+      return () => unsubscribeSnapshot();
+    });
   }
 
   private checkUserSignIn(): Promise<void> {
@@ -40,45 +59,45 @@ export class DataService {
   async write(table: TableName, fields: {}, options: SetOptions = {}): Promise<void> {
     await this.checkUserSignIn();
 
-    return this.afs.doc(`${table}/${this.userId$.value}`)
-      .set(fields, options);
+    return setDoc(this.getRef(`${table}/${this.userId$.value}`),
+      fields,
+      options);
   }
 
   async delete(table: TableName, field: string): Promise<void> {
     await this.checkUserSignIn();
 
-    return this.afs.doc(`${table}/${this.userId$.value}`)
-      .update({[field]: FieldValue.delete()});
+    return updateDoc(
+      this.getRef(`${table}/${this.userId$.value}`),
+      {[field]: deleteField()});
   }
 
   async deleteAll(table: TableName): Promise<void> {
     await this.checkUserSignIn();
 
-    return this.afs.doc(`${table}/${this.userId$.value}`).delete();
+    return deleteDoc(this.getRef(`${table}/${this.userId$.value}`));
   }
 
-  async read<T>(table: TableName, id: string, options: GetOptions = {}): Promise<T> {
+  async read<T>(table: TableName, id: string): Promise<DocumentData> {
     await this.checkUserSignIn();
 
-    let entry = await this.afs.doc<T>(`${table}/${id}`)
-      .get(options)
-      .toPromise();
+    let entry = await getDoc(this.getRef(`${table}/${id}`));
     return entry.data();
   }
 
-  async readAll<T>(table: TableName, options: GetOptions = {}): Promise<T[]> {
+  async readAll<T>(table: TableName): Promise<T[]> {
     await this.checkUserSignIn();
 
     let userUid = this.userId$.value;
-    return this.afs.doc<T>(`${table}/${userUid}`)
-      .get(options)
-      .pipe(map(ref => Object.values(ref.data() ?? {} as T)), take(1))
-      .toPromise();
+    let docs = await getDoc(this.getRef(`${table}/${userUid}`));
+    let data = (docs.data() ?? {});
+
+    return Object.values(data);
   }
 
   async updateUserId(uid: string): Promise<void> {
     this.userId$.next(uid);
-    return timer(0).pipe(mapTo(void 0)).toPromise();
+    return firstValueFrom(timer(0).pipe(mapTo(void 0)));
   }
 
 }

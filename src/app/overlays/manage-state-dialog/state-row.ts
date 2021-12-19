@@ -1,5 +1,5 @@
 import { StateGame } from '../../services/json-interfaces/state-game';
-import { version as APP_VERSION } from '../../../../package.json';
+import { environment } from '../../../environments/environment';
 
 export class StateRow {
 
@@ -20,7 +20,7 @@ export class StateRow {
     let parsedState: StateGame = JSON.parse(this.state);
     parsedState.name = this.name;
     parsedState.timestamp = new Date();
-    parsedState.version = APP_VERSION.split('.').map(t => t.toNumber());
+    parsedState.version = environment.APP_VERSION.split('.').map(t => t.toNumber());
     return parsedState;
   }
 

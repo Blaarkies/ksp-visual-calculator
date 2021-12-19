@@ -1,29 +1,50 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SimpleDialogComponent, SimpleDialogData } from './overlays/simple-dialog/simple-dialog.component';
 import { WithDestroy } from './common/with-destroy';
-import { filter, take, takeUntil, tap } from 'rxjs/operators';
 import { TutorialService } from './services/tutorial.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './services/auth.service';
 import { HudService } from './services/hud.service';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
 import { GlobalStyleClass } from './common/global-style-class';
+import { filter, Subject, take, takeUntil, tap, timer } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
+import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
+
+let localStorageKeyFirstVisitDeprecated = 'ksp-visual-calculator-first-visit';
+let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';
 
 @Component({
   selector: 'cp-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
-export class AppComponent extends WithDestroy() implements OnInit {
+export class AppComponent extends WithDestroy() implements OnInit, OnDestroy {
+
+  showHolidayTheme = false;
+  unsubscribeHoliday$ = new Subject<void>();
 
   constructor(private dialog: MatDialog,
               private tutorialService: TutorialService,
               private snackBar: MatSnackBar,
               private authService: AuthService,
-              private hudService: HudService) {
+              private hudService: HudService,
+              router: Router,
+              cdr: ChangeDetectorRef) {
     super();
+
+    let specialRoutes = {
+      '/policy': () => this.dialog.open(PolicyDialogComponent),
+      '/feedback': () => this.dialog.open(FeedbackDialogComponent),
+    };
+
+    router.events
+      .pipe(
+        filter(e => e instanceof NavigationEnd),
+        takeUntil(this.destroy$))
+      .subscribe((e: NavigationEnd) => specialRoutes[e.url]?.());
 
     this.authService
       .user$
@@ -33,11 +54,28 @@ export class AppComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(() => this.dialog.open(AccountDialogComponent,
         {backdropClass: GlobalStyleClass.MobileFriendly}));
+
+    timer(30e3, 300e3)
+      .pipe(
+        takeUntil(this.unsubscribeHoliday$),
+        takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.showHolidayTheme = false;
+        cdr.detectChanges();
+        this.showHolidayTheme = true;
+      });
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    this.unsubscribeHoliday$.next();
+    this.unsubscribeHoliday$.complete();
   }
 
   ngOnInit() {
-    if (!localStorage.getItem('ksp-commnet-planner-first-visit')) {
-      localStorage.setItem('ksp-commnet-planner-first-visit', true.toString());
+    if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
+      localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
       this.triggerFirstVisitDialog();
     }
   }
@@ -64,8 +102,9 @@ export class AppComponent extends WithDestroy() implements OnInit {
         filter(ok => ok),
         takeUntil(this.destroy$))
       .subscribe(() => {
-        localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString());
+        localStorage.setItem(localStorageKeyTutorialViewed, true.toString());
         this.tutorialService.startFullTutorial(this.hudService.pageContext);
       });
   }
+
 }

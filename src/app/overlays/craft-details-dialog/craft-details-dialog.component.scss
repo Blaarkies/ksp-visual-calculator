@@ -39,7 +39,9 @@
     }
   }
 
-  .middle-column {grid-area: middle;}
+  .middle-column {
+    grid-area: middle;
+  }
 
   .right-column {
     grid-area: right;

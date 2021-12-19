@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { UsableRoutes } from '../usable-routes';
 import { SetupService } from './setup.service';
 import { StateSignalCheck } from './json-interfaces/state-signal-check';
-import { version as APP_VERSION } from '../../../package.json';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { StateCraft } from './json-interfaces/state-craft';
 import { SpaceObjectContainerService } from './space-object-container.service';
@@ -11,22 +10,29 @@ import { Uid } from '../common/uid';
 import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EMPTY, from, interval, Observable, of, Subject, zip } from 'rxjs';
-import { StateRow } from '../overlays/manage-state-dialog/state-row';
-import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import {
   catchError,
-  combineAll,
+  combineLatestAll,
   delay,
+  EMPTY,
   filter,
+  firstValueFrom,
+  from,
+  interval,
   map,
+  Observable,
+  of,
+  Subject,
   switchMap,
   switchMapTo,
   take,
   takeUntil,
   tap,
-  throttleTime
-} from 'rxjs/operators';
+  throttleTime,
+  zip
+} from 'rxjs';
+import { StateRow } from '../overlays/manage-state-dialog/state-row';
+import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,6 +41,8 @@ import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 import { GlobalStyleClass } from '../common/global-style-class';
+import { environment } from '../../environments/environment';
+import { Namer } from '../common/namer';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +50,7 @@ import { GlobalStyleClass } from '../common/global-style-class';
 export class StateService {
 
   private name: string;
-  private autoSaveUnsubscribe$ = new Subject();
+  private autoSaveUnsubscribe$ = new Subject<void>();
   private context: UsableRoutes;
 
   private lastStateRecord: string;
@@ -70,7 +78,7 @@ export class StateService {
         // TODO: StateService should be independent of the specifics in the universe (crafts$ might not exist in other
         // universe types)
         switchMap(() => of(this.spaceObjectContainerService.celestialBodies$, this.spaceObjectContainerService.crafts$)),
-        combineAll(),
+        combineLatestAll(),
         filter(([a, b]) => !!a && !!b),
         delay(0),
         map(() => this.state));
@@ -78,10 +86,10 @@ export class StateService {
 
   get state(): StateGame | StateSignalCheck | StateDvPlanner {
     let state: StateGame = {
-      name: this.name || Uid.new,
+      name: this.name || Namer.savegame,
       timestamp: new Date(),
       context: this.context,
-      version: APP_VERSION.split('.').map(t => t.toNumber()),
+      version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
       celestialBodies: this.spaceObjectContainerService.celestialBodies$.value
         .map(b => b.toJson()) as StateSpaceObject[],
     };
@@ -172,7 +180,7 @@ export class StateService {
       this.setContextualProperties({state, context: parsedState.context, parsedState});
       buildStateResult = this.spaceObjectService.buildState(state, parsedState.context);
     } else {
-      this.name = Uid.new;
+      this.name = Namer.savegame;
       this.setContextualProperties({state, context: this.context});
       buildStateResult = this.spaceObjectService.buildStockState(this.context);
     }
@@ -242,7 +250,7 @@ export class StateService {
   }
 
   async importState(stateString: string): Promise<void> {
-    await this.loadState(stateString).pipe(take(1)).toPromise();
+    await firstValueFrom(this.loadState(stateString));
   }
 
   async saveState(state: StateRow): Promise<void> {

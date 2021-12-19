@@ -1,6 +1,5 @@
 import { Directive, EventEmitter, HostListener, OnDestroy, Output } from '@angular/core';
-import { of, Subject, timer } from 'rxjs';
-import { mapTo, switchMap } from 'rxjs/operators';
+import { mapTo, of, Subject, switchMap, timer } from 'rxjs';
 
 @Directive({
   selector: '[cpMouseHover]',
@@ -29,7 +28,7 @@ export class MouseHoverDirective implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.hoverTrigger$.next();
+    this.hoverTrigger$.next(false);
     this.hoverTrigger$.complete();
   }
 

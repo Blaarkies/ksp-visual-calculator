@@ -1,5 +1,16 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  take,
+  takeUntil
+} from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
@@ -9,7 +20,6 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
 } from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import { filter, map, startWith, take, takeUntil } from 'rxjs/operators';
 import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import {
   ManageStateDialogComponent,
@@ -29,6 +39,14 @@ import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-di
 import { TutorialService } from './tutorial.service';
 import { GlobalStyleClass } from '../common/global-style-class';
 import { EventLogs } from './event-logs';
+import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
+
+let storageKeys = {
+  firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
+  tutorialViewed: 'ksp-visual-calculator-tutorial-viewed',
+  analyticsViewed: 'ksp-visual-calculator-analytics-viewed',
+  privacyPolicyViewed: 'ksp-visual-calculator-privacy-policy-viewed',
+};
 
 @Injectable({
   providedIn: 'root',
@@ -39,7 +57,7 @@ export class HudService {
   private contextChange$ = new BehaviorSubject<UsableRoutes>(null);
   context$ = this.contextChange$.asObservable();
   // fix dialog takeUntil using BehaviorSubject, because it cancels the stream immediately
-  unsubscribeDialog$ = new Subject();
+  unsubscribeDialog$ = new Subject<void>();
 
   get pageContext(): UsableRoutes {
     return this.contextChange$.value;
@@ -89,6 +107,7 @@ export class HudService {
         Icons.Relay,
         {route: UsableRoutes.SignalCheck},
         'Page that calculates CommNet ranges'),
+      new ActionOption('', '', {divider: true}),
       new ActionOption(
         'Source Code - GitHub',
         Icons.SourceCode,
@@ -125,31 +144,27 @@ export class HudService {
           },
         },
         undefined,
-        !localStorage.getItem('ksp-commnet-planner-tutorial-viewed'),
-        () => localStorage.setItem('ksp-commnet-planner-tutorial-viewed', true.toString())),
-      new ActionOption('Privacy', Icons.Analytics, {
+        !localStorage.getItem(storageKeys.tutorialViewed),
+        () => localStorage.setItem(storageKeys.tutorialViewed, true.toString())),
+      new ActionOption('Analytics', Icons.Analytics, {
           action: () => {
-            this.analyticsService.logEvent('Call privacy dialog', {
+            this.analyticsService.logEvent('Call analytics dialog', {
               category: EventLogs.Category.Privacy,
             });
 
-            this.dialog.open(PrivacyDialogComponent)
-              .afterClosed()
-              .subscribe();
+            this.dialog.open(PrivacyDialogComponent);
           },
         },
         'View privacy statement and settings',
-        !localStorage.getItem('ksp-commnet-planner-privacy-viewed'),
-        () => localStorage.setItem('ksp-commnet-planner-privacy-viewed', true.toString())),
+        !localStorage.getItem(storageKeys.analyticsViewed),
+        () => localStorage.setItem(storageKeys.analyticsViewed, true.toString())),
       new ActionOption('Credits', Icons.Credits, {
         action: () => {
           this.analyticsService.logEvent('Call Credits dialog', {
             category: EventLogs.Category.Credits,
           });
 
-          this.dialog.open(CreditsDialogComponent)
-            .afterClosed()
-            .subscribe();
+          this.dialog.open(CreditsDialogComponent);
         },
       }),
       new ActionOption('Buy Me a Coffee', Icons.Coffee, {
@@ -171,6 +186,18 @@ export class HudService {
           this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
         },
       }),
+      new ActionOption('Privacy Policy', Icons.Policy, {
+        action: () => {
+          this.analyticsService.logEvent('Call privacy policy dialog', {
+            category: EventLogs.Category.Policy,
+          });
+
+          this.dialog.open(PolicyDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+        },
+      },
+        undefined,
+        !localStorage.getItem(storageKeys.privacyPolicyViewed),
+        () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
     ];
   }
 
@@ -178,7 +205,7 @@ export class HudService {
     let options = [
       new ActionOption('New Craft', Icons.Craft, {
         action: () => {
-          this.analyticsService.throttleEvent(EventLogs.Name.CallNewCraftDialog, {
+          this.analyticsService.logEventThrottled(EventLogs.Name.CallNewCraftDialog, {
             category: EventLogs.Category.Craft,
           });
 
@@ -271,7 +298,7 @@ export class HudService {
         unavailable$: this.authService.user$.pipe(map(user => user === null || !user?.isCustomer), startWith(true)),
         tooltip: `Save games are only available after supporting on 'buymeacoffee.com/Blaarkies'`,
         action: async () => {
-          let user = await this.authService.user$.pipe(take(1)).toPromise();
+          let user = await firstValueFrom(this.authService.user$);
 
           if (!user) {
             this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});

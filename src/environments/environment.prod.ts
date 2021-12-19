@@ -1,3 +1,5 @@
+declare const require: any;
+
 const firebase = {
   apiKey: 'AIzaSyBriVLs7H947lm6wcXFQFMb0A7fKaEm-gw',
   authDomain: 'ksp-commnet-planner.firebaseapp.com',
@@ -11,4 +13,5 @@ const firebase = {
 export const environment = {
   production: true,
   firebase,
+  APP_VERSION: require('../../package.json').version,
 };

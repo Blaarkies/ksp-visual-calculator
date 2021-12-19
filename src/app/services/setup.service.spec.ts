@@ -2,8 +2,7 @@ import { SetupService } from './setup.service';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { HttpClient } from '@angular/common/http';
-import { of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { firstValueFrom, of, take } from 'rxjs';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
 import { fakeAsync, tick } from '@angular/core/testing';
@@ -34,12 +33,12 @@ describe('SetupService', async () => {
   it('constructor() should set difficultySetting & planets', fakeAsync(async () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
-    await service.availableAntennae$.pipe(take(1)).toPromise();
+    await firstValueFrom(service.availableAntennae$);
     tick();
 
     expect(service.difficultySetting.label).toBe('Normal');
 
-    let {listOrbits, celestialBodies} = await service.stockPlanets$.pipe(take(1)).toPromise();
+    let {listOrbits, celestialBodies} = await firstValueFrom(service.stockPlanets$);
     expect(listOrbits).toEqual(arrayContaining([anything()]));
     expect(celestialBodies).toEqual(arrayContaining([
       objectContaining({label: 'Kerbol'}),
@@ -75,7 +74,7 @@ describe('SetupService', async () => {
   it('antennaList should return the latest list of antennae', fakeAsync(async () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
-    await service.availableAntennae$.pipe(take(1)).toPromise();
+    await firstValueFrom(service.availableAntennae$);
     tick();
 
     service.antennaList;

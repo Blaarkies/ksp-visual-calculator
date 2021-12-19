@@ -31,7 +31,9 @@
   }
 }
 
-.navigation {grid-area: nav;}
+.navigation {
+  grid-area: nav;
+}
 
 .page-context {
   grid-area: page;
@@ -73,9 +75,15 @@
         animation: kf-animate-wave 10s ease-in-out infinite;
 
         @keyframes kf-animate-wave {
-          0% {transform: translateX(-200%)}
-          65% {transform: translateX(-200%)}
-          100% {transform: translateX(200%)}
+          0% {
+            transform: translateX(-200%)
+          }
+          65% {
+            transform: translateX(-200%)
+          }
+          100% {
+            transform: translateX(200%)
+          }
         }
       }
 
@@ -86,11 +94,21 @@
       animation: kf-animate-badge 5s linear infinite alternate;
 
       @keyframes kf-animate-badge {
-        0% {opacity: 0}
-        75% {opacity: 0}
-        85% {opacity: 1}
-        90% {opacity: 1}
-        100% {opacity: .5}
+        0% {
+          opacity: 0
+        }
+        75% {
+          opacity: 0
+        }
+        85% {
+          opacity: 1
+        }
+        90% {
+          opacity: 1
+        }
+        100% {
+          opacity: .5
+        }
       }
     }
   }
@@ -133,6 +151,7 @@
   grid-row: 1/-1;
   place-self: end end;
 }
+
 //.clippy {grid-area: clippy}
 
 .profile-icon {

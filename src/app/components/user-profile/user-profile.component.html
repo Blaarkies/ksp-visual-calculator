@@ -14,7 +14,7 @@
     <button mat-icon-button
             (click)="$event.stopPropagation(); openAccountDialog()"
             [matTooltip]="'Account Details'">
-      <img class="profile-image" [attr.src]="user.photoURL || 'assets/logos/guest-account.png'"/>
+      <img class="profile-image" [attr.src]="user.photoURL || 'assets/logos/guest-account.png'" />
     </button>
   </ng-container>
 </ng-template>

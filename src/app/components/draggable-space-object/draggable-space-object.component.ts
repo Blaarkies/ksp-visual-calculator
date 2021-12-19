@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
-import { Subject } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
-import { filter, takeUntil } from 'rxjs/operators';
 import { WithDestroy } from '../../common/with-destroy';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
@@ -43,7 +42,7 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
   }
 
   ngOnDestroy() {
-    this.buttonHover$.next();
+    this.buttonHover$.next(false);
     this.buttonHover$.complete();
   }
 

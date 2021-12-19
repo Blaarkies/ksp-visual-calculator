@@ -1,5 +1,8 @@
 export {}; // this file needs to be a module
 
+/**
+ * Returns a title case version of the string.
+ */
 String.prototype.toTitleCase = function (this: string): string {
   return this.replace(
     /([^\W_]+[^\s-]*) */g, // match words separated by space/dash

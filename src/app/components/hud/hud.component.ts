@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { HudService } from '../../services/hud.service';
@@ -7,10 +7,9 @@ import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq
 import { MatDialog } from '@angular/material/dialog';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { Observable } from 'rxjs';
+import { firstValueFrom, map, Observable, take, takeUntil } from 'rxjs';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { map, take, takeUntil } from 'rxjs/operators';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import {
   ActionBottomSheetComponent,
@@ -76,7 +75,8 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
               private dialog: MatDialog,
               private cameraService: CameraService,
               breakpointObserver: BreakpointObserver,
-              private bottomSheet: MatBottomSheet) {
+              private bottomSheet: MatBottomSheet,
+              private cdr: ChangeDetectorRef) {
     super();
 
     this.isHandset$ = breakpointObserver.observe([
@@ -103,6 +103,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
 
   ngAfterViewInit() {
     this.domPortal = new DomPortal(this.baseContent);
+    this.cdr.detectChanges();
   }
 
   openFaq() {
@@ -138,7 +139,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
         });
         break;
       case ActionGroupType.Context:
-        let panel = await this.contextPanel$.pipe(take(1)).toPromise();
+        let panel = await firstValueFrom(this.contextPanel$);
         result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
             startTitle: panel.startTitle,
@@ -151,7 +152,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
         throw new Error(`No bottom-sheet defined for "${group}"`);
     }
 
-    await result?.afterDismissed()?.toPromise();
+    await firstValueFrom(result?.afterDismissed());
 
     updateUnreadCountCallback();
   }
@@ -161,10 +162,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
       category: EventLogs.Category.Coffee,
     });
 
-    this.dialog.open(BuyMeACoffeeDialogComponent)
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.dialog.open(BuyMeACoffeeDialogComponent);
   }
 
 }

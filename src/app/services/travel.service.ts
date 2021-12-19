@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, finalize, Subject, take, takeUntil } from 'rxjs';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
-import { finalize, take, takeUntil } from 'rxjs/operators';
 import { DeltaVGraph } from '../common/data-structures/delta-v-map/delta-v-graph';
 import { TravelCondition } from '../common/data-structures/delta-v-map/travel-condition';
 import { CheckpointNode } from '../common/data-structures/delta-v-map/checkpoint-node';
@@ -20,8 +19,8 @@ export class TravelService {
 
   checkpoints$ = new BehaviorSubject<Checkpoint[]>([]);
   selectedCheckpoint$ = new Subject<SpaceObject>();
-  unsubscribeSelectedCheckpoint$ = new Subject<SpaceObject>();
-  unsubscribeLockedCheckpointMode$ = new Subject();
+  unsubscribeSelectedCheckpoint$ = new Subject<void>();
+  unsubscribeLockedCheckpointMode$ = new Subject<void>();
   isSelectingCheckpoint$ = new Subject<boolean>();
 
   dvMap = new DeltaVGraph();
@@ -43,7 +42,7 @@ export class TravelService {
   }
 
   setCheckpointMode(isLocked: boolean) {
-    this.analyticsService.throttleEvent(EventLogs.Name.ToggleCheckpointLockMode, {
+    this.analyticsService.logEventThrottled(EventLogs.Name.ToggleCheckpointLockMode, {
       category: EventLogs.Category.DeltaV,
       isLocked,
     });
@@ -78,7 +77,7 @@ export class TravelService {
 
     this.updateCheckpoints(newList);
 
-    this.analyticsService.throttleEvent(EventLogs.Name.AddCheckpoint, {
+    this.analyticsService.logEventThrottled(EventLogs.Name.AddCheckpoint, {
       category: EventLogs.Category.DeltaV,
       checkpoints: newList.map(n => n.node.name),
       inputMode,
@@ -115,7 +114,7 @@ export class TravelService {
 
     this.stopCheckpointSelection();
 
-    this.analyticsService.throttleEvent(EventLogs.Name.RemoveCheckpoint, {
+    this.analyticsService.logEventThrottled(EventLogs.Name.RemoveCheckpoint, {
       category: EventLogs.Category.DeltaV,
       checkpoint: checkpoint.node.name,
     });

@@ -5,19 +5,17 @@ import { ineeda } from 'ineeda';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import { UsableRoutes } from '../../usable-routes';
 import * as savegameJson from 'src/test-resources/ksp-cp-savegame.json';
+import { filter, firstValueFrom, interval } from 'rxjs';
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
-import { interval } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
 
 let componentType = StateDisplayComponent;
 describe('StateDisplayComponent', () => {
 
   beforeAll(async () =>
-    await interval(10).pipe(
-      filter(() => (savegameJson as any).default),
-      take(1))
-      .toPromise());
+    await firstValueFrom(
+      interval(10)
+        .pipe(filter(() => (savegameJson as any).default))));
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
 

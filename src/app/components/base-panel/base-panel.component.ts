@@ -3,8 +3,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Icons } from '../../common/domain/icons';
 import { AuthService } from '../../services/auth.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { Subject, timer } from 'rxjs';
-import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { filter, Subject, switchMap, take, takeUntil, timer } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -21,7 +20,7 @@ export class BasePanelComponent extends WithDestroy() {
 
   isOpen = false;
   icons = Icons;
-  unsubscribePanel$ = new Subject();
+  unsubscribePanel$ = new Subject<void>();
   initialized = false;
   nothingToDisplay = false;
   lastOpened = new Date();
@@ -72,10 +71,7 @@ export class BasePanelComponent extends WithDestroy() {
   }
 
   openCoffeeDialog() {
-    this.dialog.open(BuyMeACoffeeDialogComponent)
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.dialog.open(BuyMeACoffeeDialogComponent);
 
     this.analyticsService.logEvent('Call coffee dialog from ad',
       {category: EventLogs.Category.Coffee});

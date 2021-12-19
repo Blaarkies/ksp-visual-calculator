@@ -2,8 +2,7 @@ import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { ActionListComponent } from './action-list.component';
 import { ActionOption } from '../../common/domain/action-option';
-import { take } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { AnalyticsService } from '../../services/analytics.service';
 import createSpy = jasmine.createSpy;
@@ -202,7 +201,7 @@ describe('ActionListComponent', () => {
 
     let fixture = MockRender(componentType, {options});
 
-    await options[0].unavailableMeta.unavailable$.pipe(take(1)).toPromise();
+    await firstValueFrom(options[0].unavailableMeta.unavailable$);
     fixture.detectChanges();
 
     let listOptions = Array.from(

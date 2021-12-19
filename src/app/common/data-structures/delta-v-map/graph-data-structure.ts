@@ -43,7 +43,7 @@ export interface GraphDataStructure extends GraphDataStructureExtensions {
 }
 
 export function NodeGraph(): GraphDataStructure {
-  let graph = Graph();
+  let graph = Graph() as GraphDataStructure;
   graph.addBiEdge = (nodeA: string, nodeB: string, weight: number) => {
     graph.addEdge(nodeA, nodeB, weight);
     graph.addEdge(nodeB, nodeA, weight);

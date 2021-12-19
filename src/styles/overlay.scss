@@ -17,8 +17,12 @@
     animation: kf-animate-wave 4s ease-in-out infinite;
 
     @keyframes kf-animate-wave {
-      from {transform: translateX(-200%)}
-      to {transform: translateX(200%)}
+      from {
+        transform: translateX(-200%)
+      }
+      to {
+        transform: translateX(200%)
+      }
     }
   }
 
@@ -29,9 +33,15 @@
     animation: kf-shine 1.5s linear alternate infinite;
 
     @keyframes kf-shine {
-      0% {backdrop-filter: brightness(1)}
-      80% {backdrop-filter: brightness(1)}
-      100% {backdrop-filter: brightness(2)}
+      0% {
+        backdrop-filter: brightness(1)
+      }
+      80% {
+        backdrop-filter: brightness(1)
+      }
+      100% {
+        backdrop-filter: brightness(2)
+      }
     }
   }
 }

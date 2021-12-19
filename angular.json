@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ksp-commnet-planner": {
+    "ksp-visual-calculator": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,12 +13,11 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ksp-commnet-planner",
+            "outputPath": "dist/ksp-visual-calculator",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": true,
             "assets": [
               "src/favicon.ico",
               {
@@ -32,7 +31,13 @@
               "src/styles/custom-theme.scss",
               "src/styles/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -62,23 +67,24 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ksp-commnet-planner:build"
+            "browserTarget": "ksp-visual-calculator:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ksp-commnet-planner:build:production"
+              "browserTarget": "ksp-visual-calculator:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ksp-commnet-planner:build"
+            "browserTarget": "ksp-visual-calculator:build"
           }
         },
         "test": {
@@ -100,34 +106,30 @@
             "scripts": []
           }
         },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ksp-commnet-planner:serve"
+            "devServerTarget": "ksp-visual-calculator:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ksp-commnet-planner:serve:production"
+              "devServerTarget": "ksp-visual-calculator:serve:production"
             }
           }
         },
         "deploy": {
           "builder": "@angular/fire:deploy",
           "options": {}
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
@@ -137,5 +139,8 @@
       "style": "scss"
     }
   },
-  "defaultProject": "ksp-commnet-planner"
+  "defaultProject": "ksp-visual-calculator",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

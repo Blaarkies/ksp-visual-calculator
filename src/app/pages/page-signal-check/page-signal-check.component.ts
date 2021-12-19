@@ -4,12 +4,11 @@ import { Craft } from '../../common/domain/space-objects/craft';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { SpaceObjectService } from '../../services/space-object.service';
-import { Observable } from 'rxjs';
+import { filter, Observable, takeUntil } from 'rxjs';
 import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
 } from '../../overlays/craft-details-dialog/craft-details-dialog.component';
-import { filter, takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';

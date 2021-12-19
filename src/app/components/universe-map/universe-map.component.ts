@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
-import { Observable } from 'rxjs';
+import { filter, Observable, takeUntil } from 'rxjs';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
@@ -22,7 +22,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from '../../services/analytics.service';
 import { HudService } from '../../services/hud.service';
 import { StateService } from '../../services/state.service';
-import { filter, takeUntil } from 'rxjs/operators';
 import { CameraComponent } from '../camera/camera.component';
 import { EventLogs } from '../../services/event-logs';
 import {
@@ -74,7 +73,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
     body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
     this.startDrag.emit(body);
 
-    this.analyticsService.throttleEvent(EventLogs.Name.DragBody, {
+    this.analyticsService.logEventThrottled(EventLogs.Name.DragBody, {
       category: EventLogs.Category.CelestialBody,
       touch: event.pointerType === 'touch',
       details: {

@@ -17,8 +17,7 @@ import { FormControlError } from '../../../common/domain/input-fields/form-contr
 import { CustomAnimation } from '../../../common/domain/custom-animation';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
-import { fromEvent, Subject, timer } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
 
 @Component({
   selector: 'cp-input-field',
@@ -58,7 +57,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   isActive: boolean;
   icons = Icons;
   errorBlink$ = new Subject<boolean>();
-  private unsubscribe$ = new Subject();
+  private unsubscribe$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef) {
     super();

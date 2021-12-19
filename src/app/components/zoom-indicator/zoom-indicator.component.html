@@ -5,20 +5,20 @@
   <svg xmlns="http://www.w3.org/2000/svg">
     <line x1="0" y1="0" x2="100%" y2="0"
           stroke="#aff7"
-          stroke-width="6"/>
+          stroke-width="6" />
   </svg>
 
   <svg xmlns="http://www.w3.org/2000/svg">
-    <rect class="move-smooth" [attr.x]="zoomPoint + '%'" y="-15" width="10" height="30" rx="2" fill="#fff"/>
+    <rect class="move-smooth" [attr.x]="zoomPoint + '%'" y="-15" width="10" height="30" rx="2" fill="#fff" />
   </svg>
 
   <svg xmlns="http://www.w3.org/2000/svg">
     <g id="kerbol-system">
-      <circle cx="0" cy="0" r="10" fill="#ECE45A"/>
+      <circle cx="0" cy="0" r="10" fill="#ECE45A" />
 
-      <circle cx="0" cy="0" r="15" fill="#0000" stroke="#30f0f0" stroke-width="2"/>
+      <circle cx="0" cy="0" r="15" fill="#0000" stroke="#30f0f0" stroke-width="2" />
 
-      <circle cx="0" cy="0" r="22" fill="#0000" stroke="#56ae0e" stroke-width="2"/>
+      <circle cx="0" cy="0" r="22" fill="#0000" stroke="#56ae0e" stroke-width="2" />
       <text x="0" y="35" fill="#fff" text-anchor="middle">Stars</text>
     </g>
   </svg>
@@ -28,7 +28,7 @@
       <circle [attr.cx]="positions.planets + '%'"
               cy="0"
               r="15"
-              fill="#C7936B"/>
+              fill="#C7936B" />
       <text [attr.x]="positions.planets + '%'" y="30" fill="#fff" text-anchor="middle">Planets</text>
     </g>
   </svg>
@@ -38,13 +38,13 @@
       <circle [attr.cx]="positions.moons + '%'"
               cy="0"
               r="10"
-              fill="#A0A0B8"/>
+              fill="#A0A0B8" />
       <text [attr.x]="positions.moons + '%'" y="25" fill="#fff" text-anchor="middle">Moons</text>
     </g>
   </svg>
 
   <svg xmlns="http://www.w3.org/2000/svg">
-    <rect x="100%" y="-10" width="5" height="20" rx="2" fill="#517979"/>
+    <rect x="100%" y="-10" width="5" height="20" rx="2" fill="#517979" />
   </svg>
 
 </div>

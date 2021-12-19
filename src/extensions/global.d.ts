@@ -64,6 +64,8 @@ declare global {
 
     last(this: Array<T>): T;
 
+    random(this: Array<T>): T;
+
     sum(this: Array<number>): number;
 
     add(this: Array<T>, fresh: T): Array<T>;

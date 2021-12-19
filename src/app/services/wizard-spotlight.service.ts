@@ -9,8 +9,7 @@ import {
 import { Vector2 } from '../common/domain/vector2';
 import { WizardMessage, WizardMessageComponent } from '../components/wizard-message/wizard-message.component';
 import { WizardMarker, WizardMarkerComponent } from '../components/wizard-marker/wizard-marker.component';
-import { concat, from, Observable, of, Subject, timer } from 'rxjs';
-import { concatMap, delay, finalize, reduce, takeUntil, tap } from 'rxjs/operators';
+import { concat, concatMap, delay, finalize, from, Observable, of, reduce, Subject, takeUntil, tap, timer } from 'rxjs';
 
 export type StepType = 'waitForNext' | 'end';
 export type Positions = 'left' | 'right' | 'top' | 'bottom' | 'center';
@@ -126,13 +125,14 @@ export class WizardSpotlightService {
         stepType: stepDetails.stepType,
       } as WizardMessage);
 
-    timer(0).pipe(
-      // dialogs on screen edge have compressed text
-      tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
-      delay(0),
-      // dialog size changed by now, re-check positioning
-      tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
-    ).subscribe();
+    timer(0)
+      .pipe(
+        // dialogs on screen edge have compressed text
+        tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
+        delay(0),
+        // dialog size changed by now, re-check positioning
+        tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)))
+      .subscribe();
 
     return [wizardMarker, wizardMessage].filter(comp => comp);
   }

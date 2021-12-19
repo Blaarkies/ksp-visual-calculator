@@ -6,8 +6,7 @@
 
   content: "";
   // https://line.17qq.com/articles/ibeiiebz.html
-  background:
-    // tints the background darker, so that camera zooming is more bearable on the user's eyes
+  background: // tints the background darker, so that camera zooming is more bearable on the user's eyes
     linear-gradient(#000000B0, #000000B0),
     url('/assets/stars-background-hi-res.jpg'); // todo: fix path issue to file from scss files
   background-repeat: repeat;

@@ -8,7 +8,6 @@ import {
   ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
-import { delay, filter, finalize, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsableRoutes } from '../../usable-routes';
 import { StateService } from '../../services/state.service';
@@ -17,7 +16,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { CommonValidators } from '../../common/validators/common-validators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
-import { Observable, of, Subject } from 'rxjs';
+import { delay, filter, finalize, map, Observable, of, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 import { StateRow } from './state-row';
 import { StateEntry } from './state-entry';

@@ -8,6 +8,7 @@ class Category {
   static Credits = 'credits';
   static Coffee = 'coffee';
   static Feedback = 'feedback';
+  static Policy = 'policy';
   static Difficulty = 'difficulty';
   static Route = 'route';
   static Help = 'help';

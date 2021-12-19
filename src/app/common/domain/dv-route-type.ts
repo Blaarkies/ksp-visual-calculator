@@ -1,4 +1,4 @@
 export class DvRouteType {
-    static lessDetours = 'lessDetours';
-    static lessDv = 'lessDv';
+  static lessDetours = 'lessDetours';
+  static lessDv = 'lessDv';
 }

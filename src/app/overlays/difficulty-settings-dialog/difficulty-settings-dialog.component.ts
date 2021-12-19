@@ -6,7 +6,7 @@ import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { DifficultySetting } from './difficulty-setting';
 import { WithDestroy } from '../../common/with-destroy';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'cp-difficulty-settings-dialog',

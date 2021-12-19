@@ -1,6 +1,5 @@
 import { Directive, EventEmitter, HostListener, OnDestroy, Output } from '@angular/core';
-import { Subject } from 'rxjs';
-import { filter, scan, skip } from 'rxjs/operators';
+import { filter, scan, skip, Subject } from 'rxjs';
 
 @Directive({
   selector: '[cpDoublePointerAction]',

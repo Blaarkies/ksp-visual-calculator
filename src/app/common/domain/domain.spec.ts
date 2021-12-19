@@ -7,8 +7,7 @@ import { Group } from './group';
 import { SetupService } from '../../services/setup.service';
 import { DifficultySetting } from '../../overlays/difficulty-settings-dialog/difficulty-setting';
 import { SpaceObjectType } from './space-objects/space-object-type';
-import { interval } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { filter, firstValueFrom, interval } from 'rxjs';
 
 interface SignalScenario {
   label: string;
@@ -26,10 +25,9 @@ interface AntennaScenario extends SignalScenario {
 describe('Domain tests', () => {
 
   beforeAll(async () =>
-    await interval(10).pipe(
-      filter(() => (antennaPartsJson as any).default),
-      take(1))
-      .toPromise());
+    await firstValueFrom(
+      interval(10)
+        .pipe(filter(() => (antennaPartsJson as any).default))));
 
   describe('Antenna calculations', async () => {
     let setupServiceMock = {

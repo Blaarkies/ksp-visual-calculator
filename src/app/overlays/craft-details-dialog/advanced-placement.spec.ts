@@ -1,8 +1,8 @@
 import { AdvancedPlacement, AngleConvertType } from './advanced-placement';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { ineeda } from 'ineeda';
-import objectContaining = jasmine.objectContaining;
 import { Vector2 } from '../../common/domain/vector2';
+import objectContaining = jasmine.objectContaining;
 
 describe('AdvancedPlacement class', () => {
 
