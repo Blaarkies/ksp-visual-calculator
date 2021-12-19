@@ -139,7 +139,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
     let email = this.controlEmail.value;
     let password = this.controlPassword.value;
 
-    from(this.authService.emailSignIn(email, password))
+    from(this.authService.emailSignIn(email, password, this.controlPolicy.value))
       .pipe(
         catchError(error => {
           let {code} = error;
@@ -153,7 +153,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
           if (code === AuthErrorCode.WrongEmail) {
             // account does not exist
-            return this.authService.emailSignUp(email, password);
+            return this.authService.emailSignUp(email, password, this.controlPolicy.value);
           }
 
           throw error;
@@ -176,6 +176,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         this.snackBar.open(`Signed in with "${credential.user.email}"`);
         this.controlEmail.reset();
         this.controlPassword.reset();
+        this.controlPolicy.reset();
       });
   }
 
@@ -212,8 +213,11 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
   async signInWithGoogle() {
     this.signingInWithGoogle$.next(true);
-    await this.authService.googleSignIn();
+    await this.authService.googleSignIn(this.controlPolicy.value);
     this.signingInWithGoogle$.next(false);
+    this.controlEmail.reset();
+    this.controlPassword.reset();
+    this.controlPolicy.reset();
   }
 
   async validateAccount(user: UserData) {

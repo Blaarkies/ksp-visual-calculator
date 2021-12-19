@@ -111,6 +111,7 @@ export class CameraService {
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
     this.lastFocusObject = spaceObject.draggableHandle;
     this.focusAt(spaceObject.location, spaceObject.type, zoomIn);
+    this.cdr.markForCheck();
   }
 
   private getScaleForFocus(location: Vector2, type: SpaceObjectType) {

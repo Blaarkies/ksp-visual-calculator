@@ -142,7 +142,9 @@
       </div>
     </div>
 
-    <div class="sign-in-button-email-container">
+    <div class="sign-in-button-email-container"
+         [matTooltip]="'Please check the Privacy Policy to continue'"
+         [matTooltipDisabled]="controlPolicy.valid">
       <button mat-stroked-button
               class="button-loader"
               (click)="signInWithEmailAddress()"
@@ -160,14 +162,19 @@
 
     <mat-divider></mat-divider>
 
-    <button mat-stroked-button
-            class="button-loader"
-            [disabled]="controlPolicy.invalid || (signingInWithGoogle$ | async)"
-            (click)="signInWithGoogle()">
-      <img class="google-g-logo" src="assets/logos/google-g.svg" />
-      <span>Sign in with Google</span>
-      <mat-progress-bar [@fade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
-    </button>
+    <div class="sign-in-button-google-container"
+         [matTooltip]="'Please check the Privacy Policy to continue'"
+         [matTooltipDisabled]="controlPolicy.valid"
+         matTooltipPosition="above">
+      <button mat-stroked-button
+              class="button-loader"
+              [disabled]="controlPolicy.invalid || (signingInWithGoogle$ | async)"
+              (click)="signInWithGoogle()">
+        <img class="google-g-logo" src="assets/logos/google-g.svg" />
+        <span>Sign in with Google</span>
+        <mat-progress-bar [@fade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
+      </button>
+    </div>
 
     <mat-divider></mat-divider>
   </div>

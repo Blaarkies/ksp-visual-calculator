@@ -112,28 +112,28 @@ export class AuthService {
       .subscribe();
   }
 
-  async googleSignIn() {
+  async googleSignIn(agreedPolicy: boolean) {
     const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user);
+    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
     await this.loadUserLastSaveGame();
   }
 
-  async emailSignIn(email: string, password: string): Promise<UserCredential> {
+  async emailSignIn(email: string, password: string, agreedPolicy: boolean): Promise<UserCredential> {
     let credential = await signInWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user);
+    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
     await this.loadUserLastSaveGame();
     return credential;
   }
 
-  async emailSignUp(email: string, password: string): Promise<UserCredential> {
+  async emailSignUp(email: string, password: string, agreedPolicy: boolean): Promise<UserCredential> {
     let credential = await createUserWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user);
+    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
     // todo: check that current "tutorial" game is saved
     return credential;
   }
@@ -145,7 +145,7 @@ export class AuthService {
     this.stateService.setStateRecord();
   }
 
-  async updateUserData(user: UserData | User): Promise<UserData> {
+  async updateUserData(user: UserData | User, extra?: {userAgreedToPrivacyPolicy: boolean}): Promise<UserData> {
     let dbUser = await this.dataService.read<UserData>('users', user.uid);
     let isCustomer = dbUser?.isCustomer || await this.isCustomer(user.email);
 
@@ -155,6 +155,7 @@ export class AuthService {
       displayName: dbUser?.displayName || user.displayName,
       photoURL: dbUser?.photoURL || user.photoURL,
       isCustomer,
+      ...extra,
     };
 
     await this.dataService.write('users', data);

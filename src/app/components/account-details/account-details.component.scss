@@ -156,6 +156,10 @@
   }
 }
 
+.sign-in-button-google-container {
+  display: grid;
+}
+
 .button-loader {
   mat-progress-bar {
     position: absolute;
