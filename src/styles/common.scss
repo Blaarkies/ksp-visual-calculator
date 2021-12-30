@@ -46,6 +46,12 @@
   backdrop-filter: blur(5px);
 }
 
+@supports not (backdrop-filter: blur(5px)) {
+  .frosted-glass {
+    filter: drop-shadow(0 0 2px #000);
+  }
+}
+
 .no-mouse {
   pointer-events: none;
 }
