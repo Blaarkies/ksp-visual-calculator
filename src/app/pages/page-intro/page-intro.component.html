@@ -1,0 +1,238 @@
+<nav class="top-nav">
+  <a href="/dv-planner">Delta-v Calculator</a>
+  <a href="/signal-check">CommNet Calculator</a>
+</nav>
+
+<main [scrollTop]="999">
+
+  <article>
+    <header>
+      <h1>KSP Visual Calculator</h1>
+      <p>
+        This online tool calculates delta-v and CommNet requirements in KSP (a video game, Kerbal Space Program). It
+        helps KSP players plan and solve complex missions. Just like the game, these calculators are made to be
+        interactive and visual to help new comers quickly grasp the mechanics of rocket science.
+      </p>
+    </header>
+
+    <nav class="button-calculators">
+      <a href="/dv-planner">Go to Delta-v Calculator</a>
+      <a href="/signal-check">Go to CommNet Calculator</a>
+    </nav>
+  </article>
+
+  <article>
+    <section>
+      <h2>Delta-v</h2>
+      <p>
+        Delta-v, dv, or formally Δv is a measure of <i>change in velocity</i>. This is the spaceship equivalent of
+        talking about a car's <i>range</i>, or how much distance the car can travel without refueling. Because a
+        spaceship in a stable orbit will continue travelling a huge distance without using any fuel at all, it is
+        irrelevant measuring the spaceship's range in distance like we do with cars. Instead, spacecraft measure
+        their capability in how much they can change their speed, as this ultimately determines if it can reach
+        the Moon or beyond.
+      </p>
+
+      <section class="column-dual">
+        <p>
+          This delta-v can be measured practically by using up all the craft's fuel to thrust itself forward, and then
+          finding the difference between the final velocity and the initial velocity. This <i>difference</i>, or
+          rather<i>change in velocity</i> is the craft's delta-v capability. This is usually measured in meters per
+          second
+          <code>m/s</code>
+        </p>
+
+        <aside class="contains-header max-content">
+          <div><i>Velocity is speed with specific direction</i></div>
+          <small>The velocity of an object is the rate of change of its position with respect to a frame of
+            reference.</small>
+        </aside>
+      </section>
+    </section>
+
+    <section>
+      <h3>Why is delta-v an important measure?</h3>
+      <p>
+        Generally, spacecraft use their fuel to speed up to reach higher orbits, and also use fuel to slow down when
+        moving to a lower orbit. Both of these maneuvers primarily changed the craft's velocity, and knowing how much
+        delta-v the spacecraft is capable of delivering will improves mission success.
+      </p>
+
+      <section class="column-dual">
+        <section>
+          <h4>Example of Speeding Up to Go Somewhere</h4>
+          <p>
+            Consider a craft in a stable low Earth orbit. Without using fuel, it will stay in such an orbit for a long
+            time. If the craft were to thrust itself forward, using fuel to increase it's velocity, this would also
+            increase the orbit's height. Thus if the craft continues to increase its velocity, its higher orbit could
+            intersect with the Moon. The craft expended a specific amount of delta-v to reach this new velocity.
+          </p>
+        </section>
+        <aside>
+          <figcaption>// TODO</figcaption>
+          <img src="assets/stock/kerbol-system-icons/kerbin.png">
+        </aside>
+      </section>
+
+      <br>
+
+      <section class="column-dual">
+        <section>
+          <h4>Example of Slowing Down to Go Somewhere</h4>
+          <p>
+            Consider a craft returning to Earth from an interplanetary trip from Mars. As it reaches the gravitational
+            influence of Earth, it will be pulled toward Earth (it will "fall"). This will cause it to gain speed, but
+            if left without any changes, it will also swing past Earth and escape the gravitational influence at the
+            same initial speed. To reach a stable orbit around Earth, the craft has to thrust backwards to slow itself
+            down. The craft expended a specific amount of delta-v to reach this new velocity.
+          </p>
+        </section>
+        <aside>
+          <figcaption>// TODO</figcaption>
+          <img src="assets/stock/kerbol-system-icons/kerbin.png">
+        </aside>
+      </section>
+    </section>
+
+    <br>
+
+    <section class="column-dual">
+      <section>
+        <h3>How to determine the total delta-v required for a mission</h3>
+        <p>
+          Moving around in space while taking advantage of orbital mechanics lends itself to a systematic set of steps
+          to reach the destination. Similar to how a car can use a specific highway as part of many different trips,
+          spacecraft also use similar maneuvers for different trips.
+        </p>
+
+        <p>
+          Let's look at the delta-v cost of the steps from the surface of Kerbin to land on Mun:
+        </p>
+        <table>
+          <tr>
+            <td>3400 m/s</td>
+            <td>Launch from surface of Kerbin into Kerbin Low Orbit</td>
+          </tr>
+          <tr>
+            <td>852 m/s</td>
+            <td>Burn prograde at Kerbin Low Orbit to reach an intercept with Mun</td>
+          </tr>
+          <tr>
+            <td>72 m/s</td>
+            <td>Burn retrograde at Mun to slow down and capture into an elliptical orbit</td>
+          </tr>
+          <tr>
+            <td>199 m/s</td>
+            <td>Burn retrograde to lower the elliptical orbit into a Mun Low Orbit</td>
+          </tr>
+          <tr>
+            <td>580 m/s</td>
+            <td>Slow down at surface to land on Mun</td>
+          </tr>
+          <tr>
+            <td class="double-line"></td>
+          </tr>
+          <tr>
+            <td>5103 m/s</td>
+            <td>Total delta-v required</td>
+          </tr>
+        </table>
+
+        <br>
+
+        <p>
+          Any efficient trajectory will move through some of these steps on its way to the destination. For example, a
+          refueling mission to the Mun space station will go through all these steps, except it will not perform the
+          Mun surface landing step. Alternative routes are ofcourse possible, but they will be less efficient and
+          cost more delta-v to achieve the same result.
+        </p>
+
+      </section>
+      <aside class="contains-header max-content center-vertical">
+        <div><i>Commonly used terms</i></div>
+        <div><abbr>Burn</abbr>; to execute a maneuver by using engine thrust</div>
+        <div><abbr>Prograde</abbr>; the direction in which an object is moving</div>
+        <div><abbr>Retrograde</abbr>; the opposite direction of which the object is moving</div>
+      </aside>
+    </section>
+
+    <section class="column-dual">
+      <section>
+        <h3>How to calculate a craft's delta-v capability</h3>
+        <p>
+          A rocket is a vehicle that uses fuel to propel itself in order to deliver its payload to a destination. This
+          thrust is ofcourse generated by rocket engines. It would seem quite difficult to determine the total delta-v
+          capability if we look at the contributing factors:
+        </p>
+        <ul>
+          <li>Thrust is constant</li>
+          <li>Rocket mass decreases as fuel is used</li>
+          <li>Acceleration increases as mass decreases</li>
+        </ul>
+
+        <p>
+          To determine the total change in velocity possible, we need to multiply the acceleration by the time duration
+          that the thrust was applied. The continually changing acceleration means we have to look at the
+          <a href="https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation">Tsiolkovsky rocket equation</a>
+        </p>
+        <div class="math-equation">
+          <div><i>delta-v</i> = I<sub>sp</sub>&nbsp;<i>g</i>&nbsp;ln<span class="large-bracket">(</span></div>
+          <div class="fraction"><sup>mass<sub>wet</sub></sup><sub>mass<sub>dry</sub></sub></div>
+          <div><span class="large-bracket">)</span></div>
+        </div>
+
+        <p>
+          Also known as the <i>classical rocket equation</i>, it looks far more complicated than it actually is. Given
+          three important input values (efficiency, mass with fuel, mass without fuel), it calculates the craft's
+          delta-v capability considering dynamically changing acceleration.
+        </p>
+
+        <p>
+          Using a craft with fitted with a
+          <a href="https://wiki.kerbalspaceprogram.com/wiki/LV-909_%22Terrier%22_Liquid_Fuel_Engine">
+            "Terrier" rocket engine</a>
+          , 8 tons of mass<sub>wet</sub>, and 3 tons of mass<sub>dry</sub> we get these results:
+        </p>
+
+        <form class="dv-calculator" (change)="calcDv.update()">
+          <div class="result">{{calcDv.result | number}} m/s</div>
+          <div>=</div>
+          <div class="suffix s">
+            <input type="number" min="0" value="350" (input)="calcDv.isp = $event.target.value">
+          </div>
+          <div>9.81 m/s<sup>2</sup></div>
+          <div>ln<span class="large-bracket">(</span></div>
+          <div>
+            <div class="suffix t">
+              <input type="number" [min]="calcDv.dry" value="8" (input)="calcDv.wet = $event.target.value">
+            </div>
+            <div class="divider-line"></div>
+            <div class="suffix t">
+              <input type="number" min="0" value="3" (input)="calcDv.dry = $event.target.value">
+            </div>
+          </div>
+          <div><span class="large-bracket">)</span></div>
+        </form>
+
+        <p>
+          Feel free to change these input values to match a rocket that you have in mind, it will update accordingly.
+        </p>
+
+      </section>
+      <aside class="contains-header max-content center-vertical">
+        <div><i>Tsiolkovsky rocket equation</i></div>
+        <div><abbr>I<sub>sp</sub></abbr> ; the measure of the rocket engine's efficiency</div>
+        <div><abbr><i>g</i></abbr> ; 9.81 m/s<sup>2</sup>, known as standard gravity</div>
+        <div><abbr>mass<sub>wet</sub></abbr> ; the rocket's total mass when fully fueled</div>
+        <div><abbr>mass<sub>dry</sub></abbr> ; the rocket's final mass after draining all fuel</div>
+        <div><abbr>ln</abbr> ; the natural logarithm function</div>
+      </aside>
+    </section>
+
+
+  </article>
+
+  <footer>
+    footer
+  </footer>
+</main>

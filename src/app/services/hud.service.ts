@@ -98,6 +98,11 @@ export class HudService {
   get navigationOptions(): ActionOption[] {
     return [
       new ActionOption(
+        'Introduction',
+        Icons.BookOpen,
+        {route: UsableRoutes.Intro},
+        'Article that explains the details of each calculator'),
+      new ActionOption(
         'Delta-v Planner',
         Icons.DeltaV,
         {route: UsableRoutes.DvPlanner},
