@@ -11,7 +11,6 @@ import {
   switchMap,
   take,
   tap,
-  timer,
   zip
 } from 'rxjs';
 import { Router } from '@angular/router';
@@ -19,12 +18,9 @@ import { DataService, UserData } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { EventLogs } from './event-logs';
-import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AnalyticsService } from './analytics.service';
 import { AuthErrorCode } from '../components/account-details/auth-error-code';
-import { GlobalStyleClass } from '../common/global-style-class';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -63,23 +59,6 @@ export class AuthService {
           : of(null)) as Observable<UserData>),
         publishReplay(1),
         refCount());
-
-    let minute = 60 * 1e3;
-    this.user$.pipe(
-      distinctUntilChanged(),
-      filter(u => !(u?.isCustomer)),
-      switchMap(() => timer(2 * minute, 5 * minute)),
-      switchMap(() => this.snackBar.open(
-        'Would you like to support the developer?',
-        'Yes',
-        {duration: 15e3, panelClass: GlobalStyleClass.SnackbarPromoteFlash})
-        .onAction()),
-      tap(() => {
-        this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});
-        this.dialog.open(BuyMeACoffeeDialogComponent);
-      }),
-    )
-      .subscribe();
 
     stateService.earlyState
       .pipe(

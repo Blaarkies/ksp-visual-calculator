@@ -1,12 +1,10 @@
-<div class="app-layout stack">
+<div class="layout xstack">
 
-  <div>
+  <div class="router-container">
     <router-outlet></router-outlet>
   </div>
 
   <cp-holiday-theme-sprite *ngIf="showHolidayTheme"
                            (noThemeDetected)="unsubscribeHoliday$.next()"></cp-holiday-theme-sprite>
-
-  <cp-hud></cp-hud>
 
 </div>

@@ -94,6 +94,8 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/mater
 import { environment } from '../environments/environment';
 import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
 import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/holiday-theme-sprite.component';
+import { PageIntroComponent } from './pages/page-intro/page-intro.component';
+import { PageCalculatorsComponent } from './pages/page-calculators/page-calculators.component';
 
 @NgModule({
   declarations: [
@@ -155,6 +157,8 @@ import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/hol
     NegatePipe,
     BasePanelComponent,
     HolidayThemeSpriteComponent,
+    PageIntroComponent,
+    PageCalculatorsComponent,
   ],
   imports: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),
