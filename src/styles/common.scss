@@ -56,9 +56,9 @@
   pointer-events: none;
 }
 
-.input-field-dark-text {
+.input-field-contrast-text {
   input {
-    color: #000 !important;
+    color: var(--color-text) !important;
   }
 }
 

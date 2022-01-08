@@ -15,4 +15,14 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-text-hyperlink);
+
+  &:visited {
+    color: var(--color-text-hyperlink-visited);
+  }
 }

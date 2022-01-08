@@ -5,6 +5,7 @@ import { filter, Subject, takeUntil, timer } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
 import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'cp-root',
@@ -18,8 +19,11 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
 
   constructor(dialog: MatDialog,
               router: Router,
-              cdr: ChangeDetectorRef) {
+              cdr: ChangeDetectorRef,
+              themeService: ThemeService) {
     super();
+
+    themeService.logThemeOrigin();
 
     let specialRoutes = {
       '/policy': () => dialog.open(PolicyDialogComponent),

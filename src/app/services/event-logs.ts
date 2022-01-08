@@ -15,6 +15,7 @@ class Category {
   static Camera = 'camera';
   static State = 'state';
   static Ads = 'Ads';
+  static Theme = 'Theme';
 }
 
 class Sanitize {

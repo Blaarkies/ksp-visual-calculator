@@ -3,6 +3,7 @@
 
   position: relative;
 
+  --color-flash: #fff7;
   &:before {
     content: '';
     width: 100%;
@@ -12,7 +13,7 @@
     top: 0;
     left: 0;
 
-    background: linear-gradient(90deg, #0000, #0000 30%, #fff7 50%, #0000 70%, #0000 100%);
+    background: linear-gradient(90deg, #0000, #0000 30%, var(--color-flash) 50%, #0000 70%, #0000 100%);
 
     animation: kf-animate-wave 4s ease-in-out infinite;
 
@@ -55,4 +56,28 @@
 
 .tooltip-base-panel {
   margin-bottom: 25px !important;;
+}
+
+
+.dark-theme {
+
+  .mat-snack-bar-container {
+    background: var(--color-background-card);
+    color: var(--color-text-snackbar);
+  }
+
+  .snackbar-warn {
+    button {
+      color: var(--color-text-warn);
+      background-color: #a002;
+    }
+  }
+
+  .snackbar-promote-flash {
+    button {
+      color: #3f0;
+      background-color: #0003;
+    }
+  }
+
 }

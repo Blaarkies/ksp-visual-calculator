@@ -80,18 +80,25 @@
 
 <ng-template #pageContext>
   <div class="page-context">
-    <button class="faq"
-            mat-icon-button
+    <div class="page-icon">
+      <mat-icon [matTooltip]="pageContextInfo?.tooltip"
+                color="primary"
+                [svgIcon]="pageContextInfo?.icon"></mat-icon>
+    </div>
+
+    <button mat-icon-button
             color="accent"
+            [matTooltip]="'Open the wiki'"
             (click)="openFaq()">
       <mat-icon [svgIcon]="icons.Help"></mat-icon>
     </button>
 
-    <div class="page-icon">
-      <mat-icon [matTooltip]="pageContextInfo?.tooltip"
-                color="accent"
-                [svgIcon]="pageContextInfo?.icon"></mat-icon>
-    </div>
+    <button class="theme-icon"
+            mat-icon-button
+            [matTooltip]="'Toggle theme'"
+            (click)="toggleTheme()">
+      <mat-icon [svgIcon]="themeIconMap[lastTheme]"></mat-icon>
+    </button>
 
     <button *ngIf="hasBoughtCoffee$ | async | not"
             [@fade]

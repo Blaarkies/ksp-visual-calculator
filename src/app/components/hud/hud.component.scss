@@ -49,10 +49,11 @@
     height: 40px;
     display: flex;
     align-items: center;
+  }
 
-    mat-icon {
-      color: var(--color-icon-white);
-    }
+  .theme-icon mat-icon {
+    transform: scale(1.5);
+    color: var(--color-icon-white);
   }
 
   .buy-me-a-coffee {

@@ -22,6 +22,7 @@ import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dial
 import { AuthService } from '../../services/auth.service';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { DomPortal } from '@angular/cdk/portal';
+import { ThemeService, ThemeTypeEnum } from '../../services/theme.service';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -62,6 +63,12 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   pageContextInfo: { icon, tooltip };
   hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
 
+  lastTheme: string;
+  themeIconMap = {
+    [ThemeTypeEnum.Light]: Icons.ThemeLight,
+    [ThemeTypeEnum.Dark]: Icons.ThemeDark,
+  };
+
   @ViewChild('baseContent') baseContent: ElementRef<HTMLElement>;
   domPortal: DomPortal;
 
@@ -76,8 +83,11 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
               private cameraService: CameraService,
               breakpointObserver: BreakpointObserver,
               private bottomSheet: MatBottomSheet,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private themeService: ThemeService) {
     super();
+
+    this.lastTheme = themeService.currentTheme;
 
     this.isHandset$ = breakpointObserver.observe([
       '(max-width: 600px)',
@@ -104,6 +114,10 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   ngAfterViewInit() {
     this.domPortal = new DomPortal(this.baseContent);
     this.cdr.detectChanges();
+  }
+
+  toggleTheme() {
+    this.lastTheme = this.themeService.toggleTheme();
   }
 
   openFaq() {

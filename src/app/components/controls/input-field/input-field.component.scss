@@ -13,9 +13,13 @@
 
   &.transition {
     transition: opacity .3s ease-out,
-    color .2s ease-in,
-    caret-color .2s ease-in,
-    background-color .2s ease-in;
+                color .2s ease-in,
+                caret-color .2s ease-in,
+                background-color .2s ease-in;
+  }
+
+  input {
+    color: var(--color-text);
   }
 
   &.disabled {

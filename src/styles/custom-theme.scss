@@ -1,60 +1,74 @@
-@use '@angular/material' as mat;
-@import 'node_modules/@angular/material/theming';
+@use 'node_modules/@angular/material' as mat;
+@use 'node_modules/@angular/material/theming' as theme;
 
-//$a: #BADA55;
-
-$cp-kerbal: (
-  50: #e8f5e9,
-  100: #c8e6c9,
-  200: #a5d6a7,
-  300: #81c784,
-  400: #66bb6a,
-  500: #4caf50,
-  600: #43a047,
-  700: #388e3c,
-  800: #2e7d32,
-  900: #1b5e20,
-  A100: #b9f6ca,
-  A200: #69f0ae,
-  A400: #00e676,
-  A700: #00c853,
+$text-dark: #111;
+$text-light: #fff;
+$kerbal-palette: (
+  50: #f4f9e7,
+  100: #e3efc4,
+  200: #d1e59d,
+  300: #bfdb76,
+  400: #b1d358,
+  500: #a3cb3b,
+  600: #9bc635,
+  700: #91be2d,
+  800: #88b826,
+  900: #77ac19,
+  A100: #f3ffe0,
+  A200: #e0ffad,
+  A400: #ccff7a,
+  A700: #c2ff61,
   contrast: (
-    50: $dark-primary-text,
-    100: $dark-primary-text,
-    200: $dark-primary-text,
-    300: $dark-primary-text,
-    400: $dark-primary-text,
-    500: $light-primary-text,
-    600: $light-primary-text,
-    700: $light-primary-text,
-    800: $light-primary-text,
-    900: $light-primary-text,
-    A100: $dark-primary-text,
-    A200: $dark-primary-text,
-    A400: $dark-primary-text,
-    A700: $dark-primary-text,
-  )
+    50: $text-dark,
+    100: $text-dark,
+    200: $text-dark,
+    300: $text-dark,
+    400: $text-dark,
+    500: $text-light,
+    600: $text-light,
+    700: $text-light,
+    800: $text-light,
+    900: $text-light,
+    A100: $text-dark,
+    A200: $text-dark,
+    A400: $text-dark,
+    A700: $text-dark,
+  ),
 );
-
 
 @include mat.core();
 
-$cp-primary: mat.define-palette($cp-kerbal);
-$cp-accent: mat.define-palette(mat.$amber-palette, A700, 300, 900);
-$cp-warn: mat.define-palette(mat.$deep-orange-palette);
+$primary-light: mat.define-palette($kerbal-palette, 900);
+$accent-light: mat.define-palette(mat.$amber-palette, A700);
+$warn-light: mat.define-palette(mat.$deep-orange-palette);
 
-$cp-theme: mat.define-light-theme((
+$light-theme: mat.define-light-theme((
   color: (
-    primary: $cp-primary,
-    accent: $cp-accent,
-    warn: $cp-warn,
-  )
+    primary: $primary-light,
+    accent: $accent-light,
+    warn: $warn-light,
+  ),
+));
+@include mat.all-component-themes($light-theme);
+
+$primary-dark: mat.define-palette($kerbal-palette, 300);
+$accent-dark: mat.define-palette(mat.$amber-palette, A400);
+$warn-dark: mat.define-palette(mat.$red-palette, A200);
+
+$dark-theme: mat.define-dark-theme((
+  color: (
+    primary: $primary-dark,
+    accent: $accent-dark,
+    warn: $warn-dark,
+  ),
 ));
 
-@include mat.all-component-themes($cp-theme);
+.dark-theme {
+  @include mat.all-component-colors($dark-theme);
+}
 
 :root {
-  --green: 119, 184, 46;
+  --green: 147, 177, 53;
   --orange: 242, 65, 0;
   --cosmic-blue: 63, 81, 181;
 
@@ -67,15 +81,43 @@ $cp-theme: mat.define-light-theme((
   --color-background-panel-green-glass: rgba(var(--green), .5);
   --color-background-panel-orange-glass: rgba(var(--orange), .5);
   --color-background-panel-cosmic-blue-glass: rgba(var(--cosmic-blue), .5);
+  --color-background-card: #fff;
+  --color-background-description: #fff;
+  --color-background-description-glass: #fffe;
+  --color-background-article: #f3f3f3;
 
-  --color-text-primary: #{map-get($cp-primary, 700)};
-  --color-text-accent: #{map-get($cp-accent, 700)};
-  --color-text-warn: #{map-get($cp-warn, 700)};
+  --color-text: #111;
+  --color-text-snackbar: #ffffffb3;
+  --color-text-primary: #{map-get($primary-light, 500)};
+  --color-text-accent: #{map-get($accent-light, 500)};
+  --color-text-warn: #{map-get($warn-light, 500)};
   --color-text-hyperlink: #263dc1;
+  --color-text-hyperlink-visited: #5226c1;
   --color-text-map-green: #cf0a;
   --color-text-muted: #999;
 
+  --color-border-simple: #0006;
+
   --color-icon-muted: #666;
   --color-icon-white: #fffc;
+
+  .dark-theme {
+    --color-background-card: #424242;
+    --color-background-description: #333;
+    --color-background-description-glass: #333e;
+    --color-background-article: #333;
+
+    --color-text: #fff;
+    --color-text-snackbar: #ffffffb3;
+    --color-text-primary: #{map-get($primary-dark, 500)};
+    --color-text-accent: #{map-get($accent-dark, 500)};
+    --color-text-warn: #{map-get($warn-dark, 500)};
+    --color-text-hyperlink: #67b3ff;
+    --color-text-hyperlink-visited: #ddbfff;
+
+    --color-border-simple: #fff6;
+
+    --color-icon-muted: #999;
+  }
 }
 

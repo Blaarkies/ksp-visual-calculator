@@ -39,6 +39,11 @@
     border-left: 1px solid #0004;
     min-width: 110px;
   }
+
+  .button-lock-mode, .button-single-checkpoint {
+    background: #9bb63f;
+    color: #fff;
+  }
 }
 
 .totals-layout {

@@ -2,6 +2,8 @@ import { Component, ElementRef, OnDestroy } from '@angular/core';
 import { filter, sampleTime, scan, skip, Subject, takeUntil, tap } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 import { Router, Scroll } from '@angular/router';
+import { ThemeService, ThemeTypeEnum } from '../../services/theme.service';
+import { Icons } from '../../common/domain/icons';
 
 @Component({
   selector: 'cp-page-intro',
@@ -30,7 +32,8 @@ export class PageIntroComponent extends WithDestroy() implements OnDestroy {
   }
 
   constructor(router: Router,
-              self: ElementRef) {
+              self: ElementRef,
+              private themeService: ThemeService) {
     super();
 
     this.calcDv.update();
@@ -69,6 +72,10 @@ export class PageIntroComponent extends WithDestroy() implements OnDestroy {
     this.scrollEvent$.complete();
   }
 
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
+
   updateNavbar(event: Event & { target: HTMLElement }) {
     this.scrollEvent$.next(event.target.scrollTop);
   }
@@ -82,4 +89,5 @@ export class PageIntroComponent extends WithDestroy() implements OnDestroy {
       this.showSidebar = false;
     }
   }
+
 }

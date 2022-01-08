@@ -5,7 +5,7 @@
     <div class="display-details-layout">
 
       <div class="avatar-layout overlap-container">
-        <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'" />
+        <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.png'">
         <span class="premium-sash"
               [matTooltip]="'Thank you for supporting! 😁'"
               [@fade]
@@ -16,7 +16,7 @@
 
       <div class="user-details">
         <div>
-          <cp-input-field class="input-field-dark-text"
+          <cp-input-field class="input-field-contrast-text"
                           [formControl]="controlName"
                           label="Name"
                           (keyup.enter)="editDetails(user)"></cp-input-field>
@@ -68,7 +68,8 @@
   </div>
 
   <div mat-dialog-actions>
-    <button mat-button color="accent"
+    <button mat-button
+            color="accent"
             (click)="actionSignOut()">
       Sign Out
     </button>
@@ -85,7 +86,7 @@
   <h1 mat-dialog-title>Sign Up / Sign In</h1>
 
   <div mat-dialog-content class="sign-in-layout">
-    <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png" />
+    <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.png">
 
     <div class="promote-sign-in">
       <div class="reasons-header">
@@ -97,7 +98,7 @@
           <mat-icon [svgIcon]="icons.ChevronDown" [@flipVertical]="isPromoteOpen"></mat-icon>
         </button>
 
-        <div class="promote-reasons" [@slideOutVertical]="isPromoteOpen">
+        <div class="promote-reasons" [class.is-open]="isPromoteOpen" [@slideOutVertical]="isPromoteOpen">
           <div>Signed in accounts can access more features:</div>
           <ul>
             <li>Continue where you left off</li>

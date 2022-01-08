@@ -31,11 +31,15 @@ import { InputNumberComponent } from './components/controls/input-number/input-n
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSliderModule } from '@angular/material/slider';
 import { HttpClientModule } from '@angular/common/http';
-import { CelestialBodyDetailsDialogComponent } from './overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
+import {
+  CelestialBodyDetailsDialogComponent
+} from './overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { InputToggleComponent } from './components/controls/input-toggle/input-toggle.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { InputFieldListComponent } from './components/controls/input-field-list/input-field-list.component';
-import { DifficultySettingsDialogComponent } from './overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import {
+  DifficultySettingsDialogComponent
+} from './overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PrivacyDialogComponent } from './overlays/privacy-dialog/privacy-dialog.component';
 import { AccountDialogComponent } from './overlays/account-dialog/account-dialog.component';
@@ -62,7 +66,9 @@ import { ContentPleatComponent } from './components/content-pleat/content-pleat.
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { ManageStateDialogComponent } from './overlays/manage-state-dialog/manage-state-dialog.component';
 import { StateDisplayComponent } from './components/state-display/state-display.component';
-import { StateEditNameRowComponent } from './overlays/manage-state-dialog/state-edit-name-row/state-edit-name-row.component';
+import {
+  StateEditNameRowComponent
+} from './overlays/manage-state-dialog/state-edit-name-row/state-edit-name-row.component';
 import { FileDropDirective } from './directives/file-drop.directive';
 import { AccountDetailsComponent } from './components/account-details/account-details.component';
 import { DoublePointerActionDirective } from './directives/double-pointer-action.directive';
