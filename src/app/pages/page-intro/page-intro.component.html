@@ -1,9 +1,29 @@
-<nav class="top-nav">
-  <a href="/dv-planner">Delta-v Calculator</a>
-  <a href="/signal-check">CommNet Calculator</a>
-</nav>
+<main (scroll)="updateNavbar($event)"
+      (pointerdown)="updateSidebar($event)">
 
-<main [scrollTop]="999">
+  <nav #topNav class="top-nav" [class.translate-up]="!showNavbar">
+    <a mat-button href="/dv-planner">Delta-v Calculator</a>
+    <a mat-button href="/signal-check">CommNet Calculator</a>
+    <i></i>
+    <button id="sidebar-button" mat-icon-button (click)="showSidebar = !showSidebar">≡</button>
+  </nav>
+
+  <nav id="sidebar"
+       class="sidebar-nav"
+       [class.translate-left]="showNavbar && showSidebar"
+       [style.top.px]="topNav.clientHeight">
+    <div>
+      <span>Delta-v</span>
+      <a mat-button href="#importance-of-dv">Why is delta-v an important measure?</a>
+      <a mat-button href="#determine-total-dv-for-mission">How to determine the total delta-v required for a mission</a>
+      <a mat-button href="#calculate-craft-dv">How to calculate a craft's delta-v capability</a>
+    </div>
+
+    <div>
+      <span>CommNet</span>
+      // TODO
+    </div>
+  </nav>
 
   <article>
     <header>
@@ -16,8 +36,8 @@
     </header>
 
     <nav class="button-calculators">
-      <a href="/dv-planner">Go to Delta-v Calculator</a>
-      <a href="/signal-check">Go to CommNet Calculator</a>
+      <a mat-stroked-button href="/dv-planner">Go to Delta-v Calculator</a>
+      <a mat-stroked-button href="/signal-check">Go to CommNet Calculator</a>
     </nav>
   </article>
 
@@ -50,7 +70,7 @@
       </section>
     </section>
 
-    <section>
+    <section id="importance-of-dv">
       <h3>Why is delta-v an important measure?</h3>
       <p>
         Generally, spacecraft use their fuel to speed up to reach higher orbits, and also use fuel to slow down when
@@ -60,7 +80,7 @@
 
       <section class="column-dual">
         <section>
-          <h4>Example of Speeding Up to Go Somewhere</h4>
+          <h4>Why spacecraft would speed up</h4>
           <p>
             Consider a craft in a stable low Earth orbit. Without using fuel, it will stay in such an orbit for a long
             time. If the craft were to thrust itself forward, using fuel to increase it's velocity, this would also
@@ -69,8 +89,8 @@
           </p>
         </section>
         <aside>
-          <figcaption>// TODO</figcaption>
-          <img src="assets/stock/kerbol-system-icons/kerbin.png">
+          <img height="400" src="assets/article/speeding-up.jpg">
+          <figcaption>A craft in low orbit</figcaption>
         </aside>
       </section>
 
@@ -78,25 +98,24 @@
 
       <section class="column-dual">
         <section>
-          <h4>Example of Slowing Down to Go Somewhere</h4>
+          <h4>Why spacecraft would slow down</h4>
           <p>
-            Consider a craft returning to Earth from an interplanetary trip from Mars. As it reaches the gravitational
-            influence of Earth, it will be pulled toward Earth (it will "fall"). This will cause it to gain speed, but
-            if left without any changes, it will also swing past Earth and escape the gravitational influence at the
-            same initial speed. To reach a stable orbit around Earth, the craft has to thrust backwards to slow itself
-            down. The craft expended a specific amount of delta-v to reach this new velocity.
+            When a craft reaches the Moon, it will be approaching the Moon from outside of the Moon's gravitational
+            influence. It will be pulled towards the Moon (it will "fall") and gain enough speed to swing by and escape
+            the Moon's gravity. To reach a stable orbit, the craft has to thrust backwards to slow itself down. The
+            craft would have to expend some delta-v to reach this new velocity.
           </p>
         </section>
         <aside>
-          <figcaption>// TODO</figcaption>
-          <img src="assets/stock/kerbol-system-icons/kerbin.png">
+          <img height="400" src="assets/article/slow-down.jpg">
+          <figcaption>A craft travelling at escape velocity</figcaption>
         </aside>
       </section>
     </section>
 
     <br>
 
-    <section class="column-dual">
+    <section class="column-dual" id="determine-total-dv-for-mission">
       <section>
         <h3>How to determine the total delta-v required for a mission</h3>
         <p>
@@ -156,7 +175,7 @@
       </aside>
     </section>
 
-    <section class="column-dual">
+    <section class="column-dual" id="calculate-craft-dv">
       <section>
         <h3>How to calculate a craft's delta-v capability</h3>
         <p>
@@ -188,28 +207,34 @@
         </p>
 
         <p>
-          Using a craft with fitted with a
+          Using a craft fitted with a
           <a href="https://wiki.kerbalspaceprogram.com/wiki/LV-909_%22Terrier%22_Liquid_Fuel_Engine">
-            "Terrier" rocket engine</a>
-          , 8 tons of mass<sub>wet</sub>, and 3 tons of mass<sub>dry</sub> we get these results:
+            "Terrier" rocket engine</a>, 8 tons of mass<sub>wet</sub>, and 3 tons of mass<sub>dry</sub>,
+          we get these results:
         </p>
 
         <form class="dv-calculator" (change)="calcDv.update()">
           <div class="result">{{calcDv.result | number}} m/s</div>
           <div>=</div>
-          <div class="suffix s">
-            <input type="number" min="0" value="350" (input)="calcDv.isp = $event.target.value">
-          </div>
+          <mat-form-field>
+            <input matInput type="number" min="0" value="350" placeholder="Isp"
+                   (input)="calcDv.isp = $event.target.value">
+            <span matSuffix>s</span>
+          </mat-form-field>
           <div>9.81 m/s<sup>2</sup></div>
           <div>ln<span class="large-bracket">(</span></div>
-          <div>
-            <div class="suffix t">
-              <input type="number" [min]="calcDv.dry" value="8" (input)="calcDv.wet = $event.target.value">
-            </div>
+          <div class="fit-fraction">
+            <mat-form-field>
+              <input matInput type="number" [min]="calcDv.dry" value="8" placeholder="Mass-wet"
+                     (input)="calcDv.wet = $event.target.value">
+              <span matSuffix>t</span>
+            </mat-form-field>
             <div class="divider-line"></div>
-            <div class="suffix t">
-              <input type="number" min="0" value="3" (input)="calcDv.dry = $event.target.value">
-            </div>
+            <mat-form-field>
+              <input matInput type="number" min="0" value="3" placeholder="Mass dry"
+                     (input)="calcDv.dry = $event.target.value">
+              <span matSuffix>t</span>
+            </mat-form-field>
           </div>
           <div><span class="large-bracket">)</span></div>
         </form>
@@ -232,7 +257,27 @@
 
   </article>
 
-  <footer>
-    footer
+  <footer id="footer" class="footer-layout">
+    <div>
+      <span>About</span>
+      <a mat-button href="https://ksp-visual-calculator.blaarkies.com/feedback">Feedback</a>
+      <a mat-button href="https://ksp-visual-calculator.blaarkies.com/policy">Privacy Policy</a>
+    </div>
+
+    <div>
+      <span>Calculators</span>
+      <a mat-button href="/dv-planner">Delta-v Calculator</a>
+      <a mat-button href="/signal-check">CommNet Calculator</a>
+    </div>
+
+    <div>
+      <span>Contact</span>
+      <a mat-button href="https://twitter.com/Blaarkies">Twitter</a>
+      <a mat-button href="https://hub.blaarkies.com/">Blaarkies Hub</a>
+    </div>
+
+    <div>
+      <i>© Copyright 2021-2022 Blaarkies, All rights reserved</i>
+    </div>
   </footer>
 </main>

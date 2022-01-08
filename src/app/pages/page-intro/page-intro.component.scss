@@ -1,5 +1,17 @@
+@use 'src/styles/variables' as queries;
+
 :host {
   color: white;
+
+  --color-kerbal-green: #bada55;
+  --color-text: #111;
+  --font-scale: 1;
+  @media screen and (max-width: queries.$query-tablet-width) {
+    --font-scale: .8;
+  }
+  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+    --font-scale: .5;
+  }
 }
 
 p {
@@ -12,24 +24,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 5rem;
+  font-size: calc(5rem * var(--font-scale));
 }
 
 h2 {
-  font-size: 3rem;
+  font-size: calc(3rem * var(--font-scale));
   font-weight: normal;
 }
 
 h3 {
-  font-size: 2.5rem;
+  font-size: calc(2.5rem * var(--font-scale));
 }
 
 h4 {
-  font-size: 2rem;
+  font-size: calc(2rem * var(--font-scale));
 }
 
 h5 {
-  font-size: 1.5rem;
+  font-size: calc(1.5rem * var(--font-scale));
 }
 
 h6 {
@@ -41,15 +53,30 @@ a {
 }
 
 main {
-  padding-bottom: 4em;
 
   > article {
     margin: auto;
-    max-width: 80em;
+    max-width: 1200px;
+    padding: 0 4em;
+  }
+
+  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+    > article {
+      padding: 0 2em;
+    }
   }
 
   overflow: scroll;
-  height: -webkit-fill-available;
+  height: 100%;
+}
+
+figcaption {
+  text-align: center;
+  opacity: .7;
+}
+
+img {
+  text-align: center;
 }
 
 table {
@@ -62,20 +89,124 @@ table {
   }
 }
 
+footer {
+  background: var(--color-kerbal-green);
+  padding: 1em 2em;
+  margin-top: 4em;
+  color: var(--color-text);
+
+  a {
+    color: var(--color-text);
+  }
+}
+
+.footer-layout {
+  display: grid;
+  grid-template-columns: repeat(3, max-content) auto;
+  gap: 1em;
+
+  div {
+    display: grid;
+    align-items: start;
+    align-content: start;
+
+    a {
+      text-align: start;
+    }
+
+    span {
+      font-size: 1.4em;
+      padding-left: 16px;
+
+      padding-bottom: .4em;
+      margin-bottom: .5em;
+      border-bottom: 1px double currentColor;
+    }
+
+    i {
+      //font-size: 1.2em;
+    }
+  }
+
+  > :last-child {
+    width: auto;
+    justify-content: end;
+  }
+}
+
 .top-nav {
-  background: #bada55;
+  background: var(--color-kerbal-green);
   padding: 1em 2em;
   position: sticky;
   top: 0;
+  z-index: 1;
 
-  display: flex;
-  gap: 2em;
+  display: grid;
+  grid-template-columns: max-content max-content auto max-content;
+  gap: 1em;
 
   a {
-    color: #111;
-    //text-shadow: 2px 1px 2px #fff;
+    color: var(--color-text);
   }
 
+  i {
+    background: var(--color-text);
+    opacity: .4;
+    width: 1px;
+    height: inherit;
+    justify-self: end;
+  }
+
+  button {
+    color: var(--color-text);
+    font-size: 24px;
+  }
+
+  transition: .3s ease-out;
+
+  &.translate-up {
+    transform: translateY(-100%);
+  }
+}
+
+.sidebar-nav {
+  position: absolute;
+  right: 10px; // scrollbar width
+  z-index: 1;
+  width: max-content;
+  padding: 1em;
+  max-width: 80%;
+  border-top: 1px solid #0003;
+
+  color: var(--color-text);
+
+  a {
+    color: var(--color-text);
+  }
+
+  background-color: var(--color-kerbal-green);
+
+  transform: translateX(110%);
+  transition: .2s ease-out;
+
+  &.translate-left {
+    transform: translateX(0%);
+  }
+
+  div {
+    display: grid;
+    margin-bottom: 1em;
+
+    span {
+      font-size: 2em;
+      margin: .5em 0;
+    }
+
+    a {
+      width: 100%;
+      text-align: start;
+    }
+  }
 }
 
 .column-dual {
@@ -87,10 +218,17 @@ table {
     border-left: 1px solid #fff7;
     border-radius: 6px;
   }
+
+  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+    flex-direction: column;
+    aside {
+      padding-left: unset;
+      border: none;
+    }
+  }
 }
 
 .contains-header {
-
   margin: auto;
 
   :first-child {
@@ -110,30 +248,58 @@ table {
 }
 
 .button-calculators {
-  margin: 3em 0;
-  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
 
-  a {
-    text-decoration: none;
-    font-size: 1.5rem;
-    color: #111;
-    //text-shadow: 2px 1px 2px #444;
-    padding: .5em 1em;
-    border: 1px solid #fff3;
-    border-radius: .2em;
-    margin-right: .5em;
-    transition: .2s ease-in-out;
-
-    background-color: #bada55;
+  > a {
+    font-size: 1.5em;
+    padding: .4em .8em;
+    color: currentColor;
+    border: 2px solid var(--color-kerbal-green);
 
     &:hover {
-      background-color: #8da633;
+      --pseudo-opacity: .4;
     }
 
-    &:active {
-      background-color: #748a20;
+    position: relative;
+    --pseudo-opacity: 0;
+    perspective: 200px;
+    transform-style: preserve-3d;
+    overflow: hidden;
+
+    &:before {
+      transition: .2s ease-in-out;
+      content: '';
+
+      --primary: var(--color-kerbal-green);
+      --secondary: #bada5577;
+      background-color: var(--secondary);
+      background-image: linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(60deg, var(--secondary) 25%, transparent 25.5%, transparent 75%, var(--secondary) 75%, var(--secondary)),
+      linear-gradient(60deg, var(--secondary) 25%, transparent 25.5%, transparent 75%, var(--secondary) 75%, var(--secondary));
+      background-size: 22px 39px;
+      background-position: 0 0, 0 0, 11px 19px, 11px 19px, 0 0, 11px 19px;
+      transform-origin: right;
+      transform: rotateY(20deg);
+
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: var(--pseudo-opacity);
+      z-index: -1;
     }
 
+    &:last-child:before {
+      transform-origin: left;
+      transform: rotateY(-20deg);
+    }
   }
 }
 
@@ -159,6 +325,10 @@ table {
       top: 50%;
     }
   }
+
+  @media screen and (max-width: queries.$query-tablet-width) {
+    padding-left: unset;
+  }
 }
 
 .large-bracket {
@@ -178,33 +348,14 @@ table {
   border-radius: 10px;
   width: max-content;
 
-  input {
+  mat-form-field {
     width: 4em;
-    padding-right: 10px;
-
-    border: unset;
-    background: transparent;
-    border-bottom: 1px solid #bada55;
-    color: currentColor;
-
-    outline: none;
+    height: 3.5em;
   }
 
-  .suffix {
-    position: relative;
-
-    &:after {
-      content: '';
-      right: 3px;
-      position: absolute;
-    }
-
-    &.s:after {
-      content: 's';
-    }
-
-    &.t:after {
-      content: 't';
+  .fit-fraction {
+    mat-form-field {
+      height: 1.2em;
     }
   }
 
@@ -218,5 +369,9 @@ table {
 
   .result {
     min-width: 4em;
+  }
+
+  @media screen and (max-width: queries.$query-tablet-width) {
+    margin-left: unset;
   }
 }
