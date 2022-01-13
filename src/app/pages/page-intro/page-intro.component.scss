@@ -21,6 +21,12 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 1em;
 }
 
+section {
+  > h1, h2, h3, h4, h5, h6 {
+    margin-top: 2em;
+  }
+}
+
 h1 {
   font-size: calc(5rem * var(--font-scale));
 }
@@ -47,7 +53,7 @@ h6 {
 }
 
 a {
-  color: #7ec5ff;
+  color: var(--color-text-hyperlink);
 }
 
 main {
@@ -60,15 +66,14 @@ main {
     margin: auto;
     max-width: 1200px;
     padding: 0 4em;
-  }
 
-  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
-    > article {
+    @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
       padding: 0 2em;
     }
   }
 
   overflow-y: scroll;
+  overflow-x: hidden;
   height: 100%;
 }
 
@@ -105,7 +110,7 @@ footer {
 .footer-layout {
   display: grid;
   grid-template-columns: repeat(3, max-content) auto;
-  gap: 1em;
+  gap: 1.5em 1em;
 
   div {
     display: grid;
@@ -129,6 +134,10 @@ footer {
   > :last-child {
     width: auto;
     justify-content: end;
+  }
+
+  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+    grid-template-columns: auto;
   }
 }
 
@@ -168,6 +177,9 @@ footer {
 }
 
 .sidebar-nav {
+  max-height: calc(100% - 116px);
+  overflow-y: auto;
+
   position: absolute;
   right: 10px; // scrollbar width
   z-index: 1;
@@ -215,9 +227,10 @@ footer {
     padding-left: 1em;
     border-left: 1px solid #fff7;
     border-radius: 6px;
+    margin: auto;
   }
 
-  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+  @media screen and (max-width: queries.$query-tablet-width) {
     flex-direction: column;
     aside {
       padding-left: unset;
@@ -228,9 +241,11 @@ footer {
 
 .contains-header {
   margin: auto;
+  min-width: 300px;
+  max-width: 500px;
 
   > :first-child, abbr {
-    color: #7ec5ff;
+    color: var(--color-text-hyperlink);
     font-weight: 500;
 
     margin-bottom: .5em;
@@ -238,6 +253,13 @@ footer {
 
   > :not(:first-child) {
     opacity: .7;
+  }
+
+  &.indent-text {
+    > :not(:first-child) {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
   }
 
   &.max-content :first-child {
@@ -343,7 +365,7 @@ footer {
 
   margin: 0 0 20px 40px;
   padding: 8px 16px;
-  border: 1px solid #7779;
+  border: 1px solid var(--color-border-simple);
   border-radius: 10px;
   width: max-content;
 
@@ -375,21 +397,40 @@ footer {
   }
 }
 
-.link {
-  display: inline-flex;
-  text-decoration: none;
-  font-size: 1.6rem;
-  opacity: .3;
-  cursor: pointer;
+section[id] h1,
+section[id] h2,
+section[id] h3,
+section[id] h4,
+section[id] h5,
+section[id] h6 {
+  position: relative;
+  width: max-content;
+  transition: .2s ease-out;
 
-  transition: .2s ease-in-out;
   &:hover {
-    opacity: 1;
+    text-shadow: 0 0 3px var(--color-text);
+  }
+}
+
+.link {
+  text-shadow: unset;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-1em, .1em);
+  width: calc(100% + 1em);
+
+  svg {
+    fill: var(--color-text);
+    height: .8em;
+    width: .8em;
   }
 
-  &:before {
-    content: '⫘';
-    text-shadow: 3px 2px 1px #000;
-    transform: rotate(-7deg);
+  cursor: pointer;
+  opacity: .07;
+  transition: .2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
   }
 }

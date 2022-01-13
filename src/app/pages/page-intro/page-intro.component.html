@@ -1,7 +1,7 @@
 <main (scroll)="updateNavbar($event)"
       (pointerdown)="updateSidebar($event)">
 
-  <nav #topNav class="top-nav" [class.translate-up]="!showNavbar">
+  <nav class="top-nav" [class.translate-up]="!showNavbar">
     <a mat-button href="/dv-planner">Delta-v Calculator</a>
     <a mat-button href="/signal-check">CommNet Calculator</a>
     <i></i>
@@ -11,19 +11,32 @@
 
   <nav id="sidebar"
        class="sidebar-nav"
-       [class.translate-left]="showNavbar && showSidebar"
-       [style.top.px]="topNav.clientHeight">
+       [class.translate-left]="showNavbar && showSidebar">
     <div>
       <span>Delta-v</span>
       <a mat-button routerLink fragment="importance-of-dv">Why is delta-v an important measure?</a>
-      <a mat-button routerLink fragment="determine-total-dv-for-mission">Determining the total delta-v required for a mission</a>
+      <a mat-button routerLink fragment="determine-total-dv-for-mission">Determining the total delta-v required for a
+        mission</a>
       <a mat-button routerLink fragment="calculate-craft-dv">Calculating a craft's delta-v capability</a>
       <a mat-button routerLink fragment="using-dv-efficiently">Using delta-v efficiently</a>
+      <a mat-button routerLink fragment="launch-from-kerbin">Launching into orbit from Kerbin</a>
+      <a mat-button routerLink fragment="launch-from-mun">Launching into orbit from Mun</a>
+      <a mat-button routerLink fragment="landing-mun">Landing on Mun</a>
+      <a mat-button routerLink fragment="orbital-maneuvers">Orbital Maneuvers</a>
+      <a mat-button routerLink fragment="interplanetary-transfers">Interplanetary Transfers</a>
+      <a mat-button routerLink fragment="gravity-assists-slingshots">Gravity Assist - Slingshot</a>
+      <a mat-button routerLink fragment="refueling-docking-infrastructure">Refueling by Docking to Infrastructure</a>
     </div>
 
     <div>
       <span>CommNet</span>
-      // TODO
+      <a mat-button routerLink fragment="communication-satellite-constellations">Communication satellite
+        constellations</a>
+      <a mat-button routerLink fragment="ground-based-relays">Ground based relays</a>
+      <a mat-button routerLink fragment="low-orbit-constellations">Low orbit constellations</a>
+      <a mat-button routerLink fragment="high-orbit-constellations">High orbit constellations</a>
+      <a mat-button routerLink fragment="primary-planetary-relays">Primary planetary relays</a>
+      <a mat-button routerLink fragment="remote-control-stations">Remote control stations</a>
     </div>
   </nav>
 
@@ -65,9 +78,10 @@
         </p>
 
         <aside class="contains-header max-content">
-          <div><i>Velocity is speed with specific direction</i></div>
-          <small>The velocity of an object is the rate of change of its position with respect to a frame of
-            reference.</small>
+          <div><i>Velocity is speed with a specific direction</i></div>
+          <div>The velocity of an object is the rate of change of its position with respect to a frame of
+            reference.
+          </div>
         </aside>
       </section>
     </section>
@@ -92,7 +106,7 @@
           </p>
         </section>
         <aside>
-          <img height="400" src="assets/article/speeding-up.jpg">
+          <img height="400" src="assets/article/speeding-up.jpg" loading="lazy">
           <figcaption>A craft in low orbit</figcaption>
         </aside>
       </section>
@@ -110,13 +124,11 @@
           </p>
         </section>
         <aside>
-          <img height="400" src="assets/article/slow-down.jpg">
+          <img height="400" src="assets/article/slow-down.jpg" loading="lazy">
           <figcaption>A craft travelling at escape velocity</figcaption>
         </aside>
       </section>
     </section>
-
-    <br>
 
     <section class="column-dual" id="determine-total-dv-for-mission">
       <section>
@@ -171,7 +183,7 @@
         </p>
 
       </section>
-      <aside class="contains-header max-content">
+      <aside class="contains-header max-content indent-text">
         <div><i>Commonly used terms</i></div>
         <div><abbr>Burn</abbr>; to execute a maneuver by using engine thrust</div>
         <div><abbr>Prograde</abbr>; the direction in which an object is moving</div>
@@ -200,8 +212,8 @@
           <a href="https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation">Tsiolkovsky rocket equation</a>
         </p>
         <div class="math-equation">
-          <div><i>delta-v</i> = I<sub>sp</sub>&nbsp;<i>g</i>&nbsp;ln<span class="large-bracket">(</span></div>
-          <div class="fraction"><sup>mass<sub>wet</sub></sup><sub>mass<sub>dry</sub></sub></div>
+          <div><i>delta-v</i> = I<sub><i>sp</i></sub>&nbsp;<i>g</i>&nbsp;ln<span class="large-bracket">(</span></div>
+          <div class="fraction"><sup>mass<sub><i>wet</i></sub></sup><sub>mass<sub><i>dry</i></sub></sub></div>
           <div><span class="large-bracket">)</span></div>
         </div>
 
@@ -236,7 +248,7 @@
             </mat-form-field>
             <div class="divider-line"></div>
             <mat-form-field>
-              <input matInput type="number" min="0" value="3" placeholder="Mass dry"
+              <input matInput type="number" min="0" value="3" placeholder="Mass-dry"
                      (input)="calcDv.dry = $event.target.value">
               <span matSuffix>t</span>
             </mat-form-field>
@@ -245,13 +257,14 @@
         </form>
 
         <p>
-          Feel free to change these input values to match a rocket that you have in mind, it will update accordingly.
+          Feel free to interact with these input values to match a rocket that you have in mind, it will update
+          accordingly.
         </p>
 
       </section>
-      <aside class="contains-header max-content">
+      <aside class="contains-header max-content indent-text">
         <div><i>Tsiolkovsky rocket equation</i></div>
-        <div><abbr>I<sub>sp</sub></abbr> ; a measure of the rocket engine's efficiency</div>
+        <div><abbr>I<sub><i>sp</i></sub></abbr> ; a measure of the rocket engine's efficiency</div>
         <div><abbr><i>g</i></abbr> ; 9.81 m/s<sup>2</sup>, known as standard gravity</div>
         <div><abbr>mass<sub>wet</sub></abbr> ; the rocket's total mass when fully fueled</div>
         <div><abbr>mass<sub>dry</sub></abbr> ; the rocket's final mass after draining all fuel</div>
@@ -259,18 +272,349 @@
       </aside>
     </section>
 
-    <section class="column-dual" id="using-dv-efficiently">
-      <section>
-        <h3>Using delta-v efficiently
-          <a class="link" routerLink fragment="using-dv-efficiently"></a></h3>
+    <section id="using-dv-efficiently">
+      <h3>Using delta-v efficiently
+        <a class="link" routerLink fragment="using-dv-efficiently"></a></h3>
+      <p>
+        A craft's delta-v capability can be improved by adding more boosters, or reducing the payload. Alternatively,
+        new players may find it easier by expending less delta-v to achieve the same results. There are many situations
+        in space flight where the more efficient methods are counter-intuitive.
+      </p>
+
+      <section class="column-dual" id="launch-from-kerbin">
+        <section>
+          <h4>Launching into orbit from Kerbin
+            <a class="link" routerLink fragment="launch-from-kerbin"></a></h4>
+          <span>
+             A craft on the launch pad requires these 2 conditions to be in a stable Kerbin orbit:
+            </span>
+          <ul>
+            <li>An altitude above the atmosphere (70 km for Kerbin)</li>
+            <li>A velocity towards the horizon (~2240 m/s)</li>
+          </ul>
+
+          <p>
+            As altitude cannot be directly manipulated, the rocket needs to achieve a vertical velocity of
+            ~1172 m/s in order to reach a 70 km altitude. This implies that a rocket needs a ~2240 m/s horizontal
+            velocity, and also a ~1172 m/s vertical velocity to reach orbit. It is inefficient to do these as 2
+            separate,
+            sequential maneuvers. Instead, they should be executed as a gravity turn.
+          </p>
+
+          <p>
+            Mathematically adding these velocity vectors as a single maneuver shows how the single burn costs less
+            delta-v for the same result, as opposed to doing a vertical burn, and then a horizontal burn. In addition to
+            this, launching due East on Kerbin saves ~175 m/s due to Kerbin's rotation in that direction.
+          </p>
+        </section>
+
+        <aside class="contains-header">
+          <div><i>Gravity Turn</i></div>
+          <div>
+            A launch maneuver performed at liftoff, where the rocket pitches over only slightly and then points prograde
+            until it reaches orbit. The trajectory relies on gravity to "turn" the rocket towards the horizon, so that
+            it reaches orbit when pointing at the horizon.
+          </div>
+        </aside>
+      </section>
+
+      <section id="launch-from-mun">
+        <h4>Launching into orbit from Mun
+          <a class="link" routerLink fragment="launch-from-mun"></a></h4>
         <p>
-          TODO
+          Launching into orbit from a planet/moon without an atmosphere does not require a gravity turn. The most
+          efficient trajectory is to maximise horizontal velocity, while maintaining a minimum altitude to avoid
+          collisions with mountains. The means that the rocket does not have to point prograde, but should instead pitch
+          over aggressively at launch.
         </p>
       </section>
-      <aside class="contains-header max-content">
-      </aside>
+
+      <section class="column-dual" id="landing-mun">
+        <section>
+          <h4>Landing on Mun
+            <a class="link" routerLink fragment="landing-mun"></a></h4>
+          <p>
+            Landing on any planet/moon without at atmosphere follows the same rules as launching from them, but in
+            reverse. To efficiently land, first move the craft into a very low orbit, then reduce speed until the
+            trajectory intersects the intended landing location. Wait until the craft nears this point of impact, then
+            perform a suicide burn. The craft pitch might need to be constantly adjusted above/below retrograde to
+            ensure
+            that the altitude reaches 0 m at the same time that the velocity reaches 0 m/s.
+          </p>
+          <p>
+            In practice there are more variables to consider (risk, craft TWR, mountains, landing target, etc.) which
+            might require landing trajectories other than the near perfect shallow landing example described above.
+          </p>
+        </section>
+        <aside class="contains-header max-content indent-text">
+          <div><i>Commonly used terms</i></div>
+          <div><abbr>Suicide burn</abbr>; a maneuver where a landing craft fires up its engines at the last possible
+            moment, as to arrest its velocity at the same time as touchdown
+          </div>
+          <div><abbr>TWR</abbr>; thrust-to-weight ratio, a measure of how many g's of acceleration a craft could sustain
+            relative to a specific planet's gravity (Kerbin is commonly chosen for this, but the measure is different
+            for every planet/moon)
+          </div>
+        </aside>
+      </section>
+
+      <section class="column-dual" id="orbital-maneuvers">
+        <section>
+          <h4>Orbital maneuvers
+            <a class="link" routerLink fragment="orbital-maneuvers"></a></h4>
+          <p>
+            Maneuvers in orbit are generally less expensive where the velocity is slowest. Massive changes in orbital
+            inclination can be achieved at apoapsis for a lower cost. There are exceptions to this rule:
+          </p>
+          <ul>
+            <li>Burn at periapsis to change the apoapsis height, due to the Oberth effect</li>
+            <li>Radial changes to an elliptical orbit are often cheaper halfway between apoapsis and periapsis</li>
+            <li>Moving the orbit's inclination Ascending/Descending node forward/backward (as opposed to zeroing out the
+              inclination) is often more effective at a point 90° ahead/behind of the node
+            </li>
+          </ul>
+        </section>
+        <aside class="contains-header max-content indent-text">
+          <div><i>Commonly used terms</i></div>
+          <div><abbr>Apoapsis</abbr>; apex of arc, or the highest point in an orbit</div>
+          <div><abbr>Periapsis</abbr>; the lowest point in an orbit</div>
+          <div><abbr>Oberth effect</abbr>; phenomenon where a change in velocity produces a disproportionate change in
+            kinetic energy
+          </div>
+        </aside>
+      </section>
+
+      <section class="column-dual" id="interplanetary-transfers">
+        <section>
+          <h4>Interplanetary transfers
+            <a class="link" routerLink fragment="interplanetary-transfers"></a></h4>
+          <p>
+            Players sending their first craft to Duna (or any other planet) are putting most of their skills and
+            knowledge to the test. In addition, this is a great situation to learn more about delta-v efficiency. A
+            common first mistake is to launch into a solar orbit with barely enough velocity to escape Kerbin's gravity,
+            and then once in solar orbit, to perform another burn to match orbit with Duna and essentially rendezvous.
+            This is extremely inefficient because of the high orbital velocities involved in solar orbits.
+          </p>
+          <p>
+            Efficient interplanetary transfer trajectories require that all maneuvers be executed at periapsis, which
+            should ideally be as low as possible to extract a large advantage from the Oberth effect. The ejection burn
+            should happen during a transfer window to minimize delta-v expenditure. This can seem
+            immensely complex and high risk to new players, but even if performing this maneuver badly, it will still
+            be less expensive than the solar-orbit-rendezvous method. It is expected that a small course correction
+            maneuver be performed after the ejection burn, about halfway through the trip. This course correction
+            can fine tune an intercept with Duna, and should not cost more than 20 m/s, but other planets with worse
+            orbital inclinations could cost significantly more.
+          </p>
+        </section>
+        <aside class="contains-header max-content indent-text">
+          <div><i>Commonly used terms</i></div>
+          <div><abbr>Ejection burn</abbr>; maneuver that increases velocity to be faster than escape velocity</div>
+          <div><abbr>Escape velocity</abbr>; minimum velocity required for a ballistic object to travel beyond the
+            gravitational sphere of influence of the planet/moon it was orbiting
+          </div>
+          <div><abbr>Transfer window</abbr>; period of time during which a craft can cheaply perform an interplanetary
+            transfer due to good alignment between the origin and destination planets/moons
+          </div>
+        </aside>
+      </section>
+
+      <section class="column-dual" id="gravity-assists-slingshots">
+        <section>
+          <h4>Gravity assists and slingshots
+            <a class="link" routerLink fragment="gravity-assists-slingshots"></a></h4>
+          <p>
+            When approaching a planet, a craft's speed measured relative to the planet, will be consistent between its
+            entry and escape from the planet's gravity well as long as the craft remains ballistic (not actively
+            changing course). This has the side effect that the craft's velocity changed direction after escaping the
+            planet's gravity well. The craft's speed measured relative to the Sun could also change due to this,
+            depending on how the planet curved the trajectory during the encounter.
+          </p>
+
+          <p>
+            Around Kerbin, this can be used to increase the craft's speed by simply crossing the orbit of Mun from
+            behind. This will cause the craft's Mun relative velocity to be deflected towards the forward direction of
+            Mun, adding Kerbin relative speed to the craft as it passes through the encounter. This can reduce the cost
+            of reaching Minmus, since the final trajectory will have a lower Minmus relative velocity.
+          </p>
+
+          <p>
+            Missions to Jool can save upwards of 2000 m/s delta-v by using Tylo/Laythe to perform a reverse gravity
+            assist. Trajectories that pass Tylo's orbit ahead of Tylo, will have their Tylo relative velocity redirected
+            backwards, capturing the craft into a Jool orbit. A second gravity assist can lower the orbit to reach
+            Laythe.
+          </p>
+
+          <p>
+            These techniques can be used for multiple chained gravity assists between planets to cheaply reach the
+            destination, at the cost of longer transit durations. Eve and Kerbin are good planets to use as a
+            springboard to reach farther targets. Planetary gravity assists are intimidating at first, but following
+            some simple rules you can keep craft out of danger.
+          </p>
+          <ul>
+            <li>
+              Orbits will always pass through the point of the last maneuver performed. If you only burn at the planet
+              intercept location, you will always be able to still intercept the planet at some point in the future.
+            </li>
+            <li>
+              There is a practical limit to how much potential a gravity assist can provide, depending on the relative
+              velocity and the planet's gravity. When the entry-escape trajectory deflects only a little, it is time to
+              find an alternate gravity assist planet.
+            </li>
+          </ul>
+        </section>
+        <aside>
+          <img height="400" src="assets/article/gravity-assist.jpg" loading="lazy">
+          <figcaption>A gravity assist from Mun to Minmus</figcaption>
+        </aside>
+      </section>
+
+      <section id="refueling-docking-infrastructure">
+        <h4>Refueling by docking to infrastructure
+          <a class="link" routerLink fragment="refueling-docking-infrastructure"></a></h4>
+        <p>
+          While not directly influencing the delta-v capability of a craft, refueling can have an tremendous effect
+          on the total delta-v available on the mission. This does require some form of "infrastructure" along the
+          mission trip (e.g. space station or surface base) for full effect, but some advantage can already be gained
+          with a single launch vehicle.
+        </p>
+
+        <section>
+          <h5>Direct ascent versus rendezvous</h5>
+          <p>
+            When building a mission to land on Mun, it will often require less total mass (and less fuel) to build a
+            2-craft vehicle that undocks when in low orbit at Mun. The lander portion then performs the surface landing,
+            while the command module portion stays in orbit, waiting for the lander to return to orbit and dock to
+            transfer the crew. This requires less fuel to accomplish since the lander is not carrying the final portion
+            of the mission down to the surface landing.
+          </p>
+        </section>
+
+        <section>
+          <h5>Space station in orbit</h5>
+          <p>
+            Launch mass can be reduced by designing the craft to only have enough delta-v to rendezvous with a Kerbin
+            space station, and then refuel before starting the next leg of its trip (e.g. ~1123 m/s to reach a low Mun
+            orbit). This allows the craft to be conservative with fuel during its journey, but it does come at the cost
+            of refueling the space station eventually. This however can be done inexpensively due to economies of scale
+            by using dedicated massive fuel tankers.
+          </p>
+        </section>
+
+        <section>
+          <h5>Fuel depots on the frontier</h5>
+          <p>
+            The price of fuel becomes more expensive the farther away the refueling location is, and this price
+            difference is somewhat proportional to the delta-v needed to get there. When refueling a craft on Kerbin,
+            this can be considered the cost price, but when refueling in Kerbin orbit we have to account for the initial
+            launch costs for getting that fuel into orbit. This becomes worse for fuel in orbit around Duna, and even
+            more for fuel at Moho. This can be avoided by investing in the
+            <a href="https://wiki.kerbalspaceprogram.com/wiki/Converter">ISRU</a>
+            parts to produce fuel on site, and this fuel can even be used as a discounted alternative to refuel other
+            depots.
+          </p>
+        </section>
+
+      </section>
+
     </section>
 
+  </article>
+
+  <br>
+
+  <article>
+    <section>
+      <h2>CommNet</h2>
+      <p>
+        CommNet or KerbNet refers to the control communication system in game. This is a limitation placed on the
+        transmission of science, and the control of probe core craft that do not have crew onboard. Control can be
+        regained as long as a connection can be made back to the KSC (or nearby craft that provide remote control)
+      </p>
+
+      <p>
+        The CommNet generally hinders players in early career mode from sending probes far out where much more science
+        is available. Instead, their range slowly increases as the Tracking Station building is upgraded, or better
+        communication antenna technology is unlocked. This range can however be increased earlier through the smart
+        use of the relay satellites.
+      </p>
+    </section>
+
+    <section id="communication-satellite-constellations">
+      <h3>Communication satellite constellations
+        <a class="link" routerLink fragment="communication-satellite-constellations"></a></h3>
+      <p>
+        Placing a formation of relay satellites in the correct orbits can maximize the potential range of a signal back
+        to Kerbin. These constellations should also consider how everything in orbit is always in motion; a rover on
+        the far side of Mun needs a direct line-of-sight to Kerbin (or a relay satellite) in order to be controlled.
+      </p>
+    </section>
+
+    <section id="ground-based-relays">
+      <h4>Ground based relays
+        <a class="link" routerLink fragment="ground-based-relays"></a></h4>
+      <p>
+        Early launches can potentially run into signal issues as they launch eastward and lose line-of-sight to the KSC
+        over the horizon, which then lack any control to do the final burn to reach a stable orbit. The fix for this
+        involves placing a relay antenna due east which can provide a signal back to the KSC. Placing them on mountain
+        tops helps to increase the range between them without the horizon being in the way.
+      </p>
+    </section>
+
+    <section id="low-orbit-constellations">
+      <h4>Low orbit constellations
+        <a class="link" routerLink fragment="low-orbit-constellations"></a></h4>
+      <p>
+        It is beneficial to have chain of relays close to Kerbin. These provide an important link to maintaining
+        permanent communication with ground based vehicles, planes, other craft in low orbit, and especially craft
+        that have re-entered the atmosphere waiting for you to activate their parachutes.
+      </p>
+    </section>
+
+    <section id="high-orbit-constellations">
+      <h4>High orbit constellations
+        <a class="link" routerLink fragment="high-orbit-constellations"></a></h4>
+      <p>
+        Placing 4 powerful relays in orbits higher than Mun can maintain a direct line-of-sight to its far side. This
+        can help rovers stay in control before losing signal near a cliff. It is important that these relays be spaced
+        equally, and maintain equal orbital periods as to not drift towards each other.
+      </p>
+    </section>
+
+    <section id="primary-planetary-relays">
+      <h4>Primary planetary relays
+        <a class="link" routerLink fragment="primary-planetary-relays"></a></h4>
+      <p>
+        A powerful relay in orbit around Duna will provide a connection to local craft for only a portion of its orbit.
+        It loses signal when behind Duna, and thus will not provide signal to the local craft. This can be avoided by
+        placing it in a highly elliptical polar orbit with the periapsis close to Duna's south pole. This will also pass
+        behind Duna at some point in its orbit, but it will do so for a very short duration, and then move very slowly
+        towards the apoapsis where it spends most of its time during the orbit. In over 99% of the orbital period, the
+        relay will remain somewhere above the north pole with a direct line-of-sight to that hemisphere and most of the
+        space surrounding Duna. This of course works for any other planet/moon as well.
+      </p>
+    </section>
+
+    <section id="remote-control-stations">
+      <h4>Remote control stations
+        <a class="link" routerLink fragment="remote-control-stations"></a></h4>
+      <p>
+        Crewed vehicles will always have some sort of control. A relay craft fitted with a
+        <a href="https://wiki.kerbalspaceprogram.com/wiki/RC-001S_Remote_Guidance_Unit">RC-001S Remote Guidance Unit</a>
+        and a pilot on board, will also be able to provide remote control to probes in the local area. They will not be
+        able to transmit science, but will have control to achieve landings and orbital maneuvers.
+      </p>
+    </section>
+  </article>
+
+  <br>
+
+  <article>
+    <p style="opacity: .7; font-style: italic; margin-top: 3em">
+      The information herein is based on the game 'Kerbal Space Program', and although it might reference the Earth/Moon
+      and other concepts outside the game, the methods and physics here are only intended to be accurate in the game.
+      While the game is a fairly accurate representation of spaceflight, it does prioritize gameplay to some degree,
+      thus there is far more to learn in real life about space travel.
+    </p>
   </article>
 
   <footer id="footer" class="footer-layout">
