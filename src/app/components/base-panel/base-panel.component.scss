@@ -27,7 +27,8 @@
 }
 
 .panel-space {
-  background-color: #fffd;
+  background-color: var(--color-background-card);
+  color: var(--color-text);
   display: flex;
   align-items: center;
 

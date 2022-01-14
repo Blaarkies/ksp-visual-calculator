@@ -1,22 +1,24 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap, timer } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
-import { UsableRoutes } from '../../usable-routes';
-import { AuthService } from '../../services/auth.service';
+import { WithDestroy } from '../../../common/with-destroy';
+import { UsableRoutes } from '../../../usable-routes';
+import { AuthService } from '../../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AccountDialogComponent } from '../../overlays/account-dialog/account-dialog.component';
-import { GlobalStyleClass } from '../../common/global-style-class';
-import { SimpleDialogComponent, SimpleDialogData } from '../../overlays/simple-dialog/simple-dialog.component';
-import { TutorialService } from '../../services/tutorial.service';
+import { AccountDialogComponent } from '../../../overlays/account-dialog/account-dialog.component';
+import { GlobalStyleClass } from '../../../common/global-style-class';
+import { SimpleDialogComponent, SimpleDialogData } from '../../../overlays/simple-dialog/simple-dialog.component';
+import { TutorialService } from '../../../services/tutorial.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HudService } from '../../services/hud.service';
-import { EventLogs } from '../../services/event-logs';
-import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
-import { AnalyticsService } from '../../services/analytics.service';
+import { HudService } from '../../../services/hud.service';
+import { EventLogs } from '../../../services/event-logs';
+import { BuyMeACoffeeDialogComponent } from '../../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { RouteData } from '../../calculators-routing.module';
 
 let localStorageKeyFirstVisitDeprecated = 'ksp-visual-calculator-first-visit';
 let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';
+let localStorageKeyLastSignInSuggestionDate = 'ksp-visual-calculator-last-sign-in-suggestion-date';
 
 @Component({
   selector: 'cp-page-calculators',
@@ -28,7 +30,7 @@ export class PageCalculatorsComponent extends WithDestroy() implements AfterView
   calculatorType: UsableRoutes;
   calculators = UsableRoutes;
 
-  constructor(router: Router,
+  constructor(activatedRoute: ActivatedRoute,
               private authService: AuthService,
               private dialog: MatDialog,
               private snackBar: MatSnackBar,
@@ -38,26 +40,30 @@ export class PageCalculatorsComponent extends WithDestroy() implements AfterView
     super();
 
     let routesMap = {
-      [`/${UsableRoutes.DvPlanner}`]: UsableRoutes.DvPlanner,
-      [`/${UsableRoutes.SignalCheck}`]: UsableRoutes.SignalCheck,
+      [`${UsableRoutes.DvPlanner}`]: UsableRoutes.DvPlanner,
+      [`${UsableRoutes.SignalCheck}`]: UsableRoutes.SignalCheck,
     };
 
-    router.events
-      .pipe(
-        filter(e => e instanceof NavigationEnd),
-        takeUntil(this.destroy$))
-      .subscribe((e: NavigationEnd) => this.calculatorType = routesMap[e.url]);
+    activatedRoute.data
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: RouteData) =>
+        this.calculatorType = routesMap[data.calculatorType]);
 
+    let minute = 60 * 1e3;
     this.authService
       .user$
       .pipe(
         take(1),
-        filter(user => user === null),
+        filter(user => user === null
+        && this.timeSinceLastSignInDialog() > minute),
+        tap(() => {
+          localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
+          this.dialog.open(AccountDialogComponent,
+            {backdropClass: GlobalStyleClass.MobileFriendly});
+        }),
         takeUntil(this.destroy$))
-      .subscribe(() => this.dialog.open(AccountDialogComponent,
-        {backdropClass: GlobalStyleClass.MobileFriendly}));
+      .subscribe();
 
-    let minute = 60 * 1e3;
     this.authService.user$
       .pipe(
         distinctUntilChanged(),
@@ -80,6 +86,12 @@ export class PageCalculatorsComponent extends WithDestroy() implements AfterView
       localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
       this.triggerFirstVisitDialog();
     }
+  }
+
+  private timeSinceLastSignInDialog(): number {
+    let lastDate = localStorage.getItem(localStorageKeyLastSignInSuggestionDate)?.toNumber() || 0;
+    let difference = new Date().getTime() - new Date(lastDate).getTime();
+    return difference;
   }
 
   private triggerFirstVisitDialog() {

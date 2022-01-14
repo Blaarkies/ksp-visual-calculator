@@ -1,23 +1,23 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { Craft } from '../../common/domain/space-objects/craft';
-import { TransmissionLine } from '../../common/domain/transmission-line';
-import { CustomAnimation } from '../../common/domain/custom-animation';
-import { SpaceObjectService } from '../../services/space-object.service';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { Craft } from '../../../common/domain/space-objects/craft';
+import { TransmissionLine } from '../../../common/domain/transmission-line';
+import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { SpaceObjectService } from '../../../services/space-object.service';
 import { filter, Observable, takeUntil } from 'rxjs';
 import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
-} from '../../overlays/craft-details-dialog/craft-details-dialog.component';
+} from '../../../overlays/craft-details-dialog/craft-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AnalyticsService } from '../../services/analytics.service';
-import { WithDestroy } from '../../common/with-destroy';
-import { Icons } from '../../common/domain/icons';
-import { StateService } from '../../services/state.service';
-import { UsableRoutes } from '../../usable-routes';
-import { HudService } from '../../services/hud.service';
-import { GlobalStyleClass } from '../../common/global-style-class';
-import { EventLogs } from '../../services/event-logs';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { WithDestroy } from '../../../common/with-destroy';
+import { Icons } from '../../../common/domain/icons';
+import { StateService } from '../../../services/state.service';
+import { UsableRoutes } from '../../../usable-routes';
+import { HudService } from '../../../services/hud.service';
+import { GlobalStyleClass } from '../../../common/global-style-class';
+import { EventLogs } from '../../../services/event-logs';
 
 @Component({
   selector: 'cp-page-signal-check',

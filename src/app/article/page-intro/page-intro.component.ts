@@ -26,10 +26,6 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
   scrollEvent$ = new Subject<number>()
   pageHeight = 1000;
 
-  log(a: any) {
-    console.log(a)
-  }
-
   constructor(router: Router,
               private self: ElementRef,
               private themeService: ThemeService) {

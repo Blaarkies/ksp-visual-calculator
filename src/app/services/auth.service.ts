@@ -119,7 +119,6 @@ export class AuthService {
 
   async signOut() {
     await signOut(this.auth);
-    await this.router.navigate(['/']);
     await firstValueFrom(this.stateService.loadState());
     this.stateService.setStateRecord();
   }

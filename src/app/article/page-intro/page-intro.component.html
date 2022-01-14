@@ -2,8 +2,8 @@
       (pointerdown)="updateSidebar($event)">
 
   <nav class="top-nav" [class.translate-up]="!showNavbar">
-    <a mat-button href="/dv-planner">Delta-v Calculator</a>
-    <a mat-button href="/signal-check">CommNet Calculator</a>
+    <a mat-button href="/calculators/dv-planner">Delta-v Calculator</a>
+    <a mat-button href="/calculators/signal-check">CommNet Calculator</a>
     <i></i>
     <button mat-icon-button (click)="toggleTheme()">◐</button>
     <button id="sidebar-button" mat-icon-button (click)="showSidebar = !showSidebar">≡</button>
@@ -51,8 +51,8 @@
     </header>
 
     <nav class="button-calculators">
-      <a mat-stroked-button href="/dv-planner">Go to Delta-v Calculator</a>
-      <a mat-stroked-button href="/signal-check">Go to CommNet Calculator</a>
+      <a mat-stroked-button href="/calculators/dv-planner">Go to Delta-v Calculator</a>
+      <a mat-stroked-button href="/calculators/signal-check">Go to CommNet Calculator</a>
     </nav>
   </article>
 
@@ -106,7 +106,7 @@
           </p>
         </section>
         <aside>
-          <img height="400" src="assets/article/speeding-up.jpg" loading="lazy">
+          <img height="400" src="../../../assets/article/speeding-up.jpg" loading="lazy">
           <figcaption>A craft in low orbit</figcaption>
         </aside>
       </section>
@@ -124,7 +124,7 @@
           </p>
         </section>
         <aside>
-          <img height="400" src="assets/article/slow-down.jpg" loading="lazy">
+          <img height="400" src="../../../assets/article/slow-down.jpg" loading="lazy">
           <figcaption>A craft travelling at escape velocity</figcaption>
         </aside>
       </section>
@@ -463,7 +463,7 @@
           </ul>
         </section>
         <aside>
-          <img height="400" src="assets/article/gravity-assist.jpg" loading="lazy">
+          <img height="400" src="../../../assets/article/gravity-assist.jpg" loading="lazy">
           <figcaption>A gravity assist from Mun to Minmus</figcaption>
         </aside>
       </section>
@@ -626,8 +626,8 @@
 
     <div>
       <span>Calculators</span>
-      <a mat-button href="/dv-planner">Delta-v Calculator</a>
-      <a mat-button href="/signal-check">CommNet Calculator</a>
+      <a mat-button href="/calculators/dv-planner">Delta-v Calculator</a>
+      <a mat-button href="/calculators/signal-check">CommNet Calculator</a>
     </div>
 
     <div>
