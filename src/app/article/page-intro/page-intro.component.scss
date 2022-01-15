@@ -68,7 +68,7 @@ main {
     padding: 0 4em;
 
     @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
-      padding: 0 2em;
+      padding: 0 1em 0 2em !important;
     }
   }
 
@@ -88,6 +88,10 @@ img {
 
 table {
   border-spacing: 1em 0;
+
+  tr > td:first-child {
+    width: 5em;
+  }
 
   .double-line {
     --border: 1px solid currentColor;
@@ -397,12 +401,12 @@ footer {
   }
 }
 
-section[id] h1,
-section[id] h2,
-section[id] h3,
-section[id] h4,
-section[id] h5,
-section[id] h6 {
+section[id] > h1,
+section[id] > h2,
+section[id] > h3,
+section[id] > h4,
+section[id] > h5,
+section[id] > h6 {
   position: relative;
   width: max-content;
   transition: .2s ease-out;

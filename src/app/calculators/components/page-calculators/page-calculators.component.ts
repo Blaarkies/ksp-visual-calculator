@@ -1,6 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap, timer } from 'rxjs';
+import { delay, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil, tap, timer } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';
 import { UsableRoutes } from '../../../usable-routes';
 import { AuthService } from '../../../services/auth.service';
@@ -25,10 +25,11 @@ let localStorageKeyLastSignInSuggestionDate = 'ksp-visual-calculator-last-sign-i
   templateUrl: './page-calculators.component.html',
   styleUrls: ['./page-calculators.component.scss']
 })
-export class PageCalculatorsComponent extends WithDestroy() implements AfterViewInit {
+export class PageCalculatorsComponent extends WithDestroy() {
 
   calculatorType: UsableRoutes;
   calculators = UsableRoutes;
+  signInDialogOpen$ = new Subject<void>();
 
   constructor(activatedRoute: ActivatedRoute,
               private authService: AuthService,
@@ -54,12 +55,26 @@ export class PageCalculatorsComponent extends WithDestroy() implements AfterView
       .user$
       .pipe(
         take(1),
-        filter(user => user === null
-        && this.timeSinceLastSignInDialog() > minute),
-        tap(() => {
+        filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
+        switchMap(() => {
           localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
-          this.dialog.open(AccountDialogComponent,
-            {backdropClass: GlobalStyleClass.MobileFriendly});
+
+          return this.dialog.open(AccountDialogComponent,
+            {backdropClass: GlobalStyleClass.MobileFriendly})
+            .afterClosed();
+        }),
+        delay(5e3),
+        tap(() => this.signInDialogOpen$.next()),
+        takeUntil(this.destroy$))
+      .subscribe();
+
+    this.signInDialogOpen$
+      .pipe(
+        tap(() => {
+          if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
+            localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
+            this.triggerFirstVisitDialog();
+          }
         }),
         takeUntil(this.destroy$))
       .subscribe();
@@ -79,13 +94,6 @@ export class PageCalculatorsComponent extends WithDestroy() implements AfterView
           this.dialog.open(BuyMeACoffeeDialogComponent);
         }))
       .subscribe();
-  }
-
-  ngAfterViewInit() {
-    if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
-      localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
-      this.triggerFirstVisitDialog();
-    }
   }
 
   private timeSinceLastSignInDialog(): number {

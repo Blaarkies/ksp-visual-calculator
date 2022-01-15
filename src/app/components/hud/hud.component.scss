@@ -33,6 +33,7 @@
 
 .navigation {
   grid-area: nav;
+  z-index: 1;
 }
 
 .page-context {
@@ -123,6 +124,13 @@
   grid-area: info;
   width: max-content;
   justify-self: end;
+  z-index: 1;
+}
+
+.menu-context {
+  grid-area: menu-context;
+  align-self: end;
+  z-index: 1;
 }
 
 .zoom {
@@ -132,17 +140,16 @@
 }
 
 .focus {
-  grid-area: focus;
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+  align-self: center;
 }
 
 .dv {
-  grid-area: dv;
+  grid-column: 1/-1;
+  grid-row: 1/-1;
+  align-self: center;
   justify-self: end;
-}
-
-.menu-context {
-  grid-area: menu-context;
-  align-self: end;
 }
 
 .base {
