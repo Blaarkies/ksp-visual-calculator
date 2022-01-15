@@ -46,7 +46,7 @@
       <p>
         This online tool calculates delta-v and CommNet requirements in KSP (a video game, Kerbal Space Program). It
         helps KSP players plan and solve complex missions. Just like the game, these calculators are made to be
-        interactive and visual to help new comers quickly grasp the mechanics of rocket science.
+        interactive and visual to help new players quickly grasp the mechanics of rocket science.
       </p>
     </header>
 
@@ -62,10 +62,9 @@
       <p>
         Delta-v, dv, or formally Δv is a measure of <i>change in velocity</i>. This is the spaceship equivalent of
         talking about a car's <i>range</i>, or how much distance the car can travel without refueling. Because a
-        spaceship in a stable orbit will continue travelling a huge distance without using any fuel at all, it is
-        irrelevant measuring the spaceship's range in distance like we do with cars. Instead, spacecraft measure
-        their capability in how much they can change their speed, as this ultimately determines if it can reach
-        the Moon or beyond.
+        spaceship in a stable orbit will continue travelling a large distance without using any fuel at all, it is
+        irrelevant measuring the spaceship's range in distance. Instead, spacecraft measure their capability in how much
+        they can change their speed, as this ultimately determines if it can reach the Moon or beyond.
       </p>
 
       <section class="column-dual">
@@ -90,18 +89,20 @@
         <a class="link" routerLink fragment="importance-of-dv"></a></h3>
       <p>
         Generally, spacecraft use their fuel to speed up to reach higher orbits, and also use fuel to slow down when
-        moving to a lower orbit. Both of these maneuvers primarily changed the craft's velocity, and knowing how much
-        delta-v the spacecraft is capable of delivering will improves mission success.
+        moving to a lower orbit. Both of these maneuvers primarily change the craft's velocity, and knowing how much
+        delta-v the spacecraft is capable of delivering will improves mission success rates.
       </p>
+      <br>
 
       <section class="column-dual">
         <section>
           <h4>Why spacecraft would speed up</h4>
           <p>
-            Consider a craft in a stable low Earth orbit. Without using fuel, it will stay in such an orbit for a long
-            time. If the craft were to thrust itself forward, using fuel to increase it's velocity, this would also
-            increase the orbit's height. Thus if the craft continues to increase its velocity, its higher orbit could
-            intersect with the Moon. The craft expended a specific amount of delta-v to reach this new velocity.
+            Consider a craft in a stable low Kerbin orbit. Without using fuel, it will stay in such an orbit for a long
+            time. If the craft were to thrust itself forward, using fuel to increase its velocity, this would also
+            increase the orbit's height. Thus if the craft continues to increase its velocity, the increasingly higher
+            orbit could intersect with Mun. The craft expended a specific amount of delta-v to reach this new
+            velocity.
           </p>
         </section>
         <aside>
@@ -116,10 +117,10 @@
         <section>
           <h4>Why spacecraft would slow down</h4>
           <p>
-            When a craft reaches the Moon, it will be approaching the Moon from outside of the Moon's gravitational
-            influence. It will be pulled towards the Moon (it will "fall") and gain enough speed to swing by and escape
-            the Moon's gravity. To reach a stable orbit, the craft has to thrust backwards to slow itself down. The
-            craft would have to expend some delta-v to reach this new velocity.
+            When a craft reaches Mun, it will be approaching Mun from outside of Mun's gravitational influence. It will
+            be pulled towards Mun (it will "fall") and gain enough speed to swing by and escape Mun's gravity. To reach
+            a stable orbit, the craft has to thrust backwards to slow itself down. The craft would have to expend some
+            delta-v to reach this new velocity.
           </p>
         </section>
         <aside>
@@ -136,7 +137,7 @@
         <p>
           Moving around in space while taking advantage of orbital mechanics lends itself to a systematic set of steps
           to reach the destination. Similar to how a car can use a specific highway as part of many different trips,
-          spacecraft also use similar maneuvers for different trips.
+          spacecraft also use similar maneuvers for a variety of trips.
         </p>
 
         <p>
@@ -149,7 +150,7 @@
           </tr>
           <tr>
             <td>852 m/s</td>
-            <td>Burn prograde at Kerbin Low Orbit to reach an intercept with Mun</td>
+            <td>Burn prograde at Kerbin Low Orbit to reach an intercept trajectory with Mun</td>
           </tr>
           <tr>
             <td>72 m/s</td>
@@ -157,7 +158,7 @@
           </tr>
           <tr>
             <td>199 m/s</td>
-            <td>Burn retrograde to lower the elliptical orbit into a Mun Low Orbit</td>
+            <td>Burn retrograde to lower the elliptical orbit to a low orbit</td>
           </tr>
           <tr>
             <td>580 m/s</td>
@@ -176,9 +177,9 @@
 
         <p>
           Any efficient trajectory will move through some of these steps on its way to the destination. For example, a
-          refueling mission to the Mun space station will go through all these steps, except it will not perform the
-          Mun surface landing step. Alternative routes are ofcourse possible, but they will be less efficient and
-          cost more delta-v to achieve the same result.
+          refueling mission to a Mun space station will go through all these steps, except it will not perform the
+          Mun surface landing. Alternative routes are of course still possible, but they will be less efficient,
+          costing more delta-v to achieve the same result.
         </p>
 
       </section>
@@ -195,19 +196,20 @@
         <h3>Calculating a craft's delta-v capability
           <a class="link" routerLink fragment="calculate-craft-dv"></a></h3>
         <p>
-          A rocket is a vehicle that uses fuel to propel itself in order to deliver its payload to a destination. This
-          thrust is ofcourse generated by rocket engines. It would seem quite difficult to determine the total delta-v
-          capability if we look at the contributing factors:
+          A rocket is a vehicle that uses fuel to propel itself in order to deliver a payload to some destination. This
+          thrust is of course generated by rocket engines. It would seem quite difficult to determine the total delta-v
+          capability if we look at the factors affecting delta-v capability:
         </p>
         <ul>
-          <li>Thrust is constant</li>
-          <li>Rocket mass decreases as fuel is used</li>
-          <li>Acceleration increases as mass decreases</li>
+          <li>Some fuel is used to push the remaining fuel in the craft to higher velocities</li>
+          <li>While thrust remains constant, the rocket's mass decreases as fuel is used</li>
+          <li>When mass decreases, the constant thrust will increase acceleration</li>
         </ul>
 
         <p>
-          To determine the total change in velocity possible, we need to multiply the acceleration by the time duration
-          that the thrust was applied. The continually changing acceleration means we have to look at the
+          To determine the total change in velocity available, we need to multiply the acceleration by the time duration
+          that the thrust is to be applied. The continually changing acceleration might complicate this, but we can have
+          a look at the
           <a href="https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation">Tsiolkovsky rocket equation</a>
         </p>
         <div class="math-equation">
@@ -218,12 +220,12 @@
 
         <p>
           Also known as the <i>classical rocket equation</i>, it looks far more complicated than it actually is. Given
-          three important input values (efficiency, mass with fuel, mass without fuel), it calculates the craft's
+          three important input values (efficiency, mass with fuel, and mass without fuel), it calculates the craft's
           delta-v capability considering dynamically changing acceleration.
         </p>
 
         <p>
-          Using a craft fitted with a
+          As an example, using a craft fitted with a
           <a href="https://wiki.kerbalspaceprogram.com/wiki/LV-909_%22Terrier%22_Liquid_Fuel_Engine">
             "Terrier" rocket engine</a>, 8 tons of mass<sub>wet</sub>, and 3 tons of mass<sub>dry</sub>,
           we get these results:
@@ -256,14 +258,14 @@
         </form>
 
         <p>
-          Feel free to interact with these input values to match a rocket that you have in mind, it will update
+          Feel free to interact with these input values to match a rocket that you might have in mind, it will update
           accordingly.
         </p>
-
       </section>
+
       <aside class="contains-header max-content indent-text">
         <div><i>Tsiolkovsky rocket equation</i></div>
-        <div><abbr>I<sub><i>sp</i></sub></abbr> ; a measure of the rocket engine's efficiency</div>
+        <div><abbr>I<sub><i>sp</i></sub></abbr> ; measure of the rocket engine's efficiency</div>
         <div><abbr><i>g</i></abbr> ; 9.81 m/s<sup>2</sup>, known as standard gravity</div>
         <div><abbr>mass<sub>wet</sub></abbr> ; the rocket's total mass when fully fueled</div>
         <div><abbr>mass<sub>dry</sub></abbr> ; the rocket's final mass after draining all fuel</div>
@@ -275,18 +277,16 @@
       <h3>Using delta-v efficiently
         <a class="link" routerLink fragment="using-dv-efficiently"></a></h3>
       <p>
-        A craft's delta-v capability can be improved by adding more boosters, or reducing the payload. Alternatively,
+        A craft's delta-v capability may be improved by adding more boosters, or by reducing the payload. Alternatively,
         new players may find it easier by expending less delta-v to achieve the same results. There are many situations
-        in space flight where the more efficient methods are counter-intuitive.
+        in space flight where the more efficient methods seem counter-intuitive.
       </p>
 
       <section class="column-dual" id="launch-from-kerbin">
         <section>
           <h4>Launching into orbit from Kerbin
             <a class="link" routerLink fragment="launch-from-kerbin"></a></h4>
-          <span>
-             A craft on the launch pad requires these 2 conditions to be in a stable Kerbin orbit:
-            </span>
+          <span>A craft on the launch pad requires 2 conditions to reach a stable Kerbin orbit:</span>
           <ul>
             <li>An altitude above the atmosphere (70 km for Kerbin)</li>
             <li>A velocity towards the horizon (~2240 m/s)</li>
@@ -296,8 +296,8 @@
             As altitude cannot be directly manipulated, the rocket needs to achieve a vertical velocity of
             ~1172 m/s in order to reach a 70 km altitude. This implies that a rocket needs a ~2240 m/s horizontal
             velocity, and also a ~1172 m/s vertical velocity to reach orbit. It is inefficient to do these as 2
-            separate,
-            sequential maneuvers. Instead, they should be executed as a gravity turn.
+            separate, sequential maneuvers. Instead, they should be executed as a gravity turn. Small deviations during
+            the gravity turn will still yield good results.
           </p>
 
           <p>
@@ -312,7 +312,7 @@
           <div>
             A launch maneuver performed at liftoff, where the rocket pitches over only slightly and then points prograde
             until it reaches orbit. The trajectory relies on gravity to "turn" the rocket towards the horizon, so that
-            it reaches orbit when pointing at the horizon.
+            it reaches orbit by the time it is pointing at the horizon.
           </div>
         </aside>
       </section>
@@ -322,7 +322,7 @@
           <a class="link" routerLink fragment="launch-from-mun"></a></h4>
         <p>
           Launching into orbit from a planet/moon without an atmosphere does not require a gravity turn. The most
-          efficient trajectory is to maximise horizontal velocity, while maintaining a minimum altitude to avoid
+          efficient trajectory is to maximise horizontal velocity, while maintaining a minimum altitude as to avoid
           collisions with mountains. The means that the rocket does not have to point prograde, but should instead pitch
           over aggressively at launch.
         </p>
@@ -335,20 +335,21 @@
           <p>
             Landing on any planet/moon without at atmosphere follows the same rules as launching from them, but in
             reverse. To efficiently land, first move the craft into a very low orbit, then reduce speed until the
-            trajectory intersects the intended landing location. Wait until the craft nears this point of impact, then
-            perform a suicide burn. The craft pitch might need to be constantly adjusted above/below retrograde to
-            ensure
-            that the altitude reaches 0 m at the same time that the velocity reaches 0 m/s.
+            trajectory intersects the intended landing site. Wait until the craft nears this point of impact, then
+            perform a suicide burn. The craft's pitch might need to be constantly adjusted above/below retrograde to
+            ensure that the altitude reaches 0 m at the same time as the velocity reaches 0 m/s.
           </p>
+
           <p>
             In practice there are more variables to consider (risk, craft TWR, mountains, landing target, etc.) which
             might require landing trajectories other than the near perfect shallow landing example described above.
           </p>
         </section>
+
         <aside class="contains-header max-content indent-text">
           <div><i>Commonly used terms</i></div>
-          <div><abbr>Suicide burn</abbr>; a maneuver where a landing craft fires up its engines at the last possible
-            moment, as to arrest its velocity at the same time as touchdown
+          <div><abbr>Suicide burn</abbr>; a maneuver requiring the landing craft to fire up its engines at the last
+            possible moment, as to arrest its velocity at the same time as touchdown
           </div>
           <div><abbr>TWR</abbr>; thrust-to-weight ratio, a measure of how many g's of acceleration a craft could sustain
             relative to a specific planet's gravity (Kerbin is commonly chosen for this, but the measure is different
@@ -366,16 +367,17 @@
             inclination can be achieved at apoapsis for a lower cost. There are exceptions to this rule:
           </p>
           <ul>
-            <li>Burn at periapsis to change the apoapsis height, due to the Oberth effect</li>
+            <li>Burns at periapsis to change the apoapsis height are more effective due to the Oberth effect</li>
             <li>Radial changes to an elliptical orbit are often cheaper halfway between apoapsis and periapsis</li>
-            <li>Moving the orbit's inclination Ascending/Descending node forward/backward (as opposed to zeroing out the
+            <li>Moving the orbit's inclination ascending/descending node forward/backward (as opposed to zeroing out the
               inclination) is often more effective at a point 90° ahead/behind of the node
             </li>
           </ul>
         </section>
+
         <aside class="contains-header max-content indent-text">
           <div><i>Commonly used terms</i></div>
-          <div><abbr>Apoapsis</abbr>; apex of arc, or the highest point in an orbit</div>
+          <div><abbr>Apoapsis</abbr>; apex of an arc, or the highest point in an orbit</div>
           <div><abbr>Periapsis</abbr>; the lowest point in an orbit</div>
           <div><abbr>Oberth effect</abbr>; phenomenon where a change in velocity produces a disproportionate change in
             kinetic energy
@@ -392,22 +394,23 @@
             knowledge to the test. In addition, this is a great situation to learn more about delta-v efficiency. A
             common first mistake is to launch into a solar orbit with barely enough velocity to escape Kerbin's gravity,
             and then once in solar orbit, to perform another burn to match orbit with Duna and essentially rendezvous.
-            This is extremely inefficient because of the high orbital velocities involved in solar orbits.
+            This is extremely inefficient because of the high orbital velocities involved during solar orbits.
           </p>
+
           <p>
-            Efficient interplanetary transfer trajectories require that all maneuvers be executed at periapsis, which
-            should ideally be as low as possible to extract a large advantage from the Oberth effect. The ejection burn
-            should happen during a transfer window to minimize delta-v expenditure. This can seem
-            immensely complex and high risk to new players, but even if performing this maneuver badly, it will still
-            be less expensive than the solar-orbit-rendezvous method. It is expected that a small course correction
-            maneuver be performed after the ejection burn, about halfway through the trip. This course correction
-            can fine tune an intercept with Duna, and should not cost more than 20 m/s, but other planets with worse
-            orbital inclinations could cost significantly more.
+            Efficient interplanetary transfer trajectories require that the majority of maneuver delta-v be executed at
+            periapsis of the origin planet, which should ideally be as low as possible to extract a powerful advantage
+            from the Oberth effect. The ejection burn should happen during a transfer window to minimize delta-v
+            expenditure. This can seem immensely complex and high risk to new players, but even if performing this
+            maneuver badly, it will still be less expensive than the solar-orbit-rendezvous method. It is expected that
+            a small course correction maneuver be performed after the ejection burn, about halfway through the trip.
+            This course correction can fine tune an intercept with Duna, and should not cost more than 20 m/s, but other
+            planets with worse orbital inclinations could cost significantly more.
           </p>
         </section>
         <aside class="contains-header max-content indent-text">
           <div><i>Commonly used terms</i></div>
-          <div><abbr>Ejection burn</abbr>; maneuver that increases velocity to be faster than escape velocity</div>
+          <div><abbr>Ejection burn</abbr>; maneuver that increases the craft's velocity above escape velocity</div>
           <div><abbr>Escape velocity</abbr>; minimum velocity required for a ballistic object to travel beyond the
             gravitational sphere of influence of the planet/moon it was orbiting
           </div>
@@ -423,7 +426,7 @@
             <a class="link" routerLink fragment="gravity-assists-slingshots"></a></h4>
           <p>
             When approaching a planet, a craft's speed measured relative to the planet, will be consistent between its
-            entry and escape from the planet's gravity well as long as the craft remains ballistic (not actively
+            entry and escape from the planet's gravity well, as long as the craft remains ballistic (not actively
             changing course). This has the side effect that the craft's velocity changed direction after escaping the
             planet's gravity well. The craft's speed measured relative to the Sun could also change due to this,
             depending on how the planet curved the trajectory during the encounter.
@@ -433,7 +436,7 @@
             Around Kerbin, this can be used to increase the craft's speed by simply crossing the orbit of Mun from
             behind. This will cause the craft's Mun relative velocity to be deflected towards the forward direction of
             Mun, adding Kerbin relative speed to the craft as it passes through the encounter. This can reduce the cost
-            of reaching Minmus, since the final trajectory will have a lower Minmus relative velocity.
+            of reaching Minmus, since the final trajectory will also have a lower Minmus relative velocity.
           </p>
 
           <p>
@@ -447,7 +450,7 @@
             These techniques can be used for multiple chained gravity assists between planets to cheaply reach the
             destination, at the cost of longer transit durations. Eve and Kerbin are good planets to use as a
             springboard to reach farther targets. Planetary gravity assists are intimidating at first, but following
-            some simple rules you can keep craft out of danger.
+            some simple rules you can keep craft out of danger:
           </p>
           <ul>
             <li>
@@ -473,7 +476,7 @@
         <p>
           While not directly influencing the delta-v capability of a craft, refueling can have an tremendous effect
           on the total delta-v available on the mission. This does require some form of "infrastructure" along the
-          mission trip (e.g. space station or surface base) for full effect, but some advantage can already be gained
+          mission trip (e.g. space station or surface base) for full effect, but some advantage can even be gained
           with a single launch vehicle.
         </p>
 
@@ -481,10 +484,13 @@
           <h5>Direct ascent versus rendezvous</h5>
           <p>
             When building a mission to land on Mun, it will often require less total mass (and less fuel) to build a
-            2-craft vehicle that undocks when in low orbit at Mun. The lander portion then performs the surface landing,
+            2-craft vehicle that undocks when in low orbit around Mun. The lander portion then performs the surface
+            landing,
             while the command module portion stays in orbit, waiting for the lander to return to orbit and dock to
-            transfer the crew. This requires less fuel to accomplish since the lander is not carrying the final portion
-            of the mission down to the surface landing.
+            transfer the crew. This requires less fuel to accomplish since the lander is not carrying unnecessary mass
+            down to the surface landing, but instead leaving it in orbit. The final return vehicle will also not be
+            burdened by the lander mass, which can be left in Mun orbit. This in addition cuts down on fuel
+            requirements.
           </p>
         </section>
 
@@ -495,7 +501,7 @@
             space station, and then refuel before starting the next leg of its trip (e.g. ~1123 m/s to reach a low Mun
             orbit). This allows the craft to be conservative with fuel during its journey, but it does come at the cost
             of refueling the space station eventually. This however can be done inexpensively due to economies of scale
-            by using dedicated massive fuel tankers.
+            when using dedicated massive fuel tankers.
           </p>
         </section>
 
@@ -503,10 +509,10 @@
           <h5>Fuel depots on the frontier</h5>
           <p>
             The price of fuel becomes more expensive the farther away the refueling location is, and this price
-            difference is somewhat proportional to the delta-v needed to get there. When refueling a craft on Kerbin,
-            this can be considered the cost price, but when refueling in Kerbin orbit we have to account for the initial
-            launch costs for getting that fuel into orbit. This becomes worse for fuel in orbit around Duna, and even
-            more for fuel at Moho. This can be avoided by investing in the
+            difference is somewhat proportional to the delta-v needed to get there. When refueling a craft on the
+            surface of Kerbin, this can generally be considered the cost price of fuel, but when refueling in Kerbin
+            orbit we have to account for the initial launch costs of getting the fuel into orbit. This becomes worse for
+            fuel in orbit around Duna, and even more expensive for fuel at Moho. This can be avoided by investing in the
             <a href="https://wiki.kerbalspaceprogram.com/wiki/Converter">ISRU</a>
             parts to produce fuel on site, and this fuel can even be used as a discounted alternative to refuel other
             depots.
@@ -525,16 +531,16 @@
     <section>
       <h2>CommNet</h2>
       <p>
-        CommNet or KerbNet refers to the control communication system in game. This is a limitation placed on the
+        CommNet (or KerbNet) refers to the control communication system in game. This is a limitation placed on the
         transmission of science, and the control of probe core craft that do not have crew onboard. Control can be
         regained as long as a connection can be made back to the KSC (or nearby craft that provide remote control)
       </p>
 
       <p>
         The CommNet generally hinders players in early career mode from sending probes far out where much more science
-        is available. Instead, their range slowly increases as the Tracking Station building is upgraded, or better
-        communication antenna technology is unlocked. This range can however be increased earlier through the smart
-        use of the relay satellites.
+        is available. Instead, the player's "range" slowly increases as the Tracking Station building is upgraded, or
+        better communication antenna technology is unlocked. This range can however be increased earlier through the
+        smart use of the relay satellites.
       </p>
     </section>
 
@@ -544,7 +550,7 @@
       <p>
         Placing a formation of relay satellites in the correct orbits can maximize the potential range of a signal back
         to Kerbin. These constellations should also consider how everything in orbit is always in motion; a rover on
-        the far side of Mun needs a direct line-of-sight to Kerbin (or a relay satellite) in order to be controlled.
+        the far side of Mun will need a direct line-of-sight to Kerbin (or a relay satellite) in order to be controlled.
       </p>
     </section>
 
@@ -552,45 +558,66 @@
       <h4>Ground based relays
         <a class="link" routerLink fragment="ground-based-relays"></a></h4>
       <p>
-        Early launches can potentially run into signal issues as they launch eastward and lose line-of-sight to the KSC
-        over the horizon, which then lack any control to do the final burn to reach a stable orbit. The fix for this
+        Early Kerbin launches can potentially run into signal issues as they launch eastward and lose line-of-sight to
+        KSC over the horizon, which then lack any control to do the final burn to reach a stable orbit. The fix for this
         involves placing a relay antenna due east which can provide a signal back to the KSC. Placing them on mountain
-        tops helps to increase the range between them without the horizon being in the way.
+        tops can help to increase the range between these without the horizon getting in the way.
       </p>
     </section>
 
-    <section id="low-orbit-constellations">
-      <h4>Low orbit constellations
-        <a class="link" routerLink fragment="low-orbit-constellations"></a></h4>
-      <p>
-        It is beneficial to have chain of relays close to Kerbin. These provide an important link to maintaining
-        permanent communication with ground based vehicles, planes, other craft in low orbit, and especially craft
-        that have re-entered the atmosphere waiting for you to activate their parachutes.
-      </p>
+    <section class="column-dual" id="low-orbit-constellations">
+      <section>
+        <h4>Low orbit constellations
+          <a class="link" routerLink fragment="low-orbit-constellations"></a></h4>
+        <p>
+          It is beneficial to have chain of relays close to Kerbin. These provide an important link to maintaining
+          permanent communication with ground based vehicles, planes, other craft in low orbit, and especially craft
+          that have re-entered the atmosphere waiting for you to activate their parachutes.
+        </p>
+      </section>
+      <aside>
+        <img height="260" src="../../../assets/article/low-orbit-constellation.jpg" loading="lazy">
+        <figcaption>6 relays in inclined orbits around Kerbin</figcaption>
+      </aside>
     </section>
 
     <section id="high-orbit-constellations">
       <h4>High orbit constellations
         <a class="link" routerLink fragment="high-orbit-constellations"></a></h4>
       <p>
-        Placing 4 powerful relays in orbits higher than Mun can maintain a direct line-of-sight to its far side. This
-        can help rovers stay in control before losing signal near a cliff. It is important that these relays be spaced
-        equally, and maintain equal orbital periods as to not drift towards each other.
+        Placing 4 powerful relays in orbits beyond Mun can maintain a direct line-of-sight to its far side. This
+        can help rovers stay in control before losing signal near a dangerous cliff. It is important that these relays
+        be spaced equally, and maintain equal orbital periods as to not drift towards each other.
       </p>
+      <br>
     </section>
 
-    <section id="primary-planetary-relays">
-      <h4>Primary planetary relays
-        <a class="link" routerLink fragment="primary-planetary-relays"></a></h4>
-      <p>
-        A powerful relay in orbit around Duna will provide a connection to local craft for only a portion of its orbit.
-        It loses signal when behind Duna, and thus will not provide signal to the local craft. This can be avoided by
-        placing it in a highly elliptical polar orbit with the periapsis close to Duna's south pole. This will also pass
-        behind Duna at some point in its orbit, but it will do so for a very short duration, and then move very slowly
-        towards the apoapsis where it spends most of its time during the orbit. In over 99% of the orbital period, the
-        relay will remain somewhere above the north pole with a direct line-of-sight to that hemisphere and most of the
-        space surrounding Duna. This of course works for any other planet/moon as well.
-      </p>
+    <section class="column-dual" id="primary-planetary-relays">
+      <section>
+        <h4>Primary planetary relays
+          <a class="link" routerLink fragment="primary-planetary-relays"></a></h4>
+        <p>
+          A powerful relay in orbit around Duna will provide a connection to local craft for only a portion of its
+          orbit. It loses signal when behind Duna, and thus will not provide signal to the local craft.
+        </p>
+
+        <p>
+          This can be avoided by placing it in a highly elliptical polar orbit with the periapsis close to Duna's south
+          pole. This orbit will also pass behind Duna at some point in its orbit, but it will do so for a very short
+          duration, and then move very slowly towards the apoapsis where it spends most of its time during the orbit.
+        </p>
+
+        <p>
+          In more than 99% of its
+          orbital period, the relay will remain somewhere above the north pole with a direct line-of-sight to that
+          hemisphere and even most of the space surrounding Duna. This of course works for any other planet/moon as
+          well.
+        </p>
+      </section>
+      <aside>
+        <img height="400" src="../../../assets/article/primary-relay.jpg" loading="lazy">
+        <figcaption>A Duna primary relay viewed from the south pole</figcaption>
+      </aside>
     </section>
 
     <section id="remote-control-stations">
@@ -610,9 +637,9 @@
   <article>
     <p style="opacity: .7; font-style: italic; margin-top: 3em">
       The information herein is based on the game 'Kerbal Space Program', and although it might reference the Earth/Moon
-      and other concepts outside the game, the methods and physics here are only intended to be accurate in the game.
+      and other concepts outside the game, the methods and physics here are only intended to be accurate to the game.
       While the game is a fairly accurate representation of spaceflight, it does prioritize gameplay to some degree,
-      thus there is far more to learn in real life about space travel.
+      and there will be far more to learn in real life about space travel.
     </p>
   </article>
 
