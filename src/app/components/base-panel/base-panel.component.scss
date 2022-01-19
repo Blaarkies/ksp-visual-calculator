@@ -13,6 +13,8 @@
   opacity: 0;
   display: none;
   transition: 1s;
+
+  transform: translateY(3px);
 }
 
 .panel-button {
@@ -29,14 +31,12 @@
 .panel-space {
   background-color: var(--color-background-card);
   color: var(--color-text);
-  display: flex;
-  align-items: center;
 
   width: 260px;
   height: 300px;
   max-width: 260px;
   max-height: 300px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 @media screen and (max-width: 600px), (max-height: 800px) {

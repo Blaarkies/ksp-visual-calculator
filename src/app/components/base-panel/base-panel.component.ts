@@ -30,7 +30,7 @@ export class BasePanelComponent extends WithDestroy() {
               private analyticsService: AnalyticsService) {
     super();
 
-    this.closePanel(40e3);
+    this.closePanel(60e3);
 
     authService.user$
       .pipe(takeUntil(this.destroy$))
@@ -81,7 +81,7 @@ export class BasePanelComponent extends WithDestroy() {
     if (this.initialized) {
       return;
     }
-    let adElement = document.querySelector('[id^=exoNativeWidget], .exo-native-widget');
+    let adElement = document.querySelector('[id^=ads-container], .adsbygoogle');
     let adSpace = document.querySelector('#placementSpace');
 
     if (adElement && adSpace) {
@@ -101,4 +101,5 @@ export class BasePanelComponent extends WithDestroy() {
         secondsOpen: Math.round((new Date().getTime() - this.lastOpened.getTime()) * .001),
       });
   }
+
 }
