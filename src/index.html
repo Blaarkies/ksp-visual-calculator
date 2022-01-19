@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <title>KSP Visual Calculator</title>
+
   <meta name="description"
-        content="A tool used alongside the game, Kerbal Space Program, to visualize and solve problems, e.g. calculate DV costs for a mission, or design an effective communications network." />
+        content="Online delta-v calculator for Kerbal Space Program that visualizes and solves problems like the dv costs for a mission, or design an effective communications network." />
   <meta name="keywords"
-        content="ksp, kerbal, space, program, dv, delta-v, fuel, commnet, antenna, calculator, tool, signal, strength, kerbnet" />
+        content="delta, v, ksp, calculate, planner, kerbal space program, kerbal, space, program, dv, delta-v, fuel, commnet, antenna, calculator, tool, signal, strength, kerbnet" />
   <meta name="author"
         content="Blaarkies">
   <meta name="application-name"
@@ -22,11 +23,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="mat-typography" style="background-color: #111">
+<body class="mat-typography" style="background-color: #222">
 
-<div style="display: none">
-  <!--  This script creates an iFrame, which in turns gets moved into the base-panel-component.-->
-  <script type="application/javascript" data-idzone="4509002" src="https://a.exdynsrv.com/nativeads-v2.js"></script>
+<div style="position: absolute; z-index: -1; width: 260px; height: 300px; opacity: 0">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7846079674092282"
+          crossorigin="anonymous"></script>
+  <!-- Base -->
+  <ins id="ads-container"
+       class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-7846079674092282"
+       data-ad-slot="2015700382"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script> (adsbygoogle = window.adsbygoogle || []).push({});</script>
 </div>
 
 <cp-root>
@@ -105,21 +115,39 @@
     }
 
     @keyframes kf-rotate {
-      from {transform: rotate(0)}
-      to {transform: rotate(-360deg)}
+      from {
+        transform: rotate(0)
+      }
+      to {
+        transform: rotate(-360deg)
+      }
     }
 
     @keyframes kf-dres-joke {
-      0% {opacity: 0}
-      50% {opacity: 0}
-      70% {opacity: .6}
-      90% {opacity: 0}
-      100% {opacity: 1}
+      0% {
+        opacity: 0
+      }
+      50% {
+        opacity: 0
+      }
+      70% {
+        opacity: .6
+      }
+      90% {
+        opacity: 0
+      }
+      100% {
+        opacity: 1
+      }
     }
 
     @keyframes kf-fade-in {
-      from {opacity: 0}
-      to {opacity: 1}
+      from {
+        opacity: 0
+      }
+      to {
+        opacity: 1
+      }
     }
 
     .app-loading > .orbit {

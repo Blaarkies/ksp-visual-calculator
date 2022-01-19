@@ -1,26 +1,35 @@
 .layout {
 
-}
+  .support-explained {
+    max-width: 400px;
+    text-align: justify;
+    text-justify: inter-word;
 
-.support-explained {
-  max-width: 400px;
-  text-align: justify;
-  text-justify: inter-word;
+    display: grid;
 
-  display: grid;
-}
+    button {
+      padding: unset;
+      overflow: hidden;
 
-img {
-  place-self: center;
-  padding: 10px;
-  max-width: 75%;
-}
+      .image-wrapper {
+        background: #fff7;
+        display: grid;
 
-.after-click {
-  max-width: 400px;
-  margin-top: 1em;
-}
+        img {
+          place-self: center;
+          padding: 10px;
+          max-width: 75%;
+        }
+      }
+    }
+  }
 
-.premium-list {
-  margin: 0;
+  .after-click {
+    max-width: 400px;
+    margin-top: 1em;
+
+    .premium-list {
+      margin: 0;
+    }
+  }
 }

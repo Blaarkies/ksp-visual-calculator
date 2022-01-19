@@ -4,8 +4,7 @@
                      disabled
                      [ngClass]="[color, location]"
                      (opened)="listenClickAway(expander)">
-  <mat-expansion-panel-header class="no-hover-effect"
-                              (click)="expander.toggle();
+  <mat-expansion-panel-header (click)="expander.toggle();
                                        menuButton.ripple.launch(0, 0)">
     <mat-panel-title class="center-title-line toolbar-text">
       <button mat-icon-button #menuButton>

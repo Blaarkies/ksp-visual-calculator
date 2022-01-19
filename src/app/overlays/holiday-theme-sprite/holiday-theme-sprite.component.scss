@@ -1,3 +1,7 @@
+:host {
+  pointer-events: none;
+}
+
 .sprite-container {
   animation: kf-blur-out 1s ease-in-out;
 }

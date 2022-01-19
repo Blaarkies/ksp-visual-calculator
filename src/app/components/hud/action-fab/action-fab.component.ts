@@ -13,7 +13,7 @@ export class ActionFabComponent {
 
   @Input() actionGroupType: ActionGroupType;
   @Input() color: ActionPanelColors;
-  @Input() icon: Icons;
+  @Input() icon: string;
   @Input() tooltip: string;
 
   @Input() set options(value: ActionOption[]) {

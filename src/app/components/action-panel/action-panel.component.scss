@@ -3,10 +3,6 @@ mat-expansion-panel-header {
   user-select: none;
 }
 
-.no-hover-effect:hover {
-  background: none !important;
-}
-
 .action-panel {
   width: auto;
   height: max-content;
@@ -28,16 +24,22 @@ mat-expansion-panel-header {
   &.top-left {
     border-radius: 0 !important;
     border-bottom-right-radius: var(--panel-rounding) !important;
+
+    box-shadow: var(--claymorph-faint) !important;
   }
 
   &.bottom-left {
     border-radius: 0 !important;
     border-top-right-radius: var(--panel-rounding) !important;
+
+    box-shadow: var(--claymorph-faint) !important;
   }
 
   &.top-right {
     border-radius: 0 !important;
     border-bottom-left-radius: var(--panel-rounding) !important;
+
+    box-shadow: var(--claymorph-faint) !important;
   }
 }
 

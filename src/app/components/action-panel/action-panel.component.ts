@@ -18,7 +18,7 @@ export class ActionPanelComponent extends WithDestroy() {
 
   @Input() color: ActionPanelColors = 'green';
   @Input() location: Locations = 'top-left';
-  @Input() startIcon: Icons = Icons.Hamburger;
+  @Input() startIcon: string = Icons.Hamburger;
   @Input() startTitle?: string;
   @Input() options: ActionOption[];
 

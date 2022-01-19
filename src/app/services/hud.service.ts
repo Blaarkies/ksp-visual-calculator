@@ -1,16 +1,5 @@
 import { ApplicationRef, Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  filter,
-  firstValueFrom,
-  map,
-  Observable,
-  of,
-  startWith,
-  Subject,
-  take,
-  takeUntil
-} from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom, map, Observable, of, startWith, Subject, takeUntil } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
@@ -20,7 +9,9 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
 } from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import { DifficultySettingsDialogComponent } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import {
+  DifficultySettingsDialogComponent
+} from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import {
   ManageStateDialogComponent,
   ManageStateDialogData
@@ -98,6 +89,11 @@ export class HudService {
   get navigationOptions(): ActionOption[] {
     return [
       new ActionOption(
+        'Introduction',
+        Icons.BookOpen,
+        {route: UsableRoutes.Intro},
+        'Article that explains the details of each calculator'),
+      new ActionOption(
         'Delta-v Planner',
         Icons.DeltaV,
         {route: UsableRoutes.DvPlanner},
@@ -122,30 +118,6 @@ export class HudService {
 
   get infoOptions(): ActionOption[] {
     return [
-      new ActionOption('Tutorial', Icons.Help, {
-          action: () => {
-            this.analyticsService.logEvent('Call tutorial dialog', {
-              category: EventLogs.Category.Tutorial,
-            });
-
-            this.dialog.open(SimpleDialogComponent, {
-              data: {
-                title: 'Start Tutorial',
-                descriptions: [
-                  'Do you want to start the tutorial?',
-                  'This will take you through all the features and controls to navigate and use this page.',
-                ],
-                okButtonText: 'Start',
-              } as SimpleDialogData,
-            })
-              .afterClosed()
-              .pipe(filter(ok => ok))
-              .subscribe(() => this.tutorialService.startFullTutorial(this.pageContext));
-          },
-        },
-        undefined,
-        !localStorage.getItem(storageKeys.tutorialViewed),
-        () => localStorage.setItem(storageKeys.tutorialViewed, true.toString())),
       new ActionOption('Analytics', Icons.Analytics, {
           action: () => {
             this.analyticsService.logEvent('Call analytics dialog', {
@@ -225,7 +197,6 @@ export class HudService {
             });
         },
       }),
-      this.createActionOptionNewCelestialBody(),
       new ActionOption('Difficulty Settings', Icons.Difficulty, {
         action: () => {
           this.analyticsService.logEvent('Call difficulty settings dialog', {
@@ -245,6 +216,7 @@ export class HudService {
             });
         },
       }),
+      this.createActionOptionTutorial(),
       this.createActionOptionManageSaveGames(UsableRoutes.SignalCheck),
     ];
 
@@ -258,6 +230,7 @@ export class HudService {
 
   private get dvPlannerPanel(): ActionPanelDetails {
     let options = [
+      this.createActionOptionTutorial(),
       this.createActionOptionManageSaveGames(UsableRoutes.DvPlanner),
     ];
 
@@ -315,4 +288,32 @@ export class HudService {
       },
     );
   }
+
+  private createActionOptionTutorial(): ActionOption {
+    return new ActionOption('Tutorial', Icons.Help, {
+        action: () => {
+          this.analyticsService.logEvent('Call tutorial dialog', {
+            category: EventLogs.Category.Tutorial,
+          });
+
+          this.dialog.open(SimpleDialogComponent, {
+            data: {
+              title: 'Start Tutorial',
+              descriptions: [
+                'Do you want to start the tutorial?',
+                'This will take you through all the features and controls to navigate and use this page.',
+              ],
+              okButtonText: 'Start',
+            } as SimpleDialogData,
+          })
+            .afterClosed()
+            .pipe(filter(ok => ok))
+            .subscribe(() => this.tutorialService.startFullTutorial(this.pageContext));
+        },
+      },
+      undefined,
+      !localStorage.getItem(storageKeys.tutorialViewed),
+      () => localStorage.setItem(storageKeys.tutorialViewed, true.toString()));
+  }
+
 }

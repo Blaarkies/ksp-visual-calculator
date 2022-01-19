@@ -1,11 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { UsableRoutes } from '../../usable-routes';
-import { WithDestroy } from '../../common/with-destroy';
-import { HudService } from '../../services/hud.service';
-import { StateService } from '../../services/state.service';
-import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { TravelService } from '../../services/travel.service';
+import { UsableRoutes } from '../../../usable-routes';
+import { WithDestroy } from '../../../common/with-destroy';
+import { HudService } from '../../../services/hud.service';
+import { StateService } from '../../../services/state.service';
+import { UniverseMapComponent } from '../../../components/universe-map/universe-map.component';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { TravelService } from '../../../services/travel.service';
 import { takeUntil } from 'rxjs';
 
 @Component({

@@ -1,14 +1,22 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { PageSignalCheckComponent } from './pages/page-signal-check/page-signal-check.component';
 import { UsableRoutes } from './usable-routes';
-import { PageDvPlannerComponent } from './pages/page-dv-planner/page-dv-planner.component';
 
 const routes: Routes = [
-  {path: UsableRoutes.DvPlanner, component: PageDvPlannerComponent},
-  {path: UsableRoutes.SignalCheck, component: PageSignalCheckComponent},
+  {
+    path: UsableRoutes.Intro,
+    loadChildren: () => import('./article/article.module').then(m => m.ArticleModule)
+  },
 
-  {path: '**', redirectTo: UsableRoutes.DvPlanner},
+  {
+    path: 'calculators',
+    loadChildren: () => import('./calculators/calculators.module').then(m => m.CalculatorsModule)
+  },
+
+  {path: UsableRoutes.DvPlanner, redirectTo: `calculators/${UsableRoutes.DvPlanner}`},
+  {path: UsableRoutes.SignalCheck, redirectTo: `calculators/${UsableRoutes.SignalCheck}`},
+
+  {path: '**', redirectTo: UsableRoutes.Intro},
 ];
 
 @NgModule({

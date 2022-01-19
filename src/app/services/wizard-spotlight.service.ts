@@ -10,6 +10,7 @@ import { Vector2 } from '../common/domain/vector2';
 import { WizardMessage, WizardMessageComponent } from '../components/wizard-message/wizard-message.component';
 import { WizardMarker, WizardMarkerComponent } from '../components/wizard-marker/wizard-marker.component';
 import { concat, concatMap, delay, finalize, from, Observable, of, reduce, Subject, takeUntil, tap, timer } from 'rxjs';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 export type StepType = 'waitForNext' | 'end';
 export type Positions = 'left' | 'right' | 'top' | 'bottom' | 'center';
@@ -43,7 +44,8 @@ export class WizardSpotlightService {
 
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private applicationRef: ApplicationRef,
-              private injector: Injector) {
+              private injector: Injector,
+              private overlayContainer: OverlayContainer) {
   }
 
   createPopup<T>(componentClass: any, target: HTMLElement, inputs?: any): ComponentRef<T> {
@@ -54,7 +56,7 @@ export class WizardSpotlightService {
     // populate component inputs
     Object.assign(componentRef.instance, inputs);
 
-    // attach component to the appRef so that so that it will be dirty checked.
+    // attach component to the appRef so that it will be dirty checked.
     this.applicationRef.attachView(componentRef.hostView);
 
     // get DOM element from component
@@ -108,13 +110,14 @@ export class WizardSpotlightService {
 
     let targetDimensions: DOMRect = dialogTarget.getBoundingClientRect();
 
+    let container = this.overlayContainer.getContainerElement();
     let wizardMarker = stepDetails.markerTargetCallback
-      && this.createPopup(WizardMarkerComponent, document.body,
+      && this.createPopup(WizardMarkerComponent, container,
         {type: stepDetails.markerType, target: markerTarget} as WizardMarker);
 
     let wizardMessage: ComponentRef<WizardMessageComponent> = this.createPopup(
       WizardMessageComponent,
-      document.body,
+      container,
       {
         title: stepDetails.dialogTitle,
         messages: stepDetails.dialogMessages,

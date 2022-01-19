@@ -1,8 +1,9 @@
-.app-layout {
+.layout {
   height: 100%;
 
-  cp-hud {
-    justify-self: start;
+  > * {
+    position: absolute;
+    height: 100%;
     width: 100%;
   }
 }

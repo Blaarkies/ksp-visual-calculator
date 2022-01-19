@@ -30,7 +30,7 @@
 }
 
 .edit-icon-space-object {
-  color: var(--color-text-map-green);
+  color: var(--color-text-map-green) !important;
   position: absolute;
   left: -50%;
   top: calc(50% + 10px);

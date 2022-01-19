@@ -1,0 +1,440 @@
+@use 'src/styles/variables' as queries;
+
+:host {
+  --color-text-dark: #111;
+  --color-kerbal-green: var(--color-text-primary);
+  --font-scale: 1;
+  @media screen and (max-width: queries.$query-tablet-width) {
+    --font-scale: .8;
+  }
+  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+    --font-scale: .5;
+  }
+}
+
+p {
+  font-size: 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1em;
+  margin-top: 1em;
+}
+
+section {
+  > h1, h2, h3, h4, h5, h6 {
+    margin-top: 2em;
+  }
+}
+
+h1 {
+  font-size: calc(5rem * var(--font-scale));
+}
+
+h2 {
+  font-size: calc(3rem * var(--font-scale));
+  font-weight: normal;
+}
+
+h3 {
+  font-size: calc(2.5rem * var(--font-scale));
+}
+
+h4 {
+  font-size: calc(2rem * var(--font-scale));
+}
+
+h5 {
+  font-size: calc(1.5rem * var(--font-scale));
+}
+
+h6 {
+  font-size: 1rem;
+}
+
+a {
+  color: var(--color-text-hyperlink);
+}
+
+main {
+  transition: .2s ease-in;
+
+  background: var(--color-background-article);
+  color: var(--color-text);
+
+  > article {
+    margin: auto;
+    max-width: 1200px;
+    padding: 0 4em;
+
+    @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+      padding: 0 1em 0 2em !important;
+    }
+  }
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+figcaption {
+  text-align: center;
+  opacity: .7;
+}
+
+img {
+  text-align: center;
+}
+
+table {
+  border-spacing: 1em 0;
+
+  tr > td:first-child {
+    width: 5em;
+  }
+
+  .double-line {
+    --border: 1px solid currentColor;
+    border-top: var(--border);
+    border-bottom: var(--border);
+  }
+}
+
+footer {
+  background: var(--color-kerbal-green);
+  padding: 1em 2em;
+  margin-top: 4em;
+  color: var(--color-text-dark);
+
+  a {
+    color: var(--color-text-dark);
+  }
+}
+
+.footer-layout {
+  display: grid;
+  grid-template-columns: repeat(3, max-content) auto;
+  gap: 1.5em 1em;
+
+  div {
+    display: grid;
+    align-items: start;
+    align-content: start;
+
+    a {
+      text-align: start;
+    }
+
+    span {
+      font-size: 1.4em;
+      padding-left: 16px;
+
+      padding-bottom: .4em;
+      margin-bottom: .5em;
+      border-bottom: 1px double currentColor;
+    }
+  }
+
+  > :last-child {
+    width: auto;
+    justify-content: end;
+  }
+
+  @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
+    grid-template-columns: auto;
+  }
+}
+
+.top-nav {
+  background: var(--color-kerbal-green);
+  padding: 1em 2em;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  display: grid;
+  grid-template-columns: max-content max-content auto max-content max-content;
+  gap: 1em;
+
+  a {
+    color: var(--color-text-dark);
+  }
+
+  i {
+    background: var(--color-text-dark);
+    opacity: .4;
+    width: 1px;
+    height: inherit;
+    justify-self: end;
+  }
+
+  button {
+    color: var(--color-text-dark);
+    font-size: 24px;
+  }
+
+  transition: .3s ease-out;
+
+  &.translate-up {
+    transform: translateY(-100%);
+  }
+}
+
+.sidebar-nav {
+  max-height: calc(100% - 116px);
+  overflow-y: auto;
+
+  position: absolute;
+  right: 10px; // scrollbar width
+  z-index: 1;
+  width: max-content;
+  padding: 1em;
+  max-width: 80%;
+  border-top: 1px solid #0003;
+
+  color: var(--color-text-dark);
+
+  a {
+    color: var(--color-text-dark);
+  }
+
+  background-color: var(--color-kerbal-green);
+
+  transform: translateX(110%);
+  transition: .2s ease-out;
+
+  &.translate-left {
+    transform: translateX(0%);
+  }
+
+  div {
+    display: grid;
+    margin-bottom: 1em;
+
+    span {
+      font-size: 2em;
+      margin: .5em 0;
+    }
+
+    a {
+      width: 100%;
+      text-align: start;
+    }
+  }
+}
+
+.column-dual {
+  display: flex;
+  gap: 1em;
+
+  aside {
+    padding-left: 1em;
+    border-left: 1px solid #fff7;
+    border-radius: 6px;
+    margin: auto;
+  }
+
+  @media screen and (max-width: queries.$query-tablet-width) {
+    flex-direction: column;
+    aside {
+      padding-left: unset;
+      border: none;
+    }
+  }
+}
+
+.contains-header {
+  margin: auto;
+  min-width: 300px;
+  max-width: 500px;
+
+  > :first-child, abbr {
+    color: var(--color-text-hyperlink);
+    font-weight: 500;
+
+    margin-bottom: .5em;
+  }
+
+  > :not(:first-child) {
+    opacity: .7;
+  }
+
+  &.indent-text {
+    > :not(:first-child) {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+  }
+
+  &.max-content :first-child {
+    width: max-content;
+  }
+
+}
+
+.button-calculators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  justify-content: center;
+
+  > a {
+    font-size: 1.5em;
+    padding: .4em .8em;
+    color: currentColor;
+    border: 2px solid var(--color-kerbal-green);
+
+    &:hover {
+      --pseudo-opacity: .4;
+    }
+
+    position: relative;
+    --pseudo-opacity: 0;
+    perspective: 200px;
+    transform-style: preserve-3d;
+    overflow: hidden;
+
+    &:before {
+      transition: .2s ease-in-out;
+      content: '';
+
+      --primary: var(--color-kerbal-green);
+      --secondary: #afcc5033;
+      background-color: var(--secondary);
+      background-image: linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)),
+      linear-gradient(60deg, var(--secondary) 25%, transparent 25.5%, transparent 75%, var(--secondary) 75%, var(--secondary)),
+      linear-gradient(60deg, var(--secondary) 25%, transparent 25.5%, transparent 75%, var(--secondary) 75%, var(--secondary));
+      background-size: 22px 39px;
+      background-position: 0 0, 0 0, 11px 19px, 11px 19px, 0 0, 11px 19px;
+      transform-origin: right;
+      transform: rotateY(20deg);
+
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: var(--pseudo-opacity);
+      z-index: -1;
+    }
+
+    &:last-child:before {
+      transform-origin: left;
+      transform: rotateY(-20deg);
+    }
+  }
+}
+
+.math-equation {
+  padding-left: 2em;
+  margin-bottom: .5em;
+  font-family: math;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+
+  .fraction {
+    display: grid;
+    position: relative;
+    margin: 0 .4em;
+
+    &:before {
+      content: '';
+      width: 100%;
+      height: 1px;
+      background: currentColor;
+      position: absolute;
+      top: 50%;
+    }
+  }
+
+  @media screen and (max-width: queries.$query-tablet-width) {
+    padding-left: unset;
+  }
+}
+
+.large-bracket {
+  font-size: 1.5em;
+  font-weight: 100;
+  line-height: 1em;
+}
+
+.dv-calculator {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+
+  margin: 0 0 20px 40px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-border-simple);
+  border-radius: 10px;
+  width: max-content;
+
+  mat-form-field {
+    width: 4em;
+    height: 3.5em;
+  }
+
+  .fit-fraction {
+    mat-form-field {
+      height: 1.2em;
+    }
+  }
+
+  .divider-line {
+    height: 1px;
+    width: calc(100% + 10px);
+    transform: translateX(-5px);
+    margin: 8px 0 4px 0;
+    background: currentColor;
+  }
+
+  .result {
+    min-width: 4em;
+  }
+
+  @media screen and (max-width: queries.$query-tablet-width) {
+    margin-left: unset;
+  }
+}
+
+section[id] > h1,
+section[id] > h2,
+section[id] > h3,
+section[id] > h4,
+section[id] > h5,
+section[id] > h6 {
+  position: relative;
+  width: max-content;
+  transition: .2s ease-out;
+
+  &:hover {
+    text-shadow: 0 0 3px var(--color-text);
+  }
+}
+
+.link {
+  text-shadow: unset;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-1em, .1em);
+  width: calc(100% + 1em);
+
+  svg {
+    fill: var(--color-text);
+    height: .8em;
+    width: .8em;
+  }
+
+  cursor: pointer;
+  opacity: .07;
+  transition: .2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+}

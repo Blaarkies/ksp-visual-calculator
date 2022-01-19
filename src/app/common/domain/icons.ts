@@ -68,5 +68,8 @@ export class Icons {
   static Traveler = 'hail';
   static Takeoff = 'airplane-takeoff';
   static Fuel = 'gas-station';
+  static BookOpen = 'book-open-variant';
+  static ThemeLight = 'white-balance-sunny';
+  static ThemeDark = 'weather-night';
 
 }

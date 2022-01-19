@@ -1,5 +1,6 @@
 @use 'common';
 @use 'fix-material';
+@use 'variables';
 @use 'scrollbar';
 @use 'overlay';
 @use 'text';
@@ -14,5 +15,14 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-  position: relative;
+
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-text-hyperlink);
+
+  &:visited {
+    color: var(--color-text-hyperlink-visited);
+  }
 }

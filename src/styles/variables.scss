@@ -1,0 +1,10 @@
+$query-mobile-width: 600px;
+$query-mobile-height: 800px;
+$query-mobile-height-landscape: 500px;
+$query-tablet-width: 1000px;
+
+:root {
+  --claymorph-simple: inset -4px -4px 10px -3px #000, inset 2px 2px 10px -2px #fff;
+  --claymorph-faint: inset -4px -4px 8px -3px #000a, inset 2px 2px 8px -2px #fffa;
+  --claymorph-fainter: inset -3px -3px 6px -3px #0009, inset 1px 1px 6px -3px #fff9;
+}

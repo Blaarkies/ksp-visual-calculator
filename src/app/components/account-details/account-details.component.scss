@@ -94,10 +94,9 @@
         top: 100%;
 
         margin: 0px -20px;
-        background-color: #fffe;
+        background-color: var(--color-background-description-glass);
         z-index: 1;
-        border: 1px solid #0003;
-        border-top: none;
+
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
 
@@ -107,6 +106,11 @@
 
         div {
           margin-left: .3em;
+        }
+
+        &.is-open {
+          border: 1px solid #0003;
+          border-top: none;
         }
       }
     }
@@ -121,6 +125,10 @@
 .app-image {
   height: 100px;
   justify-self: center;
+
+  background: #fff4;
+  border-radius: 100px;
+  padding: 10px;
 }
 
 .email-inputs-container {

@@ -1,4 +1,8 @@
 :host {
+  mat-card {
+    box-shadow: var(--claymorph-faint) !important;
+  }
+
   pointer-events: none;
 
   > * {

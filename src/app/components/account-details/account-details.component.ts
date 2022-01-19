@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
@@ -9,8 +9,10 @@ import {
   debounceTime,
   EMPTY,
   filter,
-  finalize, firstValueFrom,
-  from, fromEvent,
+  finalize,
+  firstValueFrom,
+  from,
+  fromEvent,
   mapTo,
   mergeAll,
   Observable,
@@ -37,7 +39,6 @@ import {
   UploadImageDialogComponent,
   UploadImageDialogData
 } from '../../overlays/upload-image-dialog/upload-image-dialog.component';
-import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'cp-account-details',
@@ -77,8 +78,6 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   controlPolicy = new FormControl(false, [Validators.requiredTrue]);
 
   user$ = this.authService.user$;
-
-  @Output() signOut = new EventEmitter();
 
   @ViewChild(InputFieldComponent) fieldDisplayName: InputFieldComponent;
 
@@ -127,10 +126,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
   async actionSignOut() {
     this.authService.signOut()
-      .then(() => {
-        this.snackBar.open('Signed out');
-        this.signOut.emit();
-      });
+      .then(() => this.snackBar.open('Signed out'));
   }
 
   signInWithEmailAddress() {

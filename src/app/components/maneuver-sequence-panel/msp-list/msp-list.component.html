@@ -17,7 +17,6 @@
   <div class="inline-children">
     <button class="button-lock-mode"
             mat-flat-button
-            color="primary"
             [matTooltip]="(isTapCheckpointMode ? 'Disable' : 'Enable') + ' tap-checkpoint mode'"
             (click)="toggleTapCheckpointMode()">
       <mat-icon [svgIcon]="isTapCheckpointMode ? icons.Lock : icons.Unlock"></mat-icon>
@@ -26,7 +25,6 @@
     <button class="button-single-checkpoint"
             mat-flat-button
             id="add-dv-mission-checkpoint-button"
-            color="primary"
             [matTooltip]="'Add new checkpoint'"
             (click)="addCheckpoint()">
       <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>

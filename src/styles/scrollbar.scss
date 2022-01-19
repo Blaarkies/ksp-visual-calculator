@@ -16,3 +16,7 @@
     filter: brightness(.95);
   }
 }
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

@@ -24,7 +24,7 @@ export class CreditsDialogComponent {
       creator: '13375.de',
       action: 'for image assets at',
       link: 'https://13375.de/KSPDeltaVMap/',
-      product: 'Delta-V Planner',
+      product: 'Delta-v Planner',
     },
     {
       creator: 'ibeiiebz',
