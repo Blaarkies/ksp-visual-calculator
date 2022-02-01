@@ -1,8 +1,10 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { filter, sampleTime, scan, skip, Subject, takeUntil, tap } from 'rxjs';
+import { filter, map, Observable, sampleTime, scan, skip, Subject, takeUntil, tap } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 import { Router, Scroll } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { AdDispenserService } from '../../adsense-manager/services/ad-dispenser.service';
 
 @Component({
   selector: 'cp-page-intro',
@@ -25,11 +27,18 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
   showNavbar = true;
   scrollEvent$ = new Subject<number>()
   pageHeight = 1000;
+  isMobile$ = this.breakpointObserver.observe(['(max-width: 1000px)'])
+    .pipe(map(bp => bp.matches));
+  isAdBlocked$: Observable<boolean>;
 
   constructor(router: Router,
               private self: ElementRef,
-              private themeService: ThemeService) {
+              private themeService: ThemeService,
+              private breakpointObserver: BreakpointObserver,
+              adDispenserService: AdDispenserService) {
     super();
+
+    this.isAdBlocked$ = adDispenserService.isAdBlocked$.asObservable();
 
     this.calcDv.update();
 

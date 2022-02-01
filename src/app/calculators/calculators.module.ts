@@ -95,6 +95,7 @@ import { PageSignalCheckComponent } from './components/page-signal-check/page-si
 import { PageDvPlannerComponent } from './components/page-dv-planner/page-dv-planner.component';
 import { PageCalculatorsComponent } from './components/page-calculators/page-calculators.component';
 import { CalculatorsRoutingModule } from './calculators-routing.module';
+import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module';
 
 
 @NgModule({
@@ -198,6 +199,7 @@ import { CalculatorsRoutingModule } from './calculators-routing.module';
     MatStepperModule,
 
     ImageCropperModule,
+    AdsenseManagerModule,
   ],
   providers: [
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},

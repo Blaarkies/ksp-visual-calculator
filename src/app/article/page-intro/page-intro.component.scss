@@ -12,6 +12,44 @@
   }
 }
 
+.ads-structure {
+  display: grid;
+  grid-template-columns: max-content 1fr auto;
+
+  gap: 1em;
+  padding: 1em 4em;
+
+  @media screen and (max-width: queries.$query-tablet-width) {
+    display: block;
+    padding: 1em 1em 1em 2em;
+  }
+
+  .ads-sidewall {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    cp-ad {
+      margin: unset;
+    }
+  }
+}
+
+cp-ad {
+  display: flex;
+  justify-content: center;
+  margin-top: 2em;
+}
+
+.need-support-message {
+  background: #7777;
+  padding: 0.5em 2em 2em 2em;
+  border-radius: 2em;
+  width: max-content;
+  margin: auto;
+  text-align: center;
+}
+
 p {
   font-size: 1rem;
 }
@@ -66,10 +104,6 @@ main {
     margin: auto;
     max-width: 1200px;
     padding: 0 4em;
-
-    @media screen and (max-width: queries.$query-mobile-width) and (orientation: portrait) {
-      padding: 0 1em 0 2em !important;
-    }
   }
 
   overflow-y: scroll;
@@ -84,6 +118,7 @@ figcaption {
 
 img {
   text-align: center;
+  border-radius: 1em;
 }
 
 table {

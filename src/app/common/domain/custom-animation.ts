@@ -49,6 +49,25 @@ export class CustomAnimation {
     ]),
   ]);
 
+  static widthHeight = trigger('widthHeight', [
+    transition(':enter', [
+      style({width: 0, height: 0, overflow: 'hidden'}),
+      animate('.3s ease-in', style({width: '*', height: '*'})),
+    ]),
+    transition(':leave', [
+      style({width: '*', height: '*', overflow: 'hidden'}),
+      animate('.2s ease-out', style({width: 0, height: 0})),
+    ]),
+    state('false', style({width: 0, height: 0, overflow: 'hidden'})),
+    state('true', style({width: '*', height: '*', overflow: 'hidden'})),
+    transition('false => true', [
+      animate('.3s ease-in', style({width: '*', height: '*'})),
+    ]),
+    transition('true => false', [
+      animate('.2s ease-out', style({width: 0, height: 0})),
+    ]),
+  ]);
+
   static scaleY = trigger('scaleY', [
     state('false', style({transform: 'scaleY(0)'})),
     state('true', style({transform: 'scaleY(1)'})),

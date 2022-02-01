@@ -32,19 +32,17 @@
   background-color: var(--color-background-card);
   color: var(--color-text);
 
-  width: 260px;
-  height: 300px;
-  max-width: 260px;
-  max-height: 300px;
+  width: 336px;
+  height: 280px;
+  max-width: 336px;
+  max-height: 280px;
   overflow: auto;
-}
 
-@media screen and (max-width: 600px), (max-height: 800px) {
-  .panel-space {
-    width: 180px;
-    height: 220px;
-    max-width: 180px;
-    max-height: 220px;
+  @media screen and (max-width: 600px), (max-height: 800px) {
+    width: 200px;
+    height: 200px;
+    max-width: 200px;
+    max-height: 200px;
   }
 }
 
@@ -60,5 +58,5 @@
 
 .need-support-message {
   text-align: center;
-  margin: 10px;
+  margin: 40px 10px;
 }

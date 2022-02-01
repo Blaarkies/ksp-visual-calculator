@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ArticleRoutingModule } from './article-routing.module';
+import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module';
 
 
 @NgModule({
@@ -20,6 +21,8 @@ import { ArticleRoutingModule } from './article-routing.module';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
+
+    AdsenseManagerModule,
   ]
 })
 export class ArticleModule {

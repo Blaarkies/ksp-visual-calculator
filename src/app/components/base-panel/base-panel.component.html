@@ -17,15 +17,25 @@
     </button>
   </div>
 
-  <div class="panel-space" id="placementSpace">
+  <div class="panel-space">
+    <ng-container *ngIf="isAdBlocked$ | async | not; else support">
+      <cp-ad #adDesktop
+             *ngIf="isMobile$ | async; else mobile"
+             sizeType="square-small"></cp-ad>
+      <ng-template #mobile>
+        <cp-ad #adMobile sizeType="square-large"></cp-ad>
+      </ng-template>
+    </ng-container>
 
-    <div *ngIf="nothingToDisplay" class="need-support-message">
-      <h3>This website needs your support</h3>
+    <ng-template #support>
+      <div class="need-support-message">
+        <h3>This website needs your support</h3>
 
-      <div>Please consider disabling ad blockers, or supporting on</div>
-      <a href="https://www.buymeacoffee.com/Blaarkies">Buy Me a Coffee</a>
-      <div>to remove all ads and unlock premium features.</div>
-    </div>
+        <div>Please consider disabling ad blockers, or supporting on</div>
+        <a href="https://www.buymeacoffee.com/Blaarkies">Buy Me a Coffee</a>
+        <div>to remove all ads and unlock premium features.</div>
+      </div>
+    </ng-template>
   </div>
 
 </div>

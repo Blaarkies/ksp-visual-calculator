@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
 import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
 import { ThemeService } from './services/theme.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'cp-root',
@@ -20,7 +21,8 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
   constructor(dialog: MatDialog,
               router: Router,
               cdr: ChangeDetectorRef,
-              themeService: ThemeService) {
+              themeService: ThemeService,
+              authService: AuthService) {
     super();
 
     themeService.logThemeOrigin();

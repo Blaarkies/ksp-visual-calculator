@@ -10,6 +10,7 @@ import {
   refCount,
   switchMap,
   take,
+  takeWhile,
   tap,
   zip
 } from 'rxjs';
@@ -33,6 +34,7 @@ import {
   UserCredential,
 } from '@angular/fire/auth';
 import { authState, user } from 'rxfire/auth';
+import { AdDispenserService } from '../adsense-manager/services/ad-dispenser.service';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +50,8 @@ export class AuthService {
               private snackBar: MatSnackBar,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              adDispenserService: AdDispenserService) {
     this.user$ = authState(auth)
       .pipe(
         map(user => user?.uid),
@@ -89,6 +92,14 @@ export class AuthService {
         }),
       )
       .subscribe();
+
+    this.user$
+      .pipe(
+        map(u => u?.isCustomer),
+        takeWhile(isCustomer => !isCustomer, true))
+      .subscribe(isCustomer => isCustomer
+        ? adDispenserService.removeAds()
+        : adDispenserService.addAds());
   }
 
   async googleSignIn(agreedPolicy: boolean) {
