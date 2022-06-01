@@ -44,7 +44,7 @@ export class BasePanelComponent extends WithDestroy() implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.closePanel(60e3);
+    this.closePanel(120e3);
 
     this.authService.user$
       .pipe(takeUntil(this.destroy$))
@@ -53,12 +53,12 @@ export class BasePanelComponent extends WithDestroy() implements AfterViewInit {
           this.isOpen = false;
           this.unsubscribePanel$.next();
         } else {
-          this.closePanel(40e3);
+          this.closePanel(200e3);
         }
       });
   }
 
-  closePanel(delay: number = 90e3) {
+  closePanel(delay: number = 200e3) {
     if (!environment.production) {
       return;
     }
