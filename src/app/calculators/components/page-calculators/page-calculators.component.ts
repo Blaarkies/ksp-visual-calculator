@@ -83,11 +83,11 @@ export class PageCalculatorsComponent extends WithDestroy() {
       .pipe(
         distinctUntilChanged(),
         filter(u => !(u?.isCustomer)),
-        switchMap(() => timer(2 * minute, 5 * minute)),
+        switchMap(() => timer(5 * minute, 15 * minute)),
         switchMap(() => this.snackBar.open(
           'Would you like to support the developer?',
           'Yes',
-          {duration: 15e3, panelClass: GlobalStyleClass.SnackbarPromoteFlash})
+          {duration: 10e3, panelClass: GlobalStyleClass.SnackbarPromoteFlash})
           .onAction()),
         tap(() => {
           this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});

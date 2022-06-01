@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AdSizeType } from '../components/ad/ad.component';
 import { Vector2 } from '../../common/domain/vector2';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, delay, timer } from 'rxjs';
+import { BehaviorSubject, timer } from 'rxjs';
 
 class AdDetails {
   slot: number;

@@ -10,9 +10,12 @@ import { TableName } from './common/types';
 export const isEmailACustomer = functions.https.onRequest(async (req, res) => {
   cors()(req, res, async () => {
     let apiKey = functions.config().buymeacoffeeapi.id;
-    let result: any = await axios.get('https://developers.buymeacoffee.com/api/v1/supporters', {
-      headers: {Authorization: `Bearer ${apiKey}`},
-    });
+
+    let result: any = await axios.get('https://developers.buymeacoffee.com/api/v1/supporters',
+      {headers: {Authorization: `Bearer ${apiKey}`}})
+      .catch(e => {
+        throw Error('Could not reach buymeacoffee API: ' + e.toString())
+      });
 
     let allCustomers: string[] = result.data.data.map((c: any) => c.payer_email);
 

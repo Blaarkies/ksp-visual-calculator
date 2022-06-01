@@ -202,17 +202,22 @@ export class AuthService {
    * @param email string
    */
   private async isCustomer(email: string): Promise<boolean> {
-    let projectId = 'ksp-commnet-planner';
-    let endpoint = 'isEmailACustomer';
+    try {
+      let projectId = 'ksp-commnet-planner';
+      let endpoint = 'isEmailACustomer';
+      let isCustomer$ = this.http
+        .get<{ isCustomer: boolean }>(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`, {
+          params: new HttpParams()
+            .append('email', email),
+        })
+        .pipe(map(result => result.isCustomer));
 
-    let isCustomer$ = this.http
-      .get<{ isCustomer: boolean }>(`https://us-central1-${projectId}.cloudfunctions.net/${endpoint}`, {
-        params: new HttpParams()
-          .append('email', email),
-      })
-      .pipe(map(result => result.isCustomer));
-
-    return await firstValueFrom(isCustomer$);
+      return await firstValueFrom(isCustomer$);
+    } catch (e) {
+      console.error(e);
+      this.snackBar.open('Could not reach BuyMeACoffee.com to determine account status')
+      return await firstValueFrom(of(false));
+    }
   }
 
   private updateDataService(credential: UserCredential): Promise<void> {
