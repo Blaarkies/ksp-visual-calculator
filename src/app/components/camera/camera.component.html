@@ -1,18 +1,24 @@
 <div #cameraController
-     class="camera-controller"
+     class="camera-backboard"
      [style.background-position-x.px]="location.x * .2"
      [style.background-position-y.px]="location.y * .2"
-     [style.background-size.px]="3e3 * scale.pow(.1)"
+     [style.background-size.px]="3e3"
+
+     [style.width.px]="1000 * scale"
+     [style.height.px]="1000 * scale"
+     [style.left.px]="location.x"
+     [style.top.px]="location.y"
      (wheel)="updateScale($event)"
      (mousedown)="mouseDown($event, cameraController)"
      (touchstart)="touchStart($event, cameraController)"
      (contextmenu)="$event.shiftKey || $event.preventDefault()">
 
+
   <div #screenSpace
-       class="screen-space overlap-container"
-       [style.left.px]="location.x"
-       [style.top.px]="location.y">
+       class="screen-space stack">
+
     <ng-content></ng-content>
+
   </div>
 
 </div>

@@ -57,17 +57,17 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     let isTouchPad = Math.abs(event.deltaY) < 25;
     let zoomDirection = -event.deltaY.sign();
 
-    if (isTouchPad) {
+    // if (isTouchPad) {
       this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
       window.requestAnimationFrame(() => this.cdr.markForCheck());
-    } else {
-      interval(17)
-        .pipe(startWith(0), take(5))
-        .subscribe(() => {
-          this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
-          window.requestAnimationFrame(() => this.cdr.markForCheck());
-        });
-    }
+    // } else {
+    //   interval(17)
+    //     .pipe(startWith(0), take(5))
+    //     .subscribe(() => {
+    //       this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
+    //       window.requestAnimationFrame(() => this.cdr.markForCheck());
+    //     });
+    // }
   }
 
   mouseDown(event: MouseEvent, screenSpace: HTMLDivElement) {
@@ -138,7 +138,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   private getMultiTouchStream(screenSpace: HTMLDivElement): Observable<TouchCameraControl> {
     return fromEvent(screenSpace, 'touchmove')
       .pipe(
-        sampleTime(33),
+        sampleTime(17),
         scan((acc, touch: TouchEvent) => {
           let locations = Array.from(touch.touches)
             .map(t => new Vector2(t.clientX, t.clientY));

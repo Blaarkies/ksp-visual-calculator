@@ -1,12 +1,12 @@
 <svg class="orbit-line"
      xmlns="http://www.w3.org/2000/svg"
-     [style.width.px]="scale * 2 * orbit.parameters.r"
-     [style.height.px]="scale * 2 * orbit.parameters.r"
-     [style.left.px]="scale * (orbit.parameters.xy[0] - orbit.parameters.r)"
-     [style.top.px]="scale * (orbit.parameters.xy[1] - orbit.parameters.r)">
+     [style.width.%]="1e-9 * 2 * orbit.parameters.r"
+     [style.height.%]="1e-9 * 2 * orbit.parameters.r"
+     [style.left.%]="1e-9 * (orbit.parameters.xy[0] - orbit.parameters.r)"
+     [style.top.%]="1e-9 * (orbit.parameters.xy[1] - orbit.parameters.r)">
   <circle cx="50%"
           cy="50%"
-          [attr.r]="scale * orbit.parameters.r"
+          [attr.r]="1e-6 * orbit.parameters.r + '%'"
           [attr.stroke]="orbit.color + 'A0'"
           [attr.stroke-width]="3"
           fill="transparent" />

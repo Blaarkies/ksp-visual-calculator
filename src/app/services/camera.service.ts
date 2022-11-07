@@ -6,7 +6,7 @@ import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 
-let defaultScale = 5e-8;
+let defaultScale = 1;
 let defaultLocation = new Vector2(960, 540);
 
 @Injectable({
@@ -14,8 +14,8 @@ let defaultLocation = new Vector2(960, 540);
 })
 export class CameraService {
 
-  static zoomLimits = [2e-9, 23e-5];
-  static scaleToShowMoons = 2e-6;
+  static zoomLimits = [.5, 1e4];
+  static scaleToShowMoons = 20;
 
   private scaleSmoothSetter = defaultScale;
     // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect

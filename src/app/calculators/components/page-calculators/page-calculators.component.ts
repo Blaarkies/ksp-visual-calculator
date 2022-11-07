@@ -50,50 +50,50 @@ export class PageCalculatorsComponent extends WithDestroy() {
       .subscribe((data: RouteData) =>
         this.calculatorType = routesMap[data.calculatorType]);
 
-    let minute = 60 * 1e3;
-    this.authService
-      .user$
-      .pipe(
-        take(1),
-        filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
-        switchMap(() => {
-          localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
-
-          return this.dialog.open(AccountDialogComponent,
-            {backdropClass: GlobalStyleClass.MobileFriendly})
-            .afterClosed();
-        }),
-        delay(5e3),
-        tap(() => this.signInDialogOpen$.next()),
-        takeUntil(this.destroy$))
-      .subscribe();
-
-    this.signInDialogOpen$
-      .pipe(
-        tap(() => {
-          if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
-            localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
-            this.triggerFirstVisitDialog();
-          }
-        }),
-        takeUntil(this.destroy$))
-      .subscribe();
-
-    this.authService.user$
-      .pipe(
-        distinctUntilChanged(),
-        filter(u => !(u?.isCustomer)),
-        switchMap(() => timer(5 * minute, 15 * minute)),
-        switchMap(() => this.snackBar.open(
-          'Would you like to support the developer?',
-          'Yes',
-          {duration: 10e3, panelClass: GlobalStyleClass.SnackbarPromoteFlash})
-          .onAction()),
-        tap(() => {
-          this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});
-          this.dialog.open(BuyMeACoffeeDialogComponent);
-        }))
-      .subscribe();
+    // let minute = 60 * 1e3;
+    // this.authService
+    //   .user$
+    //   .pipe(
+    //     take(1),
+    //     filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
+    //     switchMap(() => {
+    //       localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
+    //
+    //       return this.dialog.open(AccountDialogComponent,
+    //         {backdropClass: GlobalStyleClass.MobileFriendly})
+    //         .afterClosed();
+    //     }),
+    //     delay(5e3),
+    //     tap(() => this.signInDialogOpen$.next()),
+    //     takeUntil(this.destroy$))
+    //   .subscribe();
+    //
+    // this.signInDialogOpen$
+    //   .pipe(
+    //     tap(() => {
+    //       if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
+    //         localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());
+    //         this.triggerFirstVisitDialog();
+    //       }
+    //     }),
+    //     takeUntil(this.destroy$))
+    //   .subscribe();
+    //
+    // this.authService.user$
+    //   .pipe(
+    //     distinctUntilChanged(),
+    //     filter(u => !(u?.isCustomer)),
+    //     switchMap(() => timer(2 * minute, 5 * minute)),
+    //     switchMap(() => this.snackBar.open(
+    //       'Would you like to support the developer?',
+    //       'Yes',
+    //       {duration: 15e3, panelClass: GlobalStyleClass.SnackbarPromoteFlash})
+    //       .onAction()),
+    //     tap(() => {
+    //       this.analyticsService.logEvent('Call coffee dialog from Snackbar', {category: EventLogs.Category.Coffee});
+    //       this.dialog.open(BuyMeACoffeeDialogComponent);
+    //     }))
+    //   .subscribe();
   }
 
   private timeSinceLastSignInDialog(): number {

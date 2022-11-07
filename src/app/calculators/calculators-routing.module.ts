@@ -9,6 +9,12 @@ export interface RouteData {
 
 const routes: Routes = [
   {
+    path: UsableRoutes.Relative,
+    component: PageCalculatorsComponent,
+    data: {calculatorType: UsableRoutes.Relative} as RouteData,
+  },
+
+  {
     path: UsableRoutes.DvPlanner,
     component: PageCalculatorsComponent,
     data: {calculatorType: UsableRoutes.DvPlanner} as RouteData,

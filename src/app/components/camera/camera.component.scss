@@ -1,8 +1,8 @@
-.camera-controller {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
+.camera-backboard {
+  position: absolute;
+  //overflow: hidden;
+  //width: 100%;
+  //height: 100%;
 
   content: "";
   // https://line.17qq.com/articles/ibeiiebz.html
@@ -15,7 +15,7 @@
 .screen-space {
   //transition: .05s;
 
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 100%;
 }

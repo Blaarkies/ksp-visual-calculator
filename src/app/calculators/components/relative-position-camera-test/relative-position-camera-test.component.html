@@ -1,0 +1,51 @@
+<!--<div class="camera"  style="position: absolute; -->
+<!--							left: camera.x; -->
+<!--							top: camera.y;-->
+<!--							width: camera.scale  * 1000px;-->
+<!--							height: camera.scale * 1000px;">-->
+
+<!--  <div style="position: relative">-->
+
+<!--    <div style="position: absolute; -->
+<!--					left: (body.x / 1000)%; -->
+<!--					top: (body.y / 1000)%">-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+{{camera.scale}}
+
+<div #screen
+     class="camera"
+     style="position: absolute;"
+     [style.left.px]="camera.location.x"
+     [style.top.px]="camera.location.y"
+     [style.width.px]="camera.scale * 1000"
+     [style.height.px]="camera.scale * 1000"
+     (mousedown)="cameraMouseDown($event, screen)"
+     (wheel)="updateScale($event)"
+>
+
+  <div style="position: relative"
+       [style.width.%]="100"
+       [style.height.%]="100"
+  >
+
+    <div *ngFor="let body of bodys; let i = index"
+         class="planet"
+         style="position: absolute; cursor: pointer;"
+         [style.left.%]="body.location.x / 10"
+         [style.top.%]="body.location.y / 10"
+         (pointerdown)="startBodyDrag(body, $event, screen); $event.stopPropagation()"
+         (mousedown)="$event.stopImmediatePropagation()"
+    >
+      <svg [style.overflow]="'visible'"
+           [style.width.px]="body.size"
+           [style.height.px]="body.size">
+        <g>
+          <circle [attr.r]="body.size" [attr.fill]="['mediumpurple', 'teal', 'pink'][i]"></circle>
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
