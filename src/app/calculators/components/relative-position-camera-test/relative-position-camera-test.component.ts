@@ -67,6 +67,14 @@ export class RelativePositionCameraTestComponent implements OnInit {
     let delta = 1.05 * zoomDirection;
     delta = delta > 0 ? delta : -1 / delta;
     this.camera.scale *= delta;
+
+    let location = this.camera.location;
+    let zoomAtLocation = new Vector2(event.x, event.y);
+    let worldLocation = zoomAtLocation.subtractVector2(location);
+    let shift = worldLocation.multiply(-(delta - 1));
+
+    location.addVector2(shift);
+
     this.updateUniverse();
 
     // let isTouchPad = Math.abs(event.deltaY) < 25;

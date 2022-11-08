@@ -14,8 +14,12 @@ let defaultLocation = new Vector2(960, 540);
 })
 export class CameraService {
 
-  static zoomLimits = [.5, 1e4];
-  static scaleToShowMoons = 20;
+  static zoomLimits = [.1, 2e3];
+  static scaleToShowMoons = 50;
+  static pixelScale = 1e4;
+  static worldViewScale = 1e-11;
+
+  private scaleModifier = CameraService.pixelScale * CameraService.worldViewScale;
 
   private scaleSmoothSetter = defaultScale;
     // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
@@ -80,6 +84,7 @@ export class CameraService {
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
+/*
     delta = delta > 0 ? delta : -1 / delta;
 
     if (!(this.scale * delta).between(
@@ -91,6 +96,32 @@ export class CameraService {
       ? this.hoverObject.location.clone().multiply(this.scale).addVector2(this.location)
       : mouseLocation;
     this.scale *= delta;
+
+    let worldLocation = zoomAtLocation.subtractVector2(this.location);
+    let shift = worldLocation.multiply(-(delta - 1));
+
+    this.location.addVector2(shift);
+*/
+
+    delta = delta > 0 ? delta : -1 / delta;
+
+    let outOfRange = !(this.scale * delta)
+      .between(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
+    if (outOfRange) {
+      return;
+    }
+
+    this.scale *= delta;
+    let zoomAtLocation = this.hoverObject
+      ? this.hoverObject.location.clone()
+        .multiply(this.scaleModifier * this.scale)
+        .addVector2(this.location)
+      : mouseLocation;
+
+    console.log('mouseLocation', mouseLocation)
+    console.log('hoverObject', this.hoverObject?.location?.clone()
+      ?.multiply(this.scaleModifier * this.scale)
+      ?.addVector2(this.location))
 
     let worldLocation = zoomAtLocation.subtractVector2(this.location);
     let shift = worldLocation.multiply(-(delta - 1));
@@ -140,4 +171,7 @@ export class CameraService {
     // this.locationSmoothSetter.destroy();
   }
 
+  translate(x: number, y: number) {
+    this.location.add(x, y);
+  }
 }

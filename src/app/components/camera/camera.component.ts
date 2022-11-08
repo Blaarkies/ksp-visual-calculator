@@ -35,6 +35,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   @ViewChild('cameraController', {static: true}) cameraController: ElementRef<HTMLDivElement>;
   @ViewChild('screenSpace', {static: true}) screenSpace: ElementRef<HTMLDivElement>;
 
+  backboardScale = CameraService.pixelScale;
+
   get scale(): number {
     return this.cameraService?.scale;
   }
@@ -87,8 +89,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         takeUntil(fromEvent(screenSpace, 'mouseleave')),
         takeUntil(fromEvent(screenSpace, 'mouseup')),
         takeUntil(this.destroy$))
-      .subscribe(([x, y]) => {
-        this.cameraService.location.add(x, y);
+      .subscribe(([x, y]) => {;
+        this.cameraService.translate(x, y);
         window.requestAnimationFrame(() => this.cdr.markForCheck());
       });
   }
