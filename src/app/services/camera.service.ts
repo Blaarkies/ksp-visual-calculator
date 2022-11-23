@@ -16,14 +16,17 @@ export class CameraService {
 
   static zoomLimits = [.1, 2e3];
   static scaleToShowMoons = 50;
-  static pixelScale = 1e4;
-  static worldViewScale = 1e-11;
-  static scaleModifier = CameraService.pixelScale * CameraService.worldViewScale;
+
+  /** Size of Backboard */
+  static backboardScale = 1e4;
+  /** Ratio from Gamespace locations to backboard normalized locations */
+  static normalizedScale = 1e-11;
+  static scaleModifier = CameraService.backboardScale * CameraService.normalizedScale;
 
   private scaleSmoothSetter = defaultScale;
-    // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
-    // (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
-    // () => this.cdr.markForCheck());
+  // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
+  // (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
+  // () => this.cdr.markForCheck());
 
   get scale(): number {
     // return this.scaleSmoothSetter.value;
@@ -36,9 +39,9 @@ export class CameraService {
   }
 
   private locationSmoothSetter = defaultLocation.clone();
-    // new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
-    // (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
-    // () => this.cdr.markForCheck());
+  // new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
+  // (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
+  // () => this.cdr.markForCheck());
 
   get location(): Vector2 {
     // return this.locationSmoothSetter.value;
@@ -83,25 +86,6 @@ export class CameraService {
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
-/*
-    delta = delta > 0 ? delta : -1 / delta;
-
-    if (!(this.scale * delta).between(
-      CameraService.zoomLimits[0], CameraService.zoomLimits[1])) {
-      return;
-    }
-    // zoom at hover objects, unless no object is currently hovered
-    let zoomAtLocation = this.hoverObject
-      ? this.hoverObject.location.clone().multiply(this.scale).addVector2(this.location)
-      : mouseLocation;
-    this.scale *= delta;
-
-    let worldLocation = zoomAtLocation.subtractVector2(this.location);
-    let shift = worldLocation.multiply(-(delta - 1));
-
-    this.location.addVector2(shift);
-*/
-
     delta = delta > 0 ? delta : -1 / delta;
 
     let outOfRange = !(this.scale * delta)
@@ -112,9 +96,7 @@ export class CameraService {
 
     this.scale *= delta;
     let zoomAtLocation = this.hoverObject
-      ? this.hoverObject.location.clone()
-        .multiply(CameraService.scaleModifier * this.scale)
-        .addVector2(this.location)
+      ? this.getScreenLocationOfHoverObject()
       : mouseLocation;
 
     // TODO: zoom at hoverObject locations misses the target
@@ -127,6 +109,14 @@ export class CameraService {
     let shift = worldLocation.multiply(-(delta - 1));
 
     this.location.addVector2(shift);
+  }
+
+  private getScreenLocationOfHoverObject() {
+    // TODO: use proper game -> screenspace conversion
+    let rect = Array.from(document.querySelectorAll('div .draggable-body'))
+      .find(e => e.innerHTML.includes(this.hoverObject.label))
+      .getBoundingClientRect();
+    return new Vector2(rect.x, rect.y);
   }
 
   private focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {

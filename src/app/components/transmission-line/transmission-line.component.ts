@@ -15,7 +15,7 @@ export class TransmissionLineComponent implements OnDestroy {
   @Input() transmissionLine: TransmissionLine;
   @Input() scale: number;
 
-  worldViewScale = CameraService.worldViewScale;
+  worldViewScale = CameraService.normalizedScale;
 
   textHover$ = new Subject<boolean>();
 

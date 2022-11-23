@@ -35,7 +35,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   @ViewChild('cameraController', {static: true}) cameraController: ElementRef<HTMLDivElement>;
   @ViewChild('screenSpace', {static: true}) screenSpace: ElementRef<HTMLDivElement>;
 
-  backboardScale = CameraService.pixelScale;
+  backboardScale = CameraService.backboardScale;
 
   get scale(): number {
     return this.cameraService?.scale;

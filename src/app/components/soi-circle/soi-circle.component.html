@@ -1,6 +1,8 @@
 <svg *ngIf="body.draggableHandle.orbit"
      class="soi-display"
      xmlns="http://www.w3.org/2000/svg"
+     [style.left.%]="100 * worldViewScale * body.location.x"
+     [style.top.%]="100 * worldViewScale * body.location.y"
      [style.width.%]="100 * worldViewScale * 2 * body.sphereOfInfluence"
      [style.height.%]="100 * worldViewScale * 2 * body.sphereOfInfluence">
   <defs>

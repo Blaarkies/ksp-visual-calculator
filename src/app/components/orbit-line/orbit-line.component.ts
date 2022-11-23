@@ -12,6 +12,6 @@ export class OrbitLineComponent {
   @Input() orbit: Orbit;
   @Input() scale: number;
 
-  worldViewScale = CameraService.worldViewScale;
+  worldViewScale = CameraService.normalizedScale;
 
 }

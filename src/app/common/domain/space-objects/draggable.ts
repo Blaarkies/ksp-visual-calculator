@@ -93,7 +93,7 @@ export class Draggable extends WithDestroy() {
           takeUntil(fromEvent(screen, 'touchend')));
     }
 
-    let scaleModifier = CameraService.pixelScale * 1000 / camera.scale;
+    let scaleModifier = CameraService.backboardScale * 1000 / camera.scale;
     pointerStream.pipe(
       map(vector => vector
           .subtractVector2(camera.location)

@@ -13,6 +13,6 @@ export class SoiCircleComponent {
 
   @Input() body: SpaceObject;
 
-  worldViewScale = CameraService.worldViewScale;
+  worldViewScale = CameraService.normalizedScale;
 
 }
