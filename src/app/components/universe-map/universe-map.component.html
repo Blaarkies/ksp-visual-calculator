@@ -1,4 +1,10 @@
-<div #screen class="text-white">
+<div #backboard class="text-white">
+
+  <div class="stars-background"
+       [style.background-position-x.px]="camera.location.x * .2"
+       [style.background-position-y.px]="camera.location.y * .2"
+       [style.background-size.px]="1000"
+  ></div>
 
   <cp-camera #camera>
 
@@ -10,7 +16,8 @@
                          || orbit.type === spaceObjectTypes.Star
                          || camera.scale > scaleToShowMoons"
                      [orbit]="orbit"
-                     [scale]="camera.scale"></cp-orbit-line>
+                     [scale]="camera.scale"
+      ></cp-orbit-line>
     </ng-container>
 
     <ng-content select="[aboveOrbits]"></ng-content>
@@ -21,8 +28,7 @@
                                      || body.type === spaceObjectTypes.Star
                                      || camera.scale > scaleToShowMoons"
                                  [spaceObject]="body"
-                                 [scale]="camera.scale"
-                                 (dragSpaceObject)="startBodyDrag(body, $event, screen, camera)"
+                                 (dragSpaceObject)="startBodyDrag(body, $event, backboard, camera)"
                                  cpMouseHover (hoverChange)="hoverBody.emit({body: body, hover: $event})"
                                  (focusObject)="focusBody(body, $event)"
                                  [allowEdit]="allowEdit"
@@ -33,8 +39,7 @@
              [style.width.px]="body.size"
              [style.height.px]="body.size"></div>
 
-        <cp-soi-circle [scale]="camera.scale"
-                       [body]="body"></cp-soi-circle>
+        <cp-soi-circle [body]="body"></cp-soi-circle>
       </cp-draggable-space-object>
     </ng-container>
 

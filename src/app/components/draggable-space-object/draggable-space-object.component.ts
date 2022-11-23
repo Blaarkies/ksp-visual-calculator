@@ -16,7 +16,6 @@ import { Icons } from '../../common/domain/icons';
 export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDestroy {
 
   @Input() spaceObject: SpaceObject;
-  @Input() scale: number;
   @Input() allowEdit = true;
 
   @Output() dragSpaceObject = new EventEmitter<PointerEvent>();
@@ -25,7 +24,6 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
 
   buttonHover$ = new Subject<boolean>();
   worldViewScale = CameraService.worldViewScale;
-  pixelScale = CameraService.pixelScale;
   icons = Icons;
 
   constructor(cameraService: CameraService) {

@@ -43,7 +43,7 @@ describe('CameraComponent', () => {
     let fixture = MockRender(componentType);
     let component = fixture.point.componentInstance;
 
-    let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div.camera-backboard');
+    let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div.ether');
     component.mouseDown(ineeda<MouseEvent>({buttons: 2}), screenSpace);
 
     screenSpace.dispatchEvent(new MouseEvent('mousemove', {
@@ -80,7 +80,7 @@ describe('CameraComponent', () => {
     let fixture = MockRender(componentType);
     let component = fixture.point.componentInstance;
 
-    let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div.camera-backboard');
+    let screenSpace: HTMLDivElement = fixture.debugElement.nativeElement.querySelector('div.ether');
 
     let touchA0 = new Touch(getTouchAt(1, 1, screenSpace));
     let touchB0 = new Touch(getTouchAt(2, -1, screenSpace));

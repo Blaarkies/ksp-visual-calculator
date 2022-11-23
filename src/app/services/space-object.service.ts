@@ -237,7 +237,7 @@ export class SpaceObjectService extends WithDestroy() {
     let inverseScale = 1 / this.cameraService.scale;
     let location = details.advancedPlacement?.location
       ?? this.cameraService.location.clone()
-        .multiply(-inverseScale)
+        .multiply(-inverseScale * CameraService.scaleModifier)
         .addVector2(this.cameraService.screenCenterOffset
           .multiply(inverseScale));
     let craft = new Craft(details.name, details.craftType, details.antennae);

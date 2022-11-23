@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { CameraService } from '../../services/camera.service';
 
@@ -7,16 +7,11 @@ import { CameraService } from '../../services/camera.service';
   templateUrl: './orbit-line.component.html',
   styleUrls: ['./orbit-line.component.scss'],
 })
-export class OrbitLineComponent implements AfterViewInit {
+export class OrbitLineComponent {
 
   @Input() orbit: Orbit;
   @Input() scale: number;
 
   worldViewScale = CameraService.worldViewScale;
-  pixelScale = CameraService.pixelScale;
-
-  ngAfterViewInit() {
-    console.log(this.orbit, this.scale);
-  }
 
 }

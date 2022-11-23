@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { Subject } from 'rxjs';
 import { CustomAnimation } from '../../common/domain/custom-animation';
+import { CameraService } from '../../services/camera.service';
 
 @Component({
   selector: 'cp-transmission-line',
@@ -13,6 +14,8 @@ export class TransmissionLineComponent implements OnDestroy {
 
   @Input() transmissionLine: TransmissionLine;
   @Input() scale: number;
+
+  worldViewScale = CameraService.worldViewScale;
 
   textHover$ = new Subject<boolean>();
 

@@ -18,8 +18,7 @@ export class CameraService {
   static scaleToShowMoons = 50;
   static pixelScale = 1e4;
   static worldViewScale = 1e-11;
-
-  private scaleModifier = CameraService.pixelScale * CameraService.worldViewScale;
+  static scaleModifier = CameraService.pixelScale * CameraService.worldViewScale;
 
   private scaleSmoothSetter = defaultScale;
     // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
@@ -114,14 +113,15 @@ export class CameraService {
     this.scale *= delta;
     let zoomAtLocation = this.hoverObject
       ? this.hoverObject.location.clone()
-        .multiply(this.scaleModifier * this.scale)
+        .multiply(CameraService.scaleModifier * this.scale)
         .addVector2(this.location)
       : mouseLocation;
 
-    console.log('mouseLocation', mouseLocation)
-    console.log('hoverObject', this.hoverObject?.location?.clone()
-      ?.multiply(this.scaleModifier * this.scale)
-      ?.addVector2(this.location))
+    // TODO: zoom at hoverObject locations misses the target
+    // console.log('mouseLocation', mouseLocation)
+    // console.log('hoverObject', this.hoverObject?.location?.clone()
+    //   ?.multiply(this.scale * CameraService.scaleModifier)
+    //   ?.addVector2(this.location))
 
     let worldLocation = zoomAtLocation.subtractVector2(this.location);
     let shift = worldLocation.multiply(-(delta - 1));
@@ -135,7 +135,7 @@ export class CameraService {
       : this.getScaleForFocus(newLocation, type);
 
     this.location = newLocation.clone()
-      .multiply(-this.scale)
+      .multiply(-this.scale * CameraService.scaleModifier)
       .addVector2(this.screenCenterOffset);
   }
 

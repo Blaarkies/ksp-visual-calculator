@@ -606,7 +606,7 @@ export class TutorialService {
   }
 
   private moveCameraToTarget(targetRect: DOMRect) {
-    let cameraElement = document.querySelector('.camera-backboard');
+    let cameraElement = document.querySelector('.ether');
     cameraElement.dispatchEvent(new MouseEvent('mousedown', {buttons: 2}));
     cameraElement.dispatchEvent(new MouseEvent('mousemove', {
       movementX: -targetRect.right + cameraElement.clientWidth * .5,

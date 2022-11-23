@@ -1,4 +1,4 @@
-import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, throttleTime } from 'rxjs';
+import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, tap, throttleTime } from 'rxjs';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
 import { CameraComponent } from '../../../components/camera/camera.component';
@@ -9,6 +9,7 @@ import { OrbitParameterData } from './orbit-parameter-data';
 import { WithDestroy } from '../../with-destroy';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
 import { MoveType } from './move-type';
+import { CameraService } from '../../../services/camera.service';
 
 export class Draggable extends WithDestroy() {
 
@@ -58,7 +59,7 @@ export class Draggable extends WithDestroy() {
 
     updateCallback();
 
-    let pointerStream: Observable<number[]>;
+    let pointerStream: Observable<Vector2>;
 
     if (event.pointerType === 'mouse') {
       screen.style.cursor = 'grabbing';
@@ -69,7 +70,7 @@ export class Draggable extends WithDestroy() {
           throttleTime(17),
           // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
           filter((move: MouseEvent) => move.buttons.bitwiseIncludes(1)),
-          map((move: MouseEvent) => [move.pageX - camera.location.x, move.pageY - camera.location.y]),
+          map((move: MouseEvent) => new Vector2(move.pageX, move.pageY)),
           finalize(() => {
             screen.style.cursor = 'unset';
             this.isGrabbing = false;
@@ -85,23 +86,27 @@ export class Draggable extends WithDestroy() {
           filter((touch: TouchEvent) => touch.changedTouches.length === 1),
           map((touchEvent: TouchEvent) => {
             let touch = touchEvent.touches[0];
-            return [touch.pageX - camera.location.x, touch.pageY - camera.location.y];
+            return new Vector2(touch.pageX - camera.location.x, touch.pageY - camera.location.y);
           }),
           takeUntil(fromEvent(screen, 'touchcancel')),
           takeUntil(fromEvent(event.target, 'touchend')),
           takeUntil(fromEvent(screen, 'touchend')));
     }
 
+    let scaleModifier = CameraService.pixelScale * 1000 / camera.scale;
     pointerStream.pipe(
-      map(pair => camera
-        ? [pair[0] / camera.scale, pair[1] / camera.scale]
-        : pair),
+      map(vector => vector
+          .subtractVector2(camera.location)
+          .multiply(scaleModifier)
+      ),
       finalize(() => {
         this.placeCraftInSoiLock();
         updateCallback();
       }),
       takeUntil(this.destroy$))
-      .subscribe(xy => {
+      .subscribe(vector => {
+        let xy = vector.toList();
+
         this.lastAttemptLocation = xy;
         this.setNewLocation(xy);
         this.showSoiUnderCraft();

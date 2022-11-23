@@ -54,7 +54,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
   icons = Icons;
 
   @ViewChild(CameraComponent, {static: true}) camera: CameraComponent;
-  @ViewChild('screen', {static: true}) screen: ElementRef<HTMLDivElement>;
+  @ViewChild('backboard', {static: true}) backboard: ElementRef<HTMLDivElement>;
 
   constructor(private cdr: ChangeDetectorRef,
               private spaceObjectService: SpaceObjectService,

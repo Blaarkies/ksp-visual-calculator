@@ -12,11 +12,10 @@
     <cp-draggable-space-object [@fade]
                                *ngFor="let craft of crafts$ | async"
                                [spaceObject]="craft"
-                               [scale]="universe.camera.scale"
                                (dragSpaceObject)="universe.startBodyDrag(
                                    craft,
                                    $event,
-                                   universe.screen.nativeElement,
+                                   universe.backboard.nativeElement,
                                    universe.camera)"
                                (focusObject)="universe.focusBody(craft, $event)"
                                (editSpaceObject)="editCraft(craft)">

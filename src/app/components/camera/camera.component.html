@@ -1,25 +1,22 @@
-<div #cameraController
-     class="camera-backboard"
-     [style.background-position-x.px]="location.x * .2"
-     [style.background-position-y.px]="location.y * .2"
-     [style.background-size.px]="1e3"
-     [style.width.px]="backboardScale * scale"
-     [style.height.px]="backboardScale * scale"
-     [style.left.px]="location.x"
-     [style.top.px]="location.y"
-     (wheel)="updateScale($event)"
-     (mousedown)="mouseDown($event, cameraController)"
-     (touchstart)="touchStart($event, cameraController)"
-     (contextmenu)="$event.shiftKey || $event.preventDefault()">
+<div
+  #cameraController
+  class="ether"
+  [style.width.px]="backboardScale * scale"
+  [style.height.px]="backboardScale * scale"
+  [style.left.px]="location.x"
+  [style.top.px]="location.y"
+  (wheel)="updateScale($event)"
+  (mousedown)="mouseDown($event, cameraController)"
+  (touchstart)="touchStart($event, cameraController)"
+  (contextmenu)="$event.shiftKey || $event.preventDefault()"
+>
 
-  <pre style="position: fixed; inset: 0 0;">
-    {{scale.toString()}}
-    {{location.toString()}}
+  <pre style="position: fixed; inset: 0 0; margin-top: 50px">
+    scale:    {{scale.toString().toNumber().toPrecision(3)}}
+    location: {{location.x.toInt() + ' : ' + location.y.toInt()}}
   </pre>
 
-  <div #screenSpace
-       class="screen-space stack">
-
+  <div #screenSpace class="screen-space stack">
     <ng-content></ng-content>
 
   </div>
