@@ -99,7 +99,7 @@ export class HudService {
         {route: UsableRoutes.DvPlanner},
         'Page that calculates the required delta-v for a specified mission'),
       new ActionOption(
-        'Signal Check',
+        'CommNet Planner',
         Icons.Relay,
         {route: UsableRoutes.SignalCheck},
         'Page that calculates CommNet ranges'),
@@ -221,7 +221,7 @@ export class HudService {
     ];
 
     return {
-      startTitle: 'Signal Check',
+      startTitle: 'CommNet Planner',
       startIcon: Icons.OpenDetails,
       color: 'orange',
       options,

@@ -66,10 +66,10 @@ export class FeedbackDialogComponent extends WithDestroy() {
     this.feedbackState = success === true ? 'success' : 'failed';
 
     if (success === true) {
-      this.snackBar.open('Feedback has been saved');
+      this.snackBar.open('Feedback has been submitted, thank you! I will try to reach out to you with the provided contact details.');
       this.form.reset();
     } else {
-      this.snackBar.open('Could not save feedback');
+      this.snackBar.open('Could not submit feedback. Please try the GitHub link in the top-left (green) menu');
     }
   }
 

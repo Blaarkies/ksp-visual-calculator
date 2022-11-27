@@ -10,8 +10,7 @@ import { CameraService } from '../../services/camera.service';
 export class OrbitLineComponent {
 
   @Input() orbit: Orbit;
-  @Input() scale: number;
 
-  worldViewScale = CameraService.normalizedScale;
+  worldViewScale = 100 * CameraService.normalizedScale;
 
 }

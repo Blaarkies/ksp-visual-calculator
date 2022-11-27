@@ -1,71 +1,72 @@
-<svg class="overflow-visible position-absolute"
-     *ngFor="let trajectory of trajectories; trackBy: getTrajectoryKey"
-     [@fade]
-     xmlns="http://www.w3.org/2000/svg">
+<ng-container *ngFor="let trajectory of trajectories; trackBy: getTrajectoryKey">
+  <svg class="overflow-visible position-absolute trajectory-line"
+       xmlns="http://www.w3.org/2000/svg"
+       viewBox="0 0 100 100"
+       [@fade]
+  >
 
-  <defs>
-    <marker id="head"
-            orient="auto"
-            markerWidth="3"
-            markerHeight="3"
-            refX="6"
-            refY="1.1">
-      <path d="M 0 2 L 1 1 L 0 0"
-            fill="none"
-            stroke="#fc4"
-            stroke-width=".5" />
-    </marker>
-    <marker id="tail"
-            orient="auto"
-            markerWidth="3"
-            markerHeight="3"
-            refX="-4"
-            refY="1.1">
-      <path d="M 0 2 L 1 1 L 0 0"
-            fill="none"
-            stroke="#fc4"
-            stroke-width=".5" />
-    </marker>
-  </defs>
+    <defs>
+      <marker id="head"
+              orient="auto"
+              markerWidth="3"
+              markerHeight="3"
+              refX="6"
+              refY="1.1">
+        <path d="M 0 2 L 1 1 L 0 0"
+              fill="none"
+              stroke="#fc4"
+              stroke-width=".5" />
+      </marker>
+      <marker id="tail"
+              orient="auto"
+              markerWidth="3"
+              markerHeight="3"
+              refX="-4"
+              refY="1.1">
+        <path d="M 0 2 L 1 1 L 0 0"
+              fill="none"
+              stroke="#fc4"
+              stroke-width=".5" />
+      </marker>
+    </defs>
 
-  <path *ngIf="trajectory.b"
-        marker-end="url(#head)"
-        marker-start="url(#tail)"
-        [attr.stroke-width]="6"
-        [attr.stroke]="'#fa0' + 'A'"
-        fill="none"
-        stroke-linecap="round"
-        [attr.d]="'M '
-        + scale * trajectory.a.location.x
+    <path *ngIf="trajectory.b"
+          marker-end="url(#head)"
+          marker-start="url(#tail)"
+          [attr.stroke-width]=".06 * inverseScale"
+          [attr.stroke]="'#fa0' + 'A'"
+          fill="none"
+          stroke-linecap="round"
+          [attr.d]="'M '
+        + worldViewScale * trajectory.a.location.x
         + ' '
-        + scale * trajectory.a.location.y
+        + worldViewScale * trajectory.a.location.y
           + 'S '
-          + scale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
+          + worldViewScale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
                                       trajectory.b.location.x, trajectory.b.location.y).x
           + ' '
-          + scale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
+          + worldViewScale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
                                       trajectory.b.location.x, trajectory.b.location.y).y
             + ' '
-            + scale * trajectory.b.location.x
+            + worldViewScale * trajectory.b.location.x
             + ' '
-            + scale * trajectory.b.location.y" />
+            + worldViewScale * trajectory.b.location.y" />
+  </svg>
 
-  <foreignObject class="overflow-visible destination-marker"
-                 width="100%"
-                 height="100%"
-                 [attr.x]="scale * trajectory.a.location.x"
-                 [attr.y]="scale * trajectory.a.location.y - trajectory.a.size * .5 - 20">
-    <mat-icon class="icon-map-marker" [svgIcon]="icons.MapMarker">
-      <span class="trip-index" xmlns="http://www.w3.org/1999/xhtml">{{trajectory.sequence}}</span>
-    </mat-icon>
-
-  </foreignObject>
-
-</svg>
+  <mat-icon class="icon-map-marker geo-markers"
+            [svgIcon]="icons.MapMarker"
+            [@fade]
+            [style.left.%]="worldViewScale * trajectory.a.location.x"
+            [style.top.%]="worldViewScale * trajectory.a.location.y"
+  >
+    <span class="trip-index" xmlns="http://www.w3.org/1999/xhtml">{{trajectory.sequence}}</span>
+  </mat-icon>
+</ng-container>
 
 <mat-icon class="icon-map-marker mouse-location-marker"
-          *ngIf="isAddingCheckpoint && (mouseLocation$ | async); let mapMarker"
+          [svgIcon]="icons.AddMapMarker"
           [@fade]
-          [style.left.px]="mapMarker.x * scale - 20"
-          [style.top.px]="mapMarker.y * scale - 48"
-          [svgIcon]="icons.AddMapMarker"></mat-icon>
+          *ngIf="isAddingCheckpoint && (mouseLocation$ | async); let mouseLocation"
+          [style.left.px]="mouseLocation.x / inverseScale"
+          [style.top.px]="mouseLocation.y / inverseScale"
+></mat-icon>

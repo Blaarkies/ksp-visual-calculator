@@ -15,7 +15,7 @@ let defaultLocation = new Vector2(960, 540);
 export class CameraService {
 
   static zoomLimits = [.1, 2e3];
-  static scaleToShowMoons = 50;
+  static scaleToShowMoons = 25;
 
   /** Size of Backboard */
   static backboardScale = 1e4;
@@ -111,10 +111,20 @@ export class CameraService {
     this.location.addVector2(shift);
   }
 
+  // TODO: remove with game -> screenspace conversion fix
+  hoverObjectElement: {name?, element?} = {};
   private getScreenLocationOfHoverObject() {
     // TODO: use proper game -> screenspace conversion
-    let rect = Array.from(document.querySelectorAll('div .draggable-body'))
-      .find(e => e.innerHTML.includes(this.hoverObject.label))
+    let shouldUpdate = this.hoverObjectElement.name !== this.hoverObject.label
+      || !this.hoverObjectElement.element;
+    this.hoverObjectElement = shouldUpdate
+      ? {
+        name: this.hoverObject.label,
+        element: Array.from(document.querySelectorAll('div .draggable-body'))
+          .find(e => e.innerHTML.includes(this.hoverObject.label)),
+      }
+      : this.hoverObjectElement;
+    let rect = this.hoverObjectElement.element
       .getBoundingClientRect();
     return new Vector2(rect.x, rect.y);
   }

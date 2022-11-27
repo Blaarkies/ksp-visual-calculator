@@ -263,7 +263,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   private getContextTitle(context: UsableRoutes): string {
     switch (context) {
       case UsableRoutes.SignalCheck:
-        return 'Signal Check';
+        return 'CommNet Planner';
       case UsableRoutes.DvPlanner:
         return 'Delta-v Planner';
       // default:

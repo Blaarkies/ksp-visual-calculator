@@ -41,7 +41,7 @@ describe('HudService', () => {
     expect(serviceAsAny.contextChange$.next).toHaveBeenCalled();
     expect(service.contextPanel$.next).toHaveBeenCalledWith(
       objectContaining({
-        startTitle: 'Signal Check',
+        startTitle: 'CommNet Planner',
       }));
   });
 

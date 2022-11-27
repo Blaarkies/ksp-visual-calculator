@@ -263,7 +263,7 @@ export class TutorialService {
 
     switch (context) {
       case UsableRoutes.SignalCheck:
-        startTutorial.dialogTitle = 'CommNet Signal Check Tutorial';
+        startTutorial.dialogTitle = 'CommNet Planner Tutorial';
         startTutorial.dialogMessages = [
           'This page helps setup satellite communication networks by letting you place craft with specific antennae.',
           'Dragging these craft around will instantly show where connections are possible.'

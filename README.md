@@ -14,7 +14,7 @@
 
 Helping players visualize and plan out missions in Kerbal Space Program.
 - [Delta-v Planner](#Delta-v-Planner), calculates how much delta-v is required to complete a mission with specific checkpoints
-- [Signal Check](#Signal-Check), solves the layouts used to build efficient communication networks
+- [CommNet Planner](#CommNet-Planner), solves the layouts used to build efficient communication networks
 
 KSP Visual Calculator is designed for use on desktop, tablet, and mobile. This allows playing Kerbal Space Program while also having your 
 mobile device guide you towards better mission designs.
@@ -35,7 +35,7 @@ Each checkpoint can be configured with specific requirements:
 ![A footsteps on the moons mission](./storage/map-dv-preview.jpg?raw=true "A footsteps on the moons mission")
 
 
-### Signal Check
+### CommNet Planner
 
 This page imitates the map view from Kerbal Space Program, showing all planets, moons, and spacecraft.
 

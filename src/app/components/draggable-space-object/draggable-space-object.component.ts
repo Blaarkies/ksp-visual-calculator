@@ -23,7 +23,7 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDe
   @Output() editSpaceObject = new EventEmitter<void>();
 
   buttonHover$ = new Subject<boolean>();
-  normalizedScale = CameraService.normalizedScale;
+  normalizedScale = 100 * CameraService.normalizedScale;
   icons = Icons;
 
   constructor(cameraService: CameraService) {

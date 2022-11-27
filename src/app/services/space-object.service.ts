@@ -237,9 +237,9 @@ export class SpaceObjectService extends WithDestroy() {
     let inverseScale = 1 / this.cameraService.scale;
     let location = details.advancedPlacement?.location
       ?? this.cameraService.location.clone()
-        .multiply(-inverseScale * CameraService.scaleModifier)
-        .addVector2(this.cameraService.screenCenterOffset
-          .multiply(inverseScale));
+        .multiply(inverseScale * CameraService.backboardScale)
+        .addVector2(this.cameraService.screenCenterOffset)
+        .multiply(1 / CameraService.normalizedScale);
     let craft = new Craft(details.name, details.craftType, details.antennae);
     let parent = this.spaceObjectContainerService.getSoiParent(location);
     parent.draggableHandle.addChild(craft.draggableHandle);

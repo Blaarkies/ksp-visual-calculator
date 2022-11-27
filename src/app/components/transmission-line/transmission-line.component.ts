@@ -13,10 +13,14 @@ import { CameraService } from '../../services/camera.service';
 export class TransmissionLineComponent implements OnDestroy {
 
   @Input() transmissionLine: TransmissionLine;
-  @Input() scale: number;
 
-  worldViewScale = CameraService.normalizedScale;
+  @Input() set scale(value: number) {
+    let lineSpacingFactor = .02;
+    this.inverseScale = lineSpacingFactor / value;
+  }
 
+  inverseScale = 1;
+  worldViewScale = 100 * CameraService.normalizedScale;
   textHover$ = new Subject<boolean>();
 
   ngOnDestroy() {

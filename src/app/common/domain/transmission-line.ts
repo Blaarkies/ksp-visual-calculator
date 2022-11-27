@@ -90,7 +90,7 @@ export class TransmissionLine {
     let direction = a.direction(b);
     let perpendicular = direction + Math.PI * .5;
 
-    return Vector2.fromDirection(perpendicular, 2);
+    return Vector2.fromDirection(perpendicular, 1);
   });
 
   private memoizeColor = memoize(strength => {
