@@ -96,7 +96,6 @@ import { PageDvPlannerComponent } from './components/page-dv-planner/page-dv-pla
 import { PageCalculatorsComponent } from './components/page-calculators/page-calculators.component';
 import { CalculatorsRoutingModule } from './calculators-routing.module';
 import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module';
-import { RelativePositionCameraTestComponent } from './components/relative-position-camera-test/relative-position-camera-test.component';
 
 
 @NgModule({
@@ -165,7 +164,6 @@ import { RelativePositionCameraTestComponent } from './components/relative-posit
     PageSignalCheckComponent,
     PageDvPlannerComponent,
     PageCalculatorsComponent,
-    RelativePositionCameraTestComponent,
   ],
   imports: [
     CommonModule,
