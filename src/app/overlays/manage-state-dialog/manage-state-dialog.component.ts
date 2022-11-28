@@ -107,7 +107,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
 
   async removeState(selectedState: StateRow) {
     this.buttonLoaders.remove$.next(true);
-    this.snackBar.open(`Removing "${selectedState.name}"`, 'Undo')
+    this.snackBar.open(`Removing "${selectedState.name}"`, 'Undo', {duration: 3e3})
       .afterDismissed()
       .pipe(
         filter(action => !action.dismissedByAction),
