@@ -5,7 +5,6 @@ import {
   filter,
   finalize,
   fromEvent,
-  interval,
   map,
   Observable,
   sampleTime,
@@ -13,7 +12,6 @@ import {
   skip,
   startWith,
   switchMap,
-  take,
   takeUntil
 } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
@@ -48,6 +46,10 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   constructor(private cdr: ChangeDetectorRef,
               private cameraService: CameraService) {
     super();
+  }
+
+  convertScreenToGameSpace(screenSpaceLocation: Vector2): Vector2 {
+    return this.cameraService.convertScreenToGameSpace(screenSpaceLocation);
   }
 
   ngOnInit() {
@@ -89,7 +91,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         takeUntil(fromEvent(screenSpace, 'mouseleave')),
         takeUntil(fromEvent(screenSpace, 'mouseup')),
         takeUntil(this.destroy$))
-      .subscribe(([x, y]) => {;
+      .subscribe(([x, y]) => {
         this.cameraService.translate(x, y);
         window.requestAnimationFrame(() => this.cdr.markForCheck());
       });

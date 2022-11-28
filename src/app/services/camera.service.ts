@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
-import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
 import { Draggable } from '../common/domain/space-objects/draggable';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
@@ -23,34 +22,17 @@ export class CameraService {
   static normalizedScale = 1e-11;
   static scaleModifier = CameraService.backboardScale * CameraService.normalizedScale;
 
-  private scaleSmoothSetter = defaultScale;
-  // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
-  // (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
-  // () => this.cdr.markForCheck());
-
+  private _scale = defaultScale;
   get scale(): number {
-    // return this.scaleSmoothSetter.value;
-    return this.scaleSmoothSetter;
+    return this._scale;
   }
 
   set scale(value: number) {
     let limitedValue = value.coerceIn(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
-    this.scaleSmoothSetter = limitedValue;
+    this._scale = limitedValue;
   }
 
-  private locationSmoothSetter = defaultLocation.clone();
-  // new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
-  // (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
-  // () => this.cdr.markForCheck());
-
-  get location(): Vector2 {
-    // return this.locationSmoothSetter.value;
-    return this.locationSmoothSetter;
-  }
-
-  set location(value: Vector2) {
-    this.locationSmoothSetter = value;
-  }
+  location = defaultLocation.clone();
 
   get screenCenterOffset(): Vector2 {
     return new Vector2(window.innerWidth, window.innerHeight).multiply(.5);
@@ -80,53 +62,30 @@ export class CameraService {
   cameraController: ElementRef<HTMLDivElement>;
 
   reset(scale?: number, location?: Vector2) {
-    this.scaleSmoothSetter = scale ?? defaultScale;
-    this.locationSmoothSetter = location ?? defaultLocation.clone();
+    this._scale = scale ?? defaultScale;
+    this.location = location ?? defaultLocation.clone();
     this.cdr.markForCheck();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
     delta = delta > 0 ? delta : -1 / delta;
 
-    let outOfRange = !(this.scale * delta)
-      .between(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
-    if (outOfRange) {
+    let inRange = (this.scale * delta).between(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
+    if (!inRange) {
       return;
     }
 
-    this.scale *= delta;
     let zoomAtLocation = this.hoverObject
-      ? this.getScreenLocationOfHoverObject()
+      ? this.convertGameToScreenSpace(this.hoverObject.location)
       : mouseLocation;
 
     // TODO: zoom at hoverObject locations misses the target
-    // console.log('mouseLocation', mouseLocation)
-    // console.log('hoverObject', this.hoverObject?.location?.clone()
-    //   ?.multiply(this.scale * CameraService.scaleModifier)
-    //   ?.addVector2(this.location))
 
     let worldLocation = zoomAtLocation.subtractVector2(this.location);
     let shift = worldLocation.multiply(-(delta - 1));
 
     this.location.addVector2(shift);
-  }
-
-  // TODO: remove with game -> screenspace conversion fix
-  hoverObjectElement: {name?, element?} = {};
-  private getScreenLocationOfHoverObject() {
-    // TODO: use proper game -> screenspace conversion
-    let shouldUpdate = this.hoverObjectElement.name !== this.hoverObject.label
-      || !this.hoverObjectElement.element;
-    this.hoverObjectElement = shouldUpdate
-      ? {
-        name: this.hoverObject.label,
-        element: Array.from(document.querySelectorAll('div .draggable-body'))
-          .find(e => e.innerHTML.includes(this.hoverObject.label)),
-      }
-      : this.hoverObjectElement;
-    let rect = this.hoverObjectElement.element
-      .getBoundingClientRect();
-    return new Vector2(rect.x, rect.y);
+    this.scale *= delta;
   }
 
   private focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
@@ -174,4 +133,19 @@ export class CameraService {
   translate(x: number, y: number) {
     this.location.add(x, y);
   }
+
+  convertGameToScreenSpace(gameSpaceLocation: Vector2): Vector2 {
+    let backboardLocation = gameSpaceLocation.clone().multiply(CameraService.normalizedScale);
+    let screenSpaceLocation = backboardLocation.multiply(CameraService.backboardScale * this.scale);
+    let screenSpaceLocationOffset = screenSpaceLocation.addVector2(this.location);
+    return screenSpaceLocationOffset;
+  };
+
+  convertScreenToGameSpace(screenSpaceLocation: Vector2): Vector2 {
+    let backboardLocation = screenSpaceLocation.clone().subtractVector2(this.location);
+    let backboardRatio = backboardLocation.multiply(1/(CameraService.backboardScale*this.scale));
+    let gameSpaceLocationOffset = backboardRatio.multiply(1/CameraService.normalizedScale);
+    return gameSpaceLocationOffset;
+  }
+
 }

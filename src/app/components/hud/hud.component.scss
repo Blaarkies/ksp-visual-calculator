@@ -43,6 +43,7 @@
   gap: 16px;
   margin-left: 16px;
   height: 50px;
+  width: min-content;
   align-items: center;
 
   .page-icon {
@@ -205,10 +206,6 @@
 
   .base {
     place-self: end start;
-  }
-
-  > * {
-    outline: 1px dashed #f007;
   }
 }
 

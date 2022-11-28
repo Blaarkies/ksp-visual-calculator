@@ -609,8 +609,8 @@ export class TutorialService {
     let cameraElement = document.querySelector('.ether');
     cameraElement.dispatchEvent(new MouseEvent('mousedown', {buttons: 2}));
     cameraElement.dispatchEvent(new MouseEvent('mousemove', {
-      movementX: -targetRect.right + cameraElement.clientWidth * .5,
-      movementY: -targetRect.top + cameraElement.clientHeight * .5,
+      movementX: -targetRect.right + window.innerWidth * .5,
+      movementY: -targetRect.top + window.innerHeight * .5,
     }));
     cameraElement.dispatchEvent(new MouseEvent('mouseup'));
   }

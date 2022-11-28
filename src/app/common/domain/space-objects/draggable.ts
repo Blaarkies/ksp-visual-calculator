@@ -86,19 +86,15 @@ export class Draggable extends WithDestroy() {
           filter((touch: TouchEvent) => touch.changedTouches.length === 1),
           map((touchEvent: TouchEvent) => {
             let touch = touchEvent.touches[0];
-            return new Vector2(touch.pageX - camera.location.x, touch.pageY - camera.location.y);
+            return new Vector2(touch.pageX, touch.pageY);
           }),
           takeUntil(fromEvent(screen, 'touchcancel')),
           takeUntil(fromEvent(event.target, 'touchend')),
           takeUntil(fromEvent(screen, 'touchend')));
     }
 
-    let scaleModifier = CameraService.backboardScale * 1000 / camera.scale;
     pointerStream.pipe(
-      map(vector => vector
-          .subtractVector2(camera.location)
-          .multiply(scaleModifier)
-      ),
+      map(vector => camera.convertScreenToGameSpace(vector)),
       finalize(() => {
         this.placeCraftInSoiLock();
         updateCallback();
