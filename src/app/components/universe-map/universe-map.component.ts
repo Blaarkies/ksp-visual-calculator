@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
-import { filter, Observable, takeUntil } from 'rxjs';
+import { filter, map, Observable, takeUntil } from 'rxjs';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
@@ -64,9 +64,11 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
               stateService: StateService,
               private cameraService: CameraService) {
     super();
-
-    this.orbits$ = this.spaceObjectService.orbits$;
-    this.celestialBodies$ = this.spaceObjectService.celestialBodies$;
+    let celestialTypes = [SpaceObjectType.Star, SpaceObjectType.Planet, SpaceObjectType.Moon];
+    this.orbits$ = this.spaceObjectService.orbits$
+      .pipe(map(orbits => orbits?.filter(o => celestialTypes.includes(o.type))));
+    this.celestialBodies$ = this.spaceObjectService.celestialBodies$
+      .pipe(map(bodies => bodies?.filter(b => celestialTypes.includes(b.type))));
   }
 
   startBodyDrag(body: SpaceObject, event: PointerEvent, screen: HTMLDivElement, camera: CameraComponent) {

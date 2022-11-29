@@ -4,14 +4,14 @@ import {
   distinctUntilChanged,
   filter,
   finalize,
-  fromEvent,
+  fromEvent, interval,
   map,
   Observable,
   sampleTime,
   scan,
   skip,
   startWith,
-  switchMap,
+  switchMap, take,
   takeUntil
 } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
@@ -31,7 +31,7 @@ interface TouchCameraControl {
 export class CameraComponent extends WithDestroy() implements OnInit {
 
   @ViewChild('cameraController', {static: true}) cameraController: ElementRef<HTMLDivElement>;
-  @ViewChild('screenSpace', {static: true}) screenSpace: ElementRef<HTMLDivElement>;
+  @ViewChild('contentStack', {static: true}) contentStack: ElementRef<HTMLDivElement>;
 
   backboardScale = CameraService.backboardScale;
 
@@ -58,20 +58,12 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   }
 
   updateScale(event: WheelEvent) {
-    let isTouchPad = Math.abs(event.deltaY) < 25;
     let zoomDirection = -event.deltaY.sign();
 
-    // if (isTouchPad) {
-      this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
-      window.requestAnimationFrame(() => this.cdr.markForCheck());
-    // } else {
-    //   interval(17)
-    //     .pipe(startWith(0), take(5))
-    //     .subscribe(() => {
-    //       this.cameraService.zoomAt(1.05 * zoomDirection, new Vector2(event.x, event.y));
-    //       window.requestAnimationFrame(() => this.cdr.markForCheck());
-    //     });
-    // }
+    let location = new Vector2(event.x, event.y);
+    this.cameraService.zoomAt(1.07 * zoomDirection, location);
+    event.preventDefault();
+    window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 
   mouseDown(event: MouseEvent, screenSpace: HTMLDivElement) {
@@ -80,7 +72,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     }
 
     // Remove the transition animation that causes lag when mouse-dragging the map around
-    let screenStyle = this.screenSpace.nativeElement.style;
+    let screenStyle = this.contentStack.nativeElement.style;
     let oldTransition = screenStyle.transition;
     screenStyle.transition = 'unset';
 
@@ -98,7 +90,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   }
 
   touchStart(event: TouchEvent, screenSpace: HTMLDivElement) {
-    let screenStyle = this.screenSpace.nativeElement.style;
+    let screenStyle = this.contentStack.nativeElement.style;
     let oldTransition = screenStyle.transition;
     screenStyle.transition = 'unset';
 

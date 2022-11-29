@@ -11,11 +11,10 @@
     <ng-content select="[aboveBackground]"></ng-content>
 
     <ng-container *ngFor="let orbit of orbits$ | async">
-      <cp-orbit-line [@fade]
-                     *ngIf="orbit.type === spaceObjectTypes.Planet
-                         || orbit.type === spaceObjectTypes.Star
-                         || camera.scale > scaleToShowMoons"
-                     [orbit]="orbit"
+      <cp-orbit-line
+        [@fade]
+        *ngIf="orbit.type !== spaceObjectTypes.Moon || camera.scale > scaleToShowMoons"
+        [orbit]="orbit"
       ></cp-orbit-line>
     </ng-container>
 
@@ -23,9 +22,7 @@
 
     <ng-container *ngFor="let body of celestialBodies$ | async">
       <cp-draggable-space-object [@fade]
-                                 *ngIf="body.type === spaceObjectTypes.Planet
-                                     || body.type === spaceObjectTypes.Star
-                                     || camera.scale > scaleToShowMoons"
+                                 *ngIf="body.type !== spaceObjectTypes.Moon || camera.scale > scaleToShowMoons"
                                  [spaceObject]="body"
                                  (dragSpaceObject)="startBodyDrag(body, $event, backboard, camera)"
                                  cpMouseHover (hoverChange)="hoverBody.emit({body: body, hover: $event})"

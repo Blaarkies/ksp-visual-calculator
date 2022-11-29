@@ -13,7 +13,7 @@ let defaultLocation = new Vector2(960, 540);
 })
 export class CameraService {
 
-  static zoomLimits = [.1, 2e3];
+  static zoomLimits = [.1, 1.9e3];
   static scaleToShowMoons = 25;
 
   /** Size of Backboard */
@@ -57,7 +57,7 @@ export class CameraService {
 
   lastFocusObject: Draggable;
 
-  // todo: change to proper setters, callbacks
+  // TODO: change to proper setters, callbacks
   cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
 
@@ -78,8 +78,6 @@ export class CameraService {
     let zoomAtLocation = this.hoverObject
       ? this.convertGameToScreenSpace(this.hoverObject.location)
       : mouseLocation;
-
-    // TODO: zoom at hoverObject locations misses the target
 
     let worldLocation = zoomAtLocation.subtractVector2(this.location);
     let shift = worldLocation.multiply(-(delta - 1));
@@ -123,11 +121,6 @@ export class CameraService {
     let spaceObjectContainerService = SpaceObjectContainerService.instance;
     let parent = spaceObjectContainerService.getSoiParent(newLocation);
     return this.getScaleForFocus(newLocation, parent.type);
-  }
-
-  destroy() {
-    // this.scaleSmoothSetter.destroy();
-    // this.locationSmoothSetter.destroy();
   }
 
   translate(x: number, y: number) {

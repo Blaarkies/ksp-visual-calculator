@@ -1,9 +1,11 @@
-.ether {
+.camera-controller {
   position: absolute;
-}
-
-.screen-space {
-  position: relative;
   width: 100%;
   height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.contents-stack {
+  position: absolute;
 }

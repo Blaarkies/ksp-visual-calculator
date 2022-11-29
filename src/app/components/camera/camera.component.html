@@ -1,16 +1,17 @@
 <div
   #cameraController
-  class="ether"
-  [style.width.px]="backboardScale * scale"
-  [style.height.px]="backboardScale * scale"
-  [style.left.px]="location.x"
-  [style.top.px]="location.y"
+  class="camera-controller"
   (wheel)="updateScale($event)"
   (mousedown)="mouseDown($event, cameraController)"
   (touchstart)="touchStart($event, cameraController)"
   (contextmenu)="$event.shiftKey || $event.preventDefault()"
 >
-  <div #screenSpace class="screen-space stack">
+  <div #contentStack
+       class="contents-stack stack"
+       [style.width.px]="backboardScale * scale"
+       [style.height.px]="backboardScale * scale"
+       [style.left.px]="location.x"
+       [style.top.px]="location.y">
     <ng-content></ng-content>
   </div>
 
