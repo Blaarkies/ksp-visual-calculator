@@ -177,8 +177,10 @@ export class StateService {
     if (state) {
       let parsedState: StateGame = JSON.parse(state);
       this.name = parsedState.name;
-      this.setContextualProperties({state, context: parsedState.context, parsedState});
-      buildStateResult = this.spaceObjectService.buildState(state, parsedState.context);
+      // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
+      let imageFormatFix = state.replace(/.png/g, '.webp');
+      this.setContextualProperties({state: imageFormatFix, context: parsedState.context, parsedState});
+      buildStateResult = this.spaceObjectService.buildState(imageFormatFix, parsedState.context);
     } else {
       this.name = Namer.savegame;
       this.setContextualProperties({state, context: this.context});

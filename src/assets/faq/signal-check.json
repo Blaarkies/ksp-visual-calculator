@@ -51,7 +51,7 @@
         {
           "type": "image",
           "content": "Measurements of a craft and its connection",
-          "src": "assets/faq/signal-text.jpg",
+          "src": "assets/faq/signal-text.webp",
           "alt": "An image of a craft with a connection to Kerbin",
           "height": 200
         }
@@ -95,7 +95,7 @@
         {
           "type": "image",
           "content": "Three craft connected",
-          "src": "assets/faq/signal-lines.jpg",
+          "src": "assets/faq/signal-lines.webp",
           "alt": "An image of three satellites connected with green lines.",
           "height": 120
         }

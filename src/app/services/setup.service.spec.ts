@@ -376,7 +376,7 @@ function kerbolSystemCharacteristicsJson() {
         'type': 'star',
         'name': 'Kerbol',
         'equatorialRadius': 2616e5,
-        'imageUrl': 'assets/stock/kerbol-system-icons/kerbol.png'
+        'imageUrl': 'assets/stock/kerbol-system-icons/kerbol.webp'
       },
       {
         'id': 'moho',
@@ -386,7 +386,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 5263138304,
         'equatorialRadius': 25e4,
         'sphereOfInfluence': 9646663,
-        'imageUrl': 'assets/stock/kerbol-system-icons/moho.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/moho.webp',
         'orbitLineColor': '#fdbc89'
       },
       {
@@ -397,7 +397,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 9832684544,
         'equatorialRadius': 7e5,
         'sphereOfInfluence': 85109365,
-        'imageUrl': 'assets/stock/kerbol-system-icons/eve.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/eve.webp',
         'orbitLineColor': '#7320f5'
       },
       {
@@ -408,7 +408,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 315e5,
         'equatorialRadius': 13e3,
         'sphereOfInfluence': 126123,
-        'imageUrl': 'assets/stock/kerbol-system-icons/gilly.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/gilly.webp',
         'orbitLineColor': '#9f7966'
       },
       {
@@ -419,7 +419,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 13599840256,
         'equatorialRadius': 6e5,
         'sphereOfInfluence': 84159286,
-        'imageUrl': 'assets/stock/kerbol-system-icons/kerbin.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/kerbin.webp',
         'orbitLineColor': '#30f0f0',
         'hasDsn': true
       },
@@ -431,7 +431,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 12e6,
         'equatorialRadius': 2e5,
         'sphereOfInfluence': 2429559,
-        'imageUrl': 'assets/stock/kerbol-system-icons/mun.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/mun.webp',
         'orbitLineColor': '#d0d0f0'
       },
       {
@@ -442,7 +442,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 47e6,
         'equatorialRadius': 6e4,
         'sphereOfInfluence': 2247428,
-        'imageUrl': 'assets/stock/kerbol-system-icons/minmus.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/minmus.webp',
         'orbitLineColor': '#b090c0'
       },
       {
@@ -453,7 +453,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 20726155264,
         'equatorialRadius': 32e4,
         'sphereOfInfluence': 47921949,
-        'imageUrl': 'assets/stock/kerbol-system-icons/duna.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/duna.webp',
         'orbitLineColor': '#ab4323'
       },
       {
@@ -464,7 +464,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 32e5,
         'equatorialRadius': 13e4,
         'sphereOfInfluence': 1049598,
-        'imageUrl': 'assets/stock/kerbol-system-icons/ike.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/ike.webp',
         'orbitLineColor': '#967354'
       },
       {
@@ -475,7 +475,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 40839348203,
         'equatorialRadius': 138e3,
         'sphereOfInfluence': 32832840,
-        'imageUrl': 'assets/stock/kerbol-system-icons/dres.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/dres.webp',
         'orbitLineColor': '#5e4835'
       },
       {
@@ -486,7 +486,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 68773560320,
         'equatorialRadius': 6e6,
         'sphereOfInfluence': 2.4559852e9,
-        'imageUrl': 'assets/stock/kerbol-system-icons/jool.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/jool.webp',
         'orbitLineColor': '#568e0e'
       },
       {
@@ -497,7 +497,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 27184000,
         'equatorialRadius': 5e5,
         'sphereOfInfluence': 3723645,
-        'imageUrl': 'assets/stock/kerbol-system-icons/laythe.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/laythe.webp',
         'orbitLineColor': '#4859a3'
       },
       {
@@ -508,7 +508,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 43152e3,
         'equatorialRadius': 3e5,
         'sphereOfInfluence': 2406401,
-        'imageUrl': 'assets/stock/kerbol-system-icons/vall.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/vall.webp',
         'orbitLineColor': '#73a1bc'
       },
       {
@@ -519,7 +519,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 685e5,
         'equatorialRadius': 6e5,
         'sphereOfInfluence': 10856518,
-        'imageUrl': 'assets/stock/kerbol-system-icons/tylo.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/tylo.webp',
         'orbitLineColor': '#c89292'
       },
       {
@@ -530,7 +530,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 1285e5,
         'equatorialRadius': 65e3,
         'sphereOfInfluence': 1221060,
-        'imageUrl': 'assets/stock/kerbol-system-icons/bop.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/bop.webp',
         'orbitLineColor': '#c2a783'
       },
       {
@@ -541,7 +541,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 17989e4,
         'equatorialRadius': 44e3,
         'sphereOfInfluence': 1042138,
-        'imageUrl': 'assets/stock/kerbol-system-icons/pol.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/pol.webp',
         'orbitLineColor': '#e6edb4'
       },
       {
@@ -552,7 +552,7 @@ function kerbolSystemCharacteristicsJson() {
         'semiMajorAxis': 9011882e4,
         'equatorialRadius': 21e4,
         'sphereOfInfluence': 1.1908294e8,
-        'imageUrl': 'assets/stock/kerbol-system-icons/eeloo.png',
+        'imageUrl': 'assets/stock/kerbol-system-icons/eeloo.webp',
         'orbitLineColor': '#707678'
       }
     ]

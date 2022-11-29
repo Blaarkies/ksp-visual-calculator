@@ -25,7 +25,7 @@
     <div class="file-drop"
          [matTooltip]="'Drag and drop an image file here'"
          cpFileDrop
-         [fileTypeWhitelist]="['image/jpeg', 'image/png', 'image/bmp']"
+         [fileTypeWhitelist]="['image/jpeg', 'image/png', 'image/bmp', 'image/webp']"
          (fileDrop)="importFile($event)">
       <mat-icon [svgIcon]="icons.Upload"></mat-icon>
       <button class="button-loader"
@@ -39,7 +39,7 @@
         <input #fileUploadInput
                [style.display]="'none'"
                type="file"
-               [accept]="'image/jpeg, image/png, image/bmp'"
+               [accept]="'image/jpeg, image/png, image/bmp, image/webp'"
                (change)="uploadFileSelected($event)">
       </button>
     </div>
