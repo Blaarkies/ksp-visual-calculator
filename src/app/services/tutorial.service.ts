@@ -385,7 +385,7 @@ export class TutorialService {
 
     let communicationLines = {
       dialogPosition: 'bottom',
-      dialogTitle: 'Changing Communication lines',
+      dialogTitle: 'Changing Communication Lines',
       dialogTargetCallback: () => {
         let crafts = document.querySelectorAll('.craft-icon-sprite-image');
         return crafts[crafts.length - 1];

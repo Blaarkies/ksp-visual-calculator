@@ -42,7 +42,7 @@
 
   <div class="ads-structure">
 
-    <div *ngIf="!(isMobile$ | async)" class="ads-sidewall">
+    <div *ngIf="isNotMobile$ | async" class="ads-sidewall">
       <cp-ad sizeType="vertical"></cp-ad>
       <cp-ad sizeType="vertical"></cp-ad>
     </div>
