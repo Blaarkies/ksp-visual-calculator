@@ -1,12 +1,11 @@
 import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
-import { SmoothSetter } from '../common/domain/smooth-setter';
 import { Vector2 } from '../common/domain/vector2';
 import { Draggable } from '../common/domain/space-objects/draggable';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 
-let defaultScale = 5e-8;
+let defaultScale = 1;
 let defaultLocation = new Vector2(960, 540);
 
 @Injectable({
@@ -14,37 +13,26 @@ let defaultLocation = new Vector2(960, 540);
 })
 export class CameraService {
 
-  static zoomLimits = [2e-9, 23e-5];
-  static scaleToShowMoons = 2e-6;
+  static zoomLimits = [.1, 1.9e3];
+  static scaleToShowMoons = 25;
 
-  private scaleSmoothSetter = defaultScale;
-    // new SmoothSetter(defaultScale, 20, 1, // todo: use interval for animation effect
-    // (lerp, newValue, oldValue) => newValue.lerp(oldValue, lerp),
-    // () => this.cdr.markForCheck());
+  /** Size of Backboard */
+  static backboardScale = 1e4;
+  /** Ratio from Gamespace locations to backboard normalized locations */
+  static normalizedScale = 1e-11;
+  static scaleModifier = CameraService.backboardScale * CameraService.normalizedScale;
 
+  private _scale = defaultScale;
   get scale(): number {
-    // return this.scaleSmoothSetter.value;
-    return this.scaleSmoothSetter;
+    return this._scale;
   }
 
   set scale(value: number) {
     let limitedValue = value.coerceIn(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
-    this.scaleSmoothSetter = limitedValue;
+    this._scale = limitedValue;
   }
 
-  private locationSmoothSetter = defaultLocation.clone();
-    // new SmoothSetter(defaultLocation.clone(), 20, 1, // todo: use interval for animation effect
-    // (lerp, newValue, oldValue) => newValue.lerpClone(oldValue, lerp),
-    // () => this.cdr.markForCheck());
-
-  get location(): Vector2 {
-    // return this.locationSmoothSetter.value;
-    return this.locationSmoothSetter;
-  }
-
-  set location(value: Vector2) {
-    this.locationSmoothSetter = value;
-  }
+  location = defaultLocation.clone();
 
   get screenCenterOffset(): Vector2 {
     return new Vector2(window.innerWidth, window.innerHeight).multiply(.5);
@@ -69,33 +57,33 @@ export class CameraService {
 
   lastFocusObject: Draggable;
 
-  // todo: change to proper setters, callbacks
+  // TODO: change to proper setters, callbacks
   cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
 
   reset(scale?: number, location?: Vector2) {
-    this.scaleSmoothSetter = scale ?? defaultScale;
-    this.locationSmoothSetter = location ?? defaultLocation.clone();
+    this._scale = scale ?? defaultScale;
+    this.location = location ?? defaultLocation.clone();
     this.cdr.markForCheck();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
     delta = delta > 0 ? delta : -1 / delta;
 
-    if (!(this.scale * delta).between(
-      CameraService.zoomLimits[0], CameraService.zoomLimits[1])) {
+    let inRange = (this.scale * delta).between(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
+    if (!inRange) {
       return;
     }
-    // zoom at hover objects, unless no object is currently hovered
+
     let zoomAtLocation = this.hoverObject
-      ? this.hoverObject.location.clone().multiply(this.scale).addVector2(this.location)
+      ? this.convertGameToScreenSpace(this.hoverObject.location)
       : mouseLocation;
-    this.scale *= delta;
 
     let worldLocation = zoomAtLocation.subtractVector2(this.location);
     let shift = worldLocation.multiply(-(delta - 1));
 
     this.location.addVector2(shift);
+    this.scale *= delta;
   }
 
   private focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
@@ -104,7 +92,7 @@ export class CameraService {
       : this.getScaleForFocus(newLocation, type);
 
     this.location = newLocation.clone()
-      .multiply(-this.scale)
+      .multiply(-this.scale * CameraService.scaleModifier)
       .addVector2(this.screenCenterOffset);
   }
 
@@ -135,9 +123,22 @@ export class CameraService {
     return this.getScaleForFocus(newLocation, parent.type);
   }
 
-  destroy() {
-    // this.scaleSmoothSetter.destroy();
-    // this.locationSmoothSetter.destroy();
+  translate(x: number, y: number) {
+    this.location.add(x, y);
+  }
+
+  convertGameToScreenSpace(gameSpaceLocation: Vector2): Vector2 {
+    let backboardLocation = gameSpaceLocation.clone().multiply(CameraService.normalizedScale);
+    let screenSpaceLocation = backboardLocation.multiply(CameraService.backboardScale * this.scale);
+    let screenSpaceLocationOffset = screenSpaceLocation.addVector2(this.location);
+    return screenSpaceLocationOffset;
+  };
+
+  convertScreenToGameSpace(screenSpaceLocation: Vector2): Vector2 {
+    let backboardLocation = screenSpaceLocation.clone().subtractVector2(this.location);
+    let backboardRatio = backboardLocation.multiply(1/(CameraService.backboardScale*this.scale));
+    let gameSpaceLocationOffset = backboardRatio.multiply(1/CameraService.normalizedScale);
+    return gameSpaceLocationOffset;
   }
 
 }

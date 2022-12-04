@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventLogs } from './event-logs';
 import { AnalyticsService } from './analytics.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export enum ThemeTypeEnum {
   Light = 'light-theme',
@@ -35,7 +36,8 @@ export class ThemeService {
   }
 
   constructor(private analyticsService: AnalyticsService,
-              private overlayContainer: OverlayContainer) {
+              private overlayContainer: OverlayContainer,
+              private snackBar: MatSnackBar) {
     let {theme, origin} = this.detectThemePreference();
 
     this.setNewTheme(theme);
@@ -94,6 +96,7 @@ export class ThemeService {
   toggleTheme(): ThemeTypeEnum {
     let newTheme = themeToggleMap[this.theme];
     this.setNewTheme(newTheme);
+    this.snackBar.open(`${newTheme === ThemeTypeEnum.Dark ? 'Dark theme' : 'Light theme'} is now selected`);
     return newTheme;
   }
 

@@ -55,6 +55,7 @@ export class PageCalculatorsComponent extends WithDestroy() {
       .user$
       .pipe(
         take(1),
+        delay(minute),
         filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
         switchMap(() => {
           localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
@@ -63,7 +64,7 @@ export class PageCalculatorsComponent extends WithDestroy() {
             {backdropClass: GlobalStyleClass.MobileFriendly})
             .afterClosed();
         }),
-        delay(5e3),
+        delay(minute),
         tap(() => this.signInDialogOpen$.next()),
         takeUntil(this.destroy$))
       .subscribe();
@@ -83,7 +84,7 @@ export class PageCalculatorsComponent extends WithDestroy() {
       .pipe(
         distinctUntilChanged(),
         filter(u => !(u?.isCustomer)),
-        switchMap(() => timer(5 * minute, 15 * minute)),
+        switchMap(() => timer(7 * minute, 15 * minute)),
         switchMap(() => this.snackBar.open(
           'Would you like to support the developer?',
           'Yes',

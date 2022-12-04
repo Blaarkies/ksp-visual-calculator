@@ -107,7 +107,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
 
   async removeState(selectedState: StateRow) {
     this.buttonLoaders.remove$.next(true);
-    this.snackBar.open(`Removing "${selectedState.name}"`, 'Undo')
+    this.snackBar.open(`Removing "${selectedState.name}"`, 'Undo', {duration: 3e3})
       .afterDismissed()
       .pipe(
         filter(action => !action.dismissedByAction),
@@ -263,7 +263,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   private getContextTitle(context: UsableRoutes): string {
     switch (context) {
       case UsableRoutes.SignalCheck:
-        return 'Signal Check';
+        return 'CommNet Planner';
       case UsableRoutes.DvPlanner:
         return 'Delta-v Planner';
       // default:

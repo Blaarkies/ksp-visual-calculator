@@ -13,23 +13,24 @@
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 
-  --in-cubic-tf: cubic-bezier(0.55, 0.06, 0.68, 0.19); // In · Cubic
-  transition: .4s var(--in-cubic-tf);
+  transition: .4s ease-in;
   --collapsed-width: 50px;
   --frame-translate-left: var(--collapsed-width) - var(--width);
   transform: translateX(calc(1 * var(--frame-translate-left)));
 
   &:hover {
     transform: translateX(0);
+    transition: .4s ease-out;
   }
 
   .panel {
-    transition: .4s var(--in-cubic-tf);
+    transition: .4s ease-in;
     --panel-translate-right: var(--width) - var(--collapsed-width);
     transform: translateX(calc(1 * var(--panel-translate-right)));
 
     &:hover {
       transform: translateX(0);
+      transition: .4s ease-out;
     }
 
     height: var(--height);

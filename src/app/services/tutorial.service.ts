@@ -263,7 +263,7 @@ export class TutorialService {
 
     switch (context) {
       case UsableRoutes.SignalCheck:
-        startTutorial.dialogTitle = 'CommNet Signal Check Tutorial';
+        startTutorial.dialogTitle = 'CommNet Planner Tutorial';
         startTutorial.dialogMessages = [
           'This page helps setup satellite communication networks by letting you place craft with specific antennae.',
           'Dragging these craft around will instantly show where connections are possible.'
@@ -385,7 +385,7 @@ export class TutorialService {
 
     let communicationLines = {
       dialogPosition: 'bottom',
-      dialogTitle: 'Changing Communication lines',
+      dialogTitle: 'Changing Communication Lines',
       dialogTargetCallback: () => {
         let crafts = document.querySelectorAll('.craft-icon-sprite-image');
         return crafts[crafts.length - 1];
@@ -609,8 +609,8 @@ export class TutorialService {
     let cameraElement = document.querySelector('.camera-controller');
     cameraElement.dispatchEvent(new MouseEvent('mousedown', {buttons: 2}));
     cameraElement.dispatchEvent(new MouseEvent('mousemove', {
-      movementX: -targetRect.right + cameraElement.clientWidth * .5,
-      movementY: -targetRect.top + cameraElement.clientHeight * .5,
+      movementX: -targetRect.right + window.innerWidth * .5,
+      movementY: -targetRect.top + window.innerHeight * .5,
     }));
     cameraElement.dispatchEvent(new MouseEvent('mouseup'));
   }

@@ -1,7 +1,7 @@
 import * as cors from 'cors';
 import * as functions from 'firebase-functions';
 import axios from 'axios';
-import { log } from 'firebase-functions/lib/logger';
+import { log } from 'firebase-functions/logger';
 import { db } from './common/singletons';
 import { TableName } from './common/types';
 

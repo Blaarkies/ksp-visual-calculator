@@ -29,6 +29,7 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
   pageHeight = 1000;
   isMobile$ = this.breakpointObserver.observe(['(max-width: 1000px)'])
     .pipe(map(bp => bp.matches));
+  isNotMobile$ = this.isMobile$.pipe(map(is => !is));
   isAdBlocked$: Observable<boolean>;
 
   constructor(router: Router,

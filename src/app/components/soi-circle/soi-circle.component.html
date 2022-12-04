@@ -1,8 +1,10 @@
 <svg *ngIf="body.draggableHandle.orbit"
      class="soi-display"
      xmlns="http://www.w3.org/2000/svg"
-     [style.width.px]="scale * 2 * body.sphereOfInfluence"
-     [style.height.px]="scale * 2 * body.sphereOfInfluence">
+     [style.left.%]="worldViewScale * body.location.x"
+     [style.top.%]="worldViewScale * body.location.y"
+     [style.width.%]="worldViewScale * 2 * body.sphereOfInfluence"
+     [style.height.%]="worldViewScale * 2 * body.sphereOfInfluence">
   <defs>
     <radialGradient [id]="'grad1' + body.label" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
       <stop offset="60%" [style.stop-opacity]="0" />
@@ -15,6 +17,6 @@
           *ngIf="body.draggableHandle.orbit && body.showSoi"
           cx="50%"
           cy="50%"
-          [attr.r]="scale * body.sphereOfInfluence"
+          r="50%"
           [attr.fill]="'url(#grad1' + body.label + ')'" />
 </svg>

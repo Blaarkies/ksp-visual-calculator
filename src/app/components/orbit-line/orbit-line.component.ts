@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Orbit } from '../../common/domain/space-objects/orbit';
+import { CameraService } from '../../services/camera.service';
 
 @Component({
   selector: 'cp-orbit-line',
@@ -9,6 +10,7 @@ import { Orbit } from '../../common/domain/space-objects/orbit';
 export class OrbitLineComponent {
 
   @Input() orbit: Orbit;
-  @Input() scale: number;
+
+  worldViewScale = 100 * CameraService.normalizedScale;
 
 }

@@ -31,10 +31,17 @@ export class MissionJourneyComponent implements AfterViewInit {
     this.updateTrajectories(value);
   }
 
-  @Input() scale: number;
   @Input() isAddingCheckpoint: boolean;
 
+  @Input() set scale(value: number) {
+    this.inverseScale = 1 / value;
+  }
+
+  inverseScale = 1;
+
   icons = Icons;
+  math = Math;
+  worldViewScale = 100 * CameraService.normalizedScale;
   mouseLocation$: Observable<Vector2>;
   trajectories: TripTrajectory[] = [];
 
@@ -86,10 +93,6 @@ export class MissionJourneyComponent implements AfterViewInit {
           .subtractVector2(this.cameraService.location)
           .multiply(1 / this.cameraService.scale)),
         startWith(Vector2.zero));
-  }
-
-  hoverBody({body, hover}: { body: SpaceObject, hover: boolean }) {
-
   }
 
   getTrajectoryKey(index: number, item: TripTrajectory): string {

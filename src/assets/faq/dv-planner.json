@@ -19,7 +19,7 @@
         {
           "type": "image",
           "content": "Aerobraking at Duna can reduce delta-v requirements",
-          "src": "assets/faq/aerobrake.jpg",
+          "src": "assets/faq/aerobrake.webp",
           "alt": "An example image of the mission checkpoints panel, with aerobraking enabled",
           "height": 330
         }

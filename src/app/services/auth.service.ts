@@ -191,7 +191,7 @@ export class AuthService {
       }
     }
 
-    await firstValueFrom(this.stateService.loadState(newestState?.state));
+    await firstValueFrom(this.stateService.loadState(newestState?.state as string));
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }

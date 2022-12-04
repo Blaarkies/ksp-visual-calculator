@@ -56,7 +56,7 @@ export class DataService {
       : reject('No user signed in, cannot use database without user authentication.'));
   }
 
-  async write(table: TableName, fields: {}, options: SetOptions = {}): Promise<void> {
+  async write(table: TableName, fields: {}, options: SetOptions = {}) {
     await this.checkUserSignIn();
 
     return setDoc(this.getRef(`${table}/${this.userId$.value}`),

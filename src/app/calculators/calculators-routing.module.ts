@@ -8,6 +8,7 @@ export interface RouteData {
 }
 
 const routes: Routes = [
+
   {
     path: UsableRoutes.DvPlanner,
     component: PageCalculatorsComponent,

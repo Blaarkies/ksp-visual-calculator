@@ -43,7 +43,7 @@
         {
           "type": "image",
           "content": "Icons representing focusable objects",
-          "src": "assets/faq/focus-jumpto-panel.jpg",
+          "src": "assets/faq/focus-jumpto-panel.webp",
           "alt": "An example image of the focus-jump-to-panel",
           "height": 250
         }
@@ -66,7 +66,7 @@
         {
           "type": "image",
           "content": "Provides a sense of scale",
-          "src": "assets/faq/zoom-indicator.jpg",
+          "src": "assets/faq/zoom-indicator.webp",
           "alt": "An image of a number line, labeled with \"Stars\", \"Planets\", and \" Moons",
           "height": 90
         }
@@ -95,7 +95,7 @@
         {
           "type": "image",
           "content": "Kerbin's sphere of influence",
-          "src": "assets/faq/soi-lock.jpg",
+          "src": "assets/faq/soi-lock.webp",
           "alt": "An image of a cyan colored bubble around Kerbin.",
           "height": 400
         }

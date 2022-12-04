@@ -42,7 +42,7 @@
 
   <div class="ads-structure">
 
-    <div *ngIf="!(isMobile$ | async)" class="ads-sidewall">
+    <div *ngIf="isNotMobile$ | async" class="ads-sidewall">
       <cp-ad sizeType="vertical"></cp-ad>
       <cp-ad sizeType="vertical"></cp-ad>
     </div>
@@ -118,7 +118,7 @@
               </p>
             </section>
             <aside>
-              <img height="400" src="../../../assets/article/speeding-up.jpg" loading="lazy">
+              <img height="400" src="../../../assets/article/speeding-up.webp" loading="lazy">
               <figcaption>A craft in low orbit</figcaption>
             </aside>
           </section>
@@ -138,7 +138,7 @@
               </p>
             </section>
             <aside>
-              <img height="400" src="../../../assets/article/slow-down.jpg" loading="lazy">
+              <img height="400" src="../../../assets/article/slow-down.webp" loading="lazy">
               <figcaption>A craft travelling at escape velocity</figcaption>
             </aside>
           </section>
@@ -536,7 +536,7 @@
               </ul>
             </section>
             <aside>
-              <img height="400" src="../../../assets/article/gravity-assist.jpg" loading="lazy">
+              <img height="400" src="../../../assets/article/gravity-assist.webp" loading="lazy">
               <figcaption>A gravity assist from Mun to Minmus</figcaption>
             </aside>
           </section>
@@ -666,7 +666,7 @@
             </p>
           </section>
           <aside>
-            <img height="260" src="../../../assets/article/low-orbit-constellation.jpg" loading="lazy">
+            <img height="260" src="../../../assets/article/low-orbit-constellation.webp" loading="lazy">
             <figcaption>6 relays in inclined orbits around Kerbin</figcaption>
           </aside>
         </section>
@@ -708,7 +708,7 @@
             </p>
           </section>
           <aside>
-            <img height="400" src="../../../assets/article/primary-relay.jpg" loading="lazy">
+            <img height="400" src="../../../assets/article/primary-relay.webp" loading="lazy">
             <figcaption>A Duna primary relay viewed from the south pole</figcaption>
           </aside>
         </section>

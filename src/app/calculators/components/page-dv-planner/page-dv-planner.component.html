@@ -2,8 +2,7 @@
 
   <cp-universe-map #universeMap
                    [allowEdit]="false"
-                   (startDrag)="selectCheckpoint($event)"
-                   (hoverBody)="missionJourney.hoverBody($event)">
+                   (startDrag)="selectCheckpoint($event)">
 
     <cp-mission-journey aboveOrbits
                         #missionJourney

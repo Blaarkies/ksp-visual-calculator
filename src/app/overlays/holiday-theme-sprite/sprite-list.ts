@@ -7,4 +7,11 @@ export class SpriteList {
     tree: 'xmas-tree.svg',
   };
 
+  static Halloween = {
+    pumpkin1: 'halloween-pumpkin-1.webp',
+    pumpkin2: 'halloween-pumpkin-2.webp',
+    skeleton1: 'halloween-skeleton-1.webp',
+    skeleton2: 'halloween-skeleton-2.webp',
+  };
+
 }

@@ -1,11 +1,12 @@
 <svg class="transmission-line"
-     xmlns="http://www.w3.org/2000/svg">
+     xmlns="http://www.w3.org/2000/svg"
+>
   <line [attr.stroke-width]="2"
         [attr.stroke]="transmissionLine.colorTotal + 'A'"
-        [attr.x1]="scale * transmissionLine.nodes[0].location.x + transmissionLine.offsetVector.x"
-        [attr.y1]="scale * transmissionLine.nodes[0].location.y + transmissionLine.offsetVector.y"
-        [attr.x2]="scale * transmissionLine.nodes[1].location.x + transmissionLine.offsetVector.x"
-        [attr.y2]="scale * transmissionLine.nodes[1].location.y + transmissionLine.offsetVector.y"
+        [attr.x1]="worldViewScale * transmissionLine.nodes[0].location.x + inverseScale * transmissionLine.offsetVector.x + '%'"
+        [attr.y1]="worldViewScale * transmissionLine.nodes[0].location.y + inverseScale * transmissionLine.offsetVector.y + '%'"
+        [attr.x2]="worldViewScale * transmissionLine.nodes[1].location.x + inverseScale * transmissionLine.offsetVector.x + '%'"
+        [attr.y2]="worldViewScale * transmissionLine.nodes[1].location.y + inverseScale * transmissionLine.offsetVector.y + '%'"
   />
 
   <defs *ngIf="transmissionLine.strengthRelay">
@@ -24,16 +25,17 @@
   <line *ngIf="transmissionLine.strengthRelay"
         [attr.stroke-width]="3"
         [attr.stroke]="'url(#pattern' + transmissionLine.id + ')'"
-        [attr.x1]="scale * transmissionLine.nodes[0].location.x - transmissionLine.offsetVector.x"
-        [attr.y1]="scale * transmissionLine.nodes[0].location.y - transmissionLine.offsetVector.y"
-        [attr.x2]="scale * transmissionLine.nodes[1].location.x - transmissionLine.offsetVector.x"
-        [attr.y2]="scale * transmissionLine.nodes[1].location.y - transmissionLine.offsetVector.y"
+        [attr.x1]="worldViewScale * transmissionLine.nodes[0].location.x - inverseScale * transmissionLine.offsetVector.x + '%'"
+        [attr.y1]="worldViewScale * transmissionLine.nodes[0].location.y - inverseScale * transmissionLine.offsetVector.y + '%'"
+        [attr.x2]="worldViewScale * transmissionLine.nodes[1].location.x - inverseScale * transmissionLine.offsetVector.x + '%'"
+        [attr.y2]="worldViewScale * transmissionLine.nodes[1].location.y - inverseScale * transmissionLine.offsetVector.y + '%'"
   />
 
   <foreignObject width="100%"
                  height="100%"
-                 [attr.x]="scale * transmissionLine.textLocation.x - 30"
-                 [attr.y]="scale * transmissionLine.textLocation.y - 10">
+                 class="transmission-strength"
+                 [attr.x]="worldViewScale * transmissionLine.textLocation.x + '%'"
+                 [attr.y]="worldViewScale * transmissionLine.textLocation.y + '%'">
     <span xmlns="http://www.w3.org/1999/xhtml"
           [@fade]
           *ngIf="(transmissionLine.nodes[0].draggableHandle.isHover$ | async)

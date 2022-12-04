@@ -1,10 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { Common } from '../../common/common';
 import { PathController } from './path-controller';
 import { HolidayType } from './holiday-type';
 import { SpriteContents } from './sprite-contents';
 import { SpriteList } from './sprite-list';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'cp-holiday-theme-sprite',
@@ -24,11 +25,17 @@ export class HolidayThemeSpriteComponent implements OnInit {
 
   sprites: SpriteContents[];
 
+  constructor(@Inject(DOCUMENT) private document: Document) {
+  }
+
   ngOnInit() {
     let holidayType = this.getHolidayType();
     switch (holidayType) {
       case HolidayType.Christmas:
         this.setupChristmasSprites();
+        break;
+      case HolidayType.Halloween:
+        this.setupHalloweenSprites();
         break;
       default:
         this.noThemeDetected.emit();
@@ -38,16 +45,18 @@ export class HolidayThemeSpriteComponent implements OnInit {
 
   getHolidayType(): HolidayType {
     let dates = [
-      {month: 12, day: 25, holidayType: HolidayType.Christmas},
+      {month: 12, day: 25, pre: 15, post: 5, holidayType: HolidayType.Christmas},
+      {month: 10, day: 31, pre: 10, post: 1, holidayType: HolidayType.Halloween},
     ];
 
     let dateMap = dates.reduce((sum, c) => {
-      let stringKeys = Common.listNumbers(4)
+      let countOfSurroundingDays = c.pre + 1 + c.post;
+      let stringKeys = Common.listNumbers(countOfSurroundingDays)
         .map((n, i) => {
           let testDate = new Date();
           testDate.setMonth(c.month - 1); // JS getMonth() uses 0 base index
-          testDate.setDate(c.day - 2 + i);
-
+          testDate.setDate(c.day - c.pre + i);
+          // add pre/post dates, to start showing the holiday event in the days leading up and after
           return `${testDate.getMonth()},${testDate.getDate()}`;
         });
 
@@ -74,6 +83,25 @@ export class HolidayThemeSpriteComponent implements OnInit {
           pathController: new PathController('snow'),
         })),
     ] as SpriteContents[];
+  }
+
+  private setupHalloweenSprites() {
+    let sprites = Object.values(SpriteList.Halloween);
+    this.sprites = [
+      ...Common.listNumbers(4)
+        .map(() => ({
+          source: `assets/holiday-sprites/${sprites.random()}`,
+          opacity: .7,
+          pathController: new PathController('spooky'),
+        })),
+    ] as SpriteContents[];
+
+    let duna = this.document.querySelector('[style*="duna.png"]') as HTMLDivElement;
+    duna.style.background = duna.style.background.replace(
+      'stock/kerbol-system-icons/duna.png',
+      'holiday-sprites/halloween-pumpkin-1.png');
+    duna.style.scale = '1.3';
+    duna.style.translate = '6px -4px';
   }
 
 }
