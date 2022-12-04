@@ -6,7 +6,6 @@ import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { StateCraft } from './json-interfaces/state-craft';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectService } from './space-object.service';
-import { Uid } from '../common/uid';
 import { DataService } from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -43,6 +42,8 @@ import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 import { GlobalStyleClass } from '../common/global-style-class';
 import { environment } from '../../environments/environment';
 import { Namer } from '../common/namer';
+import { gzip, ungzip } from 'pako';
+import { Bytes } from '@firebase/firestore'
 
 @Injectable({
   providedIn: 'root',
@@ -219,7 +220,10 @@ export class StateService {
     }
   }
 
-  addStateToStore(state: StateGame): Promise<void> {
+  async addStateToStore(state: StateGame) {
+    let compressed = gzip(JSON.stringify(state));
+    let bytes = Bytes.fromUint8Array(compressed);
+
     return this.dataService.write('states',
       {
         [state.name]: {
@@ -227,13 +231,14 @@ export class StateService {
           context: state.context,
           timestamp: state.timestamp,
           version: state.version,
-          state: JSON.stringify(state),
+          state: bytes,
         },
       },
       {merge: true});
   }
 
   async removeStateFromStore(name: string): Promise<void> {
+    // TODO: soft delete first
     return this.dataService.delete('states', name)
       .catch(error => {
         this.snackBar.open(`Could not remove "${name}" from cloud storage`);
@@ -242,7 +247,19 @@ export class StateService {
   }
 
   getStates(): Observable<StateEntry[]> {
-    return from(this.dataService.readAll<StateEntry>('states'));
+    return from(this.dataService.readAll<StateEntry>('states'))
+      .pipe(switchMap(states =>
+        Promise.all(states.map(
+          async s => {
+            // @fix v1.2.6: previous version savegames are not compressed
+            if (typeof s.state === 'string') {
+              return s;
+            }
+
+            let arrayBuffer = s.state.toUint8Array().buffer;
+            let unzipped = ungzip(arrayBuffer, {to: 'string'});
+            return ({...s, state: unzipped});
+          }))));
   }
 
   getStatesInContext(): Observable<StateEntry[]> {
@@ -255,7 +272,7 @@ export class StateService {
     await firstValueFrom(this.loadState(stateString));
   }
 
-  async saveState(state: StateRow): Promise<void> {
+  async saveState(state: StateRow) {
     return this.addStateToStore(state.toUpdatedStateGame());
   }
 
