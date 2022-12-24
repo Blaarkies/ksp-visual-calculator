@@ -248,18 +248,19 @@ export class StateService {
 
   getStates(): Observable<StateEntry[]> {
     return from(this.dataService.readAll<StateEntry>('states'))
-      .pipe(switchMap(states =>
-        Promise.all(states.map(
-          async s => {
-            // @fix v1.2.6: previous version savegames are not compressed
-            if (typeof s.state === 'string') {
-              return s;
-            }
+      // uncompress states
+      .pipe(map(states => states
+        .filter(s => s.name) // ignore other fields, like "isCompressed"
+        .map(s => {
+        // @fix v1.2.6: previous version savegames are not compressed
+        if (typeof s.state === 'string') {
+          return s;
+        }
 
-            let arrayBuffer = s.state.toUint8Array().buffer;
-            let unzipped = ungzip(arrayBuffer, {to: 'string'});
-            return ({...s, state: unzipped});
-          }))));
+        let arrayBuffer = s.state.toUint8Array().buffer;
+        let unzipped = ungzip(arrayBuffer, {to: 'string'});
+        return ({...s, state: unzipped});
+      })));
   }
 
   getStatesInContext(): Observable<StateEntry[]> {

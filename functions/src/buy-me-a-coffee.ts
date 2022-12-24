@@ -1,4 +1,5 @@
-import * as cors from 'cors';
+import * as corsImport from 'cors';
+let cors = corsImport.default as any as Function;
 import * as functions from 'firebase-functions';
 import axios from 'axios';
 import { log } from 'firebase-functions/logger';

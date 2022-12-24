@@ -2,7 +2,6 @@
   "name": "functions",
   "version": "1.2.3",
   "scripts": {
-    "lint": "eslint",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
@@ -15,10 +14,11 @@
   },
   "main": "lib/index.js",
   "dependencies": {
+    "@firebase/firestore": "^3.8.0",
     "axios": "^1.2.0",
     "cors": "^2.8.5",
     "firebase-admin": "^11.3.0",
-    "firebase-functions": "^4.1.0",
+    "firebase-functions": "^4.1.1",
     "pako": "^2.1.0",
     "request-promise": "^4.2.6"
   },
