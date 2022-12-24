@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { MatSlider } from '@angular/material/slider';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
@@ -46,7 +46,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
     Object.entries(value).forEach(([k, v]) => this[k] = v);
   }
 
-  @Input() set formControl(value: FormControl) {
+  @Input() set formControl(value: UntypedFormControl) {
     this.setDisabledState(value?.disabled);
   }
 

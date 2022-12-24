@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
@@ -22,7 +22,7 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
   inputFields = {
     rangeModifier: {
       label: 'Range Modifier',
-      control: new FormControl(this.data.rangeModifier ?? 1, [
+      control: new UntypedFormControl(this.data.rangeModifier ?? 1, [
         Validators.required,
         Validators.min(.1),
         Validators.max(100)]),
@@ -31,7 +31,7 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
     },
     dsnModifier: {
       label: 'DSN Modifier',
-      control: new FormControl(this.data.dsnModifier ?? 1, [
+      control: new UntypedFormControl(this.data.dsnModifier ?? 1, [
         Validators.required,
         Validators.min(0),
         Validators.max(100)]),
@@ -41,7 +41,7 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);
 
-  form = new FormArray(this.inputFieldsList.map(field => field.control));
+  form = new UntypedFormArray(this.inputFieldsList.map(field => field.control));
 
   constructor(private dialogRef: MatDialogRef<DifficultySettingsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DifficultySetting) {

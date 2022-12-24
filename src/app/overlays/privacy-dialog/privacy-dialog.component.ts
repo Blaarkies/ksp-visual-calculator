@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { AnalyticsService } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { takeUntil } from 'rxjs';
@@ -11,7 +11,7 @@ import { takeUntil } from 'rxjs';
 })
 export class PrivacyDialogComponent extends WithDestroy() {
 
-  trackingControl = new FormControl(this.analyticsService.isTracking);
+  trackingControl = new UntypedFormControl(this.analyticsService.isTracking);
 
   constructor(private analyticsService: AnalyticsService) {
     super();

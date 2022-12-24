@@ -2,7 +2,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import {
   BehaviorSubject,
   catchError,
@@ -62,8 +62,8 @@ import {
 })
 export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
 
-  controlEmail = new FormControl(null, [Validators.required, Validators.email]);
-  controlPassword = new FormControl(null, [Validators.required, Validators.minLength(6)]);
+  controlEmail = new UntypedFormControl(null, [Validators.required, Validators.email]);
+  controlPassword = new UntypedFormControl(null, [Validators.required, Validators.minLength(6)]);
   passwordVisible = false;
   emailSignInError$ = new Observable<string>();
   signingInWithEmail$ = new BehaviorSubject<boolean>(false);
@@ -74,8 +74,8 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   editingDetails$ = new BehaviorSubject<boolean>(false);
   deletingAccount$ = new BehaviorSubject<boolean>(false);
 
-  controlName = new FormControl(null, [Validators.required]);
-  controlPolicy = new FormControl(false, [Validators.requiredTrue]);
+  controlName = new UntypedFormControl(null, [Validators.required]);
+  controlPolicy = new UntypedFormControl(false, [Validators.requiredTrue]);
 
   user$ = this.authService.user$;
 

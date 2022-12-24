@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { CustomAnimation } from '../../../common/domain/custom-animation';
@@ -45,7 +45,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   @Input() allowClear: boolean;
   @Input() errors: FormControlError;
 
-  @Input() set formControl(value: FormControl) {
+  @Input() set formControl(value: UntypedFormControl) {
     this.setDisabledState(value?.disabled);
   }
 

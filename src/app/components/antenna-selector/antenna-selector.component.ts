@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
@@ -43,7 +43,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   icons = Icons;
 
   availableOptions: LabeledOption<Antenna>[];
-  finalControl = new FormControl();
+  finalControl = new UntypedFormControl();
   antennaInputs: AntennaInput[] = [];
   mapIcons: Map<Antenna, string>;
 

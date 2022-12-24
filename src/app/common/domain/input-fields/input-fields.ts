@@ -1,4 +1,4 @@
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ControlMeta } from './control-meta';
 
 export class InputFields {
@@ -7,6 +7,6 @@ export class InputFields {
 
 export class InputField {
   label: string;
-  control: FormControl;
+  control: UntypedFormControl;
   controlMeta?: ControlMeta;
 }

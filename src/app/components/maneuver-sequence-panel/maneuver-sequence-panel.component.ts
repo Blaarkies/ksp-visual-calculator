@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TravelCondition } from '../../common/data-structures/delta-v-map/travel-condition';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { Icons } from '../../common/domain/icons';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { WithDestroy } from '../../common/with-destroy';
 import {
@@ -50,12 +50,12 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
   };
   routeTypes = [DvRouteType.lessDv, DvRouteType.lessDetours];
 
-  aerobrakeControl = new FormControl(this.setupService.checkpointPreferences$.value.aerobraking);
+  aerobrakeControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.aerobraking);
 
-  errorMarginControl = new FormControl(this.setupService.checkpointPreferences$.value.errorMargin);
+  errorMarginControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.errorMargin);
   errorMarginControlMeta = new ControlMetaNumber(0, 150, 2);
 
-  planeChangeControl = new FormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
+  planeChangeControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
   planeChangeControlMeta = new ControlMetaNumber(0, 100, 1.5);
 
   preferredCondition$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.condition);

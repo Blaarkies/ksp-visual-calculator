@@ -3,18 +3,18 @@ import { StateEditNameRowComponent } from './state-edit-name-row.component';
 import { AppModule } from '../../../app.module';
 import { ineeda } from 'ineeda';
 import { StateRow } from '../state-row';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { fakeAsync, tick } from '@angular/core/testing';
 
 let componentType = StateEditNameRowComponent;
 describe('StateEditNameRowComponent', () => {
 
   let state: StateRow;
-  let control: FormControl;
+  let control: UntypedFormControl;
 
   beforeEach(() => {
     state = ineeda<StateRow>();
-    control = new FormControl();
+    control = new UntypedFormControl();
     return MockBuilder(componentType)
       .mock(AppModule);
   });

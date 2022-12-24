@@ -14,17 +14,17 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~13.1.0",
+    "@angular/animations": "^14.2.12",
     "@angular/cdk": "^13.1.0",
-    "@angular/common": "~13.1.0",
-    "@angular/compiler": "~13.1.0",
-    "@angular/core": "~13.1.0",
+    "@angular/common": "^14.2.12",
+    "@angular/compiler": "^14.2.12",
+    "@angular/core": "^14.2.12",
     "@angular/fire": "^7.2.0",
-    "@angular/forms": "~13.1.0",
+    "@angular/forms": "^14.2.12",
     "@angular/material": "^13.1.0",
-    "@angular/platform-browser": "~13.1.0",
-    "@angular/platform-browser-dynamic": "~13.1.0",
-    "@angular/router": "~13.1.0",
+    "@angular/platform-browser": "^14.2.12",
+    "@angular/platform-browser-dynamic": "^14.2.12",
+    "@angular/router": "^14.2.12",
     "@mdi/angular-material": "^6.2.95",
     "fast-memoize": "^2.5.2",
     "firebase": "^9.4.0",
@@ -35,15 +35,15 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
-    "@angular-devkit/architect": "0.1301.1",
-    "@angular-devkit/build-angular": "~13.1.1",
+    "@angular-devkit/architect": "0.1402.10",
+    "@angular-devkit/build-angular": "^14.2.10",
     "@angular-eslint/builder": "13.0.1",
     "@angular-eslint/eslint-plugin": "13.0.1",
     "@angular-eslint/eslint-plugin-template": "13.0.1",
     "@angular-eslint/schematics": "13.0.1",
     "@angular-eslint/template-parser": "13.0.1",
-    "@angular/cli": "~13.1.1",
-    "@angular/compiler-cli": "~13.1.0",
+    "@angular/cli": "^14.2.10",
+    "@angular/compiler-cli": "^14.2.12",
     "@types/jasmine": "~3.6.0",
     "@types/node": "^12.11.1",
     "@types/pako": "^2.0.0",
@@ -69,6 +69,6 @@
     "ts-node": "~8.3.0",
     "tslib": "^2.2.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.5.3"
+    "typescript": "~4.8.4"
   }
 }

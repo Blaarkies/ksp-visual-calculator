@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { InputFieldComponent } from '../../../components/controls/input-field/input-field.component';
 import { StateRow } from '../state-row';
 
@@ -12,7 +12,7 @@ import { StateRow } from '../state-row';
 export class StateEditNameRowComponent {
 
   @Input() state: StateRow;
-  @Input() control: FormControl;
+  @Input() control: UntypedFormControl;
 
   @ViewChild(InputFieldComponent, {static: false}) inputField: InputFieldComponent;
 

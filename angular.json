@@ -144,8 +144,9 @@
       "style": "scss"
     }
   },
-  "defaultProject": "ksp-visual-calculator",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
