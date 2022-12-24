@@ -270,24 +270,24 @@
             <form class="dv-calculator" (change)="calcDv.update()">
               <div class="result">{{calcDv.result | number}} m/s</div>
               <div>=</div>
-              <mat-form-field>
+              <mat-form-field appearance="outline">
                 <input matInput type="number" min="0" value="350" placeholder="Isp"
                        (input)="calcDv.isp = $event.target.value">
-                <span matSuffix>s</span>
+                <span matSuffix class="pad-suffix-right">s</span>
               </mat-form-field>
               <div>9.81 m/s<sup>2</sup></div>
               <div>ln<span class="large-bracket">(</span></div>
               <div class="fit-fraction">
-                <mat-form-field>
+                <mat-form-field appearance="outline">
                   <input matInput type="number" [min]="calcDv.dry" value="8" placeholder="Mass-wet"
                          (input)="calcDv.wet = $event.target.value">
-                  <span matSuffix>t</span>
+                  <span matSuffix class="pad-suffix-right">t</span>
                 </mat-form-field>
                 <div class="divider-line"></div>
-                <mat-form-field>
+                <mat-form-field appearance="outline">
                   <input matInput type="number" min="0" value="3" placeholder="Mass-dry"
                          (input)="calcDv.dry = $event.target.value">
-                  <span matSuffix>t</span>
+                  <span matSuffix class="pad-suffix-right">t</span>
                 </mat-form-field>
               </div>
               <div><span class="large-bracket">)</span></div>
@@ -762,7 +762,7 @@
     </div>
 
     <div>
-      <i>© Copyright 2021-2022 Blaarkies, All rights reserved</i>
+      <i>© Copyright 2021-2023 Blaarkies, All rights reserved</i>
     </div>
   </footer>
 </main>
