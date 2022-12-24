@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
 import { CustomAnimation } from '../../common/domain/custom-animation';
 import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
-import { MatHorizontalStepper } from '@angular/material/stepper';
+import { MatStepper } from '@angular/material/stepper';
 
 export class UploadImageDialogData {
 
@@ -32,7 +32,7 @@ export class UploadImageDialogComponent {
   ]);
 
   @ViewChild('fileUploadInput') fileUploadInput: ElementRef<HTMLInputElement>;
-  @ViewChild('stepper') stepper: MatHorizontalStepper;
+  @ViewChild('stepper') stepper: MatStepper;
 
   constructor(private snackBar: MatSnackBar) {
   }

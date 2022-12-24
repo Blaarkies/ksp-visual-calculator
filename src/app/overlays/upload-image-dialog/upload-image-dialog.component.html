@@ -2,10 +2,11 @@
 
 <div mat-dialog-content class="layout">
 
-  <mat-horizontal-stepper #stepper
-                          class="upload-image-dialog-component-stepper"
-                          linear
-                          [formGroup]="formArrayStepper">
+  <mat-stepper orientation="horizontal"
+               #stepper
+               class="upload-image-dialog-component-stepper"
+               linear
+               [formGroup]="formArrayStepper">
     <mat-step [stepControl]="controlSelect" label="Select">
       <ng-container *ngTemplateOutlet="selectFile"></ng-container>
     </mat-step>
@@ -18,7 +19,7 @@
       <ng-container *ngTemplateOutlet="confirmImage"></ng-container>
     </mat-step>
 
-  </mat-horizontal-stepper>
+  </mat-stepper>
 
 
   <ng-template #selectFile>
