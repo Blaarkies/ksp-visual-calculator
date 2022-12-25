@@ -39,6 +39,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   // 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
   //   | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
   //   | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'
+  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
   @Input() label: string;
   @Input() hint: string;
   @Input() suffix: string;

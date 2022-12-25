@@ -39,7 +39,7 @@ export class CraftDetailsDialogData {
   selector: 'cp-craft-details-dialog',
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [CustomAnimation.fade, CustomAnimation.height, CustomAnimation.flipVertical],
   encapsulation: ViewEncapsulation.None,
 })
 export class CraftDetailsDialogComponent extends WithDestroy() {
@@ -77,8 +77,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       control: new UntypedFormControl(null),
       controlMeta: new ControlMetaSelect(
         this.orbitParentOptions,
-        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon])),
-        'Where to place this craft'),
+        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
     },
     altitude: {} as InputField,
     angle: {
@@ -90,12 +89,12 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
         max: 360,
         factor: 1,
         suffix: '°',
-        hint: 'Starts on the right side, increase counter-clockwise',
       } as ControlMetaNumber,
     },
   } as InputFields;
   advancedInputFieldsList: InputField[];
   advancedForm: UntypedFormGroup;
+  advancedIsOpen = false;
 
   form: UntypedFormArray;
 
@@ -145,7 +144,6 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
         min: 0,
         max: soiSize,
         suffix: 'm',
-        hint: 'Height above surface',
       } as ControlMetaNumber,
     };
   }

@@ -18,6 +18,7 @@
                          (output)="userInputChange()"></cp-input-number>
 
         <button mat-icon-button
+                class="dim-until-hover"
                 [matTooltip]="'Remove this antenna'"
                 (click)="removeAntenna(antennaInput)"
                 [disabled]="disabled">
@@ -26,8 +27,9 @@
       </div>
 
       <cp-input-select *ngIf="availableOptions.length"
+                       class="span-row"
                        label="Antenna Type"
-                       hint="Select an antenna to add"
+                       hint="Add new antenna"
                        [options]="availableOptions"
                        [mapIcons]="mapIcons"
                        [formControl]="finalControl"></cp-input-select>

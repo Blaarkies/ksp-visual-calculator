@@ -35,7 +35,6 @@ export type AdSizeType =
          [attr.data-ad-client]="adClient"
          [attr.data-ad-slot]="adSlot"
          [attr.data-ad-format]="'inline'"></ins>`,
-  styleUrls: ['./ad.component.scss'],
   animations: [CustomAnimation.widthHeight],
 })
 export class AdComponent extends WithDestroy() implements OnInit, OnDestroy, AfterViewInit {

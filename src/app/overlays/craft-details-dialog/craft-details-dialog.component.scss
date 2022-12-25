@@ -9,33 +9,20 @@
 
   .left-column {
     grid-area: left;
-    width: min-content;
     display: grid;
     grid-auto-rows: max-content;
 
-    > cp-input-field-list {
+    .add-gap {
       display: grid;
       gap: var(--grid-gap);
     }
 
-    .invisible-expansion-panel {
-      width: max-content;
-      box-shadow: unset;
-      background: unset;
+      .advanced-placement-button {
+      justify-content: unset;
+    }
 
-      mat-expansion-panel-header {
-        padding: 8px 2px;
-        height: min-content;
-        border-radius: 8px;
-      }
-
-      .mat-expansion-panel-content {
-        cp-input-field-list {
-          display: grid;
-          align-items: start;
-          padding-bottom: 26px;
-        }
-      }
+    .advanced-placement-fields {
+      margin-top: 8px;
     }
   }
 
@@ -51,14 +38,6 @@
 .error-message {
   display: flex;
   align-items: center;
-}
-
-.fix-button-order[mat-dialog-actions] {
-  grid-template-columns: max-content auto max-content;
-
-  .justify-right {
-    justify-self: end !important; // to override style.scss [mat-dialog-actions]
-  }
 }
 
 @media screen and (max-width: 700px) {

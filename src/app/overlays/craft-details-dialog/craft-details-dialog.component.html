@@ -2,26 +2,27 @@
 
 <div mat-dialog-content class="craft-details-form">
   <div class="left-column">
-    <cp-input-field-list [inputFields]="inputListCraft"></cp-input-field-list>
+    <cp-input-field-list class="add-gap" [inputFields]="inputListCraft"></cp-input-field-list>
 
-    <mat-expansion-panel togglePosition="before" class="invisible-expansion-panel">
-      <mat-expansion-panel-header [matTooltip]="'Default craft placement is at the center of the screen'">
-        <mat-panel-title>Advanced Placement</mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <ng-template matExpansionPanelContent>
-        <cp-input-field-list [inputFields]="advancedInputFieldsList"></cp-input-field-list>
-      </ng-template>
-    </mat-expansion-panel>
+    <button mat-button
+            class="advanced-placement-button"
+            (click)="advancedIsOpen = !advancedIsOpen">
+      <mat-icon [@flipVertical]="advancedIsOpen" [svgIcon]="Icons.ChevronDown"></mat-icon>
+      Advanced Placement
+    </button>
+    <cp-input-field-list [@height]="advancedIsOpen"
+                         class="advanced-placement-fields"
+                         [inputFields]="advancedInputFieldsList"></cp-input-field-list>
 
     <div [@fade]
          *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
          class="error-message">
       <mat-error>{{advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh}}</mat-error>
 
-      <button mat-icon-button color="accent"
+      <button mat-icon-button
+              color="warn"
               (click)="advancedForm.reset()"
-              [matTooltip]="'Reset advanced placement values'">
+              [matTooltip]="'Reset values'">
         <mat-icon [svgIcon]="Icons.DeleteAll"></mat-icon>
       </button>
     </div>
@@ -33,7 +34,7 @@
 
 </div>
 
-<div mat-dialog-actions class="fix-button-order">
+<div mat-dialog-actions>
   <button mat-button [mat-dialog-close]>Cancel</button>
   <button *ngIf="data.edit"
           class="justify-right"
@@ -46,6 +47,6 @@
           mat-stroked-button
           [disabled]="form.invalid"
           (click)="submitCraftDetails()">
-    {{data.edit ? 'Edit' : 'Create'}}
+    {{data.edit ? 'Save' : 'Create'}}
   </button>
 </div>

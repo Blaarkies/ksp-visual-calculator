@@ -3,15 +3,16 @@ mat-tab-header {
 }
 
 .antenna-selector-layout {
-  height: auto;
+  overflow: hidden;
 
   display: grid;
-  gap: 20px;
+  gap: 16px;
 
   --input-gap: 10px;
-}
 
-.selected-antenna {
-  display: flex;
-  gap: var(--input-gap);
+  .selected-antenna {
+    display: flex;
+    gap: var(--input-gap);
+  }
+
 }

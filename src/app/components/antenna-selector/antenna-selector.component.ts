@@ -56,7 +56,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
       .subscribe((value: Antenna) => {
         this.antennaInputs.push(new AntennaInput(value));
         this.userInputChange();
-        this.finalControl.reset(null, {emitEvent: false});
+        this.finalControl.reset(null, {emitEvent: false, onlySelf: true});
         this.refreshAvailableOptions();
       });
   }
@@ -82,7 +82,6 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
     this.disabled = isDisabled;
     this.antennaInputs
       .map(ai => ai.countControl)
-      .concat(this.finalControl)
       .forEach(control => isDisabled
         ? control.disable({emitEvent: false})
         : control.enable());
