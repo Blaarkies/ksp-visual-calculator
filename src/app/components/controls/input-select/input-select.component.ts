@@ -7,13 +7,13 @@ import { LabeledOption } from '../../../common/domain/input-fields/labeled-optio
 import { MatSelect } from '@angular/material/select';
 import { Icons } from '../../../common/domain/icons';
 import { BehaviorSubject, map, Subject, takeUntil } from 'rxjs';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-input-select',
   templateUrl: './input-select.component.html',
   styleUrls: ['./input-select.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputSelectComponent),

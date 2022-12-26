@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { AuthService } from '../../services/auth.service';
 import { WithDestroy } from '../../common/with-destroy';
@@ -17,7 +17,7 @@ import { AdComponent } from '../../adsense-manager/components/ad/ad.component';
   selector: 'cp-base-panel',
   templateUrl: './base-panel.component.html',
   styleUrls: ['./base-panel.component.scss'],
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.height],
 })
 export class BasePanelComponent extends WithDestroy() implements AfterViewInit {
 

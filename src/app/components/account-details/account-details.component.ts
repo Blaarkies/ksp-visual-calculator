@@ -1,5 +1,5 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { UntypedFormControl, Validators } from '@angular/forms';
@@ -45,9 +45,9 @@ import {
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
   animations: [
-    CustomAnimation.fade,
-    CustomAnimation.width,
-    CustomAnimation.flipVertical,
+    BasicAnimations.fade,
+    BasicAnimations.width,
+    BasicAnimations.flipVertical,
     trigger('slideOutVertical', [
       state('false', style({height: 0, overflow: 'hidden', borderColor: '#0000'})),
       state('true', style({height: '*', overflow: 'hidden'})),

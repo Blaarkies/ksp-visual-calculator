@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TravelCondition } from '../../common/data-structures/delta-v-map/travel-condition';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { UntypedFormControl } from '@angular/forms';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
@@ -29,7 +29,7 @@ import { DvRouteType } from '../../common/domain/dv-route-type';
   selector: 'cp-maneuver-sequence-panel',
   templateUrl: './maneuver-sequence-panel.component.html',
   styleUrls: ['./maneuver-sequence-panel.component.scss'],
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.height],
 })
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 

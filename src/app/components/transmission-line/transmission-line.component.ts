@@ -1,14 +1,14 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { Subject } from 'rxjs';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { CameraService } from '../../services/camera.service';
 
 @Component({
   selector: 'cp-transmission-line',
   templateUrl: './transmission-line.component.html',
   styleUrls: ['./transmission-line.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class TransmissionLineComponent implements OnDestroy {
 

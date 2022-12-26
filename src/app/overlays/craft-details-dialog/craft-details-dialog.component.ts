@@ -25,7 +25,7 @@ import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AdvancedPlacement } from './advanced-placement';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 import { takeUntil } from 'rxjs';
@@ -39,7 +39,7 @@ export class CraftDetailsDialogData {
   selector: 'cp-craft-details-dialog',
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
-  animations: [CustomAnimation.fade, CustomAnimation.height, CustomAnimation.flipVertical],
+  animations: [BasicAnimations.fade, BasicAnimations.height, BasicAnimations.flipVertical],
   encapsulation: ViewEncapsulation.None,
 })
 export class CraftDetailsDialogComponent extends WithDestroy() {

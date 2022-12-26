@@ -13,7 +13,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { AdDispenserService } from '../../services/ad-dispenser.service';
 import { filter, interval, map, startWith, take, takeUntil, tap } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 
 export type AdSizeType =
   'square-large'
@@ -35,7 +35,7 @@ export type AdSizeType =
          [attr.data-ad-client]="adClient"
          [attr.data-ad-slot]="adSlot"
          [attr.data-ad-format]="'inline'"></ins>`,
-  animations: [CustomAnimation.widthHeight],
+  animations: [BasicAnimations.widthHeight],
 })
 export class AdComponent extends WithDestroy() implements OnInit, OnDestroy, AfterViewInit {
 

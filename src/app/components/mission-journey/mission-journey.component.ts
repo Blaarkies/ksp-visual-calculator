@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { filter, fromEvent, interval, map, mapTo, merge, Observable, sampleTime, scan, startWith } from 'rxjs';
 import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
@@ -19,7 +19,7 @@ class TripTrajectory {
   selector: 'cp-mission-journey',
   templateUrl: './mission-journey.component.html',
   styleUrls: ['./mission-journey.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class MissionJourneyComponent implements AfterViewInit {
 

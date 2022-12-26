@@ -1,6 +1,6 @@
 import { animate, sequence, state, style, transition, trigger } from '@angular/animations';
 
-export class CustomAnimation {
+export class BasicAnimations {
 
   static fade = trigger('fade', [
     transition(':enter', [

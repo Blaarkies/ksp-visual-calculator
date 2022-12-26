@@ -9,7 +9,7 @@ import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-antenna-selector',
@@ -21,7 +21,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
     useExisting: forwardRef(() => AntennaSelectorComponent),
     multi: true,
   }],
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.height],
 })
 export class AntennaSelectorComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

@@ -21,7 +21,7 @@ import { WithDestroy } from '../../common/with-destroy';
 import { StateRow } from './state-row';
 import { StateEntry } from './state-entry';
 import { MatSelectionList } from '@angular/material/list';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 
@@ -34,7 +34,7 @@ export class ManageStateDialogData {
   templateUrl: './manage-state-dialog.component.html',
   styleUrls: ['./manage-state-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade, CustomAnimation.height],
+  animations: [BasicAnimations.fade, BasicAnimations.height],
 })
 export class ManageStateDialogComponent extends WithDestroy() implements OnDestroy {
 

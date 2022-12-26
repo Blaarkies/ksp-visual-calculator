@@ -14,7 +14,7 @@ import {
 import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
 import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
@@ -24,7 +24,7 @@ import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputFieldComponent),

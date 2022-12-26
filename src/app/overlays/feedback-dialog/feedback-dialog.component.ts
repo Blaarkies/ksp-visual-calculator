@@ -7,7 +7,7 @@ import { ControlMetaFreeText } from '../../common/domain/input-fields/control-me
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
 import { HttpClient } from '@angular/common/http';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { firstValueFrom } from 'rxjs';
 
 export class FeedbackSubmissionForm {
@@ -21,7 +21,7 @@ export class FeedbackSubmissionForm {
   templateUrl: './feedback-dialog.component.html',
   styleUrls: ['./feedback-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.height],
 })
 export class FeedbackDialogComponent extends WithDestroy() {
 

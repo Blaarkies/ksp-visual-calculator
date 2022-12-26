@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 
@@ -14,7 +14,7 @@ export class UploadImageDialogData {
   selector: 'cp-upload-image',
   templateUrl: './upload-image-dialog.component.html',
   styleUrls: ['./upload-image-dialog.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class UploadImageDialogComponent {
 

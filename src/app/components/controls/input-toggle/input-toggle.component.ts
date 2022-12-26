@@ -4,13 +4,13 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-input-toggle',
   templateUrl: './input-toggle.component.html',
   styleUrls: ['./input-toggle.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputToggleComponent),
