@@ -2,7 +2,6 @@
   overflow: hidden;
   display: grid;
   --gap: 6px;
-  //gap: 10px;
 
   >:nth-child(n + 2) {
     border-top: 1px solid rgba(var(--color-rgb-border-simple), .5);

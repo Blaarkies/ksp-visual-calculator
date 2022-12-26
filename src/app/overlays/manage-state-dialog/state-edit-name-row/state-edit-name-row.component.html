@@ -2,38 +2,35 @@
   <div class="name">
     <span *ngIf="!isEditMode; else edit">{{state.name}}</span>
     <ng-template #edit>
-      <cp-input-field class="edit-name-input"
-                      (click)="$event.stopImmediatePropagation()"
-                      label="Name"
+      <cp-input-field label="Name"
                       [formControl]="control"
-                      [errors]="control.errors">
+                      [errors]="control.errors"
+                      (click)="$event.stopImmediatePropagation()">
       </cp-input-field>
     </ng-template>
 
     <button *ngIf="!isEditMode; else accept"
             mat-icon-button
             (click)="$event.stopImmediatePropagation(); startEdit(state)"
-            [matTooltip]="'Edit the name of this save game'">
+            [matTooltip]="'Edit name'">
       <mat-icon [svgIcon]="icons.Edit"></mat-icon>
     </button>
     <ng-template #accept>
       <div class="yes-no-buttons">
         <button mat-icon-button
                 (click)="$event.stopImmediatePropagation(); confirmEdit(state)"
-                [disabled]="control.invalid"
-                [matTooltip]="'Confirm name change'">
-          <mat-icon color="primary" [svgIcon]="icons.Check"></mat-icon>
+                [disabled]="control.invalid">
+          <mat-icon color="{{control.valid ? 'primary' : 'muted'}}" [svgIcon]="icons.Check"></mat-icon>
         </button>
         <button mat-icon-button
-                (click)="$event.stopImmediatePropagation(); cancelEdit()"
-                [matTooltip]="'Cancel name changes'">
+                (click)="$event.stopImmediatePropagation(); cancelEdit()">
           <mat-icon color="accent" [svgIcon]="icons.Cancel"></mat-icon>
         </button>
       </div>
     </ng-template>
   </div>
 
-  <div class="meta">
+  <div class="meta" *ngIf="!isEditMode">
     <span>{{state.timestamp}}</span>
     <span>{{state.version}}</span>
   </div>

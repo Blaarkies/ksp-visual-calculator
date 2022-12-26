@@ -1,21 +1,26 @@
+mat-icon {
+  margin: 0 !important;
+}
+
 .manage-state-layout {
   padding-top: 10px;
   min-width: 500px; // tabs leave ghost images of file-drop when changing
 
-  mat-tab-group {
-    .mat-tab-body-content {
-      overflow: unset !important;
+  mat-tab-body {
+    .mat-mdc-tab-body-content {
+      overflow: hidden !important; // remove scrollbar
     }
+  }
 
-    mat-tab-header {
-      margin-bottom: 10px;
-    }
+  mat-tab-header {
+    margin-bottom: 10px;
   }
 }
 
 .archive-layout {
   display: grid;
-  gap: 20px;
+  --gap: 20px;
+  gap: var(--gap);
   grid-auto-flow: column;
 
   mat-error {
@@ -29,6 +34,11 @@
   mat-selection-list {
     overflow-y: auto;
     max-height: 400px;
+    margin-right: calc(-1 * var(--gap));
+
+    mat-list-option {
+      height: max-content !important;
+    }
   }
 }
 

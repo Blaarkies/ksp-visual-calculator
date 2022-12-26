@@ -4,9 +4,11 @@
 
 [mat-dialog-actions] {
   // creates the following layout examples
+  //  -------------------------[OK]
   // [CANCEL] ---------------[SAVE]
   // [CANCEL] ----- [REMOVE] [SAVE]
-  & > *:nth-child(2) {
+  & > *:nth-child(2),
+  *:only-child {
     margin-left: auto !important;
   }
 }
@@ -53,3 +55,5 @@ mat-form-field {
 .mdc-floating-label:not(.mdc-floating-label--float-above) {
   top: 50% !important;
 }
+
+
