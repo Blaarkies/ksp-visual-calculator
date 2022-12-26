@@ -127,7 +127,7 @@ export class HudService {
             this.dialog.open(PrivacyDialogComponent);
           },
         },
-        'View privacy statement and settings',
+        undefined,
         !localStorage.getItem(storageKeys.analyticsViewed),
         () => localStorage.setItem(storageKeys.analyticsViewed, true.toString())),
       new ActionOption('Credits', Icons.Credits, {
