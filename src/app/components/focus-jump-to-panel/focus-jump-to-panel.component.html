@@ -1,15 +1,18 @@
-<div class="frame frosted-glass">
+<div class="focus-layout frosted-glass"
+     [cpMouseHover]="100" (hoverChange)="isOpen = $event"
+     [@openCloseX]="isOpen">
 
   <div class="panel">
 
     <button #button
             mat-button
+            class="justify-left"
             *ngFor="let item of list"
             (click)="item.itemAction()"
             [matTooltip]="item.label"
             [matTooltipDisabled]="item.label.length < 8">
       <div class="item-layout">
-        <mat-icon [svgIcon]="item.icon"></mat-icon>
+        <mat-icon [svgIcon]="item.icon" color="none"></mat-icon>
         <div>{{item.label}}</div>
       </div>
     </button>

@@ -1,64 +1,49 @@
-.frame {
-  z-index: 1;
-
+.focus-layout {
   --width: 150px;
   width: var(--width);
-  overflow-x: hidden;
 
   --height: 290px;
   height: var(--height);
-  overflow-y: hidden;
 
   --border-radius: 16px;
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 
-  transition: .4s ease-in;
-  --collapsed-width: 50px;
-  --frame-translate-left: var(--collapsed-width) - var(--width);
-  transform: translateX(calc(1 * var(--frame-translate-left)));
+  overflow: hidden;
 
-  &:hover {
-    transform: translateX(0);
-    transition: .4s ease-out;
-  }
-
+  // use panel to keep scrollbar from translating during animation
   .panel {
-    transition: .4s ease-in;
-    --panel-translate-right: var(--width) - var(--collapsed-width);
-    transform: translateX(calc(1 * var(--panel-translate-right)));
+    width: var(--width);
+    height: calc(var(--height) - 12px);
 
-    &:hover {
-      transform: translateX(0);
-      transition: .4s ease-out;
-    }
-
-    height: var(--height);
     overflow-x: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
 
+    background-color: #6662;
+
     display: grid;
     gap: 6px;
-
-    background-color: #6662;
-  }
-}
-
-.item-layout {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
-  gap: 10px;
-  align-items: center;
-
-  mat-icon {
-    color: var(--color-text-muted);
+    padding-block: 6px;
   }
 
-  div {
-    font-size: 1.3em;
-    color: var(--color-text-muted);
-    text-overflow: ellipsis;
+  .justify-left {
+    justify-content: left;
+  }
+
+  .item-layout {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 10px;
+    align-items: center;
+
+    margin-left: 6px;
+
+    div {
+      font-size: 1.3em;
+      color: var(--color-text-muted);
+      text-overflow: ellipsis;
+    }
   }
 }

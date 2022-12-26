@@ -7,6 +7,7 @@ import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { MatButton } from '@angular/material/button';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
+import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
 
 interface FocusItem {
   icon: string;
@@ -19,10 +20,12 @@ interface FocusItem {
   selector: 'cp-focus-jump-to-panel',
   templateUrl: './focus-jump-to-panel.component.html',
   styleUrls: ['./focus-jump-to-panel.component.scss'],
+  animations: [ConfigurableAnimations.openCloseX(48)],
 })
 export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, OnDestroy {
 
   list: FocusItem[];
+  isOpen = false;
 
   @ViewChildren('button') buttons: QueryList<MatButton>;
 
