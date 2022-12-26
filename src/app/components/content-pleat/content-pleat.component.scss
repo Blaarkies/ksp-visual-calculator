@@ -1,23 +1,20 @@
-.invisible-panel {
-  box-shadow: unset !important;
-  background: unset !important;
+:host {
+  position: relative;
 }
 
-.peek-at-content {
-  .mat-expansion-panel-content {
-    min-height: 22px !important;
-    visibility: visible !important;
-  }
+.pleat-layout {
+  overflow: hidden;
 }
 
-.first-sentence-only {
-  height: 22px;
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.truncate-text {
+.keep-right {
   position: absolute;
-  top: 0;
   right: 0;
-  background: linear-gradient(90deg, #0000, var(--color-background-card) 30px);
-  padding-left: 34px;
+  bottom: -16px;
+  z-index: 1;
 }

@@ -1,12 +1,12 @@
-<mat-expansion-panel #panel
-                     class="invisible-panel peek-at-content"
-                     [expanded]="false">
-  <div [class.first-sentence-only]="!showContentAfterInit">
+<div [@openCloseY]="isOpen" class="pleat-layout">
+
+  <div [class.line-clamp]="!isOpen">
     <ng-content></ng-content>
   </div>
-  <div [@fade]
-       *ngIf="!panel.expanded"
-       class="truncate-text">
-    <span class="read-more" (click)="panel.open()">Read more...</span>
-  </div>
-</mat-expansion-panel>
+</div>
+<div class="read-more keep-right"
+     [@fade]
+     *ngIf="!isOpen"
+     (click)="isOpen = true">
+  read more...
+</div>
