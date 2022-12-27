@@ -39,14 +39,16 @@ import {
   UploadImageDialogComponent,
   UploadImageDialogData
 } from '../../overlays/upload-image-dialog/upload-image-dialog.component';
+import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
 
 @Component({
   selector: 'cp-account-details',
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
   animations: [
+    BasicAnimations.expandX,
+    ConfigurableAnimations.openCloseY(20),
     BasicAnimations.fade,
-    BasicAnimations.width,
     BasicAnimations.flipVertical,
     trigger('slideOutVertical', [
       state('false', style({height: 0, overflow: 'hidden', borderColor: '#0000'})),

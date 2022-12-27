@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -96,6 +95,10 @@ import { PageDvPlannerComponent } from './components/page-dv-planner/page-dv-pla
 import { PageCalculatorsComponent } from './components/page-calculators/page-calculators.component';
 import { CalculatorsRoutingModule } from './calculators-routing.module';
 import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module';
+import { AppModule } from '../app.module';
+import {
+  AccountEditDetailsComponent
+} from '../components/account-details/account-edit-details/account-edit-details.component';
 
 
 @NgModule({
@@ -135,6 +138,7 @@ import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module'
     StateDisplayComponent,
     StateEditNameRowComponent,
     AccountDetailsComponent,
+    AccountEditDetailsComponent,
     HudComponent,
     ActionBottomSheetComponent,
     ActionListComponent,

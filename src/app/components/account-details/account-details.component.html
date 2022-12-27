@@ -4,14 +4,21 @@
   <div mat-dialog-content class="details-layout">
     <div class="display-details-layout">
 
-      <div class="avatar-layout stack">
-        <img class="user-image mat-elevation-z1" [src]="user.photoURL || 'assets/logos/guest-account.webp'">
-        <span class="premium-sash"
-              [matTooltip]="'Thank you for supporting! 😁'"
-              [@fade]
-              *ngIf="user.isCustomer">
+      <div class="avatar-section">
+        <div class="avatar-layout stack">
+          <img [src]="user.photoURL || 'assets/logos/guest-account.webp'">
+          <span class="premium-sash"
+                [matTooltip]="'Thank you for supporting! 😁'"
+                [@fade]
+                *ngIf="user.isCustomer">
           Supporter
         </span>
+        </div>
+        <button class="open-edit-button"
+                mat-icon-button
+                (click)="isSettingsOpen = !isSettingsOpen">
+          <mat-icon [svgIcon]="icons.Settings" class="text-mute"></mat-icon>
+        </button>
       </div>
 
       <div class="user-details">
@@ -22,48 +29,24 @@
                           (keyup.enter)="editDetails(user)"></cp-input-field>
           <div>{{user.email}}</div>
         </div>
-
-        <button mat-icon-button (click)="isSettingsOpen = !isSettingsOpen">
-          <mat-icon [svgIcon]="icons.Settings" class="text-mute"></mat-icon>
-        </button>
       </div>
 
     </div>
 
-    <div *ngIf="isSettingsOpen" [@width] class="edit-details-layout">
+    <div *ngIf="isSettingsOpen" [@expandX] class="edit-details-section">
       <mat-divider vertical></mat-divider>
 
-      <div>
-        <div [matTooltip]="user.isCustomer
-                  ? 'Thank you for supporting! 😁'
-                  : 'Verifies if this account is a supporter at buymeacoffee.com/Blaarkies'">
-          <button class="button-loader"
-                  mat-button
-                  [disabled]="user.isCustomer || (validatingCustomer$ | async)"
-                  (click)="validateAccount(user)">
-            {{user.isCustomer ? 'Account Is Verified' : 'Verify Account'}}
-            <mat-progress-bar [@fade] *ngIf="validatingCustomer$ | async" mode="query"></mat-progress-bar>
-          </button>
-        </div>
-
-        <button class="button-loader" mat-button (click)="uploadImage(user)">
-          Upload Profile Image
-          <mat-progress-bar [@fade] *ngIf="uploadingImage$ | async" mode="buffer"></mat-progress-bar>
-        </button>
-
-        <button mat-button
-                [matTooltip]="editingDetails$.value ? 'Click to save changes' : ''"
-                [matTooltipDisabled]="!editingDetails$.value"
-                (click)="editDetails(user)">
-          {{editingDetails$.value ? 'Finish Editing' : 'Edit Details'}}
-          <mat-progress-bar [@fade] *ngIf="editingDetails$ | async" mode="buffer"></mat-progress-bar>
-        </button>
-
-        <button mat-stroked-button color="warn" (click)="deleteAccount(user)">
-          Delete Account
-          <mat-progress-bar [@fade] *ngIf="deletingAccount$ | async" mode="buffer" color="warn"></mat-progress-bar>
-        </button>
-      </div>
+      <cp-account-edit-details
+        [isCustomer]="user.isCustomer"
+        [validatingCustomer]="validatingCustomer$ | async"
+        [uploadingImage]="uploadingImage$ | async"
+        [editingDetails]="editingDetails$ | async"
+        [deletingAccount]="deletingAccount$ | async"
+        (validateAccount)="validateAccount(user)"
+        (uploadImage)="uploadImage(user)"
+        (editDetails)="editDetails(user)"
+        (deleteAccount)="deleteAccount(user)"
+      ></cp-account-edit-details>
     </div>
   </div>
 
@@ -99,13 +82,15 @@
         </button>
 
         <div class="promote-reasons" [class.is-open]="isPromoteOpen" [@slideOutVertical]="isPromoteOpen">
-          <div>Signed in accounts can access more features:</div>
-          <ul>
-            <li>Continue where you left off</li>
-            <li>Manage multiple save games</li>
-            <li>Load your save games from multiple devices</li>
-            <li>Import/Export save games to share with friends</li>
-          </ul>
+          <div class="reasons-container">
+            <div>Signed in accounts can access more features:</div>
+            <ul>
+              <li>Continue where you left off</li>
+              <li>Manage multiple save games</li>
+              <li>Load your save games from multiple devices</li>
+              <li>Import/Export save games to share with friends</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -153,11 +138,11 @@
                           || controlPassword.invalid
                           || controlPolicy.invalid
                           || (signingInWithEmail$ | async)"
-              [matTooltip]="'If you do not have an account, this will create one'">
+              [matTooltip]="'New accounts are automatically created'">
         <mat-icon [svgIcon]="icons.Email"></mat-icon>
         <span>Sign in with email address</span>
-        <mat-progress-bar [@fade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
       </button>
+      <mat-progress-bar [@fade] *ngIf="signingInWithEmail$ | async" mode="indeterminate"></mat-progress-bar>
       <mat-error [@fade] *ngIf="emailSignInError$ | async as errorMessage">{{errorMessage}}</mat-error>
     </div>
 
@@ -173,15 +158,15 @@
               (click)="signInWithGoogle()">
         <img class="google-g-logo" src="assets/logos/google-g.svg" />
         <span>Sign in with Google</span>
-        <mat-progress-bar [@fade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
       </button>
+      <mat-progress-bar [@fade] *ngIf="signingInWithGoogle$ | async" mode="indeterminate"></mat-progress-bar>
     </div>
 
     <mat-divider></mat-divider>
   </div>
 
   <div mat-dialog-actions>
-    <span class="text-mute description">Sign in later with the profile icon in the top-right corner</span>
+    <span class="text-mute description">Or sign in later, using the profile icon in the top-right corner</span>
     <button mat-stroked-button
             mat-dialog-close
             color="primary">
