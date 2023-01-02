@@ -1,10 +1,10 @@
 .profile-image {
   border-radius: 100px;
-  --size: 32px;
+  --size: 28px;
   width: var(--size);
   height: var(--size);
   overflow: hidden;
-  border: 2px solid var(--color-icon-none);
+  border: 1px solid var(--color-icon-none);
 
   img, mat-icon {
     width: var(--size);

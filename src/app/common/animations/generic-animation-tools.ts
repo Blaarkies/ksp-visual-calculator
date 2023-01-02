@@ -1,9 +1,9 @@
 import { animate, animation, state, style, transition, trigger, useAnimation } from '@angular/animations';
 
 let genericTransitionDimension = (prop: string) => animation([
-  style({[prop]: '{{ last }}'}),
+  style({[prop]: '{{ last }}', overflow: 'hidden'}),
   animate('{{ timing }}',
-    style({[prop]: '{{ next }}'}))
+    style({[prop]: '{{ next }}', overflow: 'hidden'}))
 ]);
 
 export let genericOpenClose = (direction: 'horizontal' | 'vertical',
@@ -41,9 +41,9 @@ export let genericOpenClose = (direction: 'horizontal' | 'vertical',
       }),
     ]),
 
-    state('void', style({[propName]: 0, opacity: 0})),
-    state('false', style({[propName]: minValue})),
-    state('true', style({[propName]: '*'})),
+    state('void', style({[propName]: 0, opacity: 0, overflow: 'hidden'})),
+    state('false', style({[propName]: minValue, overflow: 'hidden'})),
+    state('true', style({[propName]: '*', overflow: 'hidden'})),
 
     transition('false => true', [
       useAnimation(propTransition, {

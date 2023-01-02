@@ -1,9 +1,9 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Icons } from '../../common/domain/icons';
 import { ActionOption } from '../../common/domain/action-option';
-import { MatExpansionPanel } from '@angular/material/expansion';
 import { fromEvent, take, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 
 export type ActionPanelColors = 'green' | 'orange' | 'cosmic-blue';
 export type Locations = 'top-left' | 'bottom-left' | 'top-right';
@@ -12,7 +12,7 @@ export type Locations = 'top-left' | 'bottom-left' | 'top-right';
   selector: 'cp-action-panel',
   templateUrl: './action-panel.component.html',
   styleUrls: ['./action-panel.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  animations: [BasicAnimations.expandY],
 })
 export class ActionPanelComponent extends WithDestroy() {
 
@@ -24,16 +24,22 @@ export class ActionPanelComponent extends WithDestroy() {
 
   icons = Icons;
   unreadCount: number;
+  isOpen = false;
 
   constructor() {
     super();
   }
 
-  listenClickAway(expander: MatExpansionPanel) {
+  toggle() {
+    this.isOpen = !this.isOpen;
     fromEvent(window, 'pointerup')
       .pipe(
         take(1),
         takeUntil(this.destroy$))
-      .subscribe(() => expander.close());
+      .subscribe(() => this.close());
+  }
+
+  close() {
+    this.isOpen = false;
   }
 }

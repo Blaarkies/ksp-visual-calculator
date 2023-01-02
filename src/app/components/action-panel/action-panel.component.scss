@@ -1,11 +1,58 @@
-mat-expansion-panel-header {
-  cursor: pointer;
-  user-select: none;
+.notify-badge {
+  padding-left: 16px;
+  margin-right: 18px;
+  animation: kf-animate-opacity-wobble 4s linear infinite forwards;
+}
+
+@keyframes kf-animate-opacity-wobble {
+  0% {
+    opacity: 0
+  }
+  25% {
+    opacity: 1
+  }
+  45% {
+    opacity: 1
+  }
+  50% {
+    opacity: .5
+  }
+  60% {
+    opacity: 1
+  }
+  90% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0
+  }
+}
+
+.button-header {
+  width: 100%;
+  justify-content: flex-start;
+  min-height: 48px;
+  padding: 24px;
+
+  .layout-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.icon-button-large {
+  --size: 24px;
+  width: var(--size) !important;
+  height: var(--size) !important;
+}
+
+.title-header {
+  font-size: 1.1em
 }
 
 .action-panel {
-  width: auto;
-  height: max-content;
+  overflow: hidden;
 
   &.green {
     background-color: var(--color-background-panel-green-opaque);
@@ -40,53 +87,5 @@ mat-expansion-panel-header {
     border-bottom-left-radius: var(--panel-rounding) !important;
 
     box-shadow: var(--claymorph-faint) !important;
-  }
-}
-
-.center-title-line {
-  display: flex;
-  align-items: center;
-}
-
-.list-background {
-  background-color: #0002;
-  filter: blur(10px);
-}
-
-.toolbar-text {
-  color: white !important; // expansion-panel forces gray color here
-}
-
-.mat-expansion-panel-body {
-  padding: unset !important; // remove extra padding
-}
-
-.notify-badge {
-  padding-left: 16px;
-  margin-right: 18px;
-  animation: kf-animate-opacity-wobble 4s linear infinite forwards;
-}
-
-@keyframes kf-animate-opacity-wobble {
-  0% {
-    opacity: 0
-  }
-  25% {
-    opacity: 1
-  }
-  45% {
-    opacity: 1
-  }
-  50% {
-    opacity: .5
-  }
-  60% {
-    opacity: 1
-  }
-  90% {
-    opacity: 1
-  }
-  100% {
-    opacity: 0
   }
 }

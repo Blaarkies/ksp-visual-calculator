@@ -1,17 +1,13 @@
-<mat-expansion-panel #expander
-                     hideToggle
-                     class="action-panel"
-                     disabled
-                     [ngClass]="[color, location]"
-                     (opened)="listenClickAway(expander)">
-  <mat-expansion-panel-header (click)="expander.toggle();
-                                       menuButton.ripple.launch(0, 0)">
-    <mat-panel-title class="center-title-line toolbar-text">
-      <button mat-icon-button #menuButton>
-        <mat-icon [svgIcon]="startIcon"></mat-icon>
-      </button>
+<div class="action-panel"
+     [ngClass]="[color, location]">
+  <button mat-button
+          class="button-header"
+          (click)="toggle()">
+    <div class="layout-header">
+      <mat-icon [svgIcon]="startIcon"
+                class="icon-button-large"></mat-icon>
 
-      <span>{{startTitle}}</span>
+      <span class="title-header">{{startTitle}}</span>
 
       <span class="notify-badge"
             matBadgeColor="warn"
@@ -19,14 +15,12 @@
             [matBadge]="actionList.unreadCount"></span>
 
       <ng-content></ng-content>
-    </mat-panel-title>
-  </mat-expansion-panel-header>
+    </div>
+  </button>
 
-  <div class="stack">
-    <div class="list-background"></div>
-
+  <div [@expandY]="isOpen">
     <cp-action-list #actionList
                     [options]="options"
-                    (action)="expander.close()"></cp-action-list>
+                    (action)="close()"></cp-action-list>
   </div>
-</mat-expansion-panel>
+</div>
