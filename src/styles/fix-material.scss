@@ -56,4 +56,14 @@ mat-form-field {
   top: 50% !important;
 }
 
+// add to <mat-menu> to list buttons vertically
+.menu-vertical {
 
+  .mat-mdc-menu-content {
+    display: grid;
+  }
+
+  &.buttons-left button {
+    justify-content: start;
+  }
+}

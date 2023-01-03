@@ -44,6 +44,7 @@ export class MissionJourneyComponent implements AfterViewInit {
   worldViewScale = 100 * CameraService.normalizedScale;
   mouseLocation$: Observable<Vector2>;
   trajectories: TripTrajectory[] = [];
+  tripIndexMarginMap: number[] = [];
 
   constructor(private cameraService: CameraService) {
   }
@@ -80,6 +81,20 @@ export class MissionJourneyComponent implements AfterViewInit {
           curve: memoizedCurve,
         };
       });
+
+    // determine visual margins for trip-index labels
+    this.tripIndexMarginMap = [];
+    let destinationMap = new Map<SpaceObject, number[]>(
+      this.trajectories.map(({a}) => [a, []]));
+    this.trajectories.forEach(({sequence, a}) => {
+      let visitors = destinationMap.get(a);
+      visitors.push(sequence);
+    });
+    Array.from(destinationMap.values())
+      .filter(list => list.length > 1)
+      .map(list => list.map((tripIndex, i) => ({tripIndex, margin: i})))
+      .flatMap()
+      .forEach(({tripIndex, margin}) => this.tripIndexMarginMap[tripIndex] = margin);
   }
 
   ngAfterViewInit() {

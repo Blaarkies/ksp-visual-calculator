@@ -59,7 +59,11 @@
             [style.left.%]="worldViewScale * trajectory.a.location.x"
             [style.top.%]="worldViewScale * trajectory.a.location.y"
   >
-    <span class="trip-index" xmlns="http://www.w3.org/1999/xhtml">{{trajectory.sequence}}</span>
+    <span class="trip-index"
+          xmlns="http://www.w3.org/1999/xhtml"
+          [style.translate]="'0 ' + tripIndexMarginMap[trajectory.sequence] * -2 + 'ch'">
+      {{trajectory.sequence}}
+    </span>
   </mat-icon>
 </ng-container>
 

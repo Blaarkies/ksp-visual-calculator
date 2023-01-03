@@ -29,7 +29,7 @@ import { DvRouteType } from '../../common/domain/dv-route-type';
   selector: 'cp-maneuver-sequence-panel',
   templateUrl: './maneuver-sequence-panel.component.html',
   styleUrls: ['./maneuver-sequence-panel.component.scss'],
-  animations: [BasicAnimations.height],
+  animations: [BasicAnimations.expandY],
 })
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 
@@ -102,12 +102,12 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
       }));
   }
 
-  setPreferredCondition(event: MatSelectChange) {
-    this.preferredCondition$.next(event.value);
+  setPreferredCondition(value: TravelCondition) {
+    this.preferredCondition$.next(value);
   }
 
-  setRouteType(event: MatSelectChange) {
-    this.routeType$.next(event.value);
+  setRouteType(value: DvRouteType) {
+    this.routeType$.next(value);
   }
 
   toggleOptions() {
