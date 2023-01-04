@@ -1,7 +1,8 @@
 <div class="verify-button"
      [matTooltip]="isCustomer
                   ? 'Thank you for supporting! 😁'
-                  : 'Verifies if this account is supporting at buymeacoffee.com/Blaarkies'">
+                  : 'Verifies if this account is supporting at buymeacoffee.com/Blaarkies'"
+     matTooltipPosition="left">
   <button class="button-loader"
           mat-button
           [disabled]="isCustomer || validatingCustomer"

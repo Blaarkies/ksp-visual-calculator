@@ -1,10 +1,13 @@
 .title-layout {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding-inline: 24px;
+  color: var(--mdc-dialog-supporting-text-color);
 
   cp-input-field {
-    margin-right: 24px;
     margin-top: 8px;
+    height: 60px;
   }
 }
 

@@ -1,17 +1,17 @@
 import { Component } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { AnalyticsService } from '../../services/analytics.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'cp-privacy-dialog',
-  templateUrl: './privacy-dialog.component.html',
-  styleUrls: ['./privacy-dialog.component.scss'],
+  selector: 'cp-analytics-dialog',
+  templateUrl: './analytics-dialog.component.html',
+  styleUrls: ['./analytics-dialog.component.scss'],
 })
-export class PrivacyDialogComponent extends WithDestroy() {
+export class AnalyticsDialogComponent extends WithDestroy() {
 
-  trackingControl = new UntypedFormControl(this.analyticsService.isTracking);
+  trackingControl = new FormControl(this.analyticsService.isTracking);
 
   constructor(private analyticsService: AnalyticsService) {
     super();

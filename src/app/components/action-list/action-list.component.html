@@ -7,7 +7,7 @@
                                else normal">
         <div class="action-button unavailable"
              [matTooltip]="option.unavailableMeta.tooltip"
-             [matTooltipPosition]="'right'"
+             [matTooltipPosition]="tooltipPosition"
              (click)="$event.stopPropagation(); option.unavailableMeta.action()">
           <span class="text-white">{{option.label}}</span>
           <span matBadgeColor="warn"
@@ -20,7 +20,7 @@
       <ng-template #normal>
         <div class="action-button"
              [matTooltip]="option.tooltip"
-             [matTooltipPosition]="'right'">
+             [matTooltipPosition]="tooltipPosition">
           <span class="text-white">{{option.label}}</span>
           <span matBadgeColor="warn"
                 [matBadgeHidden]="!option.unread"

@@ -23,7 +23,7 @@ import { SetupService } from './setup.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
 import { SimpleDialogComponent, SimpleDialogData } from '../overlays/simple-dialog/simple-dialog.component';
-import { PrivacyDialogComponent } from '../overlays/privacy-dialog/privacy-dialog.component';
+import { AnalyticsDialogComponent } from '../overlays/analytics-dialog/analytics-dialog.component';
 import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
@@ -124,7 +124,7 @@ export class HudService {
               category: EventLogs.Category.Privacy,
             });
 
-            this.dialog.open(PrivacyDialogComponent);
+            this.dialog.open(AnalyticsDialogComponent);
           },
         },
         undefined,

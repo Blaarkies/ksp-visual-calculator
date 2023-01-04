@@ -27,11 +27,11 @@
     <button class="button-single-checkpoint"
             mat-flat-button
             id="add-dv-mission-checkpoint-button"
-            [matTooltip]="'Add new checkpoint'"
+            [matTooltip]="isAddingCheckpoint ? 'Now tap a planet' : 'Add new checkpoint'"
             (click)="addCheckpoint()">
       <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>
       <ng-template #isBusy>
-        <div class="animate-flashing">Tap a planet</div>
+        <div class="animate-flashing">Done</div>
       </ng-template>
       <ng-template #idleIcon>
         <div>

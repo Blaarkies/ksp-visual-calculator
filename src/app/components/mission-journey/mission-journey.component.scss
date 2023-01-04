@@ -29,6 +29,8 @@
   position: absolute;
   right: -0.4em;
   font-size: 1.5em;
+
+  translate: 0 calc(var(--margin-index) * -2ch);
 }
 
 .trajectory-line {

@@ -5,7 +5,12 @@
   gap: var(--grid-gap);
   grid-template-columns: min-content min-content auto;
   grid-template-areas:
-    'left middle right';
+    'title title  title'
+    'left  middle right';
+
+  .dialog-title {
+    grid-area: title;
+  }
 
   .left-column {
     grid-area: left;
@@ -44,6 +49,7 @@
   .craft-details-form {
     gap: unset;
     grid-template-areas:
+    'title'
     'left'
     'right';
 

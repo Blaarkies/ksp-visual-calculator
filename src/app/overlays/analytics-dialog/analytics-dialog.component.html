@@ -1,6 +1,6 @@
-<h1 mat-dialog-title>Anonymous Usage Tracking</h1>
+<div mat-dialog-content class="analytics-dialog-layout">
+  <div class="text dialog-title">Anonymous Usage Tracking</div>
 
-<div mat-dialog-content class="privacy-dialog-layout">
   <span class="usage-data-explained">
 
     This application tracks anonymous usage data.
@@ -23,7 +23,7 @@
     <p>You can opt-out with the toggle below.</p>
   </span>
 
-  <cp-input-toggle label="Anonymous Usage Tracking"
+  <cp-input-toggle label="Track anonymous actions"
                    color="primary"
                    type="switch"
                    [formControl]="trackingControl">

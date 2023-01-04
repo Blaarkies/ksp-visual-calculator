@@ -2,11 +2,11 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
-import { UntypedFormControl, Validators } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import {
   BehaviorSubject,
   catchError,
-  debounceTime,
+  debounceTime, delay,
   EMPTY,
   filter,
   finalize,
@@ -20,7 +20,7 @@ import {
   startWith,
   switchMap,
   take,
-  takeUntil,
+  takeUntil, takeWhile,
   tap,
   timeout,
   withLatestFrom
@@ -64,8 +64,8 @@ import { ConfigurableAnimations } from '../../common/animations/configurable-ani
 })
 export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
 
-  controlEmail = new UntypedFormControl(null, [Validators.required, Validators.email]);
-  controlPassword = new UntypedFormControl(null, [Validators.required, Validators.minLength(6)]);
+  controlEmail = new FormControl(null, [Validators.required, Validators.email]);
+  controlPassword = new FormControl(null, [Validators.required, Validators.minLength(6)]);
   passwordVisible = false;
   emailSignInError$ = new Observable<string>();
   signingInWithEmail$ = new BehaviorSubject<boolean>(false);
@@ -76,8 +76,8 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   editingDetails$ = new BehaviorSubject<boolean>(false);
   deletingAccount$ = new BehaviorSubject<boolean>(false);
 
-  controlName = new UntypedFormControl(null, [Validators.required]);
-  controlPolicy = new UntypedFormControl(false, [Validators.requiredTrue]);
+  controlName = new FormControl(null, [Validators.required]);
+  controlPolicy = new FormControl(false, [Validators.requiredTrue]);
 
   user$ = this.authService.user$;
 
@@ -110,14 +110,6 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         }),
         takeUntil(this.destroy$))
       .subscribe();
-  }
-
-  listenClickAway() {
-    fromEvent(window, 'pointerup')
-      .pipe(
-        take(1),
-        takeUntil(this.destroy$))
-      .subscribe(() => this.isPromoteOpen = false);
   }
 
   ngOnDestroy() {
@@ -328,4 +320,23 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       });
   }
 
+  listenClickAway(callback: () => void) {
+    fromEvent(window, 'pointerup')
+      .pipe(
+        delay(0),
+        take(1),
+        takeWhile(() => this.isPromoteOpen),
+        takeUntil(this.destroy$))
+      .subscribe(callback);
+  }
+
+  openReasons(event: MouseEvent) {
+    event.stopPropagation();
+    let wasOpen = this.isPromoteOpen;
+    this.isPromoteOpen = !this.isPromoteOpen;
+
+    if (!wasOpen) {
+      this.listenClickAway(() => this.isPromoteOpen = false);
+    }
+  }
 }

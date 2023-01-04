@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-account-edit-details',
   templateUrl: './account-edit-details.component.html',
-  styleUrls: ['./account-edit-details.component.scss']
+  styleUrls: ['./account-edit-details.component.scss'],
+  animations: [BasicAnimations.fade],
 })
 export class AccountEditDetailsComponent {
 

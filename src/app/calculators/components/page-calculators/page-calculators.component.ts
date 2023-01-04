@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { delay, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil, tap, timer } from 'rxjs';
+import { delay, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil, takeWhile, tap, timer } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';
 import { UsableRoutes } from '../../../usable-routes';
 import { AuthService } from '../../../services/auth.service';
@@ -50,26 +50,29 @@ export class PageCalculatorsComponent extends WithDestroy() {
       .subscribe((data: RouteData) =>
         this.calculatorType = routesMap[data.calculatorType]);
 
+    // TODO: create EventsService to detect user actions between various services
+    let userIconHasClicked = false;
+    setTimeout(() =>
+      document.querySelector('cp-user-profile > div')?.addEventListener('click', () => userIconHasClicked = true));
+
+
     let minute = 60 * 1e3;
-    this.authService
+    let initialSignUpDialog$ = this.authService
       .user$
       .pipe(
         take(1),
         delay(minute),
         filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
+        takeWhile(() => !userIconHasClicked),
         switchMap(() => {
           localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
 
           return this.dialog.open(AccountDialogComponent,
             {backdropClass: GlobalStyleClass.MobileFriendly})
             .afterClosed();
-        }),
-        delay(minute),
-        tap(() => this.signInDialogOpen$.next()),
-        takeUntil(this.destroy$))
-      .subscribe();
+        }));
 
-    this.signInDialogOpen$
+    initialSignUpDialog$
       .pipe(
         tap(() => {
           if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {

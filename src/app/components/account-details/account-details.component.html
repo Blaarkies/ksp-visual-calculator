@@ -1,14 +1,14 @@
 <ng-container *ngIf="user$ | async as user; else noUser">
-  <h1 mat-dialog-title>Account Details</h1>
-
   <div mat-dialog-content class="details-layout">
-    <div class="display-details-layout">
+    <div class="text dialog-title">Account Details</div>
 
+    <div class="display-details-layout">
       <div class="avatar-section">
         <div class="avatar-layout stack">
           <img [src]="user.photoURL || 'assets/logos/guest-account.webp'">
           <span class="premium-sash"
                 [matTooltip]="'Thank you for supporting! 😁'"
+                matTooltipPosition="right"
                 [@fade]
                 *ngIf="user.isCustomer">
           Supporter
@@ -66,9 +66,9 @@
 </ng-container>
 
 <ng-template #noUser>
-  <h1 mat-dialog-title>Sign Up / Sign In</h1>
-
   <div mat-dialog-content class="sign-in-layout">
+    <div class="text dialog-title">Sign Up / Sign In</div>
+
     <img class="app-image" src="assets/logos/ksp-visual-calculator-text-black.webp">
 
     <div class="promote-sign-in">
@@ -77,7 +77,7 @@
         <button mat-icon-button
                 #buttonWhy
                 (focus)="buttonWhy._elementRef.nativeElement.blur()"
-                (click)="isPromoteOpen = !isPromoteOpen; $event.stopPropagation(); listenClickAway()">
+                (click)="openReasons($event)">
           <mat-icon [svgIcon]="icons.ChevronDown" [@flipVertical]="isPromoteOpen"></mat-icon>
         </button>
 

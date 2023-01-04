@@ -37,20 +37,8 @@
           [attr.stroke]="'#fa0' + 'A'"
           fill="none"
           stroke-linecap="round"
-          [attr.d]="'M '
-        + worldViewScale * trajectory.a.location.x
-        + ' '
-        + worldViewScale * trajectory.a.location.y
-          + 'S '
-          + worldViewScale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
-                                      trajectory.b.location.x, trajectory.b.location.y).x
-          + ' '
-          + worldViewScale * trajectory.curve(trajectory.a.location.x, trajectory.a.location.y,
-                                      trajectory.b.location.x, trajectory.b.location.y).y
-            + ' '
-            + worldViewScale * trajectory.b.location.x
-            + ' '
-            + worldViewScale * trajectory.b.location.y" />
+          [attr.d]="getPath(trajectory)"
+    />
   </svg>
 
   <mat-icon class="icon-map-marker geo-markers"
@@ -61,7 +49,7 @@
   >
     <span class="trip-index"
           xmlns="http://www.w3.org/1999/xhtml"
-          [style.translate]="'0 ' + tripIndexMarginMap[trajectory.sequence] * -2 + 'ch'">
+          [style.--margin-index]="tripIndexMarginMap[trajectory.sequence]">
       {{trajectory.sequence}}
     </span>
   </mat-icon>

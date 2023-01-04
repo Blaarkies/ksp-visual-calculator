@@ -2,9 +2,9 @@ import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import {
   AbstractControl,
-  UntypedFormArray,
-  UntypedFormControl,
-  UntypedFormGroup,
+  FormArray,
+  FormControl,
+  FormGroup,
   ValidationErrors,
   ValidatorFn,
   Validators
@@ -47,7 +47,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   inputFields = {
     name: {
       label: 'Name',
-      control: new UntypedFormControl(this.data.edit?.label ?? 'Untitled Space Craft', [
+      control: new FormControl(this.data.edit?.label ?? 'Untitled Space Craft', [
         Validators.required,
         Validators.maxLength(128),
         CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
@@ -56,12 +56,12 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     },
     craftType: {
       label: 'Type',
-      control: new UntypedFormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
+      control: new FormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
       controlMeta: new ControlMetaSelect(CraftType.List, undefined, 'Icon to represent this craft'),
     },
     antennaSelection: {
       label: 'Antennae Onboard',
-      control: new UntypedFormControl(this.data.edit?.antennae ?? [new Group(this.setupService.getAntenna('Internal'))]),
+      control: new FormControl(this.data.edit?.antennae ?? [new Group(this.setupService.getAntenna('Internal'))]),
       controlMeta: new ControlMetaAntennaSelector(this.setupService.antennaList),
     },
   } as InputFields;
@@ -74,7 +74,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   advancedInputFields = {
     orbitParent: {
       label: 'Orbit Parent',
-      control: new UntypedFormControl(null),
+      control: new FormControl<SpaceObject>(null),
       controlMeta: new ControlMetaSelect(
         this.orbitParentOptions,
         new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
@@ -82,7 +82,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     altitude: {} as InputField,
     angle: {
       label: 'Angle',
-      control: new UntypedFormControl(null),
+      control: new FormControl<number>(null),
       controlMeta: {
         type: ControlMetaType.Number,
         min: 0,
@@ -93,10 +93,10 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     },
   } as InputFields;
   advancedInputFieldsList: InputField[];
-  advancedForm: UntypedFormGroup;
+  advancedForm: FormGroup;
   advancedIsOpen = false;
 
-  form: UntypedFormArray;
+  form: FormArray;
 
   Icons = Icons;
 
@@ -119,7 +119,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   }
 
   private updateMainForm() {
-    this.form = new UntypedFormArray([
+    this.form = new FormArray([
       ...this.inputFieldsList.map(field => field.control),
       this.advancedForm]);
   }
@@ -128,7 +128,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     this.advancedInputFields.altitude = this.getAltitudeInputField(soiSize);
 
     this.advancedInputFieldsList = Object.values(this.advancedInputFields);
-    this.advancedForm = new UntypedFormGroup({
+    this.advancedForm = new FormGroup({
       orbitParent: this.advancedInputFields.orbitParent.control,
       altitude: this.advancedInputFields.altitude.control,
       angle: this.advancedInputFields.angle.control,
@@ -138,7 +138,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   private getAltitudeInputField(soiSize: number) {
     return {
       label: 'Altitude',
-      control: new UntypedFormControl(null, [Validators.min(0), Validators.max(soiSize)]),
+      control: new FormControl<number>(null, [Validators.min(0), Validators.max(soiSize)]),
       controlMeta: {
         type: ControlMetaType.Number,
         min: 0,

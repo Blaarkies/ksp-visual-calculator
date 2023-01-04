@@ -6,6 +6,10 @@ mat-icon {
   padding-top: 10px;
   min-width: 500px; // tabs leave ghost images of file-drop when changing
 
+  .dialog-title {
+    margin-bottom: 16px;
+  }
+
   mat-tab-body {
     .mat-mdc-tab-body-content {
       overflow: hidden !important; // remove scrollbar

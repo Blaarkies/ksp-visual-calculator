@@ -1,5 +1,6 @@
-<h3>{{data.startTitle}}</h3>
+<div class="bottom-sheet-title">{{data.startTitle}}</div>
 
 <cp-action-list [options]="data.actionOptions"
                 [justifyRight]="true"
+                [tooltipPosition]="'above'"
                 (action)="bottomSheetRef.dismiss()"></cp-action-list>

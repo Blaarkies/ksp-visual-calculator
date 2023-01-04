@@ -17,6 +17,7 @@
     height: calc(var(--height) - 12px);
 
     overflow-y: scroll;
+    overflow-x: hidden;
     scroll-behavior: smooth;
 
     background-color: #6662;

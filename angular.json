@@ -42,7 +42,13 @@
             "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "allowedCommonJsDependencies": [
+              "idb",
+              "graph-data-structure",
+              "fast-memoize",
+              "pako"
+            ]
           },
           "configurations": {
             "production": {

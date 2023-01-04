@@ -1,10 +1,10 @@
-import { PrivacyDialogComponent } from './privacy-dialog.component';
+import { AnalyticsDialogComponent } from './analytics-dialog.component';
 import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { AnalyticsService } from '../../services/analytics.service';
 import createSpy = jasmine.createSpy;
 
-let componentType = PrivacyDialogComponent;
+let componentType = AnalyticsDialogComponent;
 describe('PrivacyDialogComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));

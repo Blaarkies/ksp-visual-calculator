@@ -269,23 +269,34 @@
 
             <form class="dv-calculator" (change)="calcDv.update()">
               <div class="result">{{calcDv.result | number}} m/s</div>
+
               <div>=</div>
+
               <mat-form-field appearance="outline">
-                <input matInput type="number" min="0" value="350" placeholder="Isp"
+                <mat-label>Isp</mat-label>
+                <input matInput type="number" min="0" value="350"
                        (input)="calcDv.isp = $event.target.value">
                 <span matSuffix class="pad-suffix-right">s</span>
               </mat-form-field>
+
+              <div>∗</div>
+
               <div>9.81 m/s<sup>2</sup></div>
+
+              <div>∗</div>
+
               <div>ln<span class="large-bracket">(</span></div>
-              <div class="fit-fraction">
+              <div>
                 <mat-form-field appearance="outline">
-                  <input matInput type="number" [min]="calcDv.dry" value="8" placeholder="Mass-wet"
+                  <mat-label>Mass-wet</mat-label>
+                  <input matInput type="number" [min]="calcDv.dry" value="8"
                          (input)="calcDv.wet = $event.target.value">
                   <span matSuffix class="pad-suffix-right">t</span>
                 </mat-form-field>
                 <div class="divider-line"></div>
                 <mat-form-field appearance="outline">
-                  <input matInput type="number" min="0" value="3" placeholder="Mass-dry"
+                  <mat-label>Mass-dry</mat-label>
+                  <input matInput type="number" min="0" value="3"
                          (input)="calcDv.dry = $event.target.value">
                   <span matSuffix class="pad-suffix-right">t</span>
                 </mat-form-field>
