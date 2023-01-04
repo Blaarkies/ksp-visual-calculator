@@ -10,7 +10,7 @@ export class PathController {
 
   private screen = new Vector2(window.innerWidth, window.innerHeight);
 
-  constructor(type?: 'snow' | 'spooky') {
+  constructor(type?: 'snow' | 'spooky' | 'free') {
     if (type === 'snow') {
       this.height = Common.randomInt(10, 80);
       this.path = this.getSnowPath();
@@ -23,6 +23,13 @@ export class PathController {
       let pointCount = this.path.split(' ').length;
       this.duration = Common.randomInt(pointCount - 1, pointCount + 1) * 5;
       this.timingFunction = 'cubic-bezier(.1, 1.4, 0, 0.6)'; // fast in, slow hover towards end
+
+    } else if (type === 'free') {
+      this.height = 100;
+      this.path = this.getFreePath();
+      let pointCount = this.path.split(' ').length;
+      this.duration = Common.randomInt(pointCount - 1, pointCount + 1) * 15;
+      this.timingFunction = 'cubic-bezier(.1, 1.4, 0, 0.6)';
 
     } else {
       this.height = Common.randomInt(40, 80);
@@ -107,6 +114,37 @@ export class PathController {
       if (i === 0) {
         let radialPoint = this.getRandomPointOutsideScreen();
         sum.output += `M${radialPoint[0]},${radialPoint[1]}`;
+      } else if (i % 2 === 0) {
+        sum.output += ` ${c.join(',')}`;
+      } else {
+        sum.output += ` S${c.join(',')}`;
+      }
+
+      sum.last = c;
+      return sum;
+    }, {output: '', last: null})
+      .output;
+
+    return `path('${pathCurve}')`;
+  }
+
+  private getFreePath(): string {
+    let centerScreen = this.screen.clone().multiply(.5);
+
+    let distanceFromCenterEnd = centerScreen.distance(Vector2.zero) * .3;
+    let points = [
+      this.getRandomPointOutsideScreen(),
+      centerScreen.toList(),
+      centerScreen.clone().addVector2(Vector2
+        .fromDirection(0, distanceFromCenterEnd))
+        .toList(),
+    ]
+      .map(([x, y]) => [Math.round(x), Math.round(y)]);
+
+    let pathCurve = points.reduce((sum, c, i) => {
+      if (i === 0) {
+        let radialPoint = this.getRandomPointOutsideScreen();
+        sum.output += `M ${radialPoint[0]},${radialPoint[1]}`;
       } else if (i % 2 === 0) {
         sum.output += ` ${c.join(',')}`;
       } else {
