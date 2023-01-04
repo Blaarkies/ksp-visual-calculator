@@ -9,7 +9,7 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { WithDestroy } from '../../common/with-destroy';
 import { filter, map, Observable, takeUntil } from 'rxjs';
 import { Orbit } from '../../common/domain/space-objects/orbit';
@@ -35,7 +35,7 @@ import { GlobalStyleClass } from '../../common/global-style-class';
   templateUrl: './universe-map.component.html',
   styleUrls: ['./universe-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
 

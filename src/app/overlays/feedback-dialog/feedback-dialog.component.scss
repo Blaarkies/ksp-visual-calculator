@@ -1,3 +1,5 @@
+@use 'src/styles/variables' as queries;
+
 .feedback-layout {
   max-width: 600px;
   overflow: hidden;
@@ -5,7 +7,7 @@
 
   cp-input-field-list {
     display: grid;
-    gap: 20px 40px;
+    gap: 50px 40px;
     grid-template-columns: auto auto;
 
     div:last-child {
@@ -13,6 +15,15 @@
 
       mat-form-field {
         width: 100%;
+      }
+    }
+
+    @media screen and (max-width: queries.$query-mobile-width) {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      >div:nth-child(2) {
+        margin-bottom: 20px;
       }
     }
   }

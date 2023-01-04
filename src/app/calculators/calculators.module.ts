@@ -6,7 +6,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -50,7 +49,7 @@ import { InputFieldListComponent } from '../components/controls/input-field-list
 import {
   DifficultySettingsDialogComponent
 } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
-import { PrivacyDialogComponent } from '../overlays/privacy-dialog/privacy-dialog.component';
+import { AnalyticsDialogComponent } from '../overlays/analytics-dialog/analytics-dialog.component';
 import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialog.component';
@@ -96,6 +95,10 @@ import { PageDvPlannerComponent } from './components/page-dv-planner/page-dv-pla
 import { PageCalculatorsComponent } from './components/page-calculators/page-calculators.component';
 import { CalculatorsRoutingModule } from './calculators-routing.module';
 import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module';
+import { AppModule } from '../app.module';
+import {
+  AccountEditDetailsComponent
+} from '../components/account-details/account-edit-details/account-edit-details.component';
 
 
 @NgModule({
@@ -103,7 +106,7 @@ import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module'
     CelestialBodyDetailsDialogComponent,
     CraftDetailsDialogComponent,
     DifficultySettingsDialogComponent,
-    PrivacyDialogComponent,
+    AnalyticsDialogComponent,
     PolicyDialogComponent,
     AccountDialogComponent,
     CreditsDialogComponent,
@@ -135,6 +138,7 @@ import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module'
     StateDisplayComponent,
     StateEditNameRowComponent,
     AccountDetailsComponent,
+    AccountEditDetailsComponent,
     HudComponent,
     ActionBottomSheetComponent,
     ActionListComponent,

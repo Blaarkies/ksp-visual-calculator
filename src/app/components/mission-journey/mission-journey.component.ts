@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { filter, fromEvent, interval, map, mapTo, merge, Observable, sampleTime, scan, startWith } from 'rxjs';
 import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
@@ -12,14 +12,13 @@ class TripTrajectory {
   sequence: number;
   a: SpaceObject;
   b?: SpaceObject;
-  curve?: (x1, y1, x2, y2) => Vector2;
 }
 
 @Component({
   selector: 'cp-mission-journey',
   templateUrl: './mission-journey.component.html',
   styleUrls: ['./mission-journey.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class MissionJourneyComponent implements AfterViewInit {
 
@@ -44,42 +43,10 @@ export class MissionJourneyComponent implements AfterViewInit {
   worldViewScale = 100 * CameraService.normalizedScale;
   mouseLocation$: Observable<Vector2>;
   trajectories: TripTrajectory[] = [];
+  tripIndexMarginMap: number[] = [];
+  trajectoryPathMap = new Map<TripTrajectory, string>([]);
 
   constructor(private cameraService: CameraService) {
-  }
-
-  private updateTrajectories(value: Checkpoint[]) {
-    this.trajectories = value.windowed(2)
-      .map(([a, b], i) => ({
-        sequence: i + 1,
-        a: a.node.body,
-        b: b.node.body,
-      }))
-      .add({
-        sequence: value.length,
-        a: value.last()?.node?.body,
-        b: null,
-      })
-      .map(props => {
-        if (!props.b) {
-          return props;
-        }
-
-        let a = props.a.location;
-        let b = props.b.location;
-
-        let memoizedCurve = memoize((x1, y1, x2, y2) => {
-          let direction = a.direction(b);
-          let distance = a.distance(b);
-          return a.lerpClone(b).addVector2(Vector2.fromDirection(
-            direction + Math.PI * .5,
-            distance * .2));
-        });
-        return {
-          ...props,
-          curve: memoizedCurve,
-        };
-      });
   }
 
   ngAfterViewInit() {
@@ -97,6 +64,70 @@ export class MissionJourneyComponent implements AfterViewInit {
 
   getTrajectoryKey(index: number, item: TripTrajectory): string {
     return item.a.label + item.b?.label;
+  }
+
+  private updateTrajectories(checkpoints: Checkpoint[]) {
+    this.trajectories = this.createTrajectories(checkpoints);
+
+    this.updateTripIndexLabels(this.trajectories);
+  }
+
+  private createTrajectories(value: Checkpoint[]) {
+    return value.windowed(2)
+      .map(([a, b], i) => ({
+        sequence: i + 1,
+        a: a.node.body,
+        b: b.node.body,
+      }))
+      .add({
+        sequence: value.length,
+        a: value.last()?.node?.body,
+        b: null,
+      });
+  }
+
+  /** Determines visual margins for trip-index labels */
+  private updateTripIndexLabels(trajectories: TripTrajectory[]) {
+    this.tripIndexMarginMap = [];
+
+    let destinationMap = new Map<SpaceObject, number[]>(trajectories.map(({a}) => [a, []]));
+    trajectories.forEach(({sequence, a}) => destinationMap.get(a).push(sequence));
+
+    Array.from(destinationMap.values())
+      .filter(list => list.length > 1)
+      .map(list => list.map((tripIndex, i) => ({tripIndex, margin: i})))
+      .flatMap()
+      .forEach(({tripIndex, margin}) => this.tripIndexMarginMap[tripIndex] = margin);
+  }
+
+  /** Serialized args into toString() values. Object references are ignored. */
+  private serializer = args => args.map(a => a.toString()).join('');
+  private memoizeTrajectoryPath = memoize((x1, y1, x2, y2, trajectory) => {
+    let s = this.worldViewScale;
+
+    let locationA = trajectory.a.location;
+    let locationB = trajectory.b.location;
+    let direction = locationA.direction(locationB);
+    let distance = locationA.distance(locationB);
+    let curve = locationA.lerpClone(locationB)
+      .addVector2(Vector2.fromDirection(
+        direction + Math.PI * .5,
+        distance * .2));
+
+    return `M ${s * x1} ${s * y1} S`
+      + `${s * curve.x}`
+      + ` ${s * curve.y}`
+      + ` ${s * x2} ${s * y2}`;
+  }, {serializer: this.serializer});
+
+  private getPath(trajectory: TripTrajectory): string {
+    return this.memoizeTrajectoryPath(
+      trajectory.a.location.x,
+      trajectory.a.location.y,
+      trajectory.b.location.x,
+      trajectory.b.location.y,
+      trajectory,
+    );
   }
 
 }

@@ -1,4 +1,4 @@
-<div class="node-layout overlap-container">
+<div class="node-layout stack">
   <div class="destination-layout">
     <div class="destination">{{details.name}}</div>
     <button mat-button
@@ -12,19 +12,21 @@
     <button *ngIf="details.allowAerobraking"
             [@animateSelected]="details.aerobraking || false"
             [matTooltip]="'Use aerobraking'"
-            mat-icon-button
+            mat-button
             disableRipple
             (click)="toggleAerobraking()">
-      <mat-icon [svgIcon]="icons.Aerobraking"></mat-icon>
+      <div>
+        <mat-icon [svgIcon]="icons.Aerobraking"></mat-icon>
+      </div>
     </button>
-    <button *ngIf="details.allowGravityAssist"
-            [@animateSelected]="details.gravityAssist || false"
-            [matTooltip]="'Use gravity assist'"
-            mat-icon-button
-            disableRipple
-            (click)="toggleGravityAssist()">
-      <mat-icon [svgIcon]="icons.GravityAssist"></mat-icon>
-    </button>
+    <!--    <button *ngIf="details.allowGravityAssist"-->
+    <!--            [@animateSelected]="details.gravityAssist || false"-->
+    <!--            [matTooltip]="'Use gravity assist'"-->
+    <!--            mat-icon-button-->
+    <!--            disableRipple-->
+    <!--            (click)="toggleGravityAssist()">-->
+    <!--      <mat-icon [svgIcon]="icons.GravityAssist"></mat-icon>-->
+    <!--    </button>-->
   </div>
 
   <button mat-button
@@ -32,7 +34,9 @@
           class="delete-button"
           [matTooltip]="'Remove checkpoint'"
           (click)="remove.emit()">
-    <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+    <div>
+      <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+    </div>
   </button>
 </div>
 

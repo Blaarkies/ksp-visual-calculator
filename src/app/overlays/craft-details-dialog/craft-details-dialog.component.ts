@@ -25,7 +25,7 @@ import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AdvancedPlacement } from './advanced-placement';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 import { takeUntil } from 'rxjs';
@@ -39,7 +39,7 @@ export class CraftDetailsDialogData {
   selector: 'cp-craft-details-dialog',
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade, BasicAnimations.height, BasicAnimations.flipVertical],
   encapsulation: ViewEncapsulation.None,
 })
 export class CraftDetailsDialogComponent extends WithDestroy() {
@@ -74,28 +74,27 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   advancedInputFields = {
     orbitParent: {
       label: 'Orbit Parent',
-      control: new FormControl(null),
+      control: new FormControl<SpaceObject>(null),
       controlMeta: new ControlMetaSelect(
         this.orbitParentOptions,
-        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon])),
-        'Where to place this craft'),
+        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
     },
     altitude: {} as InputField,
     angle: {
       label: 'Angle',
-      control: new FormControl(null),
+      control: new FormControl<number>(null),
       controlMeta: {
         type: ControlMetaType.Number,
         min: 0,
         max: 360,
         factor: 1,
         suffix: '°',
-        hint: 'Starts on the right side, increase counter-clockwise',
       } as ControlMetaNumber,
     },
   } as InputFields;
   advancedInputFieldsList: InputField[];
   advancedForm: FormGroup;
+  advancedIsOpen = false;
 
   form: FormArray;
 
@@ -139,13 +138,12 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   private getAltitudeInputField(soiSize: number) {
     return {
       label: 'Altitude',
-      control: new FormControl(null, [Validators.min(0), Validators.max(soiSize)]),
+      control: new FormControl<number>(null, [Validators.min(0), Validators.max(soiSize)]),
       controlMeta: {
         type: ControlMetaType.Number,
         min: 0,
         max: soiSize,
         suffix: 'm',
-        hint: 'Height above surface',
       } as ControlMetaNumber,
     };
   }

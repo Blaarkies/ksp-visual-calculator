@@ -31,10 +31,9 @@
         overflow-y: auto;
       }
 
-      .title h1 {
+      .header .dialog-title {
         font-size: 1em;
         line-height: unset;
-        font-weight: 700;
       }
     }
 
@@ -46,12 +45,12 @@
   display: grid;
   grid-template-columns: 1fr max-content;
   grid-template-areas:
-    'title    title'
+    'header   header'
     'messages icon'
     'buttons  buttons';
 
-  .title {
-    grid-area: title;
+  .header {
+    grid-area: header;
     display: grid;
     grid-auto-flow: column;
   }

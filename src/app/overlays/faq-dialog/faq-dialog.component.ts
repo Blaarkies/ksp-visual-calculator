@@ -1,6 +1,6 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { WithDestroy } from '../../common/with-destroy';
 import {
   debounceTime,
@@ -33,7 +33,7 @@ export class FaqDialogData {
 })
 export class FaqDialogComponent extends WithDestroy() {
 
-  searchControl = new FormControl();
+  searchControl = new UntypedFormControl();
   columns: Section[][];
 
   allSections: Section[]; // single list, for handset

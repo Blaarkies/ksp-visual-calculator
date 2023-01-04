@@ -7,16 +7,6 @@
   }
 }
 
-/** @deprecated - use .stack instead */
-.overlap-container {
-  display: grid;
-
-  > * {
-    grid-row: 1/1;
-    grid-column: 1/1;
-  }
-}
-
 .overflow-visible {
   overflow: visible;
 }
@@ -64,4 +54,13 @@
 
 .inline-children {
   display: flex;
+}
+
+.dim-until-hover {
+  opacity: .3;
+  transition: opacity .2s ease-out;
+
+  &:hover {
+    opacity: 1;
+  }
 }

@@ -88,7 +88,7 @@ export class TutorialService {
     let dragPlanet = {
       dialogPosition: 'right',
       dialogTitle: 'Dragging Planets',
-      dialogTargetCallback: () => this.selectObjectInDom('eve').firstChild,
+      dialogTargetCallback: () => this.selectObjectInDom('eve')?.firstChild?.firstChild,
       dialogMessages: [
         'This is a planet, it can be dragged around its orbit.',
         'Moons and spacecraft can also be moved.',
@@ -148,7 +148,7 @@ export class TutorialService {
     let moveCamera = {
       dialogPosition: 'top',
       dialogTitle: 'Moving The Camera',
-      dialogTargetCallback: () => this.selectObjectInDom('kerbol').firstChild,
+      dialogTargetCallback: () => this.selectObjectInDom('kerbol')?.firstChild?.firstChild,
       dialogMessages: [
         'The camera can be moved around to view other parts of the Kerbol system.',
         'Right-click and hold in the universe to pan the camera around.',
@@ -189,9 +189,9 @@ export class TutorialService {
     } as StepDetails;
 
     let zoomCamera = {
-      dialogPosition: 'right',
+      dialogPosition: 'top',
       dialogTitle: 'Zooming In',
-      dialogTargetCallback: () => this.selectObjectInDom('kerbin').firstChild,
+      dialogTargetCallback: () => this.selectObjectInDom('kerbin')?.firstChild?.firstChild,
       dialogMessages: [
         'Some planets have moons, but you have to zoom in to see them.',
         'Point the mouse cursor at Kerbin, then scroll in/out with the mouse wheel, to zoom in/out.',
@@ -243,7 +243,7 @@ export class TutorialService {
     let startTutorial = {
       stepType: 'waitForNext',
       nextButton$: startTutorialNext$,
-      dialogPosition: 'bottom',
+      dialogPosition: 'right',
       dialogTitle: null,
       dialogTargetCallback: () => document.querySelector('.page-icon'),
       dialogMessages: null,
@@ -316,14 +316,14 @@ export class TutorialService {
       dialogTargetCallback: () => document.querySelector(
         'cp-action-bottom-sheet, cp-action-panel#context-panel'),
       dialogMessages: [
-        'This universe can be configured here.',
+        'Simulated spacecraft can be added to this universe.',
         'Click "New Craft" to add your own spacecraft.'],
       dialogIcon: Icons.Configure,
       stages: [
         {
           callback: input => defer(() => {
             let openEditOptionsButton = document.querySelector(
-              'cp-action-panel#context-panel button[mat-icon-button], cp-action-fab#context-fab button');
+              'cp-action-panel#context-panel button, cp-action-fab#context-fab button');
             (openEditOptionsButton as HTMLButtonElement).click();
             return timer(500).pipe(mapTo(input));
           }),
@@ -335,7 +335,7 @@ export class TutorialService {
         {
           callback: input => defer(() => {
             let matListOptions = document.querySelectorAll(
-              'cp-action-panel#context-panel mat-list-option, cp-action-list mat-list-option');
+              'cp-action-panel#context-panel mat-list-item, cp-action-list mat-list-item');
             let target = Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
             return fromEvent(target, 'click').pipe(
               take(1), mapTo(input), delay(100));
@@ -344,16 +344,16 @@ export class TutorialService {
       ],
       markerTargetCallback: () => {
         let matListOptions = document.querySelectorAll(
-          'cp-action-panel#context-panel mat-list-option, cp-action-list mat-list-option');
+          'cp-action-panel#context-panel mat-list-item, cp-action-list mat-list-item');
         return Array.from(matListOptions).find(e => e.innerHTML.includes('New Craft')) as HTMLElement;
       },
       markerType: 'pane',
     } as StepDetails;
 
     let addCraft = {
-      dialogPosition: 'top',
+      dialogPosition: 'right',
       dialogTitle: 'Selecting Antenna Types',
-      dialogTargetCallback: () => document.querySelector('cp-input-field[label="Search"]'),
+      dialogTargetCallback: () => document.querySelector('cp-craft-details-dialog'),
       dialogMessages: [
         'Spacecraft can be added and configured here.',
         'Remember to select a communications antenna for this spacecraft, e.g. the "Communotron HG-55".',
@@ -364,6 +364,14 @@ export class TutorialService {
           callback: input => defer(() => {
             let antennaSelect = document.querySelector('cp-antenna-selector cp-input-select mat-select') as HTMLSelectElement;
             antennaSelect.click();
+            return timer(100).pipe(mapTo(input));
+          }),
+        },
+        {
+          callback: input => defer(() => {
+            let antennaSearch = document.querySelector('cp-input-field[label="Search"] input') as HTMLInputElement;
+            antennaSearch.value = 'hg';
+            antennaSearch.dispatchEvent(new Event('input'));
             return timer(500).pipe(mapTo(input));
           }),
         },
@@ -379,8 +387,6 @@ export class TutorialService {
           }),
         },
       ],
-      markerTargetCallback: () => document.querySelectorAll('mat-option span')[3],
-      markerType: 'pane',
     } as StepDetails;
 
     let communicationLines = {
@@ -473,7 +479,7 @@ export class TutorialService {
 
   private getDvPlannerStepDetails(): StepDetails[] {
     let missionCheckpoints = {
-      dialogPosition: 'left',
+      dialogPosition: 'bottom',
       dialogTitle: 'Mission Checkpoints',
       dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
@@ -544,9 +550,9 @@ export class TutorialService {
     } as StepDetails;
 
     let nodeExplained = {
-      dialogPosition: 'left',
+      dialogPosition: 'bottom',
       dialogTitle: 'Checkpoint',
-      dialogTargetCallback: () => document.querySelector('cp-msp-node'),
+      dialogTargetCallback: () => document.querySelector('cp-maneuver-sequence-panel'),
       dialogMessages: [
         `Checkpoints appear in this list. The "Surface" button shows the specific situation at this checkpoint.`,
         `If you do not plan on launching from Kerbin's surface, you can instead set this to "Low Orbit".`,

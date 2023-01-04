@@ -5,11 +5,11 @@ import { WithDestroy } from '../../common/with-destroy';
 import { takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'cp-privacy-dialog',
-  templateUrl: './privacy-dialog.component.html',
-  styleUrls: ['./privacy-dialog.component.scss'],
+  selector: 'cp-analytics-dialog',
+  templateUrl: './analytics-dialog.component.html',
+  styleUrls: ['./analytics-dialog.component.scss'],
 })
-export class PrivacyDialogComponent extends WithDestroy() {
+export class AnalyticsDialogComponent extends WithDestroy() {
 
   trackingControl = new FormControl(this.analyticsService.isTracking);
 

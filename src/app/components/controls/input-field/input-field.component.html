@@ -1,4 +1,6 @@
 <mat-form-field class="input-field-component transition"
+                appearance="outline"
+                [color]="color"
                 [class.disabled]="disabled"
                 [class.error-blink]="errorBlink$ | async">
   <mat-label>{{label}}</mat-label>
@@ -11,15 +13,17 @@
             *ngIf="hint && (value === null || value === '')">{{hint}}</mat-hint>
   <span [@fade]
         *ngIf="suffix !== null"
-        matSuffix>{{suffix}}</span>
+        matSuffix
+        class="pad-right">
+    {{suffix}}
+  </span>
   <button *ngIf="allowClear"
           class="clear-button"
           [class.visible]="value !== null && value !== ''"
           matSuffix
           mat-icon-button
-          color="warn"
           (click)="clear()">
-    <mat-icon [svgIcon]="icons.Backspace"></mat-icon>
+    <mat-icon [svgIcon]="icons.Backspace" color="muted"></mat-icon>
   </button>
 </mat-form-field>
 

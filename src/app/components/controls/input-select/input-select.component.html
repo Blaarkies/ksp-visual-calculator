@@ -1,13 +1,16 @@
-<mat-form-field>
+<mat-form-field appearance="outline" class="limit-width">
   <mat-label>{{label}}</mat-label>
   <mat-select (selectionChange)="userInputChange($event.value)"
               (opened)="inputRef.focus()"
               (closed)="clearSearch(inputRef)"
+              panelClass="filter-select"
               [multiple]="false"
               [disabled]="disabled">
-    <div class="search-box overlap-container" #searchBox>
+    <div class="search-box stack" #searchBox>
       <cp-input-field #inputRef
                       label="Search"
+                      class="no-validation-message"
+                      color="accent"
                       (keydown)="$event.stopPropagation()"
                       (output)="searchValue$.next($event)">
       </cp-input-field>
@@ -15,7 +18,7 @@
               mat-icon-button
               disableRipple
               (click)="clearSearch(inputRef)">
-        <mat-icon color="primary" [svgIcon]="icons.Clear"></mat-icon>
+        <mat-icon color="none" [svgIcon]="icons.Backspace"></mat-icon>
       </button>
     </div>
 

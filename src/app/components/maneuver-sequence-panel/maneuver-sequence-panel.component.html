@@ -2,16 +2,19 @@
   <div class="panel-header">
     <div class="text-white">Mission Checkpoints</div>
     <button mat-icon-button
+            [matTooltip]="'Adjust defaults'"
+            matTooltipPosition="left"
             (click)="toggleOptions()">
       <mat-icon [svgIcon]="icons.Configure"></mat-icon>
     </button>
   </div>
 
-  <div [@height]="isOptionsOpen" class="options text-white">
+  <div [@expandY]="isOptionsOpen" class="options text-white">
     <div class="text-white">Preferences</div>
 
     <div class="error-margin-control">
-      <cp-input-number #errorMargin class="hidden" style="transform: translateY(-1em);"
+      <cp-input-number #errorMargin
+                       class="hidden" style="transform: translateY(-1em);"
                        [formControl]="errorMarginControl"
                        [controlMeta]="errorMarginControlMeta"></cp-input-number>
 
@@ -23,10 +26,13 @@
       <div class="text-white">Margin of Error</div>
     </div>
 
-    <cp-input-toggle label="Aerobraking" [formControl]="aerobrakeControl"></cp-input-toggle>
+    <cp-input-toggle class="checkbox-aerobraking"
+                     label="Aerobraking"
+                     [formControl]="aerobrakeControl"></cp-input-toggle>
 
     <div class="plane-change-control">
-      <cp-input-number #planeChange class="hidden" style="transform: translateY(-1em);"
+      <cp-input-number #planeChange
+                       class="hidden" style="transform: translateY(-1em);"
                        [formControl]="planeChangeControl"
                        [controlMeta]="planeChangeControlMeta"></cp-input-number>
 
@@ -39,20 +45,17 @@
     </div>
 
     <div class="flight-situation">
-      <mat-form-field class="hidden">
-        <mat-select [value]="preferredCondition$.value"
-                    (selectionChange)="setPreferredCondition($event)"
-                    #selectSituation>
-          <mat-option *ngFor="let condition of availableConditions"
-                      [value]="condition">
-            {{conditionReadableMap[condition]}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-menu #menuSituation="matMenu" class="menu-vertical buttons-left">
+        <button mat-button
+                *ngFor="let condition of availableConditions"
+                (click)="setPreferredCondition(condition)">
+          {{conditionReadableMap[condition]}}
+        </button>
+      </mat-menu>
 
       <button mat-button
-              class="button-select"
-              (click)="selectSituation.open()">
+              class="chip-button"
+              [matMenuTriggerFor]="menuSituation">
         {{conditionReadableMap[preferredCondition$.value.toString()]}}
       </button>
 
@@ -60,20 +63,17 @@
     </div>
 
     <div class="route-type">
-      <mat-form-field class="hidden">
-        <mat-select [value]="routeType$.value"
-                    (selectionChange)="setRouteType($event)"
-                    #routeSelect>
-          <mat-option *ngFor="let routeType of routeTypes"
-                      [value]="routeType">
-            {{routeTypeReadableMap[routeType]}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-menu #menuRoute="matMenu" class="menu-vertical buttons-left">
+        <button mat-button
+                *ngFor="let routeType of routeTypes"
+                (click)="setRouteType(routeType)">
+          {{routeTypeReadableMap[routeType]}}
+        </button>
+      </mat-menu>
 
       <button mat-button
-              class="button-select"
-              (click)="routeSelect.open()">
+              class="chip-button"
+              [matMenuTriggerFor]="menuRoute">
         {{routeTypeReadableMap[routeType$.value.toString()]}}
       </button>
 

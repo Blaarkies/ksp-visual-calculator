@@ -1,13 +1,22 @@
-import { Directive, EventEmitter, HostListener, OnDestroy, Output } from '@angular/core';
-import { mapTo, of, Subject, switchMap, timer } from 'rxjs';
+import { Directive, EventEmitter, HostListener, Input, OnDestroy, Output } from '@angular/core';
+import { delay, mapTo, of, Subject, switchMap, take, timer } from 'rxjs';
 
 @Directive({
   selector: '[cpMouseHover]',
 })
 export class MouseHoverDirective implements OnDestroy {
 
+  @Input() set cpMouseHover(value: number | string) {
+    let safeValue = Number(value);
+    if (value === '' || (value !== 0 && isNaN(safeValue))) {
+      return;
+    }
+    this.debounceDuration = safeValue;
+  }
+
   @Output() hoverChange = new EventEmitter<boolean>();
 
+  private debounceDuration = 1e3;
   private hoverTrigger$ = new Subject<boolean>();
 
   constructor() {
@@ -15,7 +24,7 @@ export class MouseHoverDirective implements OnDestroy {
       .pipe(
         switchMap(hover => hover
           ? of(true)
-          : timer(1000).pipe(mapTo(false))))
+          : of(false).pipe(delay(this.debounceDuration))))
       .subscribe(hover => this.hoverChange.emit(hover));
   }
 

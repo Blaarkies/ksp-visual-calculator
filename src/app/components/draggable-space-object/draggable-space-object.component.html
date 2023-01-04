@@ -1,4 +1,4 @@
-<div class="draggable-body overlap-container"
+<div class="draggable-body stack"
      [class.cursor-grab]="!spaceObject.draggableHandle.isGrabbing"
      [style.left.%]="normalizedScale * spaceObject.location.x"
      [style.top.%]="normalizedScale * spaceObject.location.y"
@@ -15,9 +15,9 @@
   <button class="edit-icon-space-object"
           mat-icon-button
           [@fade]
-          *ngIf="allowEdit && buttonHover$ | async"
+          *ngIf="allowEdit && (buttonHover$ | async)"
           (click)="editSpaceObject.next()"
-          (mousedown)="$event.stopPropagation()">
+          (pointerdown)="$event.stopPropagation()">
     <mat-icon [svgIcon]="icons.Edit"></mat-icon>
   </button>
 

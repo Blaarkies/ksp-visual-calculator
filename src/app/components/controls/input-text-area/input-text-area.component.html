@@ -1,11 +1,8 @@
-<mat-form-field>
+<mat-form-field appearance="outline">
   <mat-label>{{label}}</mat-label>
-  <!--  matTextareaAutosize-->
-  <!--  [matAutosizeMaxRows]="6"-->
   <textarea #textarea
             [style.resize]="'none'"
             matInput
-
             (focus)="isActive = true; onTouched && onTouched(true)"
             (blur)="isActive = false"
             (input)="userInputChange($any($event).currentTarget.value)">

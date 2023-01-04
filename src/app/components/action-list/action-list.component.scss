@@ -1,9 +1,19 @@
-.right-justified .action-button {
-  justify-items: end;
+mat-list-item {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  > span {
+    height: 100%;
+  }
+}
+
+mat-list {
+  --padding: 20px;
 }
 
 .action-button {
-  padding: 0 20px !important;
+  cursor: pointer;
+  padding-inline: var(--padding);
   height: 100%;
   display: grid;
   gap: 10px;
@@ -26,6 +36,7 @@
   }
 
   &.unavailable {
+    cursor: unset;
     background-color: #aaa3;
 
     * {
@@ -34,27 +45,17 @@
   }
 }
 
+.divider-list-option {
+  height: unset !important;
+
+  hr {
+    margin-inline: var(--padding);
+    opacity: .5;
+  }
+}
+
 .anchor-invisible {
   height: 100%;
   text-decoration: none;
 }
 
-// override material, let content touch sides
-.mat-list-text {
-  height: 100%;
-  padding: 0 !important;
-}
-
-.mat-list-item-content {
-  padding: 0 !important;
-}
-
-.divider-list-option {
-  height: auto !important;
-  margin: 10px;
-  width: calc(100% - 20px) !important;
-
-  mat-divider {
-    border-color: #fff7;
-  }
-}

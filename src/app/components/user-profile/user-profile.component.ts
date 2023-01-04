@@ -7,11 +7,13 @@ import { AccountDialogComponent } from '../../overlays/account-dialog/account-di
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
 import { GlobalStyleClass } from '../../common/global-style-class';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
+  animations: [BasicAnimations.fade],
 })
 export class UserProfileComponent extends WithDestroy() {
 

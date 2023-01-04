@@ -1,12 +1,12 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
 import { FormControl, Validators } from '@angular/forms';
 import {
   BehaviorSubject,
   catchError,
-  debounceTime,
+  debounceTime, delay,
   EMPTY,
   filter,
   finalize,
@@ -20,7 +20,7 @@ import {
   startWith,
   switchMap,
   take,
-  takeUntil,
+  takeUntil, takeWhile,
   tap,
   timeout,
   withLatestFrom
@@ -39,15 +39,17 @@ import {
   UploadImageDialogComponent,
   UploadImageDialogData
 } from '../../overlays/upload-image-dialog/upload-image-dialog.component';
+import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
 
 @Component({
   selector: 'cp-account-details',
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
   animations: [
-    CustomAnimation.fade,
-    CustomAnimation.width,
-    CustomAnimation.flipVertical,
+    BasicAnimations.expandX,
+    ConfigurableAnimations.openCloseY(20),
+    BasicAnimations.fade,
+    BasicAnimations.flipVertical,
     trigger('slideOutVertical', [
       state('false', style({height: 0, overflow: 'hidden', borderColor: '#0000'})),
       state('true', style({height: '*', overflow: 'hidden'})),
@@ -108,14 +110,6 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         }),
         takeUntil(this.destroy$))
       .subscribe();
-  }
-
-  listenClickAway() {
-    fromEvent(window, 'pointerup')
-      .pipe(
-        take(1),
-        takeUntil(this.destroy$))
-      .subscribe(() => this.isPromoteOpen = false);
   }
 
   ngOnDestroy() {
@@ -326,4 +320,23 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       });
   }
 
+  listenClickAway(callback: () => void) {
+    fromEvent(window, 'pointerup')
+      .pipe(
+        delay(0),
+        take(1),
+        takeWhile(() => this.isPromoteOpen),
+        takeUntil(this.destroy$))
+      .subscribe(callback);
+  }
+
+  openReasons(event: MouseEvent) {
+    event.stopPropagation();
+    let wasOpen = this.isPromoteOpen;
+    this.isPromoteOpen = !this.isPromoteOpen;
+
+    if (!wasOpen) {
+      this.listenClickAway(() => this.isPromoteOpen = false);
+    }
+  }
 }

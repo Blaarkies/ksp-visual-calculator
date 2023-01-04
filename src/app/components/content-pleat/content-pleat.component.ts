@@ -1,27 +1,14 @@
-import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
-import { MatExpansionPanel } from '@angular/material/expansion';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { Component } from '@angular/core';
+import { BasicAnimations } from '../../common/animations/basic-animations';
+import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
 
 @Component({
   selector: 'cp-content-pleat',
   templateUrl: './content-pleat.component.html',
   styleUrls: ['./content-pleat.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade, ConfigurableAnimations.openCloseY(44)],
 })
 export class ContentPleatComponent {
-
-  showContentAfterInit: boolean;
-
-  @ViewChild(MatExpansionPanel) panel: MatExpansionPanel;
-
-  constructor() {
-    // Images flash once on init. This blocks content until moments after
-    setTimeout(() => this.showContentAfterInit = true, 500);
-  }
-
-  open() {
-    this.panel.open();
-  }
-
+  clampLines = true;
+  isOpen = false;
 }

@@ -1,18 +1,15 @@
-
 .cdk-global-scrollblock {
   overflow: hidden;
 }
 
 [mat-dialog-actions] {
-  display: grid !important;
-  grid-auto-flow: column;
-
-  & > *:nth-last-child(n + 2) { // all except last
-    justify-self: start;
-  }
-
-  & > *:last-child {
-    justify-self: end;
+  // creates the following layout examples
+  //  -------------------------[OK]
+  // [CANCEL] ---------------[SAVE]
+  // [CANCEL] ----- [REMOVE] [SAVE]
+  & > *:nth-child(2),
+  *:only-child {
+    margin-left: auto !important;
   }
 }
 
@@ -38,4 +35,35 @@
 
 .mat-bottom-sheet-container {
   backdrop-filter: blur(5px);
+}
+
+// compact form fields
+mat-form-field {
+  --pad: 10px;
+
+  &.mat-mdc-form-field-type-mat-select {
+    --pad: 6px;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: unset;
+    padding-top: var(--pad) !important;
+    padding-bottom: var(--pad) !important;
+  }
+}
+
+.mdc-floating-label:not(.mdc-floating-label--float-above) {
+  top: 50% !important;
+}
+
+// add to <mat-menu> to list buttons vertically
+.menu-vertical {
+
+  .mat-mdc-menu-content {
+    display: grid;
+  }
+
+  &.buttons-left button {
+    justify-content: start;
+  }
 }

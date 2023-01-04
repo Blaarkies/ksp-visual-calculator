@@ -11,10 +11,10 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
 import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
@@ -24,7 +24,7 @@ import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputFieldComponent),
@@ -39,13 +39,14 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   // 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
   //   | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
   //   | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'
+  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
   @Input() label: string;
   @Input() hint: string;
   @Input() suffix: string;
   @Input() allowClear: boolean;
   @Input() errors: FormControlError;
 
-  @Input() set formControl(value: FormControl) {
+  @Input() set formControl(value: UntypedFormControl) {
     this.setDisabledState(value?.disabled);
   }
 

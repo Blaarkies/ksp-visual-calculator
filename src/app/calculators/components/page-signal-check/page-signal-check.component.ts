@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { TransmissionLine } from '../../../common/domain/transmission-line';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { SpaceObjectService } from '../../../services/space-object.service';
 import { filter, Observable, takeUntil } from 'rxjs';
 import {
@@ -24,7 +24,7 @@ import { EventLogs } from '../../../services/event-logs';
   templateUrl: './page-signal-check.component.html',
   styleUrls: ['./page-signal-check.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class PageSignalCheckComponent extends WithDestroy() {
 

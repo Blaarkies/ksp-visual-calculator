@@ -37,6 +37,9 @@ export class HolidayThemeSpriteComponent implements OnInit {
       case HolidayType.Halloween:
         this.setupHalloweenSprites();
         break;
+      case HolidayType.KspFree:
+        this.setupKspFreeSprites();
+        break;
       default:
         this.noThemeDetected.emit();
         break;
@@ -47,6 +50,7 @@ export class HolidayThemeSpriteComponent implements OnInit {
     let dates = [
       {month: 12, day: 25, pre: 15, post: 5, holidayType: HolidayType.Christmas},
       {month: 10, day: 31, pre: 10, post: 1, holidayType: HolidayType.Halloween},
+      {month: 1, day: 5, pre: 1, post: 7, holidayType: HolidayType.KspFree},
     ];
 
     let dateMap = dates.reduce((sum, c) => {
@@ -102,6 +106,27 @@ export class HolidayThemeSpriteComponent implements OnInit {
       'holiday-sprites/halloween-pumpkin-1.png');
     duna.style.scale = '1.3';
     duna.style.translate = '6px -4px';
+  }
+
+  private setupKspFreeSprites() {
+    let sprites = SpriteList.KspFree;
+    this.sprites = [
+      {
+        source: `assets/holiday-sprites/${sprites.box}`,
+        opacity: 1,
+        pathController: new PathController('free'),
+      },
+      {
+        source: `assets/holiday-sprites/${sprites.text}`,
+        opacity: 1,
+        pathController: new PathController('free'),
+      },
+      {
+        source: `assets/holiday-sprites/${sprites.epic}`,
+        opacity: 1,
+        pathController: new PathController('free'),
+      },
+    ] as SpriteContents[];
   }
 
 }

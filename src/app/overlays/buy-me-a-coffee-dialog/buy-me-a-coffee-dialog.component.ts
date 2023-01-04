@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-buy-me-a-coffee-dialog',
   templateUrl: './buy-me-a-coffee-dialog.component.html',
   styleUrls: ['./buy-me-a-coffee-dialog.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class BuyMeACoffeeDialogComponent {
 

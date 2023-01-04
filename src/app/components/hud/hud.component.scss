@@ -160,12 +160,6 @@
   place-self: end end;
 }
 
-.profile-icon {
-  border-radius: 100px;
-  position: absolute;
-  right: 6px;
-}
-
 .handset-layout {
   height: 100%;
   display: grid;
@@ -184,6 +178,8 @@
   .profile {
     grid-area: profile;
     margin: 4px;
+    align-self: center;
+    justify-self: end;
   }
 
   .zoom {

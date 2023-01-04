@@ -11,13 +11,13 @@ import { CheckpointNode } from '../../../common/data-structures/delta-v-map/chec
   styleUrls: ['./msp-node.component.scss'],
   animations: [
     trigger('animateSelected', [
-      state('false', style({opacity: .3, color: '#fff'})),
+      state('false', style({opacity: .6, color: '#fff'})),
       state('true', style({opacity: 1, backgroundColor: '#fff2', color: '#7f7'})),
       transition('false => true', [
         animate('.2s ease-in', style({opacity: 1, backgroundColor: '#fff2', color: '#7f7'})),
       ]),
       transition('true => false', [
-        animate('.2s ease-out', style({opacity: .3, color: '#fff'})),
+        animate('.2s ease-out', style({opacity: .4, color: '#fff'})),
       ]),
     ]),
   ],

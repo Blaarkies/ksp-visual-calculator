@@ -2,9 +2,9 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
-import { CustomAnimation } from '../../common/domain/custom-animation';
-import { FormArray, FormControl, Validators } from '@angular/forms';
-import { MatHorizontalStepper } from '@angular/material/stepper';
+import { BasicAnimations } from '../../common/animations/basic-animations';
+import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
+import { MatStepper } from '@angular/material/stepper';
 
 export class UploadImageDialogData {
 
@@ -14,7 +14,7 @@ export class UploadImageDialogData {
   selector: 'cp-upload-image',
   templateUrl: './upload-image-dialog.component.html',
   styleUrls: ['./upload-image-dialog.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class UploadImageDialogComponent {
 
@@ -23,16 +23,16 @@ export class UploadImageDialogComponent {
   };
   icons = Icons;
 
-  controlSelect = new FormControl(null, [Validators.required]);
-  controlCrop = new FormControl(null, [Validators.required]);
+  controlSelect = new UntypedFormControl(null, [Validators.required]);
+  controlCrop = new UntypedFormControl(null, [Validators.required]);
 
-  formArrayStepper = new FormArray([
+  formArrayStepper = new UntypedFormArray([
     this.controlSelect,
     this.controlCrop,
   ]);
 
   @ViewChild('fileUploadInput') fileUploadInput: ElementRef<HTMLInputElement>;
-  @ViewChild('stepper') stepper: MatHorizontalStepper;
+  @ViewChild('stepper') stepper: MatStepper;
 
   constructor(private snackBar: MatSnackBar) {
   }

@@ -1,7 +1,7 @@
 import { ValidationMessageComponent } from './validation-message.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../../app.module';
-import { AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonValidators } from '../../../common/validators/common-validators';
 
 let componentType = ValidationMessageComponent;
@@ -50,7 +50,7 @@ function setAndTestControlError(component: ValidationMessageComponent,
                                 value: any,
                                 validator: Validators,
                                 message: string) {
-  let control = new FormControl(value, validator);
+  let control = new UntypedFormControl(value, validator);
   component.errors = control.errors;
   expect(component.message).toBe(message);
 }

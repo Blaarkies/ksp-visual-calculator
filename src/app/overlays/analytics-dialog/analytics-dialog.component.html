@@ -1,0 +1,39 @@
+<div mat-dialog-content class="analytics-dialog-layout">
+  <div class="text dialog-title">Anonymous Usage Tracking</div>
+
+  <span class="usage-data-explained">
+
+    This application tracks anonymous usage data.
+    Actions such as the following will be recorded, have user data anonymized,
+    and then sent to the server.
+    <ul>
+      <li>Dragging a planet</li>
+      <li>Using the Delta-V calculator</li>
+      <li>Adjusting a craft's antennae count</li>
+      <li>etc.</li>
+    </ul>
+
+
+    <p>This data provides me with a heat-map indicating
+      which features are most often used,
+    and this optimizes where effort is prioritized.</p>
+
+    <p>No user names, craft names, planet names, or browser information will ever be collected for this.</p>
+
+    <p>You can opt-out with the toggle below.</p>
+  </span>
+
+  <cp-input-toggle label="Track anonymous actions"
+                   color="primary"
+                   type="switch"
+                   [formControl]="trackingControl">
+  </cp-input-toggle>
+</div>
+
+<div mat-dialog-actions>
+  <button color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>

@@ -1,4 +1,4 @@
-<div class="list-layout">
+<div class="list-layout" [class.border-transparent]="!missionCheckpoints.length">
   <div *ngFor="let checkpoint of missionCheckpoints; trackBy: getNode"
        [@height]>
     <cp-msp-edge *ngIf="checkpoint.edge"
@@ -19,20 +19,24 @@
             mat-flat-button
             [matTooltip]="(isTapCheckpointMode ? 'Disable' : 'Enable') + ' tap-checkpoint mode'"
             (click)="toggleTapCheckpointMode()">
-      <mat-icon [svgIcon]="isTapCheckpointMode ? icons.Lock : icons.Unlock"></mat-icon>
+      <div>
+        <mat-icon [svgIcon]="isTapCheckpointMode ? icons.Lock : icons.Unlock"></mat-icon>
+      </div>
     </button>
 
     <button class="button-single-checkpoint"
             mat-flat-button
             id="add-dv-mission-checkpoint-button"
-            [matTooltip]="'Add new checkpoint'"
+            [matTooltip]="isAddingCheckpoint ? 'Now tap a planet' : 'Add new checkpoint'"
             (click)="addCheckpoint()">
       <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>
       <ng-template #isBusy>
-        <div class="animate-flashing">Tap a planet</div>
+        <div class="animate-flashing">Done</div>
       </ng-template>
       <ng-template #idleIcon>
-        <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+        <div>
+          <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+        </div>
       </ng-template>
     </button>
   </div>
@@ -44,7 +48,9 @@
           [matTooltip]="'Clear entire mission'"
           [disabled]="!missionCheckpoints.length"
           (click)="resetMission()">
-    <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
+    <div>
+      <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
+    </div>
   </button>
 </div>
 
@@ -56,9 +62,9 @@
   <!--  <div>{{twrMinimum}}</div>-->
 </div>
 
-<div [@height]="!missionCheckpoints.length"
+<pre [@height]="!missionCheckpoints.length"
      class="text-mute empty-state-msp">
-  No checkpoints selected. <br>
-  Start by adding your <br>
-  first checkpoint.
-</div>
+No checkpoints selected.
+Start by adding your
+first checkpoint.
+</pre>

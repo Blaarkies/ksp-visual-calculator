@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
@@ -9,7 +9,7 @@ import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 
 @Component({
   selector: 'cp-antenna-selector',
@@ -21,7 +21,7 @@ import { CustomAnimation } from '../../common/domain/custom-animation';
     useExisting: forwardRef(() => AntennaSelectorComponent),
     multi: true,
   }],
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.height],
 })
 export class AntennaSelectorComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
@@ -43,7 +43,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   icons = Icons;
 
   availableOptions: LabeledOption<Antenna>[];
-  finalControl = new FormControl();
+  finalControl = new UntypedFormControl();
   antennaInputs: AntennaInput[] = [];
   mapIcons: Map<Antenna, string>;
 
@@ -56,7 +56,7 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
       .subscribe((value: Antenna) => {
         this.antennaInputs.push(new AntennaInput(value));
         this.userInputChange();
-        this.finalControl.reset(null, {emitEvent: false});
+        this.finalControl.reset(null, {emitEvent: false, onlySelf: true});
         this.refreshAvailableOptions();
       });
   }
@@ -82,7 +82,6 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
     this.disabled = isDisabled;
     this.antennaInputs
       .map(ai => ai.countControl)
-      .concat(this.finalControl)
       .forEach(control => isDisabled
         ? control.disable({emitEvent: false})
         : control.enable());

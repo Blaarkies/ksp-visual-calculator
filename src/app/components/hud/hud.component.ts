@@ -20,7 +20,7 @@ import { EventLogs } from '../../services/event-logs';
 import { UsableRoutes } from '../../usable-routes';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AuthService } from '../../services/auth.service';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { DomPortal } from '@angular/cdk/portal';
 import { ThemeService, ThemeTypeEnum } from '../../services/theme.service';
 
@@ -41,7 +41,7 @@ export class ActionGroupType {
   selector: 'cp-hud',
   templateUrl: './hud.component.html',
   styleUrls: ['./hud.component.scss'],
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class HudComponent extends WithDestroy() implements AfterViewInit {
 

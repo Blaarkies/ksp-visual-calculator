@@ -58,12 +58,11 @@
   margin-bottom: 25px !important;;
 }
 
-
 .dark-theme {
-
-  .mat-snack-bar-container {
-    background: var(--color-background-card);
-    color: var(--color-text-snackbar);
+  .mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: currentColor ;
+    --mdc-snackbar-container-color: #424242 ;
+    --mdc-snackbar-supporting-text-color: var(--color-text-snackbar) ;
   }
 
   .snackbar-warn {

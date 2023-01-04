@@ -1,14 +1,12 @@
 <div class="title-layout">
-  <h1 mat-dialog-title>Frequently Asked Questions</h1>
+  <div class="text dialog-title">Frequently Asked Questions</div>
   <cp-input-field label="Search"
-                  hint="To find specific sections"
                   [type]="'text'"
                   [allowClear]="true"
                   [formControl]="searchControl"></cp-input-field>
 </div>
 
 <div mat-dialog-content class="faq-layout">
-
   <mat-progress-bar *ngIf="!columns"
                     mode="indeterminate"
                     color="primary"></mat-progress-bar>

@@ -19,10 +19,9 @@
 }
 
 .slider-popup {
-  border-radius: 20px !important;
-  padding: 0 10px;
-  min-height: unset !important;
-  overflow: hidden !important;
-  left: -25%;
-  position: relative;
+  border-radius: 26px !important;
+
+  .slider-control {
+    margin-inline: 28px;
+  }
 }

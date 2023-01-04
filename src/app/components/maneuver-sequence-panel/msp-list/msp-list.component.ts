@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { CustomAnimation } from '../../../common/domain/custom-animation';
+import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { Icons } from '../../../common/domain/icons';
 import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoint';
 
@@ -7,7 +7,7 @@ import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoi
   selector: 'cp-msp-list',
   templateUrl: './msp-list.component.html',
   styleUrls: ['./msp-list.component.scss'],
-  animations: [CustomAnimation.height, CustomAnimation.fade],
+  animations: [BasicAnimations.height, BasicAnimations.fade],
 })
 export class MspListComponent {
 

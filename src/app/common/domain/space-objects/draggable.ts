@@ -1,4 +1,4 @@
-import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, tap, throttleTime } from 'rxjs';
+import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, throttleTime } from 'rxjs';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
 import { CameraComponent } from '../../../components/camera/camera.component';
@@ -9,7 +9,6 @@ import { OrbitParameterData } from './orbit-parameter-data';
 import { WithDestroy } from '../../with-destroy';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
 import { MoveType } from './move-type';
-import { CameraService } from '../../../services/camera.service';
 
 export class Draggable extends WithDestroy() {
 

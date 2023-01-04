@@ -47,6 +47,7 @@ $light-theme: mat.define-light-theme((
     primary: $primary-light,
     accent: $accent-light,
     warn: $warn-light,
+    none: $warn-light,
   ),
 ));
 @include mat.all-component-themes($light-theme);
@@ -60,6 +61,7 @@ $dark-theme: mat.define-dark-theme((
     primary: $primary-dark,
     accent: $accent-dark,
     warn: $warn-dark,
+    none: $warn-light,
   ),
 ));
 
@@ -87,7 +89,7 @@ $dark-theme: mat.define-dark-theme((
   --color-background-article: #f3f3f3;
 
   --color-text: #111;
-  --color-text-snackbar: #ffffffb3;
+  --color-text-snackbar: #fffe;
   --color-text-primary: #{map-get($primary-light, 500)};
   --color-text-accent: #{map-get($accent-light, 500)};
   --color-text-warn: #{map-get($warn-light, 500)};
@@ -95,11 +97,15 @@ $dark-theme: mat.define-dark-theme((
   --color-text-hyperlink-visited: #5226c1;
   --color-text-map-green: #cf0a;
   --color-text-muted: #999;
+  --color-text-white: #fff;
 
+  --color-rgb-text-white: 255, 255, 255;
+  --color-rgb-border-simple: 102, 102, 102;
   --color-border-simple: #0006;
 
-  --color-icon-muted: #666;
   --color-icon-white: #fffc;
+  --color-icon-muted: #888;
+  --color-icon-none: #555;
 
   .dark-theme {
     --color-background-card: #424242;
@@ -108,16 +114,26 @@ $dark-theme: mat.define-dark-theme((
     --color-background-article: #333;
 
     --color-text: #fff;
-    --color-text-snackbar: #ffffffb3;
+    --color-text-snackbar: #fffe;
     --color-text-primary: #{map-get($primary-dark, 500)};
     --color-text-accent: #{map-get($accent-dark, 500)};
     --color-text-warn: #{map-get($warn-dark, 500)};
     --color-text-hyperlink: #67b3ff;
     --color-text-hyperlink-visited: #ddbfff;
 
+    --color-rgb-border-simple: 153, 153, 153;
     --color-border-simple: #fff6;
 
     --color-icon-muted: #999;
+    --color-icon-none: #ccc;
   }
 }
 
+mat-icon {
+  &[color="none"] {
+    color: var(--color-icon-none);
+  }
+  &[color="muted"] {
+    color: var(--color-icon-muted);
+  }
+}

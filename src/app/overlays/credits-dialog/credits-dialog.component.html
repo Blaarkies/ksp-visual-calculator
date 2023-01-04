@@ -1,6 +1,6 @@
-<h1 mat-dialog-title>Credits and Sources</h1>
+<div mat-dialog-content class="credits-layout">
+  <div class="text dialog-title">Credits and Thanks</div>
 
-<div mat-dialog-content class="layout">
   <div *ngFor="let credit of credits">
     <span class="creator-text">{{credit.creator ? credit.creator + ' ' : ''}}</span>
     <span class="action-text">{{credit.action ? credit.action + ' ' : ''}}</span>

@@ -1,6 +1,10 @@
 import { animate, sequence, state, style, transition, trigger } from '@angular/animations';
+import { genericOpenClose } from './generic-animation-tools';
 
-export class CustomAnimation {
+export class BasicAnimations {
+
+  static expandX = genericOpenClose('horizontal', 'expandX', 0);
+  static expandY = genericOpenClose('vertical', 'expandY', 0);
 
   static fade = trigger('fade', [
     transition(':enter', [

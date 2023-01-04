@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { TravelCondition } from '../../common/data-structures/delta-v-map/travel-condition';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { WithDestroy } from '../../common/with-destroy';
 import {
@@ -29,7 +29,7 @@ import { DvRouteType } from '../../common/domain/dv-route-type';
   selector: 'cp-maneuver-sequence-panel',
   templateUrl: './maneuver-sequence-panel.component.html',
   styleUrls: ['./maneuver-sequence-panel.component.scss'],
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.expandY],
 })
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 
@@ -50,12 +50,12 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
   };
   routeTypes = [DvRouteType.lessDv, DvRouteType.lessDetours];
 
-  aerobrakeControl = new FormControl(this.setupService.checkpointPreferences$.value.aerobraking);
+  aerobrakeControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.aerobraking);
 
-  errorMarginControl = new FormControl(this.setupService.checkpointPreferences$.value.errorMargin);
+  errorMarginControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.errorMargin);
   errorMarginControlMeta = new ControlMetaNumber(0, 150, 2);
 
-  planeChangeControl = new FormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
+  planeChangeControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
   planeChangeControlMeta = new ControlMetaNumber(0, 100, 1.5);
 
   preferredCondition$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.condition);
@@ -102,12 +102,12 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
       }));
   }
 
-  setPreferredCondition(event: MatSelectChange) {
-    this.preferredCondition$.next(event.value);
+  setPreferredCondition(value: TravelCondition) {
+    this.preferredCondition$.next(value);
   }
 
-  setRouteType(event: MatSelectChange) {
-    this.routeType$.next(event.value);
+  setRouteType(value: DvRouteType) {
+    this.routeType$.next(value);
   }
 
   toggleOptions() {

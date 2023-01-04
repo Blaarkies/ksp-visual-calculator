@@ -1,12 +1,13 @@
 .title-layout {
-  display: grid;
-  grid-template-columns: max-content auto;
-  gap: 40px;
-  align-items: start;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 24px;
+  color: var(--mdc-dialog-supporting-text-color);
 
   cp-input-field {
-    margin-top: -14px;
-    justify-self: end;
+    margin-top: 8px;
+    height: 60px;
   }
 }
 
@@ -48,13 +49,6 @@
 @media screen and (max-width: 1000px),
 screen and (max-height: 800px) {
   .title-layout {
-    grid-template-columns: max-content;
-    gap: unset;
-    margin-bottom: 20px;
-
-    cp-input-field {
-      justify-self: unset;
-    }
   }
 
   .faq-layout {

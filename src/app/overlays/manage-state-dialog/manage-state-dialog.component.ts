@@ -12,7 +12,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { UsableRoutes } from '../../usable-routes';
 import { StateService } from '../../services/state.service';
 import { Icons } from '../../common/domain/icons';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { CommonValidators } from '../../common/validators/common-validators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
@@ -21,7 +21,7 @@ import { WithDestroy } from '../../common/with-destroy';
 import { StateRow } from './state-row';
 import { StateEntry } from './state-entry';
 import { MatSelectionList } from '@angular/material/list';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 
@@ -34,7 +34,7 @@ export class ManageStateDialogData {
   templateUrl: './manage-state-dialog.component.html',
   styleUrls: ['./manage-state-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade, CustomAnimation.height],
+  animations: [BasicAnimations.fade, BasicAnimations.height],
 })
 export class ManageStateDialogComponent extends WithDestroy() implements OnDestroy {
 
@@ -44,7 +44,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   states$ = this.getStates().pipe(startWith([]));
 
   icons = Icons;
-  editNameControl = new FormControl('', [Validators.required, Validators.max(60)]);
+  editNameControl = new UntypedFormControl('', [Validators.required, Validators.max(60)]);
   buttonLoaders = {
     load$: new Subject<boolean>(),
     import$: new Subject<boolean>(),
@@ -129,7 +129,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
     return this.stateService.getStatesInContext()
       .pipe(
         // update the form control that handles renaming. it must validate for allowing only unique names
-        tap(stateEntries => this.editNameControl = new FormControl('', [
+        tap(stateEntries => this.editNameControl = new UntypedFormControl('', [
           Validators.required,
           Validators.max(60),
           CommonValidators.uniqueString(stateEntries.map(s => s.name))])),

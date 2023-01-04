@@ -96,7 +96,8 @@ export class ThemeService {
   toggleTheme(): ThemeTypeEnum {
     let newTheme = themeToggleMap[this.theme];
     this.setNewTheme(newTheme);
-    this.snackBar.open(`${newTheme === ThemeTypeEnum.Dark ? 'Dark theme' : 'Light theme'} is now selected`);
+    this.snackBar.open(`${newTheme === ThemeTypeEnum.Dark ? 'Dark theme' : 'Light theme'} is now selected`,
+      null, {duration: 5e3});
     return newTheme;
   }
 

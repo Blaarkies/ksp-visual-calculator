@@ -11,9 +11,9 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputFieldComponent } from '../input-field/input-field.component';
-import { MatSlider } from '@angular/material/slider';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -46,14 +46,14 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
     Object.entries(value).forEach(([k, v]) => this[k] = v);
   }
 
-  @Input() set formControl(value: FormControl) {
+  @Input() set formControl(value: UntypedFormControl) {
     this.setDisabledState(value?.disabled);
   }
 
   @Output() output = new EventEmitter<number>();
 
   @ViewChild('input', {static: true}) inputRef: InputFieldComponent;
-  @ViewChild('slider', {static: true}) sliderRef: MatSlider;
+  @ViewChild('slider', {static: true}) sliderRef: MatSliderThumb;
   @ViewChild('menuTrigger', {static: true}) menuTriggerRef: MatMenuTrigger;
 
   // tslint:disable-next-line:no-unused-variable
@@ -92,7 +92,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
   setDisabledState(isDisabled: boolean) {
     this.disabled = isDisabled;
     this.inputRef.setDisabledState(isDisabled);
-    this.sliderRef.setDisabledState(isDisabled);
+    this.sliderRef.setDisabledState?.(isDisabled);
     this.menuTriggerRef.menu && this.menuTriggerRef.closeMenu();
 
     this.self.nativeElement.style.pointerEvents = isDisabled ? 'none' : 'auto';

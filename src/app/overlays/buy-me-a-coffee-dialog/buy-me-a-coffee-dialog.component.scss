@@ -1,14 +1,13 @@
-.layout {
+.coffee-layout {
 
   .support-explained {
     max-width: 400px;
-    text-align: justify;
-    text-justify: inter-word;
 
     display: grid;
 
     button {
       padding: unset;
+      height: auto;
       overflow: hidden;
 
       .image-wrapper {

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
@@ -11,7 +11,7 @@ import { Icons } from '../../common/domain/icons';
   templateUrl: './draggable-space-object.component.html',
   styleUrls: ['./draggable-space-object.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.fade],
+  animations: [BasicAnimations.fade],
 })
 export class DraggableSpaceObjectComponent extends WithDestroy() implements OnDestroy {
 

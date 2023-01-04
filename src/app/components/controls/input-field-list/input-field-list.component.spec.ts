@@ -2,7 +2,7 @@ import { InputFieldListComponent } from './input-field-list.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../../app.module';
 import { InputField } from '../../../common/domain/input-fields/input-fields';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ControlMetaInput } from '../../../common/domain/input-fields/control-meta-input';
 import { ControlMetaSelect } from '../../../common/domain/input-fields/control-meta-select';
 import { ControlMetaFreeText } from '../../../common/domain/input-fields/control-meta-free-text';
@@ -25,32 +25,32 @@ describe('InputFieldListComponent', () => {
       inputFields: [
         {
           label: 'input',
-          control: new FormControl(),
+          control: new UntypedFormControl(),
           controlMeta: new ControlMetaInput(),
         },
         {
           label: 'free-text',
-          control: new FormControl(),
+          control: new UntypedFormControl(),
           controlMeta: new ControlMetaFreeText(),
         },
         {
           label: 'number',
-          control: new FormControl(),
+          control: new UntypedFormControl(),
           controlMeta: new ControlMetaNumber(),
         },
         {
           label: 'select',
-          control: new FormControl(),
+          control: new UntypedFormControl(),
           controlMeta: new ControlMetaSelect([]),
         },
         {
           label: 'toggle',
-          control: new FormControl(),
+          control: new UntypedFormControl(),
           controlMeta: new ControlMetaToggle(),
         },
         {
           label: 'antenna-selector',
-          control: new FormControl(),
+          control: new UntypedFormControl(),
           controlMeta: new ControlMetaAntennaSelector([]),
         },
       ] as InputField[],

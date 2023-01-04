@@ -5,6 +5,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
+import { TooltipPosition } from '@angular/material/tooltip';
 
 @Component({
   selector: 'cp-action-list',
@@ -16,6 +17,7 @@ export class ActionListComponent extends WithDestroy() {
 
   @Input() color: ActionPanelColors = 'green';
   @Input() justifyRight: boolean;
+  @Input() tooltipPosition: TooltipPosition = 'right';
 
   private actionOptions: ActionOption[];
 

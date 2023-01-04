@@ -1,6 +1,6 @@
-<h1 mat-dialog-title>Celestial Body Details</h1>
-
 <div mat-dialog-content class="celestial-body-details-form">
+  <div class="text dialog-title">Celestial Body Details</div>
+
   <cp-input-field-list [inputFields]="inputFieldsList"></cp-input-field-list>
 </div>
 
@@ -10,6 +10,6 @@
           mat-stroked-button
           [disabled]="form.invalid"
           (click)="submitDetails()">
-    {{data.edit ? 'Edit' : 'Create'}}
+    {{data.edit ? 'Save' : 'Create'}}
   </button>
 </div>

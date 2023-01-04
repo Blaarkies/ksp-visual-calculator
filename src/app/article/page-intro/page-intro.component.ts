@@ -26,7 +26,6 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
   showSidebar = false;
   showNavbar = true;
   scrollEvent$ = new Subject<number>()
-  pageHeight = 1000;
   isMobile$ = this.breakpointObserver.observe(['(max-width: 1000px)'])
     .pipe(map(bp => bp.matches));
   isNotMobile$ = this.isMobile$.pipe(map(is => !is));
@@ -78,7 +77,7 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
       .forEach((e: any) => {
         let cssEncapsulationId = (Array.from(e.attributes) as any).find((a: any) => a.name.includes('_ngcontent-')).name;
         e.innerHTML = createLinkSvgIcon(cssEncapsulationId);
-      })
+      });
   }
 
   ngOnDestroy() {

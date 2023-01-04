@@ -1,11 +1,9 @@
-.layout {
+.analytics-dialog-layout {
   overflow: hidden;
   display: grid;
   gap: 20px;
 
   .usage-data-explained {
     max-width: 400px;
-    text-align: justify;
-    text-justify: inter-word;
   }
 }

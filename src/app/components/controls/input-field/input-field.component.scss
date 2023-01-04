@@ -1,7 +1,14 @@
 .input-field-component {
 
+  max-width: 210px;
+  padding-top: 6px;
+
   span {
     color: var(--color-text-muted);
+  }
+
+  .pad-right {
+    margin-right: 8px;
   }
 
   .clear-button {

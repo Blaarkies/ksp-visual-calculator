@@ -28,6 +28,7 @@
 
     text-align: end;
     font-weight: 200;
+    color: var(--color-text-white)
   }
 }
 
@@ -65,12 +66,15 @@
   }
 }
 
-@media screen and (max-width: 600px) and (max-height: 800px) {
+@media screen and (max-width: 600px), (max-height: 800px) {
   .popout-details {
-    max-width: 260px;
-
+    translate: 90px;
     .step-layout {
-      max-width: inherit;
+      grid-template-columns: unset;
+      :nth-child(2n + 3) {
+        margin-top: 8px;
+        border-top: 1px dotted #fff7;
+      }
     }
   }
 }

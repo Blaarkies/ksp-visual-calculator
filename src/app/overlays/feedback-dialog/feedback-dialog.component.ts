@@ -1,13 +1,13 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormArray, FormControl, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { ControlMetaFreeText } from '../../common/domain/input-fields/control-meta-free-text';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
 import { HttpClient } from '@angular/common/http';
-import { CustomAnimation } from '../../common/domain/custom-animation';
+import { BasicAnimations } from '../../common/animations/basic-animations';
 import { firstValueFrom } from 'rxjs';
 
 export class FeedbackSubmissionForm {
@@ -21,30 +21,30 @@ export class FeedbackSubmissionForm {
   templateUrl: './feedback-dialog.component.html',
   styleUrls: ['./feedback-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [CustomAnimation.height],
+  animations: [BasicAnimations.height],
 })
 export class FeedbackDialogComponent extends WithDestroy() {
 
   inputFields = {
     name: {
       label: 'Name (Optional)',
-      control: new FormControl(),
+      control: new UntypedFormControl(),
       controlMeta: new ControlMetaInput(),
     },
     contact: {
       label: 'Contact Info (Optional)',
-      control: new FormControl(),
-      controlMeta: new ControlMetaInput('text', 'If the feedback needs follow-up, I will try to contact you using this detail'),
+      control: new UntypedFormControl(),
+      controlMeta: new ControlMetaInput('text', 'Enables me to follow-up if needed'),
     },
     feedback: {
       label: 'Feedback Message',
-      control: new FormControl(null, [Validators.required, Validators.maxLength(1000)]),
+      control: new UntypedFormControl(null, [Validators.required, Validators.maxLength(1000)]),
       controlMeta: new ControlMetaFreeText(),
     },
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);
 
-  form = new FormArray(this.inputFieldsList.map(field => field.control));
+  form = new UntypedFormArray(this.inputFieldsList.map(field => field.control));
 
   feedbackState: 'nothing' | 'waiting' | 'success' | 'failed' = 'nothing';
 

@@ -42,7 +42,13 @@
             "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "allowedCommonJsDependencies": [
+              "idb",
+              "graph-data-structure",
+              "fast-memoize",
+              "pako"
+            ]
           },
           "configurations": {
             "production": {
@@ -144,8 +150,9 @@
       "style": "scss"
     }
   },
-  "defaultProject": "ksp-visual-calculator",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

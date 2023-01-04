@@ -1,0 +1,31 @@
+<div class="verify-button"
+     [matTooltip]="isCustomer
+                  ? 'Thank you for supporting! 😁'
+                  : 'Verifies if this account is supporting at buymeacoffee.com/Blaarkies'"
+     matTooltipPosition="left">
+  <button class="button-loader"
+          mat-button
+          [disabled]="isCustomer || validatingCustomer"
+          (click)="validateAccount.emit()">
+    {{isCustomer ? 'Account Is Verified' : 'Verify Account'}}
+    <mat-progress-bar [@fade] *ngIf="validatingCustomer" mode="query"></mat-progress-bar>
+  </button>
+</div>
+
+<button class="button-loader" mat-button (click)="uploadImage.emit()">
+  Upload Profile Image
+  <mat-progress-bar [@fade] *ngIf="uploadingImage" mode="buffer"></mat-progress-bar>
+</button>
+
+<button mat-button
+        [matTooltip]="editingDetails ? 'Click to save changes' : ''"
+        [matTooltipDisabled]="!editingDetails"
+        (click)="editDetails.emit();">
+  {{editingDetails ? 'Save' : 'Edit Name'}}
+  <mat-progress-bar [@fade] *ngIf="editingDetails" mode="buffer"></mat-progress-bar>
+</button>
+
+<button mat-stroked-button color="warn" (click)="deleteAccount.emit()">
+  Delete Account
+  <mat-progress-bar [@fade] *ngIf="deletingAccount" mode="buffer" color="warn"></mat-progress-bar>
+</button>
