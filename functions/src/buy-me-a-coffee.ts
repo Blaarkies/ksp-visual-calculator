@@ -1,68 +1,100 @@
-import * as corsImport from 'cors';
-let cors = corsImport.default as any as Function;
 import * as functions from 'firebase-functions';
-import axios from 'axios';
 import { log } from 'firebase-functions/logger';
 import { db } from './common/singletons';
-import { TableName } from './common/types';
+import { Supporter, TableName } from './common/types';
+import { getAllBmacSupporters, getFirstSupporterDoc, getFirstUserDoc, uid } from './common/tools';
+import WebhookRequest = Bmac.WebhookRequest;
 
-/** Used for manual validation by the user (or if user does not have an account yet, but already supported)
+import * as corsImport from 'cors';
+
+let cors = corsImport.default({
+  origin: 'https://ksp-visual-calculator.blaarkies.com',
+}) as unknown as (req: functions.https.Request,
+                  res: functions.Response,
+                  callback: () => void) => void;
+
+/**
+ * Verify if account is a supporter.
+ * Used for manual validation by the user (or if user does not have an account yet, but already supported)
  */
-export const isEmailACustomer = functions.https.onRequest(async (req, res) => {
-  cors()(req, res, async () => {
-    let apiKey = functions.config().buymeacoffeeapi.id;
+export const isEmailACustomer = functions
+  .https.onRequest(async (req, res) => cors(req, res, async () => {
+    let allBmacSupporters = await getAllBmacSupporters();
 
-    let result: any = await axios.get('https://developers.buymeacoffee.com/api/v1/supporters',
-      {headers: {Authorization: `Bearer ${apiKey}`}})
-      .catch(e => {
-        throw Error('Could not reach buymeacoffee API: ' + e.toString())
-      });
+    let allCustomers: string[] = allBmacSupporters.map(c => c.payer_email);
 
-    let allCustomers: string[] = result.data.data.map((c: any) => c.payer_email);
+    let queryEmail = req.query.email;
+    let isCustomer = allCustomers.some(email => email === queryEmail);
 
-    let isCustomer = allCustomers.some(email => email === req.query.email);
-    log(`Email [${req.query.email}] is ${isCustomer ? '' : 'not'} a customer`);
+    log(`Email [${queryEmail}] is ${isCustomer ? '' : 'not'} a customer`);
 
-    return res.json({isCustomer});
-  });
-});
+    let dbUserQuery = await db.collection(<TableName>'users')
+      .where('email', '==', queryEmail)
+      .limit(1)
+      .get();
+    let dbUser = dbUserQuery.docs[0];
+
+    if (dbUser?.ref) {
+      log(`User [${queryEmail}] found in firebase. Adding a supporter row to match.`);
+      await db.collection(<TableName>'supporters')
+        .doc(dbUser.ref.id)
+        .set({
+          email: queryEmail,
+          joined: dbUser.createTime.toDate(),
+          type: 'once-off',
+          user: dbUser.ref,
+        } as Supporter);
+    }
+
+    res.json({isCustomer});
+    return;
+  }));
 
 /**
  * Webhook called by BuyMeACoffee when a new purchase was made. This in turn will immediately update
  * the user's KSP Visual Calculator account to premium status.
  */
-export const webhookNewSupporter = functions.https.onRequest(async (req, res) => {
-  cors()(req, res, async () => {
-    let apiKey = functions.config().buymeacoffeeapi.id;
-    let result: any = await axios.get('https://developers.buymeacoffee.com/api/v1/supporters', {
-      headers: {Authorization: `Bearer ${apiKey}`},
-    });
+export const webhookNewSupporter = functions
+  .https.onRequest(async (req, res) => {
+    // let webhookSecret = functions.config().bmac.webhooksecret;
+    let data: WebhookRequest = req.body.response;
 
-    let allCustomers: string[] = result.data.data.map((c: any) => c.payer_email);
-
-    let usersTable: TableName = 'users';
-    let newCustomers = await db.collection(usersTable)
-      .where('email', 'in', allCustomers)
-      .where('isCustomer', '!=', 'true')
-      .get();
-
-    for (const user of newCustomers.docs) {
-      await user.ref.set({isCustomer: true}, {merge: true});
-
-      let details = user.data();
-      log(`Added new customer: [${details.email}]`);
+    let existingSupporter = await getFirstSupporterDoc(data.supporter_email);
+    if (existingSupporter) {
+      log(`Supporter ${existingSupporter.email} already exists. Skipping this request.`);
+      res.sendStatus(200)
+      return;
     }
 
-    return res.sendStatus(200);
-  });
-});
+    let supporterDoc = {
+      email: data.supporter_email,
+      type: 'once-off',
+      joined: new Date(data.support_created_on),
+    } as Supporter;
 
-//response example
-// {
-//   "response" : {
-//   "supporter_email" : "test@test.com",
-//     "number_of_coffees" : "1",
-//     "total_amount" : "3",
-//     "support_created_on" : "2021-11-15 14:43:29"
-// }
-// }
+    let userDoc = await getFirstUserDoc(data.supporter_email);
+
+    if (!userDoc) {
+      log(`No user found that matches ${data.supporter_email}. Saving supporter entry.`);
+      await db.collection(<TableName>'supporters')
+        .doc(`unmatched-${uid()}`)
+        .set(supporterDoc);
+
+      res.sendStatus(200)
+      return;
+    }
+
+    await db.collection(<TableName>'supporters')
+      .doc(userDoc.ref.id)
+      .set({
+        ...supporterDoc,
+        user: userDoc.ref,
+      });
+
+    // backward compatible for old table
+    log(`Set user [${data.supporter_email}] isCustomer [true].`);
+    await userDoc.ref.set({isCustomer: true}, {merge: true});
+
+    res.sendStatus(200)
+    return;
+  });

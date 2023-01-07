@@ -1,51 +1,26 @@
-import * as corsImport from 'cors';
 import * as functions from 'firebase-functions';
 import { log } from 'firebase-functions/logger';
-import { TableName } from './common/types';
+import { Supporter, TableName, UserData } from './common/types';
 import { db } from './common/singletons';
 import { gzip } from 'pako';
 import admin from 'firebase-admin';
-
-let cors = corsImport.default as any as Function;
-
-function getUniqueDateKey(): string {
-  return new Date().toLocaleString(undefined, {
-      month: '2-digit',
-      year: 'numeric',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    })
-      .split(',')
-      .map((text, i) => i === 0
-        ? text
-          .split('/')
-          .reduce<string[]>((sum, c) => [c, ...sum], [])
-          .join('.')
-        : text)
-      .join('')
-    + ' >' + (Math.round(Math.random() * 9e7)).toString(36);
-}
+import { distinct, getAllBmacSupporters, getUniqueDateKey, uid } from './common/tools';
 
 /**
  * Used by Feedback Dialog. This stores the feedback, and notify with an email that feedback has been received.
  */
 export const captureFeedback = functions.https.onRequest(async (req, res) => {
-  cors()(req, res, async () => {
-    // let apiKey = functions.config().emailSendToAddress.id;
+  // let feedbackEmail = functions.config().emailSendToAddress.id;
 
-    let feedbackTable: TableName = 'feedback';
-    let key = getUniqueDateKey();
+  let key = getUniqueDateKey();
 
-    await db.doc(`${feedbackTable}/${key}`)
-      .set({...req.body});
+  await db.doc(`${<TableName>'feedback'}/${key}`)
+    .set({...req.body});
 
-    log(`Saved feedback [${Object.values(req.body).join().slice(0, 50)}] to document [${key}]`);
+  log(`Saved feedback [${Object.values(req.body).join().slice(0, 50)}] to document [${key}]`);
 
-    return res.sendStatus(200);
-  });
+  res.sendStatus(200);
+  return;
 });
 
 /**
@@ -54,42 +29,40 @@ export const captureFeedback = functions.https.onRequest(async (req, res) => {
  */
 export const compressOldSavegames = functions.runWith({timeoutSeconds: 540})
   .https.onRequest(async (req, res) => {
-    cors()(req, res, async () => {
-      let table: TableName = 'states';
 
-      let usersGames = await db.collection(table)
-        .get();
-      let docsNotCompressed = usersGames.docs
-        .filter(d => !(d.data()?.isCompressed?.isTrue));
+    let usersGames = await db.collection(<TableName>'states')
+      .get();
+    let docsNotCompressed = usersGames.docs
+      .filter(d => !(d.data()?.isCompressed?.isTrue));
 
-      log(`Found [${docsNotCompressed.length}] rows that are not compressed yet.`);
+    log(`Found [${docsNotCompressed.length}] rows that are not compressed yet.`);
 
-      for (let row of docsNotCompressed) {
-        let data = row.data();
-        let names = Object.keys(data);
+    for (let row of docsNotCompressed) {
+      let data = row.data();
+      let names = Object.keys(data);
 
-        for (let name of names) {
-          let details = row.get(name);
-          let isCompressed = typeof details.state !== 'string';
-          if (isCompressed) {
-            continue;
-          }
-
-          let compressedState = gzip(details.state);
-          let bytes = compressedState;
-
-          details.state = bytes;
-
-          await db.doc(row.ref.path).set({[name]: details}, {merge: true});
+      for (let name of names) {
+        let details = row.get(name);
+        let isCompressed = typeof details.state !== 'string';
+        if (isCompressed) {
+          continue;
         }
 
-        await row.ref.set({isCompressed: true}, {merge: true});
+        let compressedState = gzip(details.state);
+        let bytes = compressedState;
 
-        log(`User [${row.id}] has [${names.length}] not compressed savegames`);
+        details.state = bytes;
+
+        await db.doc(row.ref.path).set({[name]: details}, {merge: true});
       }
 
-      return res.sendStatus(200);
-    });
+      await row.ref.set({isCompressed: true}, {merge: true});
+
+      log(`User [${row.id}] has [${names.length}] not compressed savegames`);
+    }
+
+    res.sendStatus(200);
+    return;
   });
 
 /**
@@ -98,23 +71,70 @@ export const compressOldSavegames = functions.runWith({timeoutSeconds: 540})
  */
 export const removeIsCompressedField = functions.runWith({timeoutSeconds: 540})
   .https.onRequest(async (req, res) => {
-    cors()(req, res, async () => {
-      let table: TableName = 'states';
 
-      let usersGames = await db.collection(table)
-        .get();
-      let docsNotCompressed = usersGames.docs
-        .filter(d => !(d.data()?.isCompressed?.isTrue));
+    let usersGames = await db.collection(<TableName>'states')
+      .get();
+    let docsNotCompressed = usersGames.docs
+      .filter(d => !(d.data()?.isCompressed?.isTrue));
 
-      log(`Found [${docsNotCompressed.length}] rows that are not compressed yet.`);
+    log(`Found [${docsNotCompressed.length}] rows that are not compressed yet.`);
 
-      for (let row of docsNotCompressed) {
-        await row.ref.update({
-          isCompressed: admin.firestore.FieldValue.delete()
-        });
-        log(`User [${row.id}], removed isCompressed`);
-      }
+    for (let row of docsNotCompressed) {
+      await row.ref.update({
+        isCompressed: admin.firestore.FieldValue.delete()
+      });
+      log(`User [${row.id}], removed isCompressed`);
+    }
 
-      return res.sendStatus(200);
-    });
+    res.sendStatus(200);
+    return;
+  });
+
+/**
+ * Upgrade existing supporter users into the supporters table.
+ */
+export const upgradeIsCustomerToSupportersTable = functions
+  .runWith({timeoutSeconds: 540})
+  .https.onRequest(async (req, res) => {
+    let dbCustomers = await db.collection(<TableName>'users')
+      .where('isCustomer', '==', true)
+      .get();
+
+    log(`Found ${dbCustomers.docs.length} isCustomer users in firestore db.`);
+    let allSupporters: Supporter[] = dbCustomers.docs
+      .map(d => {
+        let data = d.data() as UserData;
+        return {
+          email: data.email,
+          joined: d.createTime.toDate(),
+          type: 'once-off',
+          user: d.ref,
+        };
+      });
+
+    let allBmacSupporters = await getAllBmacSupporters();
+
+    let bmacSupportersAsDbRows = allBmacSupporters.map(b => ({
+      email: b.payer_email,
+      joined: new Date(b.support_created_on),
+      type: 'once-off',
+    } as Supporter));
+    allSupporters.push(...bmacSupportersAsDbRows);
+
+    let uniqueSupporters = distinct(
+      allSupporters.sort((a, b) => (a.user ? 1 : 0) - (b.user ? 1 : 0)),
+      s => s.email);
+    log(`We have ${uniqueSupporters.length} supporters in total.`);
+
+    let refUserCount = uniqueSupporters.filter(s => s.user).length;
+    log(`Adding ${refUserCount} rows with references ids, and ${uniqueSupporters.length - refUserCount} unmatched rows.`)
+
+    for (const supporter of uniqueSupporters) {
+      await db.collection(<TableName>'supporters')
+        .doc(supporter.user?.id ?? `unmatched-${uid()}`)
+        .set(supporter);
+    }
+
+    res.sendStatus(200)
+    return;
   });
