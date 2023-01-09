@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import {
-  distinctUntilChanged,
+  catchError,
+  distinctUntilChanged, EMPTY,
   filter,
   firstValueFrom,
   map,
   Observable,
   of,
   publishReplay,
-  refCount,
+  refCount, shareReplay,
   switchMap,
   take,
   takeWhile,
-  tap,
+  tap, timer,
   zip
 } from 'rxjs';
 import { Router } from '@angular/router';
-import { DataService, UserData } from './data.service';
+import { DataService, TableName, UserData } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -58,17 +59,16 @@ export class AuthService {
         distinctUntilChanged(),
         tap(uid => this.dataService.updateUserId(uid)),
         switchMap(uid => (uid
-          ? this.dataService.getChanges<UserData>(`users/${uid}`)
+          ? this.dataService.getUser(uid)
           : of(null)) as Observable<UserData>),
-        publishReplay(1),
-        refCount());
+        shareReplay(1));
 
     stateService.earlyState
       .pipe(
         map(state => JSON.stringify(stateService.getTimestamplessState(state))),
         switchMap(state => zip(of(state), this.user$)),
         take(1),
-        filter(([state, user]) => user !== null),
+        filter(([, user]) => user !== null),
         switchMap(([state]) => zip(of(state), stateService.getStatesInContext())),
         switchMap(([earlyState, states]) => {
           if (states.length === 0) {
@@ -86,7 +86,7 @@ export class AuthService {
           }
         }),
         filter(([shouldLoad]) => !!shouldLoad),
-        switchMap(([shouldLoad, states]) => {
+        switchMap(([, states]) => {
           let newestState = states[0];
           return stateService.loadState(newestState.state);
         }),
@@ -136,14 +136,13 @@ export class AuthService {
 
   async updateUserData(user: UserData | User, extra?: {userAgreedToPrivacyPolicy: boolean}): Promise<UserData> {
     let dbUser = await this.dataService.read<UserData>('users', user.uid);
-    let isCustomer = dbUser?.isCustomer || await this.isCustomer(user.email);
 
     const data = {
       uid: user.uid,
       email: user.email,
       displayName: dbUser?.displayName || user.displayName,
       photoURL: dbUser?.photoURL || user.photoURL,
-      isCustomer,
+      isCustomer: dbUser.isCustomer,
       ...extra,
     };
 
@@ -201,7 +200,7 @@ export class AuthService {
    * the Buy Me a Coffee supporters list.
    * @param email string
    */
-  private async isCustomer(email: string): Promise<boolean> {
+  async verifySupporter(email: string): Promise<boolean> {
     try {
       let projectId = 'ksp-commnet-planner';
       let endpoint = 'isEmailACustomer';

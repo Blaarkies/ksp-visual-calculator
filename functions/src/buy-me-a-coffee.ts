@@ -8,7 +8,7 @@ import WebhookRequest = Bmac.WebhookRequest;
 import * as corsImport from 'cors';
 
 let cors = corsImport.default({
-  origin: 'https://ksp-visual-calculator.blaarkies.com',
+  origin: ['https://ksp-visual-calculator.blaarkies.com'],
 }) as unknown as (req: functions.https.Request,
                   res: functions.Response,
                   callback: () => void) => void;
@@ -28,6 +28,11 @@ export const isEmailACustomer = functions
 
     log(`Email [${queryEmail}] is ${isCustomer ? '' : 'not'} a customer`);
 
+    if (!isCustomer) {
+      res.json({isCustomer});
+      return;
+    }
+
     let dbUserQuery = await db.collection(<TableName>'users')
       .where('email', '==', queryEmail)
       .limit(1)
@@ -35,7 +40,14 @@ export const isEmailACustomer = functions
     let dbUser = dbUserQuery.docs[0];
 
     if (dbUser?.ref) {
-      log(`User [${queryEmail}] found in firebase. Adding a supporter row to match.`);
+      let dbSupporterQuery = await db.doc(`${<TableName>'supporters'}/${dbUser.id}`).get();
+      if (dbSupporterQuery?.ref) {
+        log(`User [${queryEmail}] found in firebase, with Supporters row already.`);
+        res.json({isCustomer});
+        return;
+      }
+
+      log(`User [${queryEmail}] found in firebase, without a Supporters row. Adding a Supporter row.`);
       await db.collection(<TableName>'supporters')
         .doc(dbUser.ref.id)
         .set({
@@ -45,9 +57,6 @@ export const isEmailACustomer = functions
           user: dbUser.ref,
         } as Supporter);
     }
-
-    res.json({isCustomer});
-    return;
   }));
 
 /**

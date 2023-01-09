@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, mapTo, Observable, timer } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, mapTo, mergeAll, Observable, timer, zip, zipAll } from 'rxjs';
 import {
   deleteDoc,
   deleteField,
@@ -22,7 +22,17 @@ export interface UserData {
   isCustomer: boolean;
 }
 
-export type TableName = 'users' | 'states';
+type AccountType = 'once-off' | 'subscription'
+
+export interface SupporterData {
+  email: string;
+  joined: Date;
+  type: AccountType;
+  user?: DocumentReference<UserData>;
+  trialEnd?: Date;
+}
+
+export type TableName = 'users' | 'states' | 'feedback' | 'supporters';
 
 @Injectable({
   providedIn: 'root',
@@ -38,12 +48,12 @@ export class DataService {
     return doc(this.afs, path);
   }
 
-  getChanges<T>(path: string) {
+  getChanges<T>(path: string): Observable<T> {
     return new Observable(subscriber => {
       let unsubscribeSnapshot = onSnapshot(
         this.getRef<T>(path),
         {},
-        s => subscriber.next(s.data()),
+        s => subscriber.next(s.data() as T),
         e => subscriber.error(e));
 
       return () => unsubscribeSnapshot();
@@ -78,11 +88,11 @@ export class DataService {
     return deleteDoc(this.getRef(`${table}/${this.userId$.value}`));
   }
 
-  async read<T>(table: TableName, id: string): Promise<DocumentData> {
+  async read<T>(table: TableName, id: string): Promise<T> {
     await this.checkUserSignIn();
 
     let entry = await getDoc(this.getRef(`${table}/${id}`));
-    return entry.data();
+    return entry.data() as T;
   }
 
   async readAll<T>(table: TableName): Promise<T[]> {
@@ -100,4 +110,15 @@ export class DataService {
     return firstValueFrom(timer(0).pipe(mapTo(void 0)));
   }
 
+  getUser(uid: string): Observable<UserData> {
+    return zip(
+      this.getChanges<UserData>(`${<TableName>'users'}/${uid}`),
+      this.getChanges<SupporterData>(`${<TableName>'supporters'}/${uid}`),
+    ).pipe(
+      map(([user, supporter]) => {
+        user.isCustomer = !!supporter;
+        return user;
+      }),
+    );
+  }
 }
