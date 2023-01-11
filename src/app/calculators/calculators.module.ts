@@ -210,10 +210,4 @@ import {
   ],
 })
 export class CalculatorsModule {
-
-  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
-    matIconRegistry.addSvgIconSet(
-      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
-  }
-
 }

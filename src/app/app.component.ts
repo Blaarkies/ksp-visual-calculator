@@ -7,6 +7,8 @@ import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.co
 import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
 import { ThemeService } from './services/theme.service';
 import { AuthService } from './services/auth.service';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'cp-root',
@@ -22,8 +24,15 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
               router: Router,
               cdr: ChangeDetectorRef,
               themeService: ThemeService,
-              authService: AuthService) {
+              authService: AuthService,
+              matIconRegistry: MatIconRegistry,
+              domSanitizer: DomSanitizer) {
     super();
+
+
+      matIconRegistry.addSvgIconSet(
+        domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
+
 
     themeService.logThemeOrigin();
 

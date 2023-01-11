@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { UsableRoutes } from './usable-routes';
+import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
@@ -18,6 +19,14 @@ const routes: Routes = [
 
   {path: '**', redirectTo: UsableRoutes.Intro},
 ];
+
+if (!environment.production) {
+  let blaarkiesBook = {
+    path: 'blaarkies-book',
+    loadComponent: () => import('./blaarkies-book/home/home.component').then(m => m.HomeComponent)
+  };
+  routes.splice(-1, 0, blaarkiesBook);
+}
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
