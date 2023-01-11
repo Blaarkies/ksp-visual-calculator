@@ -1,0 +1,84 @@
+<div class="stack manager-layout">
+  <cp-pocket-grid></cp-pocket-grid>
+
+  <div *ngIf="isGridEdit"
+       [@fade]
+       class="stack edit-overlay">
+
+    <div class="edit-column">
+      <button mat-fab color="none"
+              [disabled]="!canEdit.removeColumn"
+              (click)="deleteColumn()">
+        <mat-icon color="warn" [svgIcon]="Icons.Delete"></mat-icon>
+      </button>
+
+      Column
+
+      <button mat-fab color="none"
+              [disabled]="!canEdit.addColumn"
+              (click)="addColumn()">
+        <mat-icon color="primary" [svgIcon]="Icons.Add"></mat-icon>
+      </button>
+    </div>
+
+    <div class="edit-row">
+      <button mat-fab color="none"
+              [disabled]="!canEdit.removeRow"
+              (click)="deleteRow()">
+        <mat-icon color="warn" [svgIcon]="Icons.Delete"></mat-icon>
+      </button>
+
+      Row
+
+      <button mat-fab color="none"
+              [disabled]="!canEdit.addRow"
+              (click)="addRow()">
+        <mat-icon color="primary" [svgIcon]="Icons.Add"></mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="menu-container">
+    <button class="toggle-button"
+            mat-mini-fab
+            color="primary"
+            (click)="isOpen = !isOpen">
+      <mat-icon [svgIcon]="Icons.Hamburger"></mat-icon>
+    </button>
+
+    <div [@expandY]="isOpen" class="menu-expansion">
+      <button mat-mini-fab color="none">
+        <mat-icon [svgIcon]="Icons.Camera"></mat-icon>
+      </button>
+      <button mat-mini-fab color="none">
+        <mat-icon [svgIcon]="Icons.AccountSettings"></mat-icon>
+      </button>
+
+      <div class="menu-edit-layout">
+        <button mat-mini-fab color="none"
+                [disabled]="isGridEdit"
+                (click)="activateGridEdit()">
+          <mat-icon [svgIcon]="'view-grid-plus'"></mat-icon>
+        </button>
+
+        <div [@expandX]="isGridEdit" class="edit-expansion">
+          <button mat-mini-fab color="none">
+            <mat-icon [svgIcon]="Icons.Save" color="primary"></mat-icon>
+          </button>
+
+          <button mat-mini-fab color="none"
+                  (click)="isGridEdit = false">
+            <mat-icon [svgIcon]="Icons.Cancel" color="warn"></mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <button mat-mini-fab color="none">
+        <mat-icon [svgIcon]="Icons.Add"></mat-icon>
+      </button>
+      <button mat-mini-fab color="none">
+        <mat-icon [svgIcon]="Icons.Backspace"></mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

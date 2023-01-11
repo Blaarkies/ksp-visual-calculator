@@ -97,7 +97,9 @@ Array.prototype.windowed = function (this: Array<any>,
                                      step: number = 1,
                                      partialWindows: boolean = false): Array<Array<any>> {
   return this.reduce((state, c) => {
-    state.last && state.sum.push([state.last, c]);
+    if (state.last != null) {
+      state.sum.push([state.last, c]);
+    }
     state.last = c;
 
     return state;

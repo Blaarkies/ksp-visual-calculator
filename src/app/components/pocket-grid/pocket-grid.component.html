@@ -1,0 +1,17 @@
+<div class="stack grid-container">
+
+  <div
+    class="pocket-grid-layout"
+    [style.--grid-template-columns]="templateColumns"
+    [style.--grid-template-rows]="templateRows"
+  >
+    <div>here be pocket 1</div>
+    <div>here be pocket 2</div>
+    <div>here be pocket 3</div>
+    <div>here be pocket 4</div>
+  </div>
+
+  <cp-pocket-grid-lines
+    (update)="updateGridLines($event)"
+  ></cp-pocket-grid-lines>
+</div>

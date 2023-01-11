@@ -1,0 +1,15 @@
+.grid-container {
+  height: 100%;
+}
+
+.pocket-grid-layout {
+  display: grid;
+  --grid-template-columns: auto;
+  --grid-template-rows: auto;
+  grid-template-columns: var(--grid-template-columns);
+  grid-template-rows: var(--grid-template-rows);
+
+  > div {
+    place-self: center;
+  }
+}

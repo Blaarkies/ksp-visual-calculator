@@ -1,0 +1,21 @@
+.drag-line {
+
+  &.vertical {
+    &:hover {
+      cursor: ew-resize;
+    }
+  }
+
+  &.horizontal {
+    &:hover {
+      cursor: ns-resize;
+    }
+  }
+
+}
+
+.drag-lines-overlay {
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+}

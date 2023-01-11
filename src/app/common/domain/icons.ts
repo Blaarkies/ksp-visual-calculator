@@ -21,6 +21,7 @@ export class Icons {
   static CollapseRight = 'arrow-collapse-right';
   static Lock = 'lock';
   static Unlock = 'lock-open-variant';
+  static EditGrid = 'view-grid-plus';
 
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';
