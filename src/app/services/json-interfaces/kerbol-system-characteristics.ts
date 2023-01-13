@@ -3,7 +3,6 @@ export interface KerbolSystemCharacteristics {
 }
 
 export interface CelestialBody {
-
   id: string;
   type: string;
   name: string;
@@ -14,5 +13,4 @@ export interface CelestialBody {
   imageUrl: string;
   orbitLineColor?: string;
   hasDsn?: boolean;
-
 }

@@ -1,11 +1,27 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { PocketGridLinesComponent } from '../pocket-grid-lines/pocket-grid-lines.component';
-import { firstValueFrom, takeUntil, timer } from 'rxjs';
+import { Observable, takeUntil } from 'rxjs';
 import { PocketGridManagerService } from '../pocket-manager/pocket-grid-manager.service';
 import { WithDestroy } from '../../common/with-destroy';
+import { CommonModule } from '@angular/common';
+import { WidgetWindowComponent } from '../widget-window/widget-window.component';
 
-export class Pocket {
+export class WidgetDetails {
+  // TODO: allow all widget types to pass data through this
+  modifiedTimestamp: Date;
+}
+
+export class WidgetType {
+  static isruHeatPower = 'ISRU-heat-power';
+  static visViva = 'vis-viva';
+  static ionProbe = 'ion-probe';
+  static planetStats = 'planet-stats';
+}
+
+export class Widget {
   index: number;
+  type: WidgetType;
+  savedDetails?: WidgetDetails;
 }
 
 export class GridLines {
@@ -14,7 +30,7 @@ export class GridLines {
 }
 
 export class PocketLayout extends GridLines {
-  pockets: Pocket[];
+  pockets: Widget[];
 }
 
 @Component({
@@ -24,12 +40,15 @@ export class PocketLayout extends GridLines {
   styleUrls: ['./pocket-grid.component.scss'],
   imports: [
     PocketGridLinesComponent,
+    CommonModule,
+    WidgetWindowComponent,
   ],
 })
 export class PocketGridComponent extends WithDestroy() {
 
   templateColumns: string;
   templateRows: string;
+  pockets$: Observable<Widget[]>;
 
   constructor(private gridService: PocketGridManagerService) {
     super();
@@ -37,18 +56,9 @@ export class PocketGridComponent extends WithDestroy() {
     gridService.layoutReload$
       .pipe(takeUntil(this.destroy$))
       .subscribe(layout => this.setNewTemplateAxis(layout));
-  }
 
-  // async ngAfterViewInit() {
-  //   await firstValueFrom(timer(0));
-  //
-  //   let gridLines = {
-  //     columns: this.pocketLayout.columns,
-  //     rows: this.pocketLayout.rows,
-  //   };
-  //   this.updateGridLines(gridLines);
-  //   this.gridLines.setGridLines(gridLines);
-  // }
+    this.pockets$ = gridService.widgets$;
+  }
 
   private getCellSize(list: number[]) {
     return [0, ...list, 100]

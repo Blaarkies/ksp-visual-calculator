@@ -1,7 +1,7 @@
 <div class="stack manager-layout">
   <cp-pocket-grid></cp-pocket-grid>
 
-  <div *ngIf="isGridEdit"
+  <div *ngIf="isGridEditActive"
        [@fade]
        class="stack edit-overlay">
 
@@ -56,18 +56,18 @@
 
       <div class="menu-edit-layout">
         <button mat-mini-fab color="none"
-                [disabled]="isGridEdit"
+                [disabled]="isGridEditActive"
                 (click)="activateGridEdit()">
           <mat-icon [svgIcon]="'view-grid-plus'"></mat-icon>
         </button>
 
-        <div [@expandX]="isGridEdit" class="edit-expansion">
+        <div [@expandX]="isGridEditActive" class="edit-expansion">
           <button mat-mini-fab color="none">
             <mat-icon [svgIcon]="Icons.Save" color="primary"></mat-icon>
           </button>
 
           <button mat-mini-fab color="none"
-                  (click)="isGridEdit = false">
+                  (click)="isGridEditActive = false">
             <mat-icon [svgIcon]="Icons.Cancel" color="warn"></mat-icon>
           </button>
         </div>

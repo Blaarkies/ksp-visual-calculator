@@ -117,14 +117,13 @@ import {
     FaqDialogComponent,
     ManageStateDialogComponent,
 
-    InputFieldComponent,
-    InputFieldComponent,
-    InputSelectComponent,
-    InputNumberComponent,
+    // InputFieldComponent,
+    // InputSelectComponent,
+    // InputNumberComponent,
     InputToggleComponent,
     InputFieldListComponent,
     InputTextAreaComponent,
-    ValidationMessageComponent,
+    // ValidationMessageComponent,
 
     DraggableSpaceObjectComponent,
     OrbitLineComponent,
@@ -170,6 +169,11 @@ import {
     PageCalculatorsComponent,
   ],
   imports: [
+    InputSelectComponent,
+    InputFieldComponent,
+    ValidationMessageComponent,
+    InputNumberComponent,
+
     CommonModule,
     CalculatorsRoutingModule,
     ReactiveFormsModule,

@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { PocketGridLinesComponent } from '../pocket-grid-lines/pocket-grid-lines.component';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { PocketGridComponent, PocketLayout } from '../pocket-grid/pocket-grid.component';
+import { PocketGridComponent, PocketLayout, WidgetType } from '../pocket-grid/pocket-grid.component';
 import { firstValueFrom, timer } from 'rxjs';
 import { PocketGridManagerService } from './pocket-grid-manager.service';
 
@@ -42,18 +42,27 @@ class GetterSetterProxy<T> {
     PocketGridManagerService,
   ],
 })
-export class PocketManagerComponent {
+export class PocketManagerComponent implements OnDestroy {
 
   Icons = Icons;
 
   pocketLayout: PocketLayout = {
-    columns: [50],
-    rows: [33],
-    pockets: [],
+    columns: [60],
+    rows: [75],
+    pockets: [
+      {
+        index: 0,
+        type: WidgetType.isruHeatPower,
+        savedDetails: {
+          some: 'details',
+        },
+      } as any,
+      null,
+    ],
   };
 
   isOpen = false;
-  isGridEdit = false;
+  isGridEditActive = false;
 
   canEdit: CanEditGrid = {
     addColumn: false,
@@ -64,10 +73,15 @@ export class PocketManagerComponent {
 
   constructor(private gridService: PocketGridManagerService) {
     this.applyGridEdit();
+    this.gridService.setWidgets(this.pocketLayout.pockets);
+  }
+
+  ngOnDestroy() {
+    this.gridService.destroy();
   }
 
   activateGridEdit() {
-    this.isGridEdit = true;
+    this.isGridEditActive = true;
   }
 
   private applyGridEdit() {
@@ -75,7 +89,7 @@ export class PocketManagerComponent {
     let rowCount = this.pocketLayout.rows.length;
     this.canEdit = {
       addColumn: columnCount < 3,
-      addRow: rowCount < 2,
+      addRow: rowCount < 3,
       removeColumn: columnCount > 0,
       removeRow: rowCount > 0,
     };

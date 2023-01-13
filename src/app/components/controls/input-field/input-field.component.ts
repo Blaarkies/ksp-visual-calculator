@@ -18,8 +18,16 @@ import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
 import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCommonModule, MatRippleModule } from '@angular/material/core';
 
 @Component({
+  standalone: true,
   selector: 'cp-input-field',
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
@@ -30,6 +38,14 @@ import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
     useExisting: forwardRef(() => InputFieldComponent),
     multi: true,
   }],
+  imports: [
+    CommonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    ValidationMessageComponent,
+  ],
 })
 export class InputFieldComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 class ErrorMessageTranscriber {
 
@@ -32,9 +33,13 @@ class ErrorMessageTranscriber {
 }
 
 @Component({
+  standalone: true,
   selector: 'cp-validation-message',
   templateUrl: './validation-message.component.html',
   styleUrls: ['./validation-message.component.scss'],
+  imports: [
+    MatFormFieldModule,
+  ],
 })
 export class ValidationMessageComponent {
 

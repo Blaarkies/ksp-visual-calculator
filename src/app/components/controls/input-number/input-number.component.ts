@@ -13,14 +13,17 @@ import {
 } from '@angular/core';
 import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InputFieldComponent } from '../input-field/input-field.component';
-import { MatSlider, MatSliderThumb } from '@angular/material/slider';
+import { MatSlider, MatSliderModule, MatSliderThumb } from '@angular/material/slider';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { filter, fromEvent, map, Subject, takeUntil } from 'rxjs';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
+import { CommonModule } from '@angular/common';
+import { InputSelectComponent } from '../input-select/input-select.component';
 
 @Component({
+  standalone: true,
   selector: 'cp-input-number',
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],
@@ -30,6 +33,11 @@ import { ControlMetaNumber } from '../../../common/domain/input-fields/control-m
     useExisting: forwardRef(() => InputNumberComponent),
     multi: true,
   }],
+  imports: [
+    MatMenuModule,
+    MatSliderModule,
+    InputFieldComponent,
+  ],
 })
 export class InputNumberComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

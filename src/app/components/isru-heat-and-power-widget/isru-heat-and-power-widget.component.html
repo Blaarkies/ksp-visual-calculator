@@ -1,0 +1,30 @@
+<br>
+<br>
+<br>
+<br>
+
+<div class="text title center">ISRU Heat & Power Calculator</div>
+
+<div class="isru-layout">
+
+  <cp-input-select
+    label="Add Part"
+    [formControl]="controlAddPart"
+    [mapIcons]="partIcons"
+    [options]="partOptions"
+  ></cp-input-select>
+
+  <div class="text subtitle">Parts</div>
+  <div class="parts-listed">
+    <ng-container *ngFor="let entry of craftPartsEntries">
+      <cp-input-number
+        [label]="null"
+        [formControl]="entry.control"
+        [controlMeta]="defaultControlMeta"
+      ></cp-input-number>
+      <div>{{entry.part.label}}</div>
+    </ng-container>
+  </div>
+
+</div>
+

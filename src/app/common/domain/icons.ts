@@ -25,6 +25,9 @@ export class Icons {
 
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';
+  static PowerSolar = 'solar-power';
+  static Power = 'lightning-bolt';
+  static Radiator = 'radiator';
 
   static Network = 'wan';
   static DeltaV = 'rocket-launch';

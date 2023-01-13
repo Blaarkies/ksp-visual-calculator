@@ -21,11 +21,13 @@ const routes: Routes = [
 ];
 
 if (!environment.production) {
+  let bookPath = 'blaarkies-book';
   let blaarkiesBook = {
-    path: 'blaarkies-book',
+    path: bookPath,
     loadComponent: () => import('./blaarkies-book/home/home.component').then(m => m.HomeComponent)
   };
   routes.splice(-1, 0, blaarkiesBook);
+  routes[routes.length - 1].redirectTo = bookPath;
 }
 
 @NgModule({

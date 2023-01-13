@@ -8,6 +8,7 @@
   --grid-template-rows: auto;
   grid-template-columns: var(--grid-template-columns);
   grid-template-rows: var(--grid-template-rows);
+  gap: 1em;
 
   > div {
     place-self: center;

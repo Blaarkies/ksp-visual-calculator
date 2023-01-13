@@ -3,7 +3,7 @@
                 [color]="color"
                 [class.disabled]="disabled"
                 [class.error-blink]="errorBlink$ | async">
-  <mat-label>{{label}}</mat-label>
+  <mat-label *ngIf="label !== null">{{label}}</mat-label>
   <input #input
          matInput
          [type]="type"

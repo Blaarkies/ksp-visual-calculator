@@ -5,10 +5,10 @@
     [style.--grid-template-columns]="templateColumns"
     [style.--grid-template-rows]="templateRows"
   >
-    <div>here be pocket 1</div>
-    <div>here be pocket 2</div>
-    <div>here be pocket 3</div>
-    <div>here be pocket 4</div>
+    <cp-widget-window
+      *ngFor="let widget of pockets$ | async"
+      [widget]="widget"
+    ></cp-widget-window>
   </div>
 
   <cp-pocket-grid-lines

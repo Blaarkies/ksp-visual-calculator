@@ -4,12 +4,16 @@ import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-va
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { InputFieldComponent } from '../input-field/input-field.component';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
-import { MatSelect } from '@angular/material/select';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { Icons } from '../../../common/domain/icons';
 import { BehaviorSubject, map, Subject, takeUntil } from 'rxjs';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'cp-input-select',
   templateUrl: './input-select.component.html',
   styleUrls: ['./input-select.component.scss'],
@@ -19,17 +23,24 @@ import { BasicAnimations } from '../../../common/animations/basic-animations';
     useExisting: forwardRef(() => InputSelectComponent),
     multi: true,
   }],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatIconModule,
+    InputFieldComponent,
+  ],
 })
 export class InputSelectComponent extends BasicValueAccessor implements OnDestroy {
 
   @Input() set options(list: LabeledOption<any>[]) {
-    this.unsubscribe$.next();
+    this.cancelPreviousSearch$.next();
     this.searchValue$
       .pipe(
         map(search => search
           ? list.sortByRelevance((item: LabeledOption<any>) => item.label.relevanceScore(search))
           : list),
-        takeUntil(this.unsubscribe$))
+        takeUntil(this.cancelPreviousSearch$))
       .subscribe(options => {
         this.filteredOptions = options;
         this.searchBoxRef.nativeElement.parentElement?.scroll({behavior: 'smooth', top: 0});
@@ -51,7 +62,7 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
   icons = Icons;
   searchValue$ = new BehaviorSubject<string>(null);
   filteredOptions: LabeledOption<any>[];
-  private unsubscribe$ = new Subject<void>();
+  private cancelPreviousSearch$ = new Subject<void>();
 
   constructor() {
     super();
@@ -88,8 +99,8 @@ export class InputSelectComponent extends BasicValueAccessor implements OnDestro
   }
 
   ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.cancelPreviousSearch$.next();
+    this.cancelPreviousSearch$.complete();
     this.searchValue$.complete();
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GridLines, PocketLayout } from '../pocket-grid/pocket-grid.component';
+import { GridLines, PocketLayout, Widget } from '../pocket-grid/pocket-grid.component';
 import { ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -9,6 +9,8 @@ export class PocketGridManagerService {
 
   layoutReload$ = new ReplaySubject<PocketLayout>();
   linesUpdate$ = new ReplaySubject<GridLines>();
+
+  widgets$ = new ReplaySubject<Widget[]>();
 
   constructor() {
   }
@@ -24,5 +26,9 @@ export class PocketGridManagerService {
 
   updateGridLines(gridLines: GridLines) {
     this.linesUpdate$.next(gridLines);
+  }
+
+  setWidgets(widgets: Widget[]) {
+    this.widgets$.next(widgets);
   }
 }

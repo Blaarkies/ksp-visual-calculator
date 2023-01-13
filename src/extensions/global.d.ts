@@ -72,6 +72,7 @@ declare global {
 
     replace(this: Array<T>, stale: T, fresh: T, addIfAbsent?: boolean): Array<T>;
 
+    /** Removes stale item from array, in-place */
     remove(this: Array<T>, stale: T): Array<T>;
 
     flatMap(this: Array<T>, selectorCallback?: (item: T) => T): Array<any>;
