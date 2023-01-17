@@ -1,0 +1,12 @@
+<div class="text subtitle">{{title}}</div>
+
+<div class="craft-stats" [@expandY] *ngIf="statistics">
+  <ng-container *ngFor="let stat of statistics.statistics">
+
+    <mat-icon [svgIcon]="stat.icon.toString()"></mat-icon>
+
+    <div>{{stat.label}}</div>
+
+    <div class="justify-self-end">{{stat.value}}</div>
+  </ng-container>
+</div>

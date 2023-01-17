@@ -1,0 +1,13 @@
+:host {
+  display: grid;
+  justify-content: start;
+  gap: 1em;
+}
+
+.craft-stats {
+  display: grid;
+  justify-content: start;
+  grid-template-columns: max-content auto max-content;
+  gap: 0px 2ch;
+  align-items: center;
+}

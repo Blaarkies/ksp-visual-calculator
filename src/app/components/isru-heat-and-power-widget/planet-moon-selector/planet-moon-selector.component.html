@@ -1,0 +1,8 @@
+<div class="text subtitle">{{title}}</div>
+
+<cp-input-select
+  label="Planet/Moon"
+  [formControl]="control"
+  [mapIcons]="planetIcons$ | async"
+  [options]="planetOptions$ | async"
+></cp-input-select>

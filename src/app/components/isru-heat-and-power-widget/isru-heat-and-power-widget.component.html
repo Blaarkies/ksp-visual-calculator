@@ -7,24 +7,18 @@
 
 <div class="isru-layout">
 
-  <cp-input-select
-    label="Add Part"
-    [formControl]="controlAddPart"
-    [mapIcons]="partIcons"
-    [options]="partOptions"
-  ></cp-input-select>
+  <cp-planet-moon-selector
+    (update)="updatePlanet($event)"
+  ></cp-planet-moon-selector>
 
-  <div class="text subtitle">Parts</div>
-  <div class="parts-listed">
-    <ng-container *ngFor="let entry of craftPartsEntries">
-      <cp-input-number
-        [label]="null"
-        [formControl]="entry.control"
-        [controlMeta]="defaultControlMeta"
-      ></cp-input-number>
-      <div>{{entry.part.label}}</div>
-    </ng-container>
-  </div>
+  <cp-parts-selector
+    (update)="updateParts($event)"
+  ></cp-parts-selector>
 
+  <cp-craft-part-statistics
+    [partGroups]="selectedParts"
+    [body]="selectedBody"
+  >
+  </cp-craft-part-statistics>
 </div>
 

@@ -1,0 +1,25 @@
+@use "../../../../styles/variables";
+
+:host {
+  display: grid;
+  justify-content: start;
+  gap: 1em;
+}
+
+.parts-listed {
+  display: grid;
+  grid-template-columns: max-content auto max-content;
+  gap: 0px 2ch;
+  align-items: center;
+  margin-bottom: 16px;
+
+  cp-input-select {
+    grid-column: 1/-1;
+  }
+
+  cp-input-number {
+    height: 50px;
+  }
+}
+
+

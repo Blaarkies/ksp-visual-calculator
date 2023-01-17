@@ -26,8 +26,12 @@ export class Icons {
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';
   static PowerSolar = 'solar-power';
+  static FuelCell = 'fuel-cell';
+  static Radioactive = 'radioactive';
   static Power = 'lightning-bolt';
   static Radiator = 'radiator';
+  static Heat = 'heat-wave';
+  static Fuel = 'gas-station';
 
   static Network = 'wan';
   static DeltaV = 'rocket-launch';
@@ -72,7 +76,6 @@ export class Icons {
   static Home = 'home';
   static Traveler = 'hail';
   static Takeoff = 'airplane-takeoff';
-  static Fuel = 'gas-station';
   static BookOpen = 'book-open-variant';
   static ThemeLight = 'white-balance-sunny';
   static ThemeDark = 'weather-night';

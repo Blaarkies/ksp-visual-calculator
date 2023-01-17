@@ -107,7 +107,13 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "style": "scss"
+      "style": "scss",
+      "standalone": true,
+      "skipTests": true,
+      "skipImport": true
+    },
+    "@schematics/angular:service": {
+      "skipTests": true,
     }
   },
   "cli": {
