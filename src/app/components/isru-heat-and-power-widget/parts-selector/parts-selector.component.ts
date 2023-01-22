@@ -4,7 +4,7 @@ import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { Icons } from '../../../common/domain/icons';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
-import { takeUntil, throttleTime } from 'rxjs';
+import { map, takeUntil, throttleTime } from 'rxjs';
 import { InputSelectComponent } from '../../controls/input-select/input-select.component';
 import { InputNumberComponent } from '../../controls/input-number/input-number.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,58 +13,59 @@ import { CraftPart, PartProperties } from '../domain/craft-part';
 import { categoryIconMap } from '../domain/part-category-icon-map';
 import { WithDestroy } from '../../../common/with-destroy';
 import { Group } from '../../../common/domain/group';
+import { StockEntitiesCacheService } from '../stock-entities-cache.service';
 
 
-let kspParts: CraftPart[] = [
-  {
-    label: 'Convert-O-Tron 250',
-    category: 'converter',
-    properties: {
-      produceHeat: 4000,
-      drawEc: 100,
-      produceFuel: 1.8,
-    },
-  },
-  {
-    label: 'Radiator Panel (large)',
-    category: 'radiator',
-    properties: {
-      drawHeat: 400,
-    },
-  },
-  {
-    label: 'Gigantor XL Solar Array',
-    category: 'solar-panel',
-    properties: {
-      produceSolarEc: 24.4,
-    },
-  },
-  {
-    label: 'PB-NUK Radioisotope Thermoelectric Generator',
-    category: 'rtg',
-    properties: {
-      produceEc: .75,
-    },
-  },
-  {
-    label: 'Fuel Cell',
-    category: 'fuel-cell',
-    properties: {
-      produceEc: 1.5,
-      drawLf: 0.0016875,
-      drawOx: 0.0020625,
-    },
-  },
-  {
-    label: 'Z-4K Rechargeable Battery Bank',
-    category: 'battery',
-    properties: {
-      storageEc: 4000,
-    },
-  },
-];
+// let kspParts = [
+//   {
+//     label: 'Convert-O-Tron 250',
+//     category: 'converter',
+//     properties: {
+//       produceHeat: 4000,
+//       drawEc: 100,
+//       produceFuel: 1.8,
+//     },
+//   },
+//   {
+//     label: 'Radiator Panel (large)',
+//     category: 'radiator',
+//     properties: {
+//       drawHeat: 400,
+//     },
+//   },
+//   {
+//     label: 'Gigantor XL Solar Array',
+//     category: 'solar-panel',
+//     properties: {
+//       produceSolarEc: 24.4,
+//     },
+//   },
+//   {
+//     label: 'PB-NUK Radioisotope Thermoelectric Generator',
+//     category: 'rtg',
+//     properties: {
+//       produceEc: .75,
+//     },
+//   },
+//   {
+//     label: 'Fuel Cell',
+//     category: 'fuel-cell',
+//     properties: {
+//       produceEc: 1.5,
+//       drawLf: 0.0016875,
+//       drawOx: 0.0020625,
+//     },
+//   },
+//   {
+//     label: 'Z-4K Rechargeable Battery Bank',
+//     category: 'battery',
+//     properties: {
+//       storageEc: 4000,
+//     },
+//   },
+// ];
 
-let kspPartsLabelOptions = kspParts.map((p) => new LabeledOption<CraftPart>(p.label, p));
+// let kspPartsLabelOptions = kspParts.map((p) => new LabeledOption<CraftPart>(p.label, p));
 
 class CraftPartEntry {
   control: FormControl<number>;
@@ -92,12 +93,12 @@ export class PartsSelectorComponent extends WithDestroy() {
   @Output() update = new EventEmitter<Group<PartProperties>[]>();
 
   craftPartsEntries: CraftPartEntry[] = [];
-  partOptions: LabeledOption<CraftPart>[] = kspPartsLabelOptions;
-  partIcons = new Map<CraftPart, string>(
-    this.partOptions.map(p => [
-      p.value,
-      categoryIconMap.get(p.value.category),
-    ]));
+
+  miningParts = this.cacheService.miningParts$;
+  partOptions$ = this.miningParts.pipe(map(parts =>
+    parts.map(p => new LabeledOption<CraftPart>(p.label, p))));
+  partIcons$ = this.miningParts.pipe(map(parts => new Map<CraftPart, string>(
+      parts.map(p => [p, categoryIconMap.get(p.category)]))));
 
   controlAddPart = new FormControl<CraftPart>(null);
   defaultControlMeta = new ControlMetaNumber(0, 100, 3, 'x');
@@ -105,7 +106,7 @@ export class PartsSelectorComponent extends WithDestroy() {
 
   icons = Icons;
 
-  constructor() {
+  constructor(private cacheService: StockEntitiesCacheService) {
     super();
 
     this.controlAddPart
@@ -122,9 +123,9 @@ export class PartsSelectorComponent extends WithDestroy() {
         this.refreshPartOptions();
       });
 
-    setTimeout(() => {
-      this.controlAddPart.setValue(kspPartsLabelOptions[0].value);
-    }, 500)
+    // setTimeout(() => {
+    //   this.controlAddPart.setValue(kspPartsLabelOptions[0].value);
+    // }, 500)
 
     this.formArray
       .valueChanges
@@ -140,11 +141,11 @@ export class PartsSelectorComponent extends WithDestroy() {
   }
 
   private refreshPartOptions(doReset: boolean = false) {
-    let selected = new Set<CraftPart>(this.craftPartsEntries.map(e => e.part));
-    let source = doReset ? kspPartsLabelOptions : this.partOptions;
-    this.partOptions = source.filter(lo => !selected.has(lo.value));
-
-    this.eventUpdate();
+    // let selected = new Set<CraftPart>(this.craftPartsEntries.map(e => e.part));
+    // let source = doReset ? kspPartsLabelOptions : this.partOptions;
+    // this.partOptions = source.filter(lo => !selected.has(lo.value));
+    //
+    // this.eventUpdate();
   }
 
 

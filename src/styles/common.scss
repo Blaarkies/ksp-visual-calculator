@@ -64,3 +64,10 @@
     opacity: 1;
   }
 }
+
+.widget-details {
+  display: grid;
+  justify-content: start;
+  gap: 1em;
+  align-content: start;
+}

@@ -36,6 +36,16 @@ export class Common {
     return [...Array(count).keys()];
   }
 
+  static makeIntRange(start: number, end?: number): number[] {
+    if (start > end) {
+      return [];
+    }
+    let length = end === undefined
+      ? start
+      : end - start + 1;
+    return Array.from({length}, (_, i) => i + start);
+  }
+
   static randomIntList(count = 3, min = 0, max = 10): number[] {
     return this.listNumbers(count).map(() => this.randomNumber(min, max).toInt());
   }

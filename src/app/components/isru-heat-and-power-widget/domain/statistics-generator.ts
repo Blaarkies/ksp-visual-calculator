@@ -47,7 +47,7 @@ export class StatisticsGenerator {
       ? valueOverride(list)
       : list
         .filter(g => g.item[key] !== undefined)
-        .map(g => g.count * g.item[key])
+        .map(g => g.count * <number>g.item[key])
         .sum();
     return {
       label,

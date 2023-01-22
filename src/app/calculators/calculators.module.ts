@@ -120,7 +120,7 @@ import {
     // InputFieldComponent,
     // InputSelectComponent,
     // InputNumberComponent,
-    InputToggleComponent,
+    // InputToggleComponent,
     InputFieldListComponent,
     InputTextAreaComponent,
     // ValidationMessageComponent,
@@ -173,6 +173,7 @@ import {
     InputFieldComponent,
     ValidationMessageComponent,
     InputNumberComponent,
+    InputToggleComponent,
 
     CommonModule,
     CalculatorsRoutingModule,

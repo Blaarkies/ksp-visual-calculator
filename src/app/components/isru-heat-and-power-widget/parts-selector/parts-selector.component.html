@@ -4,8 +4,8 @@
   <cp-input-select
     label="Add Part"
     [formControl]="controlAddPart"
-    [mapIcons]="partIcons"
-    [options]="partOptions"
+    [mapIcons]="partIcons$ | async"
+    [options]="partOptions$ | async"
   ></cp-input-select>
 
   <ng-container *ngFor="let entry of craftPartsEntries">

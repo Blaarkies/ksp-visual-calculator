@@ -8,17 +8,23 @@ import { Group } from '../../common/domain/group';
 import { CraftPartStatisticsComponent } from './craft-part-statistics/craft-part-statistics.component';
 import { CelestialBody } from '../../services/json-interfaces/kerbol-system-characteristics';
 import { PlanetMoonSelectorComponent } from './planet-moon-selector/planet-moon-selector.component';
+import { StockEntitiesCacheService } from './stock-entities-cache.service';
+import { MiningBaseControlComponent } from './mining-base-control/mining-base-control.component';
 
 @Component({
   standalone: true,
   selector: 'cp-isru-heat-and-power-widget',
   templateUrl: './isru-heat-and-power-widget.component.html',
   styleUrls: ['./isru-heat-and-power-widget.component.scss'],
+  providers: [
+    StockEntitiesCacheService,
+  ],
   imports: [
     CommonModule,
     PartsSelectorComponent,
     CraftPartStatisticsComponent,
     PlanetMoonSelectorComponent,
+    MiningBaseControlComponent,
   ],
 })
 export class IsruHeatAndPowerWidgetComponent extends WithDestroy() {

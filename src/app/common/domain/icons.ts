@@ -22,6 +22,8 @@ export class Icons {
   static Lock = 'lock';
   static Unlock = 'lock-open-variant';
   static EditGrid = 'view-grid-plus';
+  static StarFull = 'star';
+  static StarEmpty = 'star-outline';
 
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';

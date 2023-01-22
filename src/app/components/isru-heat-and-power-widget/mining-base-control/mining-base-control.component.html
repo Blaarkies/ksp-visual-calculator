@@ -1,0 +1,30 @@
+<div class="text subtitle">{{title}}</div>
+
+<cp-planet-moon-selector
+  [title]="null"
+  [filter]="['moon', 'planet']"
+  (update)="updatePlanet($event)"
+></cp-planet-moon-selector>
+
+<cp-input-number
+  label="Ore Concentration"
+  [min]="0.499"
+  [max]="100"
+  [factor]="4"
+  suffix="%"
+  [formControl]="controlOreConcentration"
+  ></cp-input-number>
+
+<cp-input-rating
+  label="Engineer Skill Level"
+  [formControl]=""
+  color="accent"
+></cp-input-rating>
+
+<div class="text caption" *ngIf="converters.length">Resource Processors</div>
+<cp-input-toggle
+  *ngFor="let converter of converters"
+  [label]="converter.label"
+  [formControl]="converter.control"
+  type="switch"
+></cp-input-toggle>

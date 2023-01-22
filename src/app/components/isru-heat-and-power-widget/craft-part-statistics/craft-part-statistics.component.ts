@@ -69,7 +69,7 @@ export class CraftPartStatisticsComponent implements OnChanges {
         }),
       new StatisticConfig('Heat Dissipation', Icons.Heat, 'drawHeat', 'W/s'),
       new StatisticConfig('Heat Production', Icons.Heat, 'produceHeat', 'W/s'),
-      new StatisticConfig('Fuel Production', Icons.Fuel, 'produceFuel', 'LF/s'),
+      new StatisticConfig('Liquid Fuel Production', Icons.Fuel, 'produceLf', 'LF/s'),
     ]);
 
     this.statistics.refresh(this.partGroups)

@@ -1,12 +1,15 @@
 import { Component, forwardRef, Input, ViewChild } from '@angular/core';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatCheckbox } from '@angular/material/checkbox';
+import { MatCheckbox, MatCheckboxModule } from '@angular/material/checkbox';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatSlideToggle, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
+  standalone: true,
   selector: 'cp-input-toggle',
   templateUrl: './input-toggle.component.html',
   styleUrls: ['./input-toggle.component.scss'],
@@ -16,6 +19,12 @@ import { BasicAnimations } from '../../../common/animations/basic-animations';
     useExisting: forwardRef(() => InputToggleComponent),
     multi: true,
   }],
+  imports: [
+    CommonModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    ValidationMessageComponent,
+  ],
 })
 export class InputToggleComponent extends BasicValueAccessor {
 

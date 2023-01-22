@@ -11,6 +11,7 @@ import { BehaviorSubject, map, Observable, ReplaySubject, shareReplay, take, tak
 import { HttpClient } from '@angular/common/http';
 import { WithDestroy } from '../../../common/with-destroy';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
+import { StockEntitiesCacheService } from '../stock-entities-cache.service';
 
 type BodyFilter = 'star' | 'planet' | 'moon';
 
@@ -29,7 +30,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
 
   @Input() title = 'Location';
 
-  @Input() set filter(value: BodyFilter) {
+  @Input() set filter(value: BodyFilter[]) {
     this.filter$.next(value);
   }
 
@@ -40,22 +41,14 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
 
   control = new FormControl<CelestialBody>(null);
 
-  private filter$ = new BehaviorSubject<BodyFilter>('planet');
-  private data$: Observable<KerbolSystemCharacteristics>;
+  private filter$ = new BehaviorSubject<BodyFilter[]>(['planet']);
 
-  constructor(http: HttpClient) {
+  constructor(cacheService: StockEntitiesCacheService) {
     super();
 
-    this.data$ = http.get<KerbolSystemCharacteristics>(
-      'assets/stock/kerbol-system-characteristics.json')
-      .pipe(
-        takeUntil(this.destroy$),
-        shareReplay(1),
-      );
-
-    this.planetOptions$ = this.data$.pipe(
+    this.planetOptions$ = cacheService.planets$.pipe(
       withLatestFrom(this.filter$),
-      map(([data, filter]) => data.bodies.filter(b => b.type === filter)),
+      map(([data, filter]) => data.bodies.filter(b => filter.includes(<BodyFilter>b.type))),
       map(bodies => bodies.map(b => new LabeledOption(b.name, b))));
 
     this.planetIcons$ = this.planetOptions$.pipe(
