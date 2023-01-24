@@ -4,14 +4,14 @@ import {
   distinctUntilChanged,
   filter,
   finalize,
-  fromEvent, interval,
+  fromEvent,
   map,
   Observable,
   sampleTime,
   scan,
   skip,
   startWith,
-  switchMap, take,
+  switchMap,
   takeUntil
 } from 'rxjs';
 import { CameraService } from '../../services/camera.service';

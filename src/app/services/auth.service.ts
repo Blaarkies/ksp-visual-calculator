@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core';
 import {
-  catchError,
-  distinctUntilChanged, EMPTY,
+  distinctUntilChanged,
   filter,
   firstValueFrom,
   map,
   Observable,
   of,
-  publishReplay,
-  refCount, shareReplay,
+  shareReplay,
   switchMap,
   take,
   takeWhile,
-  tap, timer,
+  tap,
   zip
 } from 'rxjs';
 import { Router } from '@angular/router';
-import { DataService, TableName, UserData } from './data.service';
+import { DataService, UserData } from './data.service';
 import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpParams } from '@angular/common/http';

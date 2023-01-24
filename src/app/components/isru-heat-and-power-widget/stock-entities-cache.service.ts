@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, shareReplay, Subject, takeUntil } from 'rxjs';
-import { CraftPart } from './domain/craft-part';
+import { CraftPart, craftPartFromJson } from './domain/craft-part';
 import { KerbolSystemCharacteristics } from '../../services/json-interfaces/kerbol-system-characteristics';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class StockEntitiesCacheService {
     'assets/stock/mining-parts.json')
     .pipe(
       takeUntil(this.destroy$),
-      map(parts => parts.map(json => CraftPart.fromJson(json))),
+      map(parts => parts.map(json => craftPartFromJson(json))),
       shareReplay(1),
     );
 

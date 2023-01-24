@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, HostListener, Input, OnDestroy, Output } from '@angular/core';
-import { delay, mapTo, of, Subject, switchMap, take, timer } from 'rxjs';
+import { delay, of, Subject, switchMap } from 'rxjs';
 
 @Directive({
   selector: '[cpMouseHover]',

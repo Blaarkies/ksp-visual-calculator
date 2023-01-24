@@ -1,8 +1,8 @@
 import { Icons } from '../../../common/domain/icons';
 import { Group } from '../../../common/domain/group';
-import { PartProperties } from './craft-part';
+import { CraftPart } from './craft-part';
 
-class Statistic {
+export class Statistic {
   label: string;
   value: string;
   icon: Icons;
@@ -14,9 +14,9 @@ export class StatisticConfig {
   constructor(
     public label: string,
     public icon: Icons,
-    public key: keyof PartProperties,
+    public key: keyof CraftPart,
     public suffix: Measure,
-    public valueOverride?: (list: Group<PartProperties>[]) => number,
+    public valueOverride?: (list: Group<CraftPart>[]) => number,
   ) {
   }
 }
@@ -28,7 +28,7 @@ export class StatisticsGenerator {
   constructor(private rowsConfig: StatisticConfig[]) {
   }
 
-  refresh(list: Group<PartProperties>[]) {
+  refresh(list: Group<CraftPart>[]) {
     if (!list) {
       return;
     }
@@ -37,12 +37,12 @@ export class StatisticsGenerator {
       .filter(s => s.hasValue);
   }
 
-  private getPropertyStat(list: Group<PartProperties>[],
+  private getPropertyStat(list: Group<CraftPart>[],
                           label: string,
                           icon: Icons,
-                          key: keyof PartProperties,
+                          key: keyof CraftPart,
                           suffix: Measure,
-                          valueOverride?: (list: Group<PartProperties>[]) => number) {
+                          valueOverride?: (list: Group<CraftPart>[]) => number) {
     let total = valueOverride
       ? valueOverride(list)
       : list

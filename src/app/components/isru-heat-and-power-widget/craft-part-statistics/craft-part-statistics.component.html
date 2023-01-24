@@ -1,7 +1,7 @@
 <div class="text subtitle">{{title}}</div>
 
-<div class="craft-stats" [@expandY] *ngIf="statistics">
-  <ng-container *ngFor="let stat of statistics.statistics">
+<div class="craft-stats" [@expandY] *ngIf="stats">
+  <ng-container *ngFor="let stat of stats; trackBy: getLabel">
 
     <mat-icon [svgIcon]="stat.icon.toString()"></mat-icon>
 

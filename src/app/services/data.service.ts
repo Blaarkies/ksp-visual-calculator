@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, map, mapTo, mergeAll, Observable, timer, zip, zipAll } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, mapTo, Observable, timer, zip } from 'rxjs';
 import {
   deleteDoc,
   deleteField,

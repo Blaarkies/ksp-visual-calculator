@@ -40,8 +40,15 @@ import { Common } from '../../../../common/common';
 })
 export class EngineerSkillSelectorComponent extends BasicValueAccessor {
 
-  @Input() set formControl(value: UntypedFormControl) {
-    this.setDisabledState(value?.disabled);
+  @Input() set formControl(control: FormControl<number>) {
+    this.setDisabledState(control?.disabled);
+
+    let mapEntries = Array.from(this.bonusMap.entries())
+      .sort(([,av], [,bv]) => av - bv);
+    let nearEntry = mapEntries.find(([,v]) => control.value <= v) ?? mapEntries.last();
+    let starKey = nearEntry[0];
+
+    this.controlSkillRating.setValue(starKey, {emitEvent: false});
   }
 
   @Output() output = new EventEmitter<number>();

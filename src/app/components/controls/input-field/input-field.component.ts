@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, UntypedFormControl } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
@@ -24,7 +24,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCommonModule, MatRippleModule } from '@angular/material/core';
 
 @Component({
   standalone: true,

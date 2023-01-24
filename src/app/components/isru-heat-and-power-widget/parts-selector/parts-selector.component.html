@@ -5,12 +5,12 @@
     label="Add Part"
     [formControl]="controlAddPart"
     [mapIcons]="partIcons$ | async"
-    [options]="partOptions$ | async"
+    [options]="filteredPartOptions$ | async"
   ></cp-input-select>
 
-  <ng-container *ngFor="let entry of craftPartsEntries;
-                  let i = index;
-                  trackBy: getEntryLabel">
+  <ng-container *ngFor="let entry of controlEntities$ | async;
+                        let i = index;
+                        trackBy: getEntryLabel">
     <cp-input-number
       class="small-number-width"
       [label]="null"
@@ -18,7 +18,7 @@
       [controlMeta]="defaultControlMeta"
     ></cp-input-number>
 
-    <div>{{entry.part.label}}</div>
+    <div>{{entry.value.label}}</div>
 
     <button
       class="dim-until-hover"

@@ -16,7 +16,6 @@ import {
   takeUntil
 } from 'rxjs';
 import { PathDetailsReader } from './msp-edge/path-details-reader';
-import { MatSelectChange } from '@angular/material/select';
 import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
 import { CheckpointPreferences } from '../../common/domain/checkpoint-preferences';
 import { SetupService } from '../../services/setup.service';

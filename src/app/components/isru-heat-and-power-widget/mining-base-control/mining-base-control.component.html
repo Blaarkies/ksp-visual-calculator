@@ -13,16 +13,13 @@
   [factor]="4"
   suffix="%"
   [formControl]="controlOreConcentration"
-  ></cp-input-number>
+></cp-input-number>
 
 <cp-engineer-skill-selector
   [formControl]="controlEngineerBonus"
 ></cp-engineer-skill-selector>
 
-<div class="text caption" *ngIf="converters.length">Resource Processors</div>
-<cp-input-toggle
-  *ngFor="let converter of converters; trackBy: getLabel"
-  [label]="converter.label"
-  [formControl]="converter.control"
-  type="switch"
-></cp-input-toggle>
+<cp-resource-processors
+  [converters]="converters$ | async"
+  (update)="updateConverters($event)"
+></cp-resource-processors>

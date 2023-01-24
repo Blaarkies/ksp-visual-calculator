@@ -1,14 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
-import {
-  CelestialBody,
-  KerbolSystemCharacteristics
-} from '../../../services/json-interfaces/kerbol-system-characteristics';
+import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
 import { InputSelectComponent } from '../../controls/input-select/input-select.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, map, Observable, ReplaySubject, shareReplay, take, takeUntil, withLatestFrom } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, map, Observable, take, takeUntil, withLatestFrom } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';

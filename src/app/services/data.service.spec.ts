@@ -2,17 +2,7 @@ import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { DataService } from './data.service';
 import { of } from 'rxjs';
-import {
-  deleteDoc,
-  deleteField,
-  doc,
-  Firestore,
-  getDoc,
-  onSnapshot,
-  setDoc,
-  SetOptions,
-  updateDoc
-} from '@angular/fire/firestore';
+import { doc } from '@angular/fire/firestore';
 import createSpy = jasmine.createSpy;
 
 let serviceType = DataService;

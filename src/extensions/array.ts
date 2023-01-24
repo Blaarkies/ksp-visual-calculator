@@ -96,15 +96,17 @@ Array.prototype.windowed = function (this: Array<any>,
                                      size: number,
                                      step: number = 1,
                                      partialWindows: boolean = false): Array<Array<any>> {
-  return this.reduce((state, c) => {
-    if (state.last != null) {
-      state.sum.push([state.last, c]);
+  let result = [];
+  this.some((el, i) => {
+    if (i % step !== 0) {
+      return false;
     }
-    state.last = c;
-
-    return state;
-  }, {sum: [], last: null})
-    .sum;
+    if (i + size > this.length) {
+      return true;
+    }
+    result.push(this.slice(i, i + size));
+  });
+  return result;
 };
 
 Array.prototype.random = function (this: Array<any>): any {

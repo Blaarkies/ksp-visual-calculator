@@ -29,9 +29,9 @@ export class PartProperties {
 }
 
 export type Category =
-  'converter'
+  'isru'
   | 'radiator'
-  | 'harvester'
+  | 'drill'
   | 'solar-panel'
   | 'rtg'
   | 'fuel-cell'
@@ -56,11 +56,11 @@ function getCategory(part: BuiltStructure, processedProperties: PartProperties):
   }
 
   if (tags.includes('harvest')) {
-    return 'harvester';
+    return 'drill';
   }
 
   if (tags.includes('isru')) {
-    return 'converter';
+    return 'isru';
   }
 
   if (tags.includes('capacitor')) {
@@ -121,7 +121,7 @@ function transformFunction(): TransformationFunction {
       category: getCategory(part, properties),
       cost: props.cost,
       mass: props.mass,
-      properties,
+      ...properties,
     };
   };
 }

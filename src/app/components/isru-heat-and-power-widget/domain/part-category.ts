@@ -1,5 +1,5 @@
-export type PartCategory = 'converter'
-  | 'harvester'
+export type PartCategory = 'isru'
+  | 'drill'
   | 'radiator'
   | 'solar-panel'
   | 'rtg'

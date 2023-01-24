@@ -1,14 +1,11 @@
 import { PartCategory } from './part-category';
 
-interface JsonPart {
-  [key: string]: string;
-}
 
 interface ConverterLabel {
-  converterName: string
+  converterName: string;
 }
 
-type ConverterProperty = ConverterLabel & keyof PartProperties;
+type ConverterProperties = ConverterLabel & keyof ResourceProperties;
 type JsonConverterProperty = ConverterLabel & keyof JsonPartProperties;
 
 interface JsonPartProperties {
@@ -33,15 +30,20 @@ interface JsonPartProperties {
   converters: JsonConverterProperty[];
 }
 
-export class PartProperties {
+interface CommonProperties {
+  label: string;
+  category: PartCategory;
+  cost: number;
+  mass: number;
+}
+
+export interface ResourceProperties {
   storageEc?: number;
   drawEc?: number;
   produceEc?: number;
   produceSolarEc?: number;
-
   drawHeat?: number;
   produceHeat?: number;
-
   storageLf?: number;
   storageOx?: number;
   storageOre?: number;
@@ -53,62 +55,37 @@ export class PartProperties {
   produceOx?: number;
   produceOre?: number;
   produceMono?: number;
-
-  converters?: ConverterProperty[];
-
-  constructor({
-                storageEc, drawEc, produceEc, produceSolarEc, drawHeat, produceHeat,
-                storageLf, storageOx, storageOre, storageMono, drawLf, drawOx, drawOre,
-                produceLf, produceOx, produceOre, produceMono, converters
-              }: JsonPartProperties) {
-    this.storageEc = storageEc?.toNumber();
-    this.drawEc = drawEc?.toNumber();
-    this.produceEc = produceEc?.toNumber();
-    this.produceSolarEc = produceSolarEc?.toNumber();
-    this.drawHeat = drawHeat?.toNumber();
-    this.produceHeat = produceHeat?.toNumber();
-    this.storageLf = storageLf?.toNumber();
-    this.storageOx = storageOx?.toNumber();
-    this.storageOre = storageOre?.toNumber();
-    this.storageMono = storageMono?.toNumber();
-    this.drawLf = drawLf?.toNumber();
-    this.drawOx = drawOx?.toNumber();
-    this.drawOre = drawOre?.toNumber();
-    this.produceLf = produceLf?.toNumber();
-    this.produceOx = produceOx?.toNumber();
-    this.produceOre = produceOre?.toNumber();
-    this.produceMono = produceMono?.toNumber();
-
-    this.converters = (<JsonConverterProperty[]>converters)?.map(json =>
-      (<ConverterProperty>{
-        ...PartProperties.fromJson(json),
-        converterName: json.converterName,
-      }));
-  }
-
-  static fromJson(json: any): PartProperties {
-    return new PartProperties(json);
-  }
 }
 
-export class CraftPart {
+export interface Converter extends ResourceProperties {
+  converterName: string;
+}
 
-  constructor(
-    public label: string,
-    public category: PartCategory,
-    public cost: number,
-    public mass: number,
-    public properties: PartProperties,
-  ) {
+export interface CraftPart
+  extends CommonProperties, ResourceProperties {
+  converters?: ConverterProperties[];
+}
+
+function convertValuesToNumbers<T>(json: any): T {
+  Object.entries(json)
+    .filter(([, v]) => typeof v === 'string')
+    .forEach(([k, v]) => {
+      let result = (<string>v).toNumber();
+      if (!isNaN(result)) {
+        json[k] = result;
+      }
+    });
+  return json;
+}
+
+export function craftPartFromJson(json: any): CraftPart {
+  convertValuesToNumbers(json);
+
+  if (json.converters) {
+    json.converters = (<JsonConverterProperty[]>json.converters)
+      .map(converterJson =>
+        convertValuesToNumbers<ConverterProperties>(converterJson));
   }
 
-  static fromJson(json: any): CraftPart {
-    return new CraftPart(
-      json.label,
-      json.category,
-      json.cost.toNumber(),
-      json.mass.toNumber(),
-      PartProperties.fromJson(json.properties),
-    );
-  }
+  return <CraftPart>json;
 }

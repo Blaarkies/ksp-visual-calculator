@@ -11,16 +11,14 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, UntypedFormControl } from '@angular/forms';
 import { InputFieldComponent } from '../input-field/input-field.component';
-import { MatSlider, MatSliderModule, MatSliderThumb } from '@angular/material/slider';
+import { MatSliderModule, MatSliderThumb } from '@angular/material/slider';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { filter, fromEvent, map, Subject, takeUntil } from 'rxjs';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
-import { CommonModule } from '@angular/common';
-import { InputSelectComponent } from '../input-select/input-select.component';
 
 @Component({
   standalone: true,

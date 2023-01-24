@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
-import { PocketGridLinesComponent } from '../pocket-grid-lines/pocket-grid-lines.component';
+import { Component, OnDestroy } from '@angular/core';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { PocketGridComponent, PocketLayout, WidgetType } from '../pocket-grid/pocket-grid.component';
-import { firstValueFrom, timer } from 'rxjs';
 import { PocketGridManagerService } from './pocket-grid-manager.service';
 
 interface CanEditGrid {
