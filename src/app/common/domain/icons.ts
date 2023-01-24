@@ -25,6 +25,8 @@ export class Icons {
   static StarFull = 'star';
   static StarEmpty = 'star-outline';
 
+  static Engineer = 'account-hard-hat';
+  static NoEngineer = 'account-off';
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';
   static PowerSolar = 'solar-power';
@@ -34,6 +36,8 @@ export class Icons {
   static Radiator = 'radiator';
   static Heat = 'heat-wave';
   static Fuel = 'gas-station';
+  static Harvester = '';
+  static Converter = 'compost';
 
   static Network = 'wan';
   static DeltaV = 'rocket-launch';

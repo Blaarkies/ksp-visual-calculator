@@ -131,11 +131,11 @@ $dark-theme: mat.define-dark-theme((
   }
 }
 
-mat-icon {
-  &[color="none"] {
+mat-icon, mat-button {
+  &[color="none"], &[ng-reflect-color="none"] {
     color: var(--color-icon-none);
   }
-  &[color="muted"] {
+  &[color="muted"], &[ng-reflect-color="muted"] {
     color: var(--color-icon-muted);
   }
 }

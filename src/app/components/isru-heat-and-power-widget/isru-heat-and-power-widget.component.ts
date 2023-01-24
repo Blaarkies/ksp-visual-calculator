@@ -10,6 +10,7 @@ import { CelestialBody } from '../../services/json-interfaces/kerbol-system-char
 import { PlanetMoonSelectorComponent } from './planet-moon-selector/planet-moon-selector.component';
 import { StockEntitiesCacheService } from './stock-entities-cache.service';
 import { MiningBaseControlComponent } from './mining-base-control/mining-base-control.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
@@ -21,6 +22,7 @@ import { MiningBaseControlComponent } from './mining-base-control/mining-base-co
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     PartsSelectorComponent,
     CraftPartStatisticsComponent,
     PlanetMoonSelectorComponent,

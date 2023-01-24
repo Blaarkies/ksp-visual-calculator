@@ -8,7 +8,9 @@
     [options]="partOptions$ | async"
   ></cp-input-select>
 
-  <ng-container *ngFor="let entry of craftPartsEntries">
+  <ng-container *ngFor="let entry of craftPartsEntries;
+                  let i = index;
+                  trackBy: getEntryLabel">
     <cp-input-number
       class="small-number-width"
       [label]="null"
@@ -22,7 +24,7 @@
       class="dim-until-hover"
       mat-icon-button
       color="warn"
-      (click)="removeEntry(entry)"
+      (click)="removeEntry(entry, i)"
     >
       <mat-icon [svgIcon]="icons.Delete"></mat-icon>
     </button>

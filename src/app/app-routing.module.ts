@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Route, RouterModule, Routes } from '@angular/router';
 import { UsableRoutes } from './usable-routes';
 import { environment } from '../environments/environment';
 
@@ -22,7 +22,7 @@ const routes: Routes = [
 
 if (!environment.production) {
   let bookPath = 'blaarkies-book';
-  let blaarkiesBook = {
+  let blaarkiesBook: Route = {
     path: bookPath,
     loadComponent: () => import('./blaarkies-book/home/home.component').then(m => m.HomeComponent)
   };

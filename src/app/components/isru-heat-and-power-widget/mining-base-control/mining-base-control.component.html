@@ -15,15 +15,13 @@
   [formControl]="controlOreConcentration"
   ></cp-input-number>
 
-<cp-input-rating
-  label="Engineer Skill Level"
-  [formControl]=""
-  color="accent"
-></cp-input-rating>
+<cp-engineer-skill-selector
+  [formControl]="controlEngineerBonus"
+></cp-engineer-skill-selector>
 
 <div class="text caption" *ngIf="converters.length">Resource Processors</div>
 <cp-input-toggle
-  *ngFor="let converter of converters"
+  *ngFor="let converter of converters; trackBy: getLabel"
   [label]="converter.label"
   [formControl]="converter.control"
   type="switch"

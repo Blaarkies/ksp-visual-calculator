@@ -3,18 +3,10 @@ import { CommonModule } from '@angular/common';
 import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
 import { PlanetMoonSelectorComponent } from '../planet-moon-selector/planet-moon-selector.component';
 import { InputRatingComponent } from '../input-rating/input-rating.component';
-import { FormControl } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { InputToggleComponent } from '../../controls/input-toggle/input-toggle.component';
 import { InputNumberComponent } from '../../controls/input-number/input-number.component';
-
-let convertersLabelMap = new Map<string, string>([
-  ['Lf+Ox', 'Liquid Fuel + Oxidizer'],
-  ['LiquidFuel', 'Liquid Fuel'],
-  ['Oxidizer', 'Oxidizer'],
-  ['Monoprop', 'Monopropellant'],
-  ['MonoPropellant', 'Monopropellant'],
-  ['Fuel Cell', 'Fuel Cell'],
-]);
+import { EngineerSkillSelectorComponent } from './engineer-skill-selector/engineer-skill-selector.component';
 
 @Component({
   standalone: true,
@@ -23,10 +15,11 @@ let convertersLabelMap = new Map<string, string>([
   styleUrls: ['./mining-base-control.component.scss'],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     PlanetMoonSelectorComponent,
-    InputRatingComponent,
     InputToggleComponent,
     InputNumberComponent,
+    EngineerSkillSelectorComponent,
   ],
 })
 export class MiningBaseControlComponent {
@@ -35,16 +28,21 @@ export class MiningBaseControlComponent {
 
   converters = [
     {
-      label: convertersLabelMap.get('Lf+Ox'),
+      label: 'Lf+Ox',
       control: new FormControl<boolean>(false),
     },
     {
-      label: convertersLabelMap.get('MonoPropellant'),
+      label: 'MonoPropellant',
       control: new FormControl<boolean>(false),
     }
   ];
 
   controlOreConcentration = new FormControl<number>(5);
+  controlEngineerBonus = new FormControl<number>(.05);
+
+  getLabel(index: number, item: {label}): string {
+    return item.label;
+  }
 
   updatePlanet(body: CelestialBody) {
     // this.selectedBody = body;

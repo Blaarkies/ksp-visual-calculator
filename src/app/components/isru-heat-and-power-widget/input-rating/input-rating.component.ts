@@ -1,9 +1,9 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Icons } from '../../../common/domain/icons';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { UntypedFormControl } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, UntypedFormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { Common } from '../../../common/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +14,11 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'cp-input-rating',
   templateUrl: './input-rating.component.html',
   styleUrls: ['./input-rating.component.scss'],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => InputRatingComponent),
+    multi: true,
+  }],
   imports: [
     CommonModule,
     MatIconModule,
@@ -41,15 +46,15 @@ export class InputRatingComponent extends BasicValueAccessor {
   stars = Common.makeIntRange(5);
   activeValue = 3;
 
-  private unsubscribe$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef) {
     super();
   }
 
   ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   writeValue(value: any) {

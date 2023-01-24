@@ -74,7 +74,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   isActive: boolean;
   icons = Icons;
   errorBlink$ = new Subject<boolean>();
-  private unsubscribe$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef) {
     super();
@@ -82,13 +82,13 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
 
   ngOnInit() {
     fromEvent(this.inputRef.nativeElement, 'input')
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((event: Event) => this.userInputChange((event.target as any).value));
   }
 
   ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   writeValue(value: any) {
@@ -134,7 +134,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
 
   blinkError() {
     this.errorBlink$.next(true);
-    timer(300).pipe(takeUntil(this.unsubscribe$))
+    timer(300).pipe(takeUntil(this.destroy$))
       .subscribe(() => this.errorBlink$.next(false));
   }
 }

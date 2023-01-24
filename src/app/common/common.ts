@@ -40,10 +40,9 @@ export class Common {
     if (start > end) {
       return [];
     }
-    let length = end === undefined
-      ? start
-      : end - start + 1;
-    return Array.from({length}, (_, i) => i + start);
+    return end === undefined
+      ? Array.from({length: start}, (_, i) => i + 1)
+      : Array.from({length: end - start + 1}, (_, i) => i + start);
   }
 
   static randomIntList(count = 3, min = 0, max = 10): number[] {

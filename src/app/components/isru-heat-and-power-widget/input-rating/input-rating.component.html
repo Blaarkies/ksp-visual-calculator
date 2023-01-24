@@ -1,5 +1,7 @@
 <div class="text caption" *ngIf="label">{{label}}</div>
 
+<ng-content select="[prefix]"></ng-content>
+
 <button
   *ngFor="let star of stars"
   mat-icon-button

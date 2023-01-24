@@ -1,5 +1,5 @@
 import { Component, ElementRef, forwardRef, Input, OnDestroy, ViewChild } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { InputFieldComponent } from '../input-field/input-field.component';

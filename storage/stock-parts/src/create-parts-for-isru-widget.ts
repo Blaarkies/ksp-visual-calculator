@@ -5,6 +5,7 @@ import { withoutTranslationPart } from './common';
 
 export class PartProperties {
   converters?: PartProperties[];
+  converterName?: string;
 
   storageEc?: string;
   drawEc?: string;
@@ -38,11 +39,24 @@ export type Category =
   | 'resource-tank'
   | 'unknown';
 
+let convertersLabelMap = new Map<string, string>([
+  ['Lf+Ox', 'Liquid Fuel + Oxidizer'],
+  ['LiquidFuel', 'Liquid Fuel'],
+  ['Oxidizer', 'Oxidizer'],
+  ['Monoprop', 'Monopropellant'],
+  ['MonoPropellant', 'Monopropellant'],
+  ['Fuel Cell', 'Fuel Cell'],
+]);
+
 function getCategory(part: BuiltStructure, processedProperties: PartProperties): Category {
   let tags = withoutTranslationPart(part.properties.tags);
 
   if (processedProperties.storageOre) {
     return 'resource-tank';
+  }
+
+  if (tags.includes('harvest')) {
+    return 'harvester';
   }
 
   if (tags.includes('isru')) {
@@ -73,10 +87,6 @@ function getCategory(part: BuiltStructure, processedProperties: PartProperties):
     return 'radiator';
   }
 
-  if (tags.includes('harvest')) {
-    return 'harvester';
-  }
-
   return 'unknown';
 }
 
@@ -92,7 +102,10 @@ function getProperties(part: BuiltStructure): PartProperties {
   );
   let converterOptions = modulesProperties.filter((p: any) => p.converterName);
   if (converterOptions.length) {
-    properties.converters = converterOptions;
+    properties.converters = converterOptions.map(co => ({
+      ...co,
+      converterName: convertersLabelMap.get(co.converterName),
+    }));
   }
 
   return properties;
