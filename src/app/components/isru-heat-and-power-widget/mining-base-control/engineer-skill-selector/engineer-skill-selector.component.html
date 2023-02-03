@@ -14,7 +14,8 @@
             matTooltipPosition="above"
             (click)="userInputChange(0)">
       <mat-icon [svgIcon]="icons.Engineer"
-                [color]="$any(controlSkillRating.value >= 0 ? 'primary' : 'muted')"></mat-icon>
+                [style.filter]="controlSkillRating.value >= 0 ? 'grayscale(0)' : 'grayscale(1)'"
+                color="primary"></mat-icon>
     </button>
 
     <button

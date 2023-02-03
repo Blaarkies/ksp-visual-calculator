@@ -84,6 +84,8 @@ declare global {
     except(this: Array<T>, other: Array<any>, selector?: (item: any) => any): Array<T>;
 
     windowed(this: Array<T>, size: number, step?: number, partialWindows?: boolean): Array<Array<T>>;
+
+    splitFilter(this: Array<T>, callback: (item: T) => number): Array<Array<T>>;
   }
 
   // interface Object {

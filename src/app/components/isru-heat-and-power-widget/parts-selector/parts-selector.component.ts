@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
@@ -7,7 +7,7 @@ import { ControlMetaNumber } from '../../../common/domain/input-fields/control-m
 import {
   BehaviorSubject,
   combineLatestWith,
-  delay,
+  delay, distinctUntilChanged,
   map,
   mergeAll,
   mergeMap,
@@ -15,7 +15,7 @@ import {
   shareReplay,
   Subject,
   take,
-  takeUntil
+  takeUntil, tap
 } from 'rxjs';
 import { InputSelectComponent } from '../../controls/input-select/input-select.component';
 import { InputNumberComponent } from '../../controls/input-number/input-number.component';
@@ -95,22 +95,57 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
     this.controlAddPart
       .valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(part => {
-        let newEntry: ControlItem<CraftPart, number> = {
-          control: new FormControl(1),
-          value: part,
-        };
-        let controlEntities = this.controlEntities$.value;
-        controlEntities.push(newEntry);
-        this.controlEntities$.next(controlEntities);
-        this.eventUpdate();
-      });
+      .subscribe(part => this.createPartControlEntry(part));
 
     this.controlEntities$.pipe(takeUntil(this.destroy$))
       .subscribe(() => this.addControlListeners());
 
-    this.allPartOptions$.pipe(take(1), delay(500))
-      .subscribe(parts => this.controlAddPart.setValue(parts[37].value));
+    // TODO: auto select some default parts
+    this.allPartOptions$.pipe(
+      take(1),
+      delay(500),
+      tap(parts => {
+        let splits = parts.splitFilter(p => {
+          let cat = p.value.category;
+          return cat === 'isru' ? 0
+            : cat === 'drill' ? 1
+              : cat === 'radiator' ? 2
+                : cat === 'battery' ? 3
+                  : cat === 'solar-panel' ? 4
+                    : cat === 'resource-tank' ? 5
+                      : cat === 'fuel-cell' ? 6
+                        : cat === 'rtg' ? 7 : 8;
+        });
+
+        let newEntries: ControlItem<CraftPart, number>[] = [
+          splits[0][0],
+          splits[1][1],
+          splits[2][4],
+          splits[3][4],
+          splits[4][8],
+          splits[5][0],
+          splits[6][0],
+          // splits[7][0],
+        ].map(p => ({control: new FormControl(1), value: p.value}));
+
+        let controlEntities = this.controlEntities$.value;
+        controlEntities.push(...newEntries);
+        this.controlEntities$.next(controlEntities);
+        this.eventUpdate();
+      }),
+      )
+      .subscribe();
+  }
+
+  private createPartControlEntry(part: CraftPart) {
+    let newEntry: ControlItem<CraftPart, number> = {
+      control: new FormControl(1),
+      value: part,
+    };
+    let controlEntities = this.controlEntities$.value;
+    controlEntities.push(newEntry);
+    this.controlEntities$.next(controlEntities);
+    this.eventUpdate();
   }
 
   ngOnDestroy() {
@@ -124,6 +159,7 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
     this.controlEntities$.pipe(
       mergeMap(groups => groups
         .map(g => g.control.valueChanges.pipe(
+          distinctUntilChanged(),
           map(change => ({value: change, part: g.value}))))),
       mergeAll(),
       takeUntil(this.destroy$),

@@ -4,7 +4,6 @@ import { ControlItem } from '../mining-base-control.component';
 import { InputToggleComponent } from '../../../controls/input-toggle/input-toggle.component';
 import { merge, mergeAll, Subject, takeUntil } from 'rxjs';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Converter } from '../../domain/craft-part';
 import { WithDestroy } from '../../../../common/with-destroy';
 
 @Component({
@@ -20,8 +19,8 @@ import { WithDestroy } from '../../../../common/with-destroy';
 })
 export class ResourceProcessorsComponent extends WithDestroy() implements OnDestroy {
 
-  @Input() set converters(value: Converter[]) {
-    this.setupControls(value);
+  @Input() set converters(value: string[]) {
+    this.setupControls(value ?? []);
   };
 
   @Output() update = new EventEmitter<string[]>();
@@ -32,6 +31,14 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
 
   constructor() {
     super();
+
+    // TODO: pre-select 1 converter
+    let handle = setInterval(() => {
+      if (this.controlEntities?.length) {
+        this.controlEntities[0].control.setValue(true);
+        clearInterval(handle);
+      }
+    }, 200);
   }
 
   ngOnDestroy() {
@@ -40,18 +47,26 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
     this.stopControls$.complete();
   }
 
-  private setupControls(value: Converter[]) {
+  private setupControls(value: string[]) {
     this.stopControls$.next();
 
-    if (!(value?.length)) {
+    if (!value || !value.length) {
       this.controlEntities = [];
+      this.eventUpdate();
       return;
     }
-    this.controlEntities = value?.map(c => ({
-      label: c.converterName,
-      value: c.converterName,
-      control: new FormControl<boolean>(false),
-    }));
+
+    this.controlEntities = this.controlEntities
+      ?.filter(ce => value.some(name => ce.label === name));
+    this.controlEntities.push(
+      ...value
+        .filter(name => !this.controlEntities.some(ce => ce.label === name))
+        .map(c => ({
+          label: c, value: c,
+          control: new FormControl<boolean>(false),
+        }))
+    );
+    this.eventUpdate();
 
     let controls$ = this.controlEntities?.map(ce => ce.control.valueChanges);
     merge(controls$)

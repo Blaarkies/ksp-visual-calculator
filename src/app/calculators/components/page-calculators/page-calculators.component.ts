@@ -57,23 +57,24 @@ export class PageCalculatorsComponent extends WithDestroy() {
 
 
     let minute = 60 * 1e3;
-    let initialSignUpDialog$ = this.authService
-      .user$
+    // let initialSignUpDialog$ = this.authService
+    //   .user$
+    //   .pipe(
+    //     take(1),
+    //     delay(minute),
+    //     filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
+    //     takeWhile(() => !userIconHasClicked),
+    //     switchMap(() => {
+    //       localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
+    //
+    //       return this.dialog.open(AccountDialogComponent,
+    //         {backdropClass: GlobalStyleClass.MobileFriendly})
+    //         .afterClosed();
+    //     }));
+
+    timer(1000)
       .pipe(
         take(1),
-        delay(minute),
-        filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
-        takeWhile(() => !userIconHasClicked),
-        switchMap(() => {
-          localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
-
-          return this.dialog.open(AccountDialogComponent,
-            {backdropClass: GlobalStyleClass.MobileFriendly})
-            .afterClosed();
-        }));
-
-    initialSignUpDialog$
-      .pipe(
         tap(() => {
           if (!localStorage.getItem(localStorageKeyFirstVisitDeprecated)) {
             localStorage.setItem(localStorageKeyFirstVisitDeprecated, true.toString());

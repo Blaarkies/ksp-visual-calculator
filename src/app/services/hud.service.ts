@@ -86,8 +86,7 @@ export class HudService {
     }
   }
 
-  get navigationOptions(): ActionOption[] {
-    return [
+  navigationOptions: ActionOption[] = [
       new ActionOption(
         'Introduction',
         Icons.BookOpen,
@@ -97,12 +96,17 @@ export class HudService {
         'Delta-v Planner',
         Icons.DeltaV,
         {route: UsableRoutes.DvPlanner},
-        'Page that calculates the required delta-v for a specified mission'),
+        'Calculates the required delta-v for a specified mission'),
       new ActionOption(
         'CommNet Planner',
         Icons.Relay,
         {route: UsableRoutes.SignalCheck},
-        'Page that calculates CommNet ranges'),
+        'Calculates CommNet ranges'),
+      new ActionOption(
+        'Pocket Calculators (Beta)',
+        Icons.PocketCalculator,
+        {route: UsableRoutes.PocketCalculators},
+        'Simple calculators for that solve specific problems'),
       new ActionOption('', '', {divider: true}),
       new ActionOption(
         'Source Code - GitHub',
@@ -114,10 +118,8 @@ export class HudService {
         {externalRoute: 'https://blaarkies.com/'},
         'More tools made by Blaarkies'),
     ];
-  }
 
-  get infoOptions(): ActionOption[] {
-    return [
+  infoOptions: ActionOption[] = [
       new ActionOption('Analytics', Icons.Analytics, {
           action: () => {
             this.analyticsService.logEvent('Call analytics dialog', {
@@ -171,7 +173,6 @@ export class HudService {
         !localStorage.getItem(storageKeys.privacyPolicyViewed),
         () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
     ];
-  }
 
   private get signalCheckPanel(): ActionPanelDetails {
     let options = [

@@ -7,7 +7,26 @@
 .craft-stats {
   display: grid;
   justify-content: start;
-  grid-template-columns: max-content auto max-content;
-  gap: 0 2ch;
+  grid-template-columns: max-content
+    auto
+    100px
+    max-content;
+  gap: 0 .5ch;
   align-items: center;
+
+  :nth-child(4n + 2) {
+    justify-self: start;
+    margin-inline: 1ch;
+  }
+
+  :nth-child(4n + 3) {
+    justify-self: end;
+  }
+
+  .value-display {
+    border-radius: 4px;
+    padding-inline: 1ch;
+    background-color: rgba(var(--color-rgb-text), .1);
+  }
+
 }

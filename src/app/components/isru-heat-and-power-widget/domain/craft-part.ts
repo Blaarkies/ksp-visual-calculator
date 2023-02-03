@@ -1,11 +1,11 @@
 import { PartCategory } from './part-category';
+import { Group } from '../../../common/domain/group';
 
 
 interface ConverterLabel {
   converterName: string;
 }
 
-type ConverterProperties = ConverterLabel & keyof ResourceProperties;
 type JsonConverterProperty = ConverterLabel & keyof JsonPartProperties;
 
 interface JsonPartProperties {
@@ -59,11 +59,14 @@ export interface ResourceProperties {
 
 export interface Converter extends ResourceProperties {
   converterName: string;
+
+  isActive?: boolean;
+  parent?: Group<CraftPart>;
 }
 
 export interface CraftPart
   extends CommonProperties, ResourceProperties {
-  converters?: ConverterProperties[];
+  converters?: Converter[];
 }
 
 function convertValuesToNumbers<T>(json: any): T {
@@ -84,7 +87,7 @@ export function craftPartFromJson(json: any): CraftPart {
   if (json.converters) {
     json.converters = (<JsonConverterProperty[]>json.converters)
       .map(converterJson =>
-        convertValuesToNumbers<ConverterProperties>(converterJson));
+        convertValuesToNumbers<Converter>(converterJson));
   }
 
   return <CraftPart>json;

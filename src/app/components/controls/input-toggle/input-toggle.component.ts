@@ -7,6 +7,7 @@ import { MatSlideToggle, MatSlideToggleModule } from '@angular/material/slide-to
 import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { CommonModule } from '@angular/common';
+import { CpColors } from '../input-field/input-field.component';
 
 @Component({
   standalone: true,
@@ -30,7 +31,7 @@ export class InputToggleComponent extends BasicValueAccessor {
 
   @Input() label: string;
   @Input() hint: string;
-  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
+  @Input() color: CpColors = 'primary';
   @Input() type: 'checkbox' | 'switch' = 'checkbox';
   @Input() indeterminate?: boolean;
   @Input() errors: FormControlError;

@@ -25,6 +25,8 @@ import { ValidationMessageComponent } from '../validation-message/validation-mes
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
+export type CpColors = 'primary' | 'accent' | 'warn';
+
 @Component({
   standalone: true,
   selector: 'cp-input-field',
@@ -54,7 +56,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   // 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
   //   | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
   //   | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'
-  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
+  @Input() color: CpColors = 'primary';
   @Input() label: string;
   @Input() hint: string;
   @Input() suffix: string;

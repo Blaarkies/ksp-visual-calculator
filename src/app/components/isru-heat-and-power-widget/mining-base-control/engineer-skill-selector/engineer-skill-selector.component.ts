@@ -18,12 +18,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSliderModule } from '@angular/material/slider';
 import { Common } from '../../../../common/common';
 
+/** <pre>
+ * -1  = No engineer onboard
+ * 0   = Untrained engineer onboard
+ * 1-5 = 1-5 Star engineer onboard
+ * </pre> */
+export const engineerBonusMap = new Map<number, number>([
+  [-1, .05],
+  [0, .25],
+  [1, .45],
+  [2, .65],
+  [3, .85],
+  [4, 1.05],
+  [5, 1.25],
+]);
+
 @Component({
   standalone: true,
   selector: 'cp-engineer-skill-selector',
   templateUrl: './engineer-skill-selector.component.html',
   styleUrls: ['./engineer-skill-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => EngineerSkillSelectorComponent),
@@ -43,12 +57,11 @@ export class EngineerSkillSelectorComponent extends BasicValueAccessor {
   @Input() set formControl(control: FormControl<number>) {
     this.setDisabledState(control?.disabled);
 
-    let mapEntries = Array.from(this.bonusMap.entries())
-      .sort(([,av], [,bv]) => av - bv);
-    let nearEntry = mapEntries.find(([,v]) => control.value <= v) ?? mapEntries.last();
-    let starKey = nearEntry[0];
+    let keyForSelectedValue = Array.from(engineerBonusMap.entries())
+      .find(([, v]) => v === control.value)[0];
+    this.userInputChange(keyForSelectedValue);
 
-    this.controlSkillRating.setValue(starKey, {emitEvent: false});
+    this.controlSkillRating.setValue(keyForSelectedValue, {emitEvent: false});
   }
 
   @Output() output = new EventEmitter<number>();
@@ -60,15 +73,6 @@ export class EngineerSkillSelectorComponent extends BasicValueAccessor {
   stars = Common.makeIntRange(5);
 
   private destroy$ = new Subject<void>();
-  private bonusMap = new Map<number, number>([
-    [-1, .05],
-    [0, .25],
-    [1, .45],
-    [2, .65],
-    [3, .85],
-    [4, 1.05],
-    [5, 1.25],
-  ]);
 
   constructor(private cdr: ChangeDetectorRef) {
     super();
@@ -105,7 +109,7 @@ export class EngineerSkillSelectorComponent extends BasicValueAccessor {
   userInputChange(value: number) {
     this.controlSkillRating.setValue(value, {emitEvent: false});
 
-    let efficiencyBonus = this.bonusMap.get(value);
+    let efficiencyBonus = engineerBonusMap.get(value);
     this.writeValue(efficiencyBonus);
     this.onChange && this.onChange(efficiencyBonus);
     this.output.emit(efficiencyBonus);

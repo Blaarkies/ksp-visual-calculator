@@ -49,5 +49,12 @@ export class Common {
     return this.listNumbers(count).map(() => this.randomNumber(min, max).toInt());
   }
 
-
+  static formatNumberShort(value: number): number {
+    let fixed = value.toFixed(2);
+    let valueSplits = fixed.split('.');
+    fixed = valueSplits[0].length > 1
+      ? valueSplits[0]
+      : fixed;
+    return fixed.toNumber();
+  }
 }

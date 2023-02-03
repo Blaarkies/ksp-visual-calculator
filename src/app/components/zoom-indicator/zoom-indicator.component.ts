@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { CameraService } from '../../services/camera.service';
-import { debounceTime, finalize, skip, Subject, tap } from 'rxjs';
+import { debounceTime, finalize, skip, Subject, takeUntil, tap } from 'rxjs';
+import { WithDestroy } from '../../common/with-destroy';
 
 @Component({
   selector: 'cp-zoom-indicator',
   templateUrl: './zoom-indicator.component.html',
   styleUrls: ['./zoom-indicator.component.scss'],
 })
-export class ZoomIndicatorComponent implements OnDestroy {
+export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
 
-  @Input() set cameraScale(value: number) {
+  setCameraScale(value: number) {
     let ratio = value / this.range;
     ratio = this.transformToLinear(ratio);
 
@@ -17,7 +18,7 @@ export class ZoomIndicatorComponent implements OnDestroy {
     this.zoomChange$.next();
   }
 
-  @Input() set zoomLimits(value: number[]) {
+  setZoomLimits(value: number[]) {
     this.limits = value;
     this.range = this.limits[1] - this.limits[0];
 
@@ -29,9 +30,7 @@ export class ZoomIndicatorComponent implements OnDestroy {
     };
   }
 
-  @Input() moonScale: number;
-
-  zoomPoint: number;
+  zoomPoint: number = 0;
   positions: { planets, moons };
   show = false;
 
@@ -39,7 +38,16 @@ export class ZoomIndicatorComponent implements OnDestroy {
   private range: number;
   private zoomChange$ = new Subject<void>();
 
-  constructor(cdr: ChangeDetectorRef) {
+  constructor(cdr: ChangeDetectorRef,
+              cameraService: CameraService) {
+    super();
+
+    cameraService.cameraChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.setCameraScale(cameraService.scale));
+
+    this.setZoomLimits(CameraService.zoomLimits);
+
     this.zoomChange$
       .pipe(
         skip(1),

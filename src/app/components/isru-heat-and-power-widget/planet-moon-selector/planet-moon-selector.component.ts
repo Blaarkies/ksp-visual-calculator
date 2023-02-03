@@ -39,7 +39,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
 
   private filter$ = new BehaviorSubject<BodyFilter[]>(['planet']);
 
-  constructor(cacheService: StockEntitiesCacheService) {
+  constructor(private cacheService: StockEntitiesCacheService) {
     super();
 
     this.planetOptions$ = cacheService.planets$.pipe(

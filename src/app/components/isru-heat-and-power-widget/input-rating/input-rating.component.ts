@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { Common } from '../../../common/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CpColors } from '../../controls/input-field/input-field.component';
 
 @Component({
   standalone: true,
@@ -32,7 +33,7 @@ export class InputRatingComponent extends BasicValueAccessor {
   @Input() count = 5;
   @Input() iconOn = Icons.StarFull;
   @Input() iconOff = Icons.StarEmpty;
-  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
+  @Input() color: CpColors = 'primary';
   @Input() errors: FormControlError;
 
   @Input() set formControl(value: UntypedFormControl) {

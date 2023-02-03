@@ -127,7 +127,7 @@ import {
     DraggableSpaceObjectComponent,
     OrbitLineComponent,
     CameraComponent,
-    ActionPanelComponent,
+    // ActionPanelComponent,
     ZoomIndicatorComponent,
     SoiCircleComponent,
     FocusJumpToPanelComponent,
@@ -139,12 +139,12 @@ import {
     AccountEditDetailsComponent,
     HudComponent,
     ActionBottomSheetComponent,
-    ActionListComponent,
+    // ActionListComponent,
     ActionFabComponent,
     FaqSectionComponent,
     UniverseMapComponent,
 
-    MouseHoverDirective,
+    // MouseHoverDirective,
     FileDropDirective,
     DoublePointerActionDirective,
     NegatePipe,
@@ -173,6 +173,11 @@ import {
     ValidationMessageComponent,
     InputNumberComponent,
     InputToggleComponent,
+
+    ActionPanelComponent,
+    ActionListComponent,
+
+    MouseHoverDirective,
 
     CommonModule,
     CalculatorsRoutingModule,

@@ -1,15 +1,16 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Group } from '../../../common/domain/group';
-import { Statistic, StatisticConfig, StatisticsGenerator } from '../domain/statistics-generator';
+import { IsruStatisticsGenerator, Statistic } from '../domain/isru-statistics-generator';
 import { MatIconModule } from '@angular/material/icon';
-import { Icons } from '../../../common/domain/icons';
 import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { IsruWidgetService } from '../isru-widget.service';
 import { combineLatest, scan, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';
-import { CraftPart, ResourceProperties } from '../domain/craft-part';
+import { CraftPart } from '../domain/craft-part';
+import { StockEntitiesCacheService } from '../stock-entities-cache.service';
+import { StatisticColorCodedComponent } from './statistic-color-coded/statistic-color-coded.component';
 
 class CraftSettings {
   planet: CelestialBody;
@@ -27,26 +28,6 @@ class CraftSettings {
   }
 }
 
-const resourceProperties: (keyof ResourceProperties)[] = [
-  'storageEc',
-  'drawEc',
-  'produceEc',
-  'produceSolarEc',
-  'drawHeat',
-  'produceHeat',
-  'storageLf',
-  'storageOx',
-  'storageOre',
-  'storageMono',
-  'drawLf',
-  'drawOx',
-  'drawOre',
-  'produceLf',
-  'produceOx',
-  'produceOre',
-  'produceMono',
-];
-
 @Component({
   standalone: true,
   selector: 'cp-craft-part-statistics',
@@ -56,16 +37,26 @@ const resourceProperties: (keyof ResourceProperties)[] = [
   imports: [
     CommonModule,
     MatIconModule,
+    StatisticColorCodedComponent,
   ]
 })
 export class CraftPartStatisticsComponent extends WithDestroy() {
 
   @Input() title = 'Production and Consumption';
 
-  statistics: StatisticsGenerator;
+  statistics: IsruStatisticsGenerator;
 
-  constructor(private isruService: IsruWidgetService) {
+  private planetMap: Map<string, CelestialBody>;
+
+  constructor(private isruService: IsruWidgetService,
+              cacheService: StockEntitiesCacheService) {
     super();
+
+    cacheService.planets$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(characteristics =>
+        this.planetMap = new Map<string, CelestialBody>(
+          characteristics.bodies.map(p => [p.id, p])));
 
     combineLatest([
       this.isruService.planet$,
@@ -74,7 +65,7 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
       this.isruService.activeConverters$,
       this.isruService.craftPartGroups$,
     ]).pipe(
-      scan((acc, newValue) => {
+      scan(([acc = []], newValue) => {
         let changesList = newValue.map((v, i) => v === acc[i] ? undefined : v);
         return [newValue, changesList];
       }, []),
@@ -82,107 +73,43 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
       .subscribe(([values, changes]) => {
         this.setup(new CraftSettings(values), new CraftSettings(changes));
       });
-  }
 
-  stats;
-  private partsMap: Map<CraftPart, Group<CraftPart>>;
+    this.isruService.craftPartCounts$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(g => this.statistics.updatePartCount(g))
+  }
 
   private setup(values: CraftSettings, changes: CraftSettings) {
     if (changes.craftPartGroups) {
-      this.partsMap = new Map(values.craftPartGroups
-        .map(g => [g.item, g]));
+      this.statistics = new IsruStatisticsGenerator(
+        values.craftPartGroups,
+        statsMap => this.isruService.updateStatisticsMap(statsMap));
+      this.statistics.updateConverters(values.activeConverters);
+      this.statistics.updateBonus(values.engineerBonus);
+      this.statistics.updateOreConcentration(values.oreConcentration);
+      this.statistics.updatePlanet(values.planet, this.planetMap);
     }
 
-    let parts = values.craftPartGroups;
+    if (changes.activeConverters) {
+      this.statistics.updateConverters(values.activeConverters);
+    }
 
-    type AffectType = 'solar' | 'ore-concentration' | 'bonus' | 'converters';
-    let drills = parts.filter(({item}) => item.category === 'drill');
-    let isrus = parts.filter(({item}) => item.category === 'isru');
+    if (changes.engineerBonus) {
+      this.statistics.updateBonus(values.engineerBonus);
+    }
 
-    let changeAffectsMap = new Map<AffectType, Group<CraftPart>[]>([
-      ['solar', parts.filter(({item}) => item.category === 'solar-panel')],
-      ['ore-concentration', drills],
-      ['bonus', drills.concat(isrus)],
-      ['converters', parts.filter(({item}) => item.category === 'fuel-cell')
-        .concat(isrus)],
-    ]);
+    if (changes.oreConcentration) {
+      this.statistics.updateOreConcentration(values.oreConcentration);
+    }
 
-    let solarFactor = this.getSolarEfficiency(values.planet);
+    if (changes.planet) {
+      this.statistics.updatePlanet(values.planet, this.planetMap);
+    }
 
-    let propertyGroupsMap = new Map<keyof ResourceProperties, Group<CraftPart>[]>(
-      resourceProperties.map(key => [key, parts.filter(({item}) =>
-        item[key] || item.converters?.some(c => c[key]))]),
-    );
-
-    type StatisticType = 'power=' | 'power-' | 'power+' | 'solarEfficiency'
-      | 'heat-' | 'heat+' | 'lf=' | 'lf-' | 'lf+' | 'ox=' | 'ox-' | 'ox+';
-    let statisticsMap = new Map<StatisticType, any>([
-      ['power=', {
-        label: 'Power Storage', icon: Icons.Power,
-        key: <keyof CraftPart>'storageEc', measure: 'EC',
-        calculate: (list: Group<CraftPart>[]) => list
-          .filter(g => g.item.storageEc !== undefined)
-          .map(g => g.count * <number>g.item.storageEc)
-          .sum()
-          .toSi(0),
-      }],
-    ]);
-
-    let partGroups = Array.from(this.partsMap.values());
-    this.stats = Array.from(statisticsMap.values())
-      .map(m => {
-        let a = m.calculate(partGroups);
-        return {
-          icon: m.icon,
-          label: m.label,
-          value: a + m.measure,
-        };
-      });
   }
 
   getLabel(index: number, item: Statistic): string {
     return item.label;
-  }
-
-  setupGenerator(body: CelestialBody) {
-    if (!body) {
-      this.statistics = null;
-      return
-    }
-
-    let solarFactor = this.getSolarEfficiency(body);
-
-    this.statistics = new StatisticsGenerator([
-      new StatisticConfig('Power Storage', Icons.Power, 'storageEc', 'EC'),
-      new StatisticConfig('Power Draw', Icons.Power, 'drawEc', 'EC/s'),
-      new StatisticConfig('Power Production', Icons.Power, 'produceEc', 'EC/s',
-        list => {
-          let nonSolarTotal = list
-            .filter(g => g.item['produceEc'] !== undefined)
-            .map(g => g.count * g.item['produceEc'])
-            .sum();
-          let solarTotal = list
-            .filter(g => g.item['produceSolarEc'] !== undefined)
-            .map(g => g.count * g.item['produceSolarEc'] * solarFactor)
-            .sum();
-          return nonSolarTotal + solarTotal;
-        }),
-      new StatisticConfig('Solar Efficiency', Icons.SignalStrength, 'produceSolarEc', '%',
-        list => {
-          let hasSolar = list.some(g => g.item.produceSolarEc !== undefined);
-          return hasSolar ? solarFactor * 100 : 0;
-        }),
-      new StatisticConfig('Heat Dissipation', Icons.Heat, 'drawHeat', 'W/s'),
-      new StatisticConfig('Heat Production', Icons.Heat, 'produceHeat', 'W/s'),
-      new StatisticConfig('Liquid Fuel Production', Icons.Fuel, 'produceLf', 'LF/s'),
-    ]);
-
-    // this.statistics.refresh(this.partGroups)
-  }
-
-  private getSolarEfficiency(body: CelestialBody): number {
-    let kerbinSma = 13599840256;
-    return 1 / (Math.pow(body.semiMajorAxis / kerbinSma, 2));
   }
 
 }

@@ -74,6 +74,10 @@ $dark-theme: mat.define-dark-theme((
   --orange: 242, 65, 0;
   --cosmic-blue: 63, 81, 181;
 
+  --color-primary: #{map-get($primary-light, 500)};
+  --color-accent: #{map-get($accent-light, 500)};
+  --color-warn: #{map-get($warn-light, 500)};
+
   --color-background-panel-green-opaque: rgb(var(--green));
   --color-background-panel-orange-opaque: rgb(var(--orange));
   --color-background-panel-cosmic-blue-opaque: rgb(var(--cosmic-blue));
@@ -89,10 +93,11 @@ $dark-theme: mat.define-dark-theme((
   --color-background-article: #f3f3f3;
 
   --color-text: #111;
+  --color-rgb-text: 17, 17, 17;
   --color-text-snackbar: #fffe;
-  --color-text-primary: #{map-get($primary-light, 500)};
-  --color-text-accent: #{map-get($accent-light, 500)};
-  --color-text-warn: #{map-get($warn-light, 500)};
+  --color-text-primary: var(--color-primary);
+  --color-text-accent: var(--color-accent);
+  --color-text-warn: var(--color-warn);
   --color-text-hyperlink: #263dc1;
   --color-text-hyperlink-visited: #5226c1;
   --color-text-map-green: #cf0a;
@@ -114,11 +119,18 @@ $dark-theme: mat.define-dark-theme((
     --color-background-description-glass: #333e;
     --color-background-article: #333;
 
+    --color-primary: #{map-get($primary-dark, 500)};
+    --color-accent: #{map-get($accent-dark, 500)};
+    --color-warn: #{map-get($warn-dark, 500)};
+
     --color-text: #fff;
+    --color-rgb-text: 255, 255, 255;
     --color-text-snackbar: #fffe;
-    --color-text-primary: #{map-get($primary-dark, 500)};
-    --color-text-accent: #{map-get($accent-dark, 500)};
-    --color-text-warn: #{map-get($warn-dark, 500)};
+
+    --color-text-primary: var(--color-primary);
+    --color-text-accent: var(--color-accent);
+    --color-text-warn: var(--color-warn);
+
     --color-text-hyperlink: #67b3ff;
     --color-text-hyperlink-visited: #ddbfff;
     --color-text-dim: #999;
@@ -135,6 +147,7 @@ mat-icon, mat-button {
   &[color="none"], &[ng-reflect-color="none"] {
     color: var(--color-icon-none);
   }
+
   &[color="muted"], &[ng-reflect-color="muted"] {
     color: var(--color-icon-muted);
   }

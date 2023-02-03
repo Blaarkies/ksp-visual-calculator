@@ -5,9 +5,8 @@ import { HudService } from '../../services/hud.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
-import { firstValueFrom, map, Observable, take, takeUntil } from 'rxjs';
+import { firstValueFrom, map, Observable, takeUntil } from 'rxjs';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
@@ -58,8 +57,6 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   isHandset$: Observable<boolean>;
   icons = Icons;
   actionGroupTypes = ActionGroupType;
-  cameraZoomLimits = CameraService.zoomLimits;
-  scaleToShowMoons = CameraService.scaleToShowMoons;
   pageContextInfo: { icon, tooltip };
   hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
 
@@ -72,15 +69,10 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   @ViewChild('baseContent') baseContent: ElementRef<HTMLElement>;
   domPortal: DomPortal;
 
-  get scale(): number {
-    return this.cameraService.scale;
-  }
-
   constructor(private hudService: HudService,
               private analyticsService: AnalyticsService,
               private auth: AuthService,
               private dialog: MatDialog,
-              private cameraService: CameraService,
               breakpointObserver: BreakpointObserver,
               private bottomSheet: MatBottomSheet,
               private cdr: ChangeDetectorRef,

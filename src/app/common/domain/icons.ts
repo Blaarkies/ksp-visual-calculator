@@ -29,16 +29,23 @@ export class Icons {
   static NoEngineer = 'account-off';
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';
-  static PowerSolar = 'solar-power';
+  static PowerSolar = 'solar-power-variant';
+  static SolarToPower = 'solar-power';
   static FuelCell = 'fuel-cell';
   static Radioactive = 'radioactive';
   static Power = 'lightning-bolt';
+  static Battery = 'battery-charging';
   static Radiator = 'radiator';
   static Heat = 'heat-wave';
-  static Fuel = 'gas-station';
-  static Harvester = '';
+  static Temperature = 'thermometer';
+  static Fuel = 'fuel';
+  static Ore = 'landslide';
+  static Harvester = 'screw-lag';
   static Converter = 'compost';
+  static Cost = 'gold';
+  static Mass = 'weight';
 
+  static PocketCalculator = 'calculator-variant';
   static Network = 'wan';
   static DeltaV = 'rocket-launch';
   static Blaarkies = 'leaf-maple';

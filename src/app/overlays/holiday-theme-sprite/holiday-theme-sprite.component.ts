@@ -50,7 +50,7 @@ export class HolidayThemeSpriteComponent implements OnInit {
     let dates = [
       {month: 12, day: 25, pre: 15, post: 5, holidayType: HolidayType.Christmas},
       {month: 10, day: 31, pre: 10, post: 1, holidayType: HolidayType.Halloween},
-      {month: 1, day: 5, pre: 1, post: 7, holidayType: HolidayType.KspFree},
+      // {month: 1, day: 5, pre: 1, post: 7, holidayType: HolidayType.KspFree},
     ];
 
     let dateMap = dates.reduce((sum, c) => {

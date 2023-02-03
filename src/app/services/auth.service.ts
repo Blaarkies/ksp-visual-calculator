@@ -138,9 +138,9 @@ export class AuthService {
     const data = {
       uid: user.uid,
       email: user.email,
-      displayName: dbUser?.displayName || user.displayName,
-      photoURL: dbUser?.photoURL || user.photoURL,
-      isCustomer: dbUser.isCustomer,
+      displayName: dbUser?.displayName || user.displayName || null,
+      photoURL: dbUser?.photoURL || user.photoURL || null,
+      isCustomer: dbUser?.isCustomer || false,
       ...extra,
     };
 

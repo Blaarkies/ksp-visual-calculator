@@ -3,6 +3,7 @@ import { CraftPart } from './domain/craft-part';
 import { Group } from '../../common/domain/group';
 import { ReplaySubject } from 'rxjs';
 import { CelestialBody } from '../../services/json-interfaces/kerbol-system-characteristics';
+import { StatisticsMapType } from './domain/isru-statistics-generator';
 
 @Injectable({
   providedIn: 'any'
@@ -14,7 +15,8 @@ export class IsruWidgetService {
   engineerBonus$ = new ReplaySubject<number>();
   activeConverters$ = new ReplaySubject<string[]>();
   craftPartGroups$ = new ReplaySubject<Group<CraftPart>[]>();
-  craftPartCounts$ = new ReplaySubject<any>();
+  craftPartCounts$ = new ReplaySubject<Group<CraftPart>>();
+  statisticsMap$ = new ReplaySubject<StatisticsMapType>();
 
   constructor() {
   }
@@ -26,6 +28,7 @@ export class IsruWidgetService {
     this.activeConverters$.complete();
     this.craftPartGroups$.complete();
     this.craftPartCounts$.complete();
+    this.statisticsMap$.complete();
   }
 
   updatePlanet(value: CelestialBody) {
@@ -49,6 +52,10 @@ export class IsruWidgetService {
   }
 
   updatePartCount(value: number, part: CraftPart) {
-    this.craftPartCounts$.next(part);
+    this.craftPartCounts$.next(new Group(part, value));
+  }
+
+  updateStatisticsMap(value: StatisticsMapType) {
+    this.statisticsMap$.next(value);
   }
 }

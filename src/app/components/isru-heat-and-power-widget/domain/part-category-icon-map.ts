@@ -8,6 +8,6 @@ export let categoryIconMap = new Map<PartCategory, string>([
   ['solar-panel', Icons.PowerSolar],
   ['rtg', Icons.Radioactive],
   ['fuel-cell', Icons.FuelCell],
-  ['battery', Icons.Power],
+  ['battery', Icons.Battery],
   ['resource-tank', Icons.Fuel],
 ]);

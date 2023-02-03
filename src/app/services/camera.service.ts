@@ -4,6 +4,7 @@ import { Draggable } from '../common/domain/space-objects/draggable';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
+import { ReplaySubject } from 'rxjs';
 
 let defaultScale = 1;
 let defaultLocation = new Vector2(960, 540);
@@ -56,6 +57,7 @@ export class CameraService {
   }
 
   lastFocusObject: Draggable;
+  cameraChange$ = new ReplaySubject<void>();
 
   // TODO: change to proper setters, callbacks
   cdr: ChangeDetectorRef;
@@ -84,6 +86,8 @@ export class CameraService {
 
     this.location.addVector2(shift);
     this.scale *= delta;
+
+    this.cameraChange$.next();
   }
 
   private focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
@@ -100,6 +104,8 @@ export class CameraService {
     this.lastFocusObject = spaceObject.draggableHandle;
     this.focusAt(spaceObject.location, spaceObject.type, zoomIn);
     this.cdr.markForCheck();
+
+    this.cameraChange$.next();
   }
 
   private getScaleForFocus(location: Vector2, type: SpaceObjectType) {

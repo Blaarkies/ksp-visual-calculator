@@ -116,6 +116,7 @@ export class DataService {
       this.getChanges<SupporterData>(`${<TableName>'supporters'}/${uid}`),
     ).pipe(
       map(([user, supporter]) => {
+        user = user ?? {} as any;
         user.isCustomer = !!supporter;
         return user;
       }),

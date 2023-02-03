@@ -17,6 +17,12 @@ const routes: Routes = [
   {path: UsableRoutes.DvPlanner, redirectTo: `calculators/${UsableRoutes.DvPlanner}`},
   {path: UsableRoutes.SignalCheck, redirectTo: `calculators/${UsableRoutes.SignalCheck}`},
 
+  {
+    path: 'pocket-calculators',
+    loadComponent: () => import('./components/isru-heat-and-power-widget/page-displayer/page-displayer.component')
+      .then(m => m.PageDisplayerComponent)
+  },
+
   {path: '**', redirectTo: UsableRoutes.Intro},
 ];
 

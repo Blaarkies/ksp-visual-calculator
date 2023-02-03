@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WithDestroy } from '../../common/with-destroy';
 import { WidgetData } from './domain/widget-data';
@@ -9,6 +9,10 @@ import { StockEntitiesCacheService } from './stock-entities-cache.service';
 import { MiningBaseControlComponent } from './mining-base-control/mining-base-control.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IsruWidgetService } from './isru-widget.service';
+import { IsruWarningsComponent } from './isru-warnings/isru-warnings.component';
+import { Observable } from 'rxjs';
+import { Group } from '../../common/domain/group';
+import { CraftPart } from './domain/craft-part';
 
 @Component({
   standalone: true,
@@ -24,8 +28,8 @@ import { IsruWidgetService } from './isru-widget.service';
     ReactiveFormsModule,
     PartsSelectorComponent,
     CraftPartStatisticsComponent,
-    PlanetMoonSelectorComponent,
     MiningBaseControlComponent,
+    IsruWarningsComponent,
   ],
 })
 export class IsruHeatAndPowerWidgetComponent extends WithDestroy() implements OnDestroy {
@@ -33,8 +37,12 @@ export class IsruHeatAndPowerWidgetComponent extends WithDestroy() implements On
   @Input() set data(value: WidgetData) {
   }
 
+  selectedParts$: Observable<Group<CraftPart>[]>;
+
   constructor(private isruService: IsruWidgetService) {
     super();
+
+    this.selectedParts$ = isruService.craftPartGroups$;
   }
 
   ngOnDestroy() {
