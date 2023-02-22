@@ -1,0 +1,45 @@
+<svg class="drag-lines-overlay">
+  <defs>
+    <ng-template #dragLineColor>
+      <stop offset="0%" stop-color="#7770" />
+      <stop offset="44%" stop-color="#7773" />
+      <stop offset="50%" stop-color="#777f" />
+      <stop offset="56%" stop-color="#7773" />
+      <stop offset="100%" stop-color="#7770" />
+    </ng-template>
+
+    <linearGradient id="vertical-line" gradientTransform="rotate(0)">
+      <ng-container *ngTemplateOutlet="dragLineColor"></ng-container>
+    </linearGradient>
+
+    <linearGradient id="horizontal-line" gradientTransform="rotate(90)">
+      <ng-container *ngTemplateOutlet="dragLineColor"></ng-container>
+    </linearGradient>
+  </defs>
+
+  <rect
+    *ngFor="let line of columns; let i = index; trackBy: getValue"
+    width="16"
+    height="100%"
+    fill="url('#vertical-line')"
+    class="drag-line vertical"
+    [style.translate]="line + '%'"
+    cdkDrag
+    cdkDragHandle
+    [cdkDragConstrainPosition]="getConstrainFn('columns', i)"
+    (cdkDragEnded)="updateDragLine($event, 'columns', i)"
+  ></rect>
+
+  <rect
+    *ngFor="let line of rows; let i = index"
+    height="16"
+    width="100%"
+    fill="url('#horizontal-line')"
+    class="drag-line horizontal"
+    [style.translate]="'0 ' + line + '%'"
+    cdkDrag
+    cdkDragHandle
+    [cdkDragConstrainPosition]="getConstrainFn('rows', i)"
+    (cdkDragEnded)="updateDragLine($event, 'rows', i)"
+  ></rect>
+</svg>

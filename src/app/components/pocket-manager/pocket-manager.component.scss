@@ -1,0 +1,65 @@
+.manager-layout {
+  height: 100%;
+}
+
+.edit-overlay {
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+
+  .edit-column {
+    place-self: end center;
+    padding: 8px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .edit-row {
+    place-self: center end;
+    padding: 8px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.menu-container {
+  width: max-content;
+  height: max-content;
+
+  padding: 8px;
+
+  .toggle-button {
+    box-shadow: var(--claymorph-simple);
+    color: #fff;
+  }
+
+  .menu-expansion {
+    margin-top: 4px;
+    display: grid;
+  }
+
+  .menu-edit-layout {
+    display: flex;
+    --gap: 8px;
+    gap: var(--gap);
+
+    .edit-expansion {
+      left: 100%;
+
+      display: flex;
+      flex-wrap: nowrap;
+      gap: var(--gap);
+
+    }
+  }
+
+
+}
+

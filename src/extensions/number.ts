@@ -90,11 +90,15 @@ Number.prototype.coerceIn = function (this: number, lower: number = 0, upper: nu
   return lowLimitedValue.coerceAtMost(upper);
 };
 
-const siSuffixes = ['', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+const siSuffixes = ['p', 'n', 'μ', 'm', '', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
 Number.prototype.toSi = function (this: number, decimals: number = 0): string {
   const level = this === 0
     ? this
     : Math.floor(Math.log(this) / Math.log(1000));
   let number = parseFloat((this / Math.pow(1000, level)).toFixed(decimals));
-  return `${number} ${siSuffixes[level]}`;
+  let suffix = siSuffixes[level + 4];
+  return suffix === undefined
+    ? this.toString()
+    : `${number} ${suffix}`;
 };
+

@@ -1,0 +1,15 @@
+.page-displayer-layout {
+  background-color: var(--color-background-card);
+  height: 100%;
+}
+
+.navigation {
+  position: absolute;
+  z-index: 1;
+}
+
+.isru-widget {
+  padding-inline: 2em;
+  overflow-y: auto;
+  max-height: calc(100% - 120px);
+}

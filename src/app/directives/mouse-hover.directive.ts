@@ -1,14 +1,15 @@
 import { Directive, EventEmitter, HostListener, Input, OnDestroy, Output } from '@angular/core';
-import { delay, mapTo, of, Subject, switchMap, take, timer } from 'rxjs';
+import { delay, of, Subject, switchMap } from 'rxjs';
 
 @Directive({
   selector: '[cpMouseHover]',
+  standalone: true,
 })
 export class MouseHoverDirective implements OnDestroy {
 
-  @Input() set cpMouseHover(value: number | string) {
-    let safeValue = Number(value);
-    if (value === '' || (value !== 0 && isNaN(safeValue))) {
+  @Input() set cpMouseHover(duration: number | string) {
+    let safeValue = Number(duration);
+    if (duration === '' || (duration !== 0 && isNaN(safeValue))) {
       return;
     }
     this.debounceDuration = safeValue;

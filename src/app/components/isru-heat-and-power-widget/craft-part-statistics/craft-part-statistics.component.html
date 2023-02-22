@@ -1,0 +1,28 @@
+<div class="text subtitle">{{title}}</div>
+
+<div
+  class="craft-stats"
+  [@expandY]
+  *ngIf="statistics?.results; let results"
+>
+  <ng-container *ngFor="let stat of results; trackBy: getLabel">
+    <ng-container *ngIf="stat.type === 'excess' || stat.type === 'excess-reverse';
+                          else displayOnly">
+      <mat-icon [svgIcon]="stat.icon" color="none"></mat-icon>
+      <div>{{stat.label}}</div>
+      <cp-statistic-color-coded
+        [low]="stat.consume"
+        [high]="stat.produce"
+        [reverseSentiment]="stat.type === 'excess-reverse'"
+      ></cp-statistic-color-coded>
+      <div>{{stat.measure}}</div>
+    </ng-container>
+
+    <ng-template #displayOnly>
+      <mat-icon [svgIcon]="stat.icon" color="none"></mat-icon>
+      <div>{{stat.label}}</div>
+      <div class="value-display">{{stat.valueDisplay}}</div>
+      <div>{{stat.measure}}</div>
+    </ng-template>
+  </ng-container>
+</div>

@@ -1,0 +1,23 @@
+@use '../../../../../styles/common';
+
+:host {
+  @extend .widget-details;
+}
+
+.skill-selector-layout {
+  margin-top: -20px;
+  display: grid;
+
+  .icons-row {
+    display: flex;
+
+    > button {
+      margin-inline: -2px;
+    }
+  }
+
+  .slider-row {
+    width: calc(100% - 44px);
+    justify-self: center;
+  }
+}

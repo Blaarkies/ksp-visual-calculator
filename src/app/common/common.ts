@@ -36,9 +36,31 @@ export class Common {
     return [...Array(count).keys()];
   }
 
+  static makeIntRange(start: number, end?: number): number[] {
+    if (start > end) {
+      return [];
+    }
+    return end === undefined
+      ? Array.from({length: start}, (_, i) => i + 1)
+      : Array.from({length: end - start + 1}, (_, i) => i + start);
+  }
+
   static randomIntList(count = 3, min = 0, max = 10): number[] {
     return this.listNumbers(count).map(() => this.randomNumber(min, max).toInt());
   }
 
-
+  static formatNumberShort(value: number): number {
+    let isNegative = false;
+    if (value < 0) {
+      isNegative = true;
+    }
+    let fixed = isNegative
+      ? value.toFixed(2).slice(1)
+      : value.toFixed(2);
+    let valueSplits = fixed.split('.');
+    fixed = valueSplits[0].length > 1
+      ? valueSplits[0]
+      : fixed;
+    return fixed.toNumber() * (isNegative ? -1 : 1);
+  }
 }

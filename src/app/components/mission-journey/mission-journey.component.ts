@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
 import { BasicAnimations } from '../../common/animations/basic-animations';
@@ -120,7 +120,7 @@ export class MissionJourneyComponent implements AfterViewInit {
       + ` ${s * x2} ${s * y2}`;
   }, {serializer: this.serializer});
 
-  private getPath(trajectory: TripTrajectory): string {
+  getPath(trajectory: TripTrajectory): string {
     return this.memoizeTrajectoryPath(
       trajectory.a.location.x,
       trajectory.a.location.y,

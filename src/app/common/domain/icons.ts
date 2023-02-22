@@ -21,10 +21,31 @@ export class Icons {
   static CollapseRight = 'arrow-collapse-right';
   static Lock = 'lock';
   static Unlock = 'lock-open-variant';
+  static EditGrid = 'view-grid-plus';
+  static StarFull = 'star';
+  static StarEmpty = 'star-outline';
 
+  static Engineer = 'account-hard-hat';
+  static NoEngineer = 'account-off';
   static Aerobraking = 'meteor';
   static GravityAssist = 'arrow-u-right-bottom';
+  static PowerSolar = 'solar-power-variant';
+  static SolarToPower = 'solar-power';
+  static FuelCell = 'fuel-cell';
+  static Radioactive = 'radioactive';
+  static Power = 'lightning-bolt';
+  static Battery = 'battery-charging';
+  static Radiator = 'radiator';
+  static Heat = 'heat-wave';
+  static Temperature = 'thermometer';
+  static Fuel = 'fuel';
+  static Ore = 'landslide';
+  static Harvester = 'screw-lag';
+  static Converter = 'compost';
+  static Cost = 'gold';
+  static Mass = 'weight';
 
+  static PocketCalculator = 'calculator-variant';
   static Network = 'wan';
   static DeltaV = 'rocket-launch';
   static Blaarkies = 'leaf-maple';
@@ -68,7 +89,6 @@ export class Icons {
   static Home = 'home';
   static Traveler = 'hail';
   static Takeoff = 'airplane-takeoff';
-  static Fuel = 'gas-station';
   static BookOpen = 'book-open-variant';
   static ThemeLight = 'white-balance-sunny';
   static ThemeDark = 'weather-night';

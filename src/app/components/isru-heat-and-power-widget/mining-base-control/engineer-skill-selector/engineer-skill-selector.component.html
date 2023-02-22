@@ -1,0 +1,42 @@
+<div class="text caption">Engineer Skill</div>
+
+<div class="skill-selector-layout">
+  <div class="icons-row">
+    <button mat-icon-button
+            matTooltip="No Engineer"
+            matTooltipPosition="above"
+            (click)="userInputChange(-1)">
+      <mat-icon [svgIcon]="icons.NoEngineer" color="muted"></mat-icon>
+    </button>
+
+    <button mat-icon-button
+            matTooltip="Engineer Onboard"
+            matTooltipPosition="above"
+            (click)="userInputChange(0)">
+      <mat-icon [svgIcon]="icons.Engineer"
+                [style.filter]="controlSkillRating.value >= 0 ? 'grayscale(0)' : 'grayscale(1)'"
+                color="primary"></mat-icon>
+    </button>
+
+    <button
+      *ngFor="let star of stars; trackBy: getValue"
+      mat-icon-button
+      [disabled]="disabled"
+      (click)="userInputChange(star)">
+      <mat-icon
+        [svgIcon]="controlSkillRating.value >= star ? icons.StarFull : icons.StarEmpty"
+        color="accent"
+      ></mat-icon>
+    </button>
+  </div>
+
+  <mat-slider
+    class="slider-row"
+    [disabled]="disabled"
+    [max]="5"
+    [min]="-1"
+    [step]="1"
+    showTickMarks>
+    <input matSliderThumb [formControl]="controlSkillRating">
+  </mat-slider>
+</div>

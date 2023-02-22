@@ -212,8 +212,8 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
   async validateAccount(user: UserData) {
     this.validatingCustomer$.next(true);
-    let newUserData = await this.authService.updateUserData(user);
-    if (newUserData.isCustomer) {
+    let isCustomer = await this.authService.verifySupporter(user.email);
+    if (isCustomer) {
       await this.authService.reloadUserSignIn();
       this.snackBar.open(`Congratulations! Premium features have been unlocked on "${user.email}".
                           Thank you for your support`);
@@ -224,7 +224,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
     this.analyticsService.logEvent('Validate account supporter status', {
       category: EventLogs.Category.Account,
-      isCustomer: newUserData.isCustomer,
+      isCustomer,
     });
   }
 

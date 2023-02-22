@@ -11,15 +11,24 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, UntypedFormControl } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
 import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+
+export type CpColors = 'primary' | 'accent' | 'warn';
 
 @Component({
+  standalone: true,
   selector: 'cp-input-field',
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
@@ -30,6 +39,14 @@ import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
     useExisting: forwardRef(() => InputFieldComponent),
     multi: true,
   }],
+  imports: [
+    CommonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    ValidationMessageComponent,
+  ],
 })
 export class InputFieldComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
@@ -39,7 +56,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   // 'button' | 'checkbox' | 'color' | 'date' | 'datetime' | 'email' | 'file'
   //   | 'hidden' | 'image' | 'month' | 'number' | 'password' | 'radio' | /*'range' |*/ 'reset'
   //   | 'search' | 'submit' | 'tel' | 'text' | 'time' | 'url' | 'week'
-  @Input() color: 'primary' | 'accent' | 'warn' = 'primary';
+  @Input() color: CpColors = 'primary';
   @Input() label: string;
   @Input() hint: string;
   @Input() suffix: string;
@@ -58,7 +75,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   isActive: boolean;
   icons = Icons;
   errorBlink$ = new Subject<boolean>();
-  private unsubscribe$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef) {
     super();
@@ -66,13 +83,13 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
 
   ngOnInit() {
     fromEvent(this.inputRef.nativeElement, 'input')
-      .pipe(takeUntil(this.unsubscribe$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((event: Event) => this.userInputChange((event.target as any).value));
   }
 
   ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   writeValue(value: any) {
@@ -118,7 +135,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
 
   blinkError() {
     this.errorBlink$.next(true);
-    timer(300).pipe(takeUntil(this.unsubscribe$))
+    timer(300).pipe(takeUntil(this.destroy$))
       .subscribe(() => this.errorBlink$.next(false));
   }
 }

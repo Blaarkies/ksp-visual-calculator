@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "run": "npx ts-node src/create-parts-for-isru-widget.ts"
+  },
+  "dependencies": {
+    "glob": "^8.0.3"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/node": "^18.11.18",
+    "typescript": "^4.9.4"
+  }
+}

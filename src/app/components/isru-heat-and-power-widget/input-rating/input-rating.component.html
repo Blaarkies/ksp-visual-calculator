@@ -1,0 +1,14 @@
+<div class="text caption" *ngIf="label">{{label}}</div>
+
+<ng-content select="[prefix]"></ng-content>
+
+<button
+  *ngFor="let star of stars"
+  mat-icon-button
+  [disabled]="disabled"
+  (click)="userInputChange(star)">
+  <mat-icon
+    [svgIcon]="activeValue >= star ? iconOn : iconOff"
+    [color]="color"
+  ></mat-icon>
+</button>

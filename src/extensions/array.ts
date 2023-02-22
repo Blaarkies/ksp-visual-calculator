@@ -64,7 +64,7 @@ Array.prototype.distinct
   = function (this: Array<any>, indexCallback?: (parentItem: any, list: any[]) => number): Array<any> {
   return indexCallback
     ? this.filter((parentItem, index, list) => indexCallback(parentItem, list) !== index)
-    : this.filter((item, index, list) => list.indexOf(item) !== index);
+    : this.filter((item, index, list) => list.indexOf(item) === index);
 };
 
 Array.prototype.joinSelf = function (this: Array<any>): Array<Array<any>> {
@@ -96,13 +96,35 @@ Array.prototype.windowed = function (this: Array<any>,
                                      size: number,
                                      step: number = 1,
                                      partialWindows: boolean = false): Array<Array<any>> {
-  return this.reduce((state, c) => {
-    state.last && state.sum.push([state.last, c]);
-    state.last = c;
+  let result = [];
+  this.some((el, i) => {
+    if (i % step !== 0) {
+      return false;
+    }
+    if (i + size > this.length) {
+      return true;
+    }
+    result.push(this.slice(i, i + size));
+  });
+  return result;
+};
 
-    return state;
-  }, {sum: [], last: null})
-    .sum;
+/**
+ * Filters a list into separate lists given by the callback function. The return value of the
+ * callback function is used as the index for where to place each item
+ * @param callback
+ */
+Array.prototype.splitFilter = function (this: Array<any>,
+                                        callback: (item: any) => any): Array<Array<any>> {
+  let resultLists = [];
+  for (let item of this) {
+    let destinationKey = callback(item);
+    resultLists[destinationKey]
+      ? resultLists[destinationKey].push(item)
+      : resultLists[destinationKey] = [item];
+  }
+
+  return resultLists;
 };
 
 Array.prototype.random = function (this: Array<any>): any {

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { DomSanitizer, HammerModule } from '@angular/platform-browser';
+import { HammerModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
@@ -95,7 +95,6 @@ import { PageDvPlannerComponent } from './components/page-dv-planner/page-dv-pla
 import { PageCalculatorsComponent } from './components/page-calculators/page-calculators.component';
 import { CalculatorsRoutingModule } from './calculators-routing.module';
 import { AdsenseManagerModule } from '../adsense-manager/adsense-manager.module';
-import { AppModule } from '../app.module';
 import {
   AccountEditDetailsComponent
 } from '../components/account-details/account-edit-details/account-edit-details.component';
@@ -117,19 +116,18 @@ import {
     FaqDialogComponent,
     ManageStateDialogComponent,
 
-    InputFieldComponent,
-    InputFieldComponent,
-    InputSelectComponent,
-    InputNumberComponent,
-    InputToggleComponent,
+    // InputFieldComponent,
+    // InputSelectComponent,
+    // InputNumberComponent,
+    // InputToggleComponent,
     InputFieldListComponent,
     InputTextAreaComponent,
-    ValidationMessageComponent,
+    // ValidationMessageComponent,
 
     DraggableSpaceObjectComponent,
     OrbitLineComponent,
     CameraComponent,
-    ActionPanelComponent,
+    // ActionPanelComponent,
     ZoomIndicatorComponent,
     SoiCircleComponent,
     FocusJumpToPanelComponent,
@@ -141,12 +139,12 @@ import {
     AccountEditDetailsComponent,
     HudComponent,
     ActionBottomSheetComponent,
-    ActionListComponent,
+    // ActionListComponent,
     ActionFabComponent,
     FaqSectionComponent,
     UniverseMapComponent,
 
-    MouseHoverDirective,
+    // MouseHoverDirective,
     FileDropDirective,
     DoublePointerActionDirective,
     NegatePipe,
@@ -170,6 +168,17 @@ import {
     PageCalculatorsComponent,
   ],
   imports: [
+    InputSelectComponent,
+    InputFieldComponent,
+    ValidationMessageComponent,
+    InputNumberComponent,
+    InputToggleComponent,
+
+    ActionPanelComponent,
+    ActionListComponent,
+
+    MouseHoverDirective,
+
     CommonModule,
     CalculatorsRoutingModule,
     ReactiveFormsModule,
@@ -210,10 +219,4 @@ import {
   ],
 })
 export class CalculatorsModule {
-
-  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
-    matIconRegistry.addSvgIconSet(
-      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
-  }
-
 }

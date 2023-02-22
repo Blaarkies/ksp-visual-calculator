@@ -1,0 +1,44 @@
+
+.hover-target {
+  border-radius: 4px;
+  overflow: hidden;
+
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: .5;
+  }
+
+  &.good:before {
+    background-color: var(--color-primary);
+  }
+
+  &.bad:before {
+    background-color: var(--color-warn);
+  }
+
+  .excess-bar {
+    padding-inline: 1ch;
+    display: flex;
+    justify-content: space-between;
+
+    > div {
+      z-index: 1;
+    }
+
+    --padding: 1ch;
+    .details-left {
+      padding-right: var(--padding);
+      opacity: .7;
+    }
+
+    .details-right {
+      padding-left: var(--padding);
+      opacity: .7;
+    }
+  }
+}

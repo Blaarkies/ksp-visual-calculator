@@ -9,17 +9,12 @@
     <div class="search-box stack" #searchBox>
       <cp-input-field #inputRef
                       label="Search"
-                      class="no-validation-message"
+                      class="no-validation-message fix-width"
                       color="accent"
+                      [allowClear]="true"
                       (keydown)="$event.stopPropagation()"
                       (output)="searchValue$.next($event)">
       </cp-input-field>
-      <button class="position-right"
-              mat-icon-button
-              disableRipple
-              (click)="clearSearch(inputRef)">
-        <mat-icon color="none" [svgIcon]="icons.Backspace"></mat-icon>
-      </button>
     </div>
 
     <div class="option-container" *ngFor="let option of filteredOptions">

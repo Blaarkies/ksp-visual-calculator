@@ -12,7 +12,7 @@ export class Craft extends SpaceObject {
   spriteLocation: Vector2;
 
   get displayAltitude(): string {
-    // performance impact on this function seems minimal, since its called from inside an *ngIf
+    // performance impact on this function seems minimal, since it's called from inside an *ngIf
     let soiParent = SpaceObjectContainerService.instance
       .getSoiParent(this.location);
 

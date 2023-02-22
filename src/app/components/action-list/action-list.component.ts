@@ -5,13 +5,29 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
-import { TooltipPosition } from '@angular/material/tooltip';
+import { MatTooltipModule, TooltipPosition } from '@angular/material/tooltip';
+import { CommonModule } from '@angular/common';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { AppRoutingModule } from '../../app-routing.module';
+import { RouterModule } from '@angular/router';
 
 @Component({
+  standalone: true,
   selector: 'cp-action-list',
   templateUrl: './action-list.component.html',
   styleUrls: ['./action-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  imports: [
+    CommonModule,
+    MatTooltipModule,
+    MatBadgeModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatListModule,
+    RouterModule,
+  ],
 })
 export class ActionListComponent extends WithDestroy() {
 
