@@ -78,7 +78,7 @@ export class IsruWarningsComponent extends WithDestroy() {
       stats.get(keyProduce).lastValue < stats.get(keyConsume).lastValue)
       .map(([, , title]) => ({
         message: `Not enough ${title} production`,
-        severity: 'warn',
+        severity: 'accent',
       }));
   }
 
@@ -111,7 +111,7 @@ export class IsruWarningsComponent extends WithDestroy() {
     return [{
       message: `'Drill-O-Matic Junior' Mining Excavator' requires `
         + `at least 2.5% ore concentration to function`,
-      severity: 'warn',
+      severity: 'accent',
     }];
   }
 
@@ -197,7 +197,7 @@ export class IsruWarningsComponent extends WithDestroy() {
 
     return [{
       message: 'Ore storage is required to process ore',
-      severity: 'warn',
+      severity: 'accent',
     }];
   }
 
@@ -236,7 +236,7 @@ export class IsruWarningsComponent extends WithDestroy() {
     let requiredContainers = noStorageConsumers.map(({info}) => info.label).join(' and ');
     return [{
       message: `'${fuelCell.item.label}' requires storage for ${requiredContainers} to function`,
-      severity: 'warn',
+      severity: 'accent',
     }];
   }
 }

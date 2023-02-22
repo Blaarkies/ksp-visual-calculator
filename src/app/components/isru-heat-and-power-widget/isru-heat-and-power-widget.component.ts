@@ -13,16 +13,12 @@ import { IsruWarningsComponent } from './isru-warnings/isru-warnings.component';
 import { Observable } from 'rxjs';
 import { Group } from '../../common/domain/group';
 import { CraftPart } from './domain/craft-part';
+import { AnalyticsService } from '../../services/analytics.service';
+import { EventLogs } from '../../services/event-logs';
 
 @Component({
-  standalone: true,
   selector: 'cp-isru-heat-and-power-widget',
-  templateUrl: './isru-heat-and-power-widget.component.html',
-  styleUrls: ['./isru-heat-and-power-widget.component.scss'],
-  providers: [
-    StockEntitiesCacheService,
-    IsruWidgetService,
-  ],
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -30,6 +26,12 @@ import { CraftPart } from './domain/craft-part';
     CraftPartStatisticsComponent,
     MiningBaseControlComponent,
     IsruWarningsComponent,
+  ],
+  templateUrl: './isru-heat-and-power-widget.component.html',
+  styleUrls: ['./isru-heat-and-power-widget.component.scss'],
+  providers: [
+    StockEntitiesCacheService,
+    IsruWidgetService,
   ],
 })
 export class IsruHeatAndPowerWidgetComponent extends WithDestroy() implements OnDestroy {
@@ -39,10 +41,14 @@ export class IsruHeatAndPowerWidgetComponent extends WithDestroy() implements On
 
   selectedParts$: Observable<Group<CraftPart>[]>;
 
-  constructor(private isruService: IsruWidgetService) {
+  constructor(private isruService: IsruWidgetService,
+              analyticsService: AnalyticsService) {
     super();
 
     this.selectedParts$ = isruService.craftPartGroups$;
+    analyticsService.logEvent('Loaded IsruHeatAndPowerWidgetComponent', {
+      category: EventLogs.Category.Widget,
+    });
   }
 
   ngOnDestroy() {

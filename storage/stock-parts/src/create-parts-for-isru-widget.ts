@@ -129,7 +129,7 @@ function transformFunction(): TransformationFunction {
 extract(
   {
     gamePath: 'C:\\Steam\\steamapps\\common\\Kerbal Space Program',
-    filterTags: [
+    filterForTags: [
       'solar',
       'capacitor',
       'bank',
@@ -140,20 +140,32 @@ extract(
       'ore',
       'drill',
       'fuel',
+      'fueltank',
       'mono',
     ],
-    filterFolders: [
-      'fuelcell',
-      'isru',
-      'miniisru',
-      'minidrill',
-      'radialdrill',
-      'LargeTank',
-      'radialtank',
-      'smalltank',
-      'electrical',
-      'fueltank',
-      'thermal',
+    filterNotTags: [
+      'remove',
+      'split',
+      'aero',
+      '(ion',
+    ],
+    filterForFolders: [
+      '/fuelcell/',
+      '/isru/',
+      '/miniisru/',
+      '/minidrill/',
+      '/radialdrill/',
+      '/LargeTank/',
+      '/radialtank/',
+      '/smalltank/',
+      '/electrical/',
+      '/fueltank/',
+      '/thermal/',
+    ],
+    filterNotFolders: [
+      '/adapterTanks/',
+      '/Aero/',
+      '/Structural/',
     ],
     outputMode: 'one-file',
   },

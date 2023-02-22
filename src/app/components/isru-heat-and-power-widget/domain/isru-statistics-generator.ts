@@ -157,7 +157,7 @@ export class IsruStatisticsGenerator {
           .concat(
             this.resourceConverterGroupsMap?.get('drawEc')
               .filter(c => c.isActive)
-              .map(c => c.parent.count * c.drawEc),
+              .map(c => c.parent.count * c.drawEc * this.engineerBonus),
             this.resourceToDrillMap?.get('drawEc')
               .map(d => d.count * d.item.drawEc
                 * this.engineerBonus))
@@ -224,7 +224,8 @@ export class IsruStatisticsGenerator {
         calculate: () => this.resourceToDrillMap.get('produceOre')
           .map(g => g.count * g.item.produceOre
             * this.engineerBonus
-            * this.oreConcentration)
+            * this.oreConcentration
+            * .8) // TODO: some config value affects out put by this much
           .sum(),
       }],
 
@@ -317,7 +318,7 @@ export class IsruStatisticsGenerator {
           icon: m.icon.toString(),
           measure: m.measure,
           order: m.order,
-        } as (Statistic & {order});
+        } as (Statistic & { order });
       })
       .concat(combinedStats)
       .sort((a, b) => a.order - b.order) as Statistic[];
@@ -329,7 +330,7 @@ export class IsruStatisticsGenerator {
   private createCombinedStat(statsMap: Map<StatisticType, StatisticConfig>,
                              label: string, type: StatisticDisplayType,
                              consumeType: StatisticType, produceType: StatisticType)
-    : (Statistic & {order}) {
+    : (Statistic & { order }) {
     let consumer = statsMap.get(consumeType);
     let producer = statsMap.get(produceType);
     if (consumer.lastValue || producer.lastValue) {
@@ -348,12 +349,12 @@ export class IsruStatisticsGenerator {
   }
 
   private getCombinedStats(statsMap: Map<StatisticType, StatisticConfig>)
-    : {combinedStats: (Statistic & {order})[], usedStats: StatisticConfig[]} {
+    : { combinedStats: (Statistic & { order })[], usedStats: StatisticConfig[] } {
     let stats = this.statisticsMap;
     let combinedStats: (Statistic & any)[] = [];
     let usedTypes: StatisticType[] = [];
 
-    let powerUsage = this.createCombinedStat(statsMap, 'Power Usage', 'excess',
+    let powerUsage = this.createCombinedStat(statsMap, 'Power Excess', 'excess',
       'power-', 'power+');
     if (powerUsage) {
       combinedStats.push(powerUsage);
@@ -367,21 +368,21 @@ export class IsruStatisticsGenerator {
       usedTypes.push('heat-', 'heat+');
     }
 
-    let lf = this.createCombinedStat(statsMap, 'Liquid Fuel', 'excess',
+    let lf = this.createCombinedStat(statsMap, 'Liquid Fuel Excess', 'excess',
       'lf-', 'lf+');
     if (lf) {
       combinedStats.push(lf);
       usedTypes.push('lf-', 'lf+');
     }
 
-    let ox = this.createCombinedStat(statsMap, 'Oxidizer', 'excess',
+    let ox = this.createCombinedStat(statsMap, 'Oxidizer Excess', 'excess',
       'ox-', 'ox+');
     if (ox) {
       combinedStats.push(ox);
       usedTypes.push('ox-', 'ox+');
     }
 
-    let ore = this.createCombinedStat(statsMap, 'Ore', 'excess',
+    let ore = this.createCombinedStat(statsMap, 'Ore Excess', 'excess',
       'ore-', 'ore+');
     if (ore) {
       combinedStats.push(ore);

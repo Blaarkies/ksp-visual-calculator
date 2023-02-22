@@ -30,12 +30,15 @@
       z-index: 1;
     }
 
+    --padding: 1ch;
     .details-left {
-      padding-right: 2ch;
+      padding-right: var(--padding);
+      opacity: .7;
     }
 
     .details-right {
-      padding-left: 2ch;
+      padding-left: var(--padding);
+      opacity: .7;
     }
   }
 }

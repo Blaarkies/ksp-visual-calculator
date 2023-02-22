@@ -50,11 +50,17 @@ export class Common {
   }
 
   static formatNumberShort(value: number): number {
-    let fixed = value.toFixed(2);
+    let isNegative = false;
+    if (value < 0) {
+      isNegative = true;
+    }
+    let fixed = isNegative
+      ? value.toFixed(2).slice(1)
+      : value.toFixed(2);
     let valueSplits = fixed.split('.');
     fixed = valueSplits[0].length > 1
       ? valueSplits[0]
       : fixed;
-    return fixed.toNumber();
+    return fixed.toNumber() * (isNegative ? -1 : 1);
   }
 }

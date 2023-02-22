@@ -57,8 +57,10 @@ export interface BuiltStructure {
 
 export interface ExtractorConfig {
   gamePath?: string;
-  filterFolders?: string[];
-  filterTags?: string[];
+  filterForFolders?: string[];
+  filterNotFolders?: string[];
+  filterForTags?: string[];
+  filterNotTags?: string[];
   outputMode?: 'part-name-each-file' | 'one-file';
 }
 

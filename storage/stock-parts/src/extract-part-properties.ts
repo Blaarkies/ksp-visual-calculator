@@ -7,11 +7,12 @@ type SearchTagFunction = (json: BuiltStructure) => boolean;
 let squadPartsPath = '/GameData/Squad/Parts';
 let squadExpansionPartsPath = '/GameData/SquadExpansion/Parts';
 
-function filterPaths(paths: string[], foldersToKeep: string[]) {
-  return foldersToKeep?.length
+function filterPaths(paths: string[], forFolders: string[], notFolders: string[]): string[] {
+  return forFolders?.length
     ? paths.filter(p => {
       let pathLower = p.toLowerCase();
-      return foldersToKeep.some(f => pathLower.includes(f));
+      return forFolders.some(f => pathLower.includes(f.toLowerCase()))
+        && !notFolders.some(f => pathLower.includes(f.toLowerCase()));
     })
     : paths;
 }
@@ -22,7 +23,7 @@ Provide a list of folder names to match. Separated by a space ' '`
     + '\n');
   let foldersToKeep = userInput.split(' ').map(f => f.toLowerCase());
   console.info('Folders to retain: ', foldersToKeep);
-  return filterPaths(paths, foldersToKeep);
+  return filterPaths(paths, foldersToKeep, []);
 }
 
 function getTags(text: string): string[] {
@@ -34,11 +35,12 @@ function getTags(text: string): string[] {
   return tags;
 }
 
-function makeSearchTagFn(filterTags: string[]): SearchTagFunction {
-  return filterTags?.length
+function makeSearchTagFn(filterForTags: string[], filterNotTags: string[]): SearchTagFunction {
+  return filterForTags?.length
     ? (json: BuiltStructure) => json?.PART?.some(p => {
       let tags = getTags(p.properties.tags);
-      return tags.some(t => filterTags.includes(t));
+      return tags.some(t => filterForTags.includes(t))
+        && !tags.some(t => filterNotTags.includes(t));
     })
     : null;
 }
@@ -49,7 +51,7 @@ Provide a list of search tags to match. Separated by a space ' '`
     + '\n');
   let filterTags = userInput.split(' ').map(t => t.toLowerCase());
   console.info('Tag to match: ', filterTags);
-  return makeSearchTagFn(filterTags);
+  return makeSearchTagFn(filterTags, []);
 }
 
 async function askForFiltering(config: ExtractorConfig,
@@ -92,10 +94,10 @@ async function setup(config: ExtractorConfig = {},
   let expansionFilePaths = await getFiles(gamePath + squadExpansionPartsPath, '.cfg');
   let allPartPaths = baseFilePaths.concat(expansionFilePaths);
 
-  let {paths, searchFn} = (config.filterFolders || config.filterTags)
+  let {paths, searchFn} = (config.filterForFolders || config.filterForTags)
     ? {
-      paths: filterPaths(allPartPaths, config.filterFolders),
-      searchFn: makeSearchTagFn(config.filterTags),
+      paths: filterPaths(allPartPaths, config.filterForFolders, config.filterNotFolders),
+      searchFn: makeSearchTagFn(config.filterForTags, config.filterNotTags),
     }
     : await askForFiltering(config, allPartPaths);
 

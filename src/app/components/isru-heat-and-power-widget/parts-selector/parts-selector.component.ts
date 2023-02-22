@@ -121,10 +121,10 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
           splits[0][0],
           splits[1][1],
           splits[2][4],
-          splits[3][4],
+          splits[3][3],
           splits[4][8],
-          splits[5][0],
-          splits[6][0],
+          splits[5][26],
+          splits[6][1],
           // splits[7][0],
         ].map(p => ({control: new FormControl(1), value: p.value}));
 

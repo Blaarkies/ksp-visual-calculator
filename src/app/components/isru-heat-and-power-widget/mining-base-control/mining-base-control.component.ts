@@ -65,7 +65,7 @@ export class MiningBaseControlComponent extends WithDestroy() implements OnDestr
     this.controlOreConcentration.valueChanges.pipe(
       startWith(this.controlOreConcentration.value),
       takeUntil(this.destroy$))
-      .subscribe(value => this.isruService.updateOreConcentration(value));
+      .subscribe(value => this.isruService.updateOreConcentration(value * .01)); // convert to percentage
 
     this.controlEngineerBonus.valueChanges.pipe(
       delay(0),

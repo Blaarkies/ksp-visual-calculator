@@ -1,14 +1,6 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  forwardRef,
-  Input,
-  Output
-} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { BasicValueAccessor } from '../../../../common/domain/input-fields/basic-value-accessor';
 import { Icons } from '../../../../common/domain/icons';
 import { Subject, takeUntil } from 'rxjs';
