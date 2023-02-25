@@ -6,7 +6,6 @@
   <ng-container *ngTemplateOutlet="zoom"></ng-container>
   <ng-container *ngTemplateOutlet="focus"></ng-container>
   <ng-container *ngTemplateOutlet="dv"></ng-container>
-  <ng-template [cdkPortalOutlet]="domPortal"></ng-template>
 
   <div class="fab-buttons">
     <cp-action-fab color="green"
@@ -56,8 +55,6 @@
     <ng-container *ngTemplateOutlet="zoom"></ng-container>
     <ng-container *ngTemplateOutlet="focus"></ng-container>
     <ng-container *ngTemplateOutlet="dv"></ng-container>
-    <ng-template [cdkPortalOutlet]="domPortal"></ng-template>
-
     <cp-action-panel class="menu-context"
                      id="context-panel"
                      *ngIf="contextPanel$ | async as details"
@@ -121,7 +118,3 @@
   <cp-maneuver-sequence-panel class="dv" *ngIf="(context$ | async) === contextTypes.DvPlanner">
   </cp-maneuver-sequence-panel>
 </ng-template>
-
-<div #baseContent class="base">
-  <cp-base-panel></cp-base-panel>
-</div>

@@ -66,9 +66,6 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
     [ThemeTypeEnum.Dark]: Icons.ThemeDark,
   };
 
-  @ViewChild('baseContent') baseContent: ElementRef<HTMLElement>;
-  domPortal: DomPortal;
-
   constructor(private hudService: HudService,
               private analyticsService: AnalyticsService,
               private auth: AuthService,
@@ -104,7 +101,6 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.domPortal = new DomPortal(this.baseContent);
     this.cdr.detectChanges();
   }
 

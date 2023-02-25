@@ -7,7 +7,7 @@
   grid-template-areas:
 'nav          page info'
 'focus        .    dv'
-'menu-context .    base';
+'menu-context .    .';
 
   // Set custom grid area for zoom indicator
   .zoom {
@@ -152,14 +152,6 @@
   justify-self: end;
 }
 
-.base {
-  grid-area: base;
-  z-index: 1;
-  grid-column: 1/-1;
-  grid-row: 1/-1;
-  place-self: end end;
-}
-
 .handset-layout {
   height: 100%;
   display: grid;
@@ -169,7 +161,7 @@
 'page    profile'
 'zoom    zoom'
 'focus   dv'
-'base    fab-buttons';
+'.       fab-buttons';
 
   .page-context {
     grid-area: page;
@@ -198,10 +190,6 @@
     display: flex;
     align-items: flex-end;
     gap: 10px;
-  }
-
-  .base {
-    place-self: end start;
   }
 }
 

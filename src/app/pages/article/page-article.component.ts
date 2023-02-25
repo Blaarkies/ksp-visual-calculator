@@ -1,13 +1,23 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { filter, map, Observable, sampleTime, scan, skip, Subject, takeUntil, tap } from 'rxjs';
+import { filter, sampleTime, scan, skip, Subject, takeUntil, tap } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
-import { Router, Scroll } from '@angular/router';
+import { Router, RouterModule, Scroll } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { AdDispenserService } from '../../adsense-manager/services/ad-dispenser.service';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'cp-page-intro',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+  ],
   templateUrl: './page-intro.component.html',
   styleUrls: ['./page-intro.component.scss']
 })
@@ -26,19 +36,11 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
   showSidebar = false;
   showNavbar = true;
   scrollEvent$ = new Subject<number>()
-  isMobile$ = this.breakpointObserver.observe(['(max-width: 1000px)'])
-    .pipe(map(bp => bp.matches));
-  isNotMobile$ = this.isMobile$.pipe(map(is => !is));
-  isAdBlocked$: Observable<boolean>;
 
   constructor(router: Router,
               private self: ElementRef,
-              private themeService: ThemeService,
-              private breakpointObserver: BreakpointObserver,
-              adDispenserService: AdDispenserService) {
+              private themeService: ThemeService) {
     super();
-
-    this.isAdBlocked$ = adDispenserService.isAdBlocked$.asObservable();
 
     this.calcDv.update();
 
@@ -89,15 +91,18 @@ export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestr
     this.themeService.toggleTheme();
   }
 
-  updateNavbar(event: Event & { target: HTMLElement }) {
-    this.scrollEvent$.next(event.target.scrollTop);
+  updateNavbar(event: Event) {
+    let typedEvent = event as Event & { target: HTMLElement };
+    this.scrollEvent$.next(typedEvent.target.scrollTop);
   }
 
-  updateSidebar(event: PointerEvent & { path: HTMLElement[] }) {
+  updateSidebar(event: Event) {
+    let typedEvent = event as PointerEvent & { path: { id: string }[] };
     if (!this.showSidebar) {
       return;
     }
-    let clickedOnSidebar = event.path.some(e => e.id === 'sidebar' || e.id === 'sidebar-button');
+    let clickedOnSidebar = typedEvent.path.some(e => e.id === 'sidebar'
+      || e.id === 'sidebar-button');
     if (!clickedOnSidebar) {
       this.showSidebar = false;
     }

@@ -29,7 +29,6 @@ export class PageCalculatorsComponent extends WithDestroy() {
 
   calculatorType: UsableRoutes;
   calculators = UsableRoutes;
-  signInDialogOpen$ = new Subject<void>();
 
   constructor(activatedRoute: ActivatedRoute,
               private authService: AuthService,
@@ -54,23 +53,6 @@ export class PageCalculatorsComponent extends WithDestroy() {
     let userIconHasClicked = false;
     setTimeout(() =>
       document.querySelector('cp-user-profile > div')?.addEventListener('click', () => userIconHasClicked = true));
-
-
-    let minute = 60 * 1e3;
-    // let initialSignUpDialog$ = this.authService
-    //   .user$
-    //   .pipe(
-    //     take(1),
-    //     delay(minute),
-    //     filter(user => user === null && this.timeSinceLastSignInDialog() > minute),
-    //     takeWhile(() => !userIconHasClicked),
-    //     switchMap(() => {
-    //       localStorage.setItem(localStorageKeyLastSignInSuggestionDate, new Date().getTime().toString());
-    //
-    //       return this.dialog.open(AccountDialogComponent,
-    //         {backdropClass: GlobalStyleClass.MobileFriendly})
-    //         .afterClosed();
-    //     }));
 
     timer(1000)
       .pipe(
@@ -99,12 +81,6 @@ export class PageCalculatorsComponent extends WithDestroy() {
           this.dialog.open(BuyMeACoffeeDialogComponent);
         }))
       .subscribe();
-  }
-
-  private timeSinceLastSignInDialog(): number {
-    let lastDate = localStorage.getItem(localStorageKeyLastSignInSuggestionDate)?.toNumber() || 0;
-    let difference = new Date().getTime() - new Date(lastDate).getTime();
-    return difference;
   }
 
   private triggerFirstVisitDialog() {

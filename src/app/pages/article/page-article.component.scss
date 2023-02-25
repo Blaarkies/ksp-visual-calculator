@@ -12,44 +12,6 @@
   }
 }
 
-.ads-structure {
-  display: grid;
-  grid-template-columns: max-content 1fr auto;
-
-  gap: 1em;
-  padding: 1em 4em;
-
-  @media screen and (max-width: queries.$query-tablet-width) {
-    display: block;
-    padding: 1em 1em 1em 2em;
-  }
-
-  .ads-sidewall {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-
-    cp-ad {
-      margin: unset;
-    }
-  }
-}
-
-cp-ad {
-  display: flex;
-  justify-content: center;
-  margin-top: 2em;
-}
-
-.need-support-message {
-  background: #7777;
-  padding: 0.5em 2em 2em 2em;
-  border-radius: 2em;
-  width: max-content;
-  margin: auto;
-  text-align: center;
-}
-
 p {
   font-size: 1rem;
 }
@@ -308,6 +270,10 @@ footer {
       }
     }
   }
+}
+
+.article-body {
+  padding-inline: 2em;
 }
 
 .column-dual {
