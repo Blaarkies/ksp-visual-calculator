@@ -10,8 +10,14 @@ import { CommonModule } from '@angular/common';
 import { CpColors } from '../input-field/input-field.component';
 
 @Component({
-  standalone: true,
   selector: 'cp-input-toggle',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCheckboxModule,
+    MatSlideToggleModule,
+    ValidationMessageComponent,
+  ],
   templateUrl: './input-toggle.component.html',
   styleUrls: ['./input-toggle.component.scss'],
   animations: [BasicAnimations.fade],
@@ -20,12 +26,6 @@ import { CpColors } from '../input-field/input-field.component';
     useExisting: forwardRef(() => InputToggleComponent),
     multi: true,
   }],
-  imports: [
-    CommonModule,
-    MatCheckboxModule,
-    MatSlideToggleModule,
-    ValidationMessageComponent,
-  ],
 })
 export class InputToggleComponent extends BasicValueAccessor {
 

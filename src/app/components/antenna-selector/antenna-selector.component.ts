@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { UntypedFormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {UntypedFormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
@@ -10,9 +10,28 @@ import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
 import { BasicAnimations } from '../../common/animations/basic-animations';
+import {CommonModule} from "@angular/common";
+import {MatTabsModule} from "@angular/material/tabs";
+import {InputFieldComponent} from "../controls/input-field/input-field.component";
+import {InputNumberComponent} from "../controls/input-number/input-number.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatIconModule} from "@angular/material/icon";
+import {InputSelectComponent} from "../controls/input-select/input-select.component";
 
 @Component({
   selector: 'cp-antenna-selector',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTabsModule,
+    InputFieldComponent,
+    InputNumberComponent,
+    ReactiveFormsModule,
+    MatTooltipModule,
+    MatIconModule,
+    InputSelectComponent,
+    AntennaStatsComponent,
+  ],
   templateUrl: './antenna-selector.component.html',
   styleUrls: ['./antenna-selector.component.scss'],
   encapsulation: ViewEncapsulation.None,

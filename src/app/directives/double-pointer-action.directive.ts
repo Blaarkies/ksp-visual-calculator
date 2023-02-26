@@ -3,6 +3,7 @@ import { filter, scan, skip, Subject } from 'rxjs';
 
 @Directive({
   selector: '[cpDoublePointerAction]',
+  standalone: true,
 })
 export class DoublePointerActionDirective implements OnDestroy {
 

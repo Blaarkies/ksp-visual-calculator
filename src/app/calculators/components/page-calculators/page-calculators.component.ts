@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { delay, distinctUntilChanged, filter, Subject, switchMap, take, takeUntil, takeWhile, tap, timer } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, take, takeUntil, tap, timer } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';
 import { UsableRoutes } from '../../../usable-routes';
 import { AuthService } from '../../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
-import { AccountDialogComponent } from '../../../overlays/account-dialog/account-dialog.component';
 import { GlobalStyleClass } from '../../../common/global-style-class';
 import { SimpleDialogComponent, SimpleDialogData } from '../../../overlays/simple-dialog/simple-dialog.component';
 import { TutorialService } from '../../../services/tutorial.service';
@@ -15,13 +14,29 @@ import { EventLogs } from '../../../services/event-logs';
 import { BuyMeACoffeeDialogComponent } from '../../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { RouteData } from '../../calculators-routing.module';
+import { CommonModule } from '@angular/common';
+import { PageDvPlannerComponent } from '../page-dv-planner/page-dv-planner.component';
+import { PageSignalCheckComponent } from '../page-signal-check/page-signal-check.component';
+import { HudComponent } from '../../../components/hud/hud.component';
+import { MatBottomSheetModule } from "@angular/material/bottom-sheet";
 
 let localStorageKeyFirstVisitDeprecated = 'ksp-visual-calculator-first-visit';
 let localStorageKeyTutorialViewed = 'ksp-visual-calculator-tutorial-viewed';
 let localStorageKeyLastSignInSuggestionDate = 'ksp-visual-calculator-last-sign-in-suggestion-date';
 
+let minute = 60 * 1e3;
+
 @Component({
   selector: 'cp-page-calculators',
+  standalone: true,
+  imports: [
+    CommonModule,
+    PageDvPlannerComponent,
+    PageSignalCheckComponent,
+    HudComponent,
+
+    MatBottomSheetModule,
+  ],
   templateUrl: './page-calculators.component.html',
   styleUrls: ['./page-calculators.component.scss']
 })

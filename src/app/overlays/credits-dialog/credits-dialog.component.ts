@@ -1,7 +1,16 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {CommonModule} from "@angular/common";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'cp-credits-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
   templateUrl: './credits-dialog.component.html',
   styleUrls: ['./credits-dialog.component.scss'],
 })

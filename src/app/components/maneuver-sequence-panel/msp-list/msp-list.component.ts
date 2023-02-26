@@ -2,12 +2,30 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
 import { Icons } from '../../../common/domain/icons';
 import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoint';
+import { CommonModule } from '@angular/common';
+import { MspEdgeComponent } from '../msp-edge/msp-edge.component';
+import { MspNodeComponent } from '../msp-node/msp-node.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'cp-msp-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MspEdgeComponent,
+    MspNodeComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+  ],
   templateUrl: './msp-list.component.html',
   styleUrls: ['./msp-list.component.scss'],
-  animations: [BasicAnimations.height, BasicAnimations.fade],
+  animations: [
+    BasicAnimations.height,
+    BasicAnimations.fade,
+  ],
 })
 export class MspListComponent {
 

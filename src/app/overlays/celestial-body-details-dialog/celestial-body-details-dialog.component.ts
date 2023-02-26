@@ -4,7 +4,7 @@ import { CommonValidators } from '../../common/validators/common-validators';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import { CelestialBodyDetails } from './celestial-body-details';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
@@ -13,6 +13,9 @@ import { Antenna } from '../../common/domain/antenna';
 import { SetupService } from '../../services/setup.service';
 import { Icons } from '../../common/domain/icons';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import {CommonModule} from "@angular/common";
+import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";
+import {MatButtonModule} from "@angular/material/button";
 
 export class CelestialBodyDetailsDialogData {
   forbiddenNames: string[];
@@ -21,6 +24,13 @@ export class CelestialBodyDetailsDialogData {
 
 @Component({
   selector: 'cp-celestial-body-details-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    InputFieldListComponent,
+  ],
   templateUrl: './celestial-body-details-dialog.component.html',
   styleUrls: ['./celestial-body-details-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,

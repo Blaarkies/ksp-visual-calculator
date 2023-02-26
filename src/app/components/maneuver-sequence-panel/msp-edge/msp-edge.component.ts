@@ -2,14 +2,22 @@ import { Component, Input } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PathDetailsReader } from './path-details-reader';
-import { ConnectionPositionPair } from '@angular/cdk/overlay';
+import { ConnectionPositionPair, OverlayModule } from '@angular/cdk/overlay';
 import { BehaviorSubject } from 'rxjs';
 import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
 import { EventLogs } from '../../../services/event-logs';
 import { AnalyticsService } from '../../../services/analytics.service';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'cp-msp-edge',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    OverlayModule,
+  ],
   templateUrl: './msp-edge.component.html',
   styleUrls: ['./msp-edge.component.scss'],
   animations: [

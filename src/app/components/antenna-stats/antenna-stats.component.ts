@@ -4,9 +4,18 @@ import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { AntennaStats } from './antenna-stats';
+import {CommonModule} from "@angular/common";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @Component({
   selector: 'cp-antenna-stats',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatTooltipModule,
+    MatProgressBarModule,
+  ],
   templateUrl: './antenna-stats.component.html',
   styleUrls: ['./antenna-stats.component.scss'],
 })

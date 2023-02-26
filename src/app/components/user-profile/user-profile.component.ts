@@ -8,9 +8,20 @@ import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/event-logs';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { BasicAnimations } from '../../common/animations/basic-animations';
+import { CommonModule } from '@angular/common';
+import { MatRippleModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'cp-user-profile',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatRippleModule,
+    MatTooltipModule,
+    MatIconModule,
+  ],
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
   animations: [BasicAnimations.fade],

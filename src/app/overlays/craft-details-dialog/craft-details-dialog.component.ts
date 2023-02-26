@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {
   AbstractControl,
   FormArray,
@@ -29,6 +29,13 @@ import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AdvancedPlacement } from './advanced-placement';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
 import { takeUntil } from 'rxjs';
+import {CommonModule} from "@angular/common";
+import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatDividerModule} from "@angular/material/divider";
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
@@ -37,6 +44,17 @@ export class CraftDetailsDialogData {
 
 @Component({
   selector: 'cp-craft-details-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    InputFieldListComponent,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatTooltipModule,
+    MatDividerModule,
+  ],
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
   animations: [BasicAnimations.fade, BasicAnimations.height, BasicAnimations.flipVertical],

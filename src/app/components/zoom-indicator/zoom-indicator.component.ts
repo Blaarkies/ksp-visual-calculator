@@ -2,9 +2,12 @@ import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { CameraService } from '../../services/camera.service';
 import { debounceTime, finalize, skip, Subject, takeUntil, tap } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'cp-zoom-indicator',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './zoom-indicator.component.html',
   styleUrls: ['./zoom-indicator.component.scss'],
 })

@@ -5,7 +5,6 @@
                    (startDrag)="selectCheckpoint($event)">
 
     <cp-mission-journey aboveOrbits
-                        #missionJourney
                         class="no-mouse"
                         [scale]="universeMap.camera.scale"
                         [checkpoints]="checkpoints$ | async"

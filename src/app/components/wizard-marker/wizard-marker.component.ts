@@ -1,4 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from "@angular/common";
 
 export interface WizardMarker {
   type: 'ring' | 'pane';
@@ -8,6 +9,8 @@ type MarkerType = 'ring' | 'pane';
 
 @Component({
   selector: 'cp-wizard-marker',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './wizard-marker.component.html',
   styleUrls: ['./wizard-marker.component.scss'],
   encapsulation: ViewEncapsulation.None,

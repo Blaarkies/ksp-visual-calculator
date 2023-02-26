@@ -21,8 +21,13 @@ import { filter, fromEvent, map, Subject, takeUntil } from 'rxjs';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
 
 @Component({
-  standalone: true,
   selector: 'cp-input-number',
+  standalone: true,
+  imports: [
+    MatMenuModule,
+    MatSliderModule,
+    InputFieldComponent,
+  ],
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -31,11 +36,6 @@ import { ControlMetaNumber } from '../../../common/domain/input-fields/control-m
     useExisting: forwardRef(() => InputNumberComponent),
     multi: true,
   }],
-  imports: [
-    MatMenuModule,
-    MatSliderModule,
-    InputFieldComponent,
-  ],
 })
 export class InputNumberComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

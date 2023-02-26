@@ -8,7 +8,7 @@ import {
   ViewChildren,
   ViewEncapsulation
 } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import { UsableRoutes } from '../../usable-routes';
 import { StateService } from '../../services/state.service';
 import { Icons } from '../../common/domain/icons';
@@ -20,10 +20,19 @@ import { delay, filter, finalize, map, Observable, of, startWith, Subject, switc
 import { WithDestroy } from '../../common/with-destroy';
 import { StateRow } from './state-row';
 import { StateEntry } from './state-entry';
-import { MatSelectionList } from '@angular/material/list';
+import {MatListModule, MatSelectionList} from '@angular/material/list';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
+import {CommonModule} from "@angular/common";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatButtonModule} from "@angular/material/button";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {StateDisplayComponent} from "../../components/state-display/state-display.component";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {FileDropDirective} from "../../directives/file-drop.directive";
+import {MatIconModule} from "@angular/material/icon";
+import {MatSelectModule} from "@angular/material/select";
 
 export class ManageStateDialogData {
   context: UsableRoutes;
@@ -31,6 +40,20 @@ export class ManageStateDialogData {
 
 @Component({
   selector: 'cp-manage-state-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatButtonModule,
+    StateEditNameRowComponent,
+    MatProgressBarModule,
+    StateDisplayComponent,
+    MatTooltipModule,
+    FileDropDirective,
+    MatIconModule,
+    MatListModule,
+  ],
   templateUrl: './manage-state-dialog.component.html',
   styleUrls: ['./manage-state-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,

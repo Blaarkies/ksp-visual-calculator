@@ -2,7 +2,7 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { WithDestroy } from '../../common/with-destroy';
 import { Icons } from '../../common/domain/icons';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   BehaviorSubject,
   catchError,
@@ -34,15 +34,41 @@ import { InputFieldComponent } from '../controls/input-field/input-field.compone
 import { EventLogs } from '../../services/event-logs';
 import { AnalyticsService } from '../../services/analytics.service';
 import { GlobalStyleClass } from '../../common/global-style-class';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
   UploadImageDialogComponent,
   UploadImageDialogData
 } from '../../overlays/upload-image-dialog/upload-image-dialog.component';
 import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
+import { CommonModule } from "@angular/common";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatDividerModule } from "@angular/material/divider";
+import { AccountEditDetailsComponent } from "./account-edit-details/account-edit-details.component";
+import { InputToggleComponent } from "../controls/input-toggle/input-toggle.component";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatFormFieldModule } from "@angular/material/form-field";
 
 @Component({
   selector: 'cp-account-details',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatTooltipModule,
+    MatButtonModule,
+    MatIconModule,
+    InputFieldComponent,
+    ReactiveFormsModule,
+    MatDividerModule,
+    AccountEditDetailsComponent,
+    InputToggleComponent,
+    MatProgressBarModule,
+    MatFormFieldModule,
+
+    UploadImageDialogComponent,
+  ],
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.scss'],
   animations: [

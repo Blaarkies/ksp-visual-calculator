@@ -2,9 +2,20 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActionGroupType } from '../hud.component';
 import { ActionPanelColors } from '../../action-panel/action-panel.component';
 import { ActionOption } from '../../../common/domain/action-option';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'cp-action-fab',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatTooltipModule,
+  ],
   templateUrl: './action-fab.component.html',
   styleUrls: ['./action-fab.component.scss'],
 })

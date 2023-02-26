@@ -28,8 +28,16 @@ import { MatButtonModule } from '@angular/material/button';
 export type CpColors = 'primary' | 'accent' | 'warn';
 
 @Component({
-  standalone: true,
   selector: 'cp-input-field',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    ValidationMessageComponent,
+  ],
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -39,14 +47,6 @@ export type CpColors = 'primary' | 'accent' | 'warn';
     useExisting: forwardRef(() => InputFieldComponent),
     multi: true,
   }],
-  imports: [
-    CommonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    ValidationMessageComponent,
-  ],
 })
 export class InputFieldComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 

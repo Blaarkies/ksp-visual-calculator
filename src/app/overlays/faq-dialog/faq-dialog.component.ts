@@ -1,6 +1,6 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UntypedFormControl } from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
+import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import { WithDestroy } from '../../common/with-destroy';
 import {
   debounceTime,
@@ -16,10 +16,14 @@ import {
   zip
 } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Section } from './faq-section/faq-section.component';
+import {FaqSectionComponent, Section} from './faq-section/faq-section.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HudService } from '../../services/hud.service';
 import { UsableRoutes } from '../../usable-routes';
+import {CommonModule} from "@angular/common";
+import {InputFieldComponent} from "../../components/controls/input-field/input-field.component";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatButtonModule} from "@angular/material/button";
 
 export class FaqDialogData {
   sections: Section[];
@@ -27,6 +31,16 @@ export class FaqDialogData {
 
 @Component({
   selector: 'cp-faq-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    InputFieldComponent,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    FaqSectionComponent,
+    MatButtonModule,
+  ],
   templateUrl: './faq-dialog.component.html',
   styleUrls: ['./faq-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,

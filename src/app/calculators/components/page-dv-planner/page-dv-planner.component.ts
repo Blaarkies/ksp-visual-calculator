@@ -7,9 +7,17 @@ import { UniverseMapComponent } from '../../../components/universe-map/universe-
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { TravelService } from '../../../services/travel.service';
 import { takeUntil } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { MissionJourneyComponent } from '../../../components/mission-journey/mission-journey.component';
 
 @Component({
   selector: 'cp-page-dv-planner',
+  standalone: true,
+  imports: [
+    CommonModule,
+    UniverseMapComponent,
+    MissionJourneyComponent,
+  ],
   templateUrl: './page-dv-planner.component.html',
   styleUrls: ['./page-dv-planner.component.scss'],
 })

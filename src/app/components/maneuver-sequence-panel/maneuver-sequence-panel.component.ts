@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TravelCondition } from '../../common/data-structures/delta-v-map/travel-condition';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
-import { UntypedFormControl } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { WithDestroy } from '../../common/with-destroy';
 import {
@@ -23,9 +23,29 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 import { TravelService } from '../../services/travel.service';
 import { DvRouteType } from '../../common/domain/dv-route-type';
+import { CommonModule } from '@angular/common';
+import { MspListComponent } from './msp-list/msp-list.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { InputNumberComponent } from '../controls/input-number/input-number.component';
+import { InputToggleComponent } from '../controls/input-toggle/input-toggle.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'cp-maneuver-sequence-panel',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MspListComponent,
+    InputNumberComponent,
+    InputToggleComponent,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatMenuModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './maneuver-sequence-panel.component.html',
   styleUrls: ['./maneuver-sequence-panel.component.scss'],
   animations: [BasicAnimations.expandY],

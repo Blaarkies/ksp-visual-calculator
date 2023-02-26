@@ -7,7 +7,7 @@ import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq
 import { MatDialog } from '@angular/material/dialog';
 import { WithDestroy } from '../../common/with-destroy';
 import { firstValueFrom, map, Observable, takeUntil } from 'rxjs';
-import { ActionPanelColors } from '../action-panel/action-panel.component';
+import { ActionPanelColors, ActionPanelComponent } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import {
@@ -22,6 +22,17 @@ import { AuthService } from '../../services/auth.service';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { DomPortal } from '@angular/cdk/portal';
 import { ThemeService, ThemeTypeEnum } from '../../services/theme.service';
+import { CommonModule } from '@angular/common';
+import { ActionFabComponent } from './action-fab/action-fab.component';
+import { UserProfileComponent } from '../user-profile/user-profile.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatBadgeModule } from '@angular/material/badge';
+import { ZoomIndicatorComponent } from '../zoom-indicator/zoom-indicator.component';
+import { FocusJumpToPanelComponent } from '../focus-jump-to-panel/focus-jump-to-panel.component';
+import { ManeuverSequencePanelComponent } from '../maneuver-sequence-panel/maneuver-sequence-panel.component';
+import { NegatePipe } from '../../common/negate.pipe';
+import { ManageStateDialogComponent } from "../../overlays/manage-state-dialog/manage-state-dialog.component";
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -38,6 +49,22 @@ export class ActionGroupType {
 
 @Component({
   selector: 'cp-hud',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ActionFabComponent,
+    ActionPanelComponent,
+    UserProfileComponent,
+    FocusJumpToPanelComponent,
+    ManeuverSequencePanelComponent,
+    ZoomIndicatorComponent,
+    NegatePipe,
+    MatBadgeModule,
+    MatButtonModule,
+    MatIconModule,
+
+    ManageStateDialogComponent,
+  ],
   templateUrl: './hud.component.html',
   styleUrls: ['./hud.component.scss'],
   animations: [BasicAnimations.fade],

@@ -1,6 +1,7 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
+import { ActionListComponent } from "../../components/action-list/action-list.component";
 
 export class ActionBottomSheetData {
   startIcon: string;
@@ -10,13 +11,13 @@ export class ActionBottomSheetData {
 
 @Component({
   selector: 'cp-action-bottom-sheet',
+  standalone: true,
+  imports: [ActionListComponent],
   templateUrl: './action-bottom-sheet.component.html',
   styleUrls: ['./action-bottom-sheet.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class ActionBottomSheetComponent {
-
-  actionTypes = ActionOptionType;
 
   constructor(public bottomSheetRef: MatBottomSheetRef<ActionBottomSheetComponent>,
               @Inject(MAT_BOTTOM_SHEET_DATA) public data: ActionBottomSheetData) {

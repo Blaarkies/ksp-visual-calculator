@@ -18,9 +18,22 @@ import { UsableRoutes } from '../../../usable-routes';
 import { HudService } from '../../../services/hud.service';
 import { GlobalStyleClass } from '../../../common/global-style-class';
 import { EventLogs } from '../../../services/event-logs';
+import { CommonModule } from '@angular/common';
+import { UniverseMapComponent } from '../../../components/universe-map/universe-map.component';
+import { TransmissionLineComponent } from '../../../components/transmission-line/transmission-line.component';
+import {
+  DraggableSpaceObjectComponent
+} from '../../../components/draggable-space-object/draggable-space-object.component';
 
 @Component({
   selector: 'cp-page-signal-check',
+  standalone: true,
+  imports: [
+    CommonModule,
+    UniverseMapComponent,
+    TransmissionLineComponent,
+    DraggableSpaceObjectComponent,
+  ],
   templateUrl: './page-signal-check.component.html',
   styleUrls: ['./page-signal-check.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

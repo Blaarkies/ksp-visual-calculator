@@ -16,6 +16,7 @@ import {
 } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
+import { CommonModule } from '@angular/common';
 
 interface TouchCameraControl {
   dxy: Vector2;
@@ -25,6 +26,8 @@ interface TouchCameraControl {
 
 @Component({
   selector: 'cp-camera',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.scss'],
 })

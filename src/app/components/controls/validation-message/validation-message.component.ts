@@ -33,13 +33,11 @@ class ErrorMessageTranscriber {
 }
 
 @Component({
-  standalone: true,
   selector: 'cp-validation-message',
+  standalone: true,
+  imports: [MatFormFieldModule],
   templateUrl: './validation-message.component.html',
   styleUrls: ['./validation-message.component.scss'],
-  imports: [
-    MatFormFieldModule,
-  ],
 })
 export class ValidationMessageComponent {
 

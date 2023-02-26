@@ -18,10 +18,10 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatInputModule,
   ],
-  templateUrl: './page-intro.component.html',
-  styleUrls: ['./page-intro.component.scss']
+  templateUrl: './page-article.component.html',
+  styleUrls: ['./page-article.component.scss']
 })
-export class PageIntroComponent extends WithDestroy() implements OnInit, OnDestroy {
+export class PageArticleComponent extends WithDestroy() implements OnInit, OnDestroy {
 
   calcDv = {
     result: 0,

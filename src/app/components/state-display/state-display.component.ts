@@ -6,9 +6,12 @@ import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import { StateDvPlanner } from '../../services/json-interfaces/state-dv-planner';
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'cp-state-display',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './state-display.component.html',
   styleUrls: ['./state-display.component.scss'],
 })

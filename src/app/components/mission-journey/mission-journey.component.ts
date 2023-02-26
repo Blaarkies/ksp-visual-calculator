@@ -7,6 +7,8 @@ import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
 import memoize from 'fast-memoize';
 import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 class TripTrajectory {
   sequence: number;
@@ -16,6 +18,11 @@ class TripTrajectory {
 
 @Component({
   selector: 'cp-mission-journey',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+  ],
   templateUrl: './mission-journey.component.html',
   styleUrls: ['./mission-journey.component.scss'],
   animations: [BasicAnimations.fade],

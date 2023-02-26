@@ -4,10 +4,14 @@ import { combineLatest, filter, fromEvent, take, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/event-logs';
 import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
+import { CommonModule } from '@angular/common';
+import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from "@angular/material/icon";
 
 interface FocusItem {
   icon: string;
@@ -18,6 +22,14 @@ interface FocusItem {
 
 @Component({
   selector: 'cp-focus-jump-to-panel',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MouseHoverDirective,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+  ],
   templateUrl: './focus-jump-to-panel.component.html',
   styleUrls: ['./focus-jump-to-panel.component.scss'],
   animations: [ConfigurableAnimations.openCloseX(48)],

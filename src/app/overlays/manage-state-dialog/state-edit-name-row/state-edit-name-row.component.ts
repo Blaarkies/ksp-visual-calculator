@@ -1,11 +1,24 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Icons } from '../../../common/domain/icons';
-import { UntypedFormControl } from '@angular/forms';
+import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import { InputFieldComponent } from '../../../components/controls/input-field/input-field.component';
 import { StateRow } from '../state-row';
+import {CommonModule} from "@angular/common";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'cp-state-edit-name-row',
+  standalone: true,
+  imports: [
+    CommonModule,
+    InputFieldComponent,
+    ReactiveFormsModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
   templateUrl: './state-edit-name-row.component.html',
   styleUrls: ['./state-edit-name-row.component.scss'],
 })

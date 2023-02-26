@@ -3,9 +3,20 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { BasicAnimations } from '../../../common/animations/basic-animations';
+import {CommonModule} from "@angular/common";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {ValidationMessageComponent} from "../validation-message/validation-message.component";
+import { MatInputModule } from "@angular/material/input";
 
 @Component({
   selector: 'cp-input-text-area',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ValidationMessageComponent,
+  ],
   templateUrl: './input-text-area.component.html',
   styleUrls: ['./input-text-area.component.scss'],
   animations: [BasicAnimations.fade],

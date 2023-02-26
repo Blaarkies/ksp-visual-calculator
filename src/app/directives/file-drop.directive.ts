@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Directive({
   selector: '[cpFileDrop]',
+  standalone: true,
 })
 export class FileDropDirective {
 

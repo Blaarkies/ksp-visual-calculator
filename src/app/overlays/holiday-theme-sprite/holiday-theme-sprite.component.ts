@@ -5,10 +5,12 @@ import { HolidayType } from './holiday-type';
 import { SpriteContents } from './sprite-contents';
 import { SpriteList } from './sprite-list';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { DOCUMENT } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'cp-holiday-theme-sprite',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './holiday-theme-sprite.component.html',
   styleUrls: ['./holiday-theme-sprite.component.scss'],
   animations: [

@@ -1,5 +1,7 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
+import {CommonModule} from "@angular/common";
+import {MatButtonModule} from "@angular/material/button";
 
 export class SimpleDialogData {
   title: string;
@@ -10,6 +12,12 @@ export class SimpleDialogData {
 
 @Component({
   selector: 'cp-simple-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
   templateUrl: './simple-dialog.component.html',
   styleUrls: ['./simple-dialog.component.scss'],
 })

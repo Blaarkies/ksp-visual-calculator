@@ -29,9 +29,24 @@ import {
   CelestialBodyDetailsDialogData
 } from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
 import { GlobalStyleClass } from '../../common/global-style-class';
+import { CommonModule } from '@angular/common';
+import { OrbitLineComponent } from '../orbit-line/orbit-line.component';
+import { DraggableSpaceObjectComponent } from '../draggable-space-object/draggable-space-object.component';
+import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
+import { SoiCircleComponent } from '../soi-circle/soi-circle.component';
 
 @Component({
   selector: 'cp-universe-map',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MouseHoverDirective,
+    CameraComponent,
+    OrbitLineComponent,
+    DraggableSpaceObjectComponent,
+    SoiCircleComponent,
+    CelestialBodyDetailsDialogComponent,
+  ],
   templateUrl: './universe-map.component.html',
   styleUrls: ['./universe-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -4,6 +4,12 @@ import { map, Observable, Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
 import { StepType } from '../../services/wizard-spotlight.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { CommonModule } from "@angular/common";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { NegatePipe } from "../../common/negate.pipe";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { MatButtonModule } from "@angular/material/button";
 
 export interface WizardMessage {
   title: string;
@@ -17,6 +23,15 @@ export interface WizardMessage {
 
 @Component({
   selector: 'cp-wizard-message',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatIconModule,
+    MatButtonModule,
+    NegatePipe,
+    DragDropModule,
+  ],
   templateUrl: './wizard-message.component.html',
   styleUrls: ['./wizard-message.component.scss'],
 })
