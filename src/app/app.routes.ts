@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { Route, RouterModule, Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 import { UsableRoutes } from './usable-routes';
 import { environment } from '../environments/environment';
 
 const routes: Routes = [
   {
     path: UsableRoutes.Intro,
-    loadChildren: () => import('./article/article.module').then(m => m.ArticleModule)
+    loadComponent: () => import('./pages/article/page-article.component')
+      .then(m => m.PageArticleComponent),
   },
 
   {
@@ -36,9 +36,4 @@ if (!environment.production) {
   routes[routes.length - 1].redirectTo = bookPath;
 }
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {
-}
+export const appRoutes = routes;
