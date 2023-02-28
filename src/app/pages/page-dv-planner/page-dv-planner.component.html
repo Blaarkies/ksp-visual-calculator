@@ -1,4 +1,4 @@
-<div class="stack page-container">
+<div class="layout stack">
 
   <cp-universe-map #universeMap
                    [allowEdit]="false"
@@ -11,4 +11,6 @@
                         [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
     </cp-mission-journey>
   </cp-universe-map>
+
+  <cp-hud></cp-hud>
 </div>

@@ -8,10 +8,10 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { importProvidersFrom } from '@angular/core';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appRoot = AppComponent;
 export const appOptions: ApplicationConfig = {
@@ -22,11 +22,15 @@ export const appOptions: ApplicationConfig = {
       provideAuth(() => getAuth()),
       provideFirestore(() => getFirestore()),
 
-      BrowserAnimationsModule,
       MatSnackBarModule,
       HttpClientModule,
       MatDialogModule,
+
+      // ScreenTrackingService,
+      // UserTrackingService,
     ),
+    provideAnimations(),
     provideRouter(appRoutes),
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},
   ],
 };

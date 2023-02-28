@@ -19,11 +19,11 @@ import { CameraService } from './camera.service';
 import { CelestialBodyDetails } from '../overlays/celestial-body-details-dialog/celestial-body-details';
 import { CraftDetails } from '../overlays/craft-details-dialog/craft-details';
 import { Draggable } from '../common/domain/space-objects/draggable';
-import { UsableRoutes } from '../usable-routes';
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
 import createSpy = jasmine.createSpy;
 import anything = jasmine.anything;
+import { UsableRoutes } from '../app.routes';
 
 let serviceType = SpaceObjectService;
 describe('SpaceObjectService', () => {
@@ -68,7 +68,7 @@ describe('SpaceObjectService', () => {
 
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await firstValueFrom(service.buildStockState(UsableRoutes.SignalCheck));
+    await firstValueFrom(service.buildStockState(UsableRoutes.CommnetPlanner));
 
     expect(service.orbits$.value.length).toBe(1);
     expect(service.celestialBodies$.value.length).toBe(1);
@@ -102,7 +102,7 @@ describe('SpaceObjectService', () => {
 
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await firstValueFrom(service.buildStockState(UsableRoutes.SignalCheck));
+    await firstValueFrom(service.buildStockState(UsableRoutes.CommnetPlanner));
 
     let planets = service.celestialBodies$.value;
     let groundStationPlanet = planets.find(p => p.hasDsn);
@@ -135,7 +135,7 @@ describe('SpaceObjectService', () => {
     let lastStateString = JSON.stringify((savegameJson as any).default);
     service.celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
     service.crafts$ = new BehaviorSubject<Craft[]>(null);
-    await firstValueFrom(service.buildState(lastStateString, UsableRoutes.SignalCheck));
+    await firstValueFrom(service.buildState(lastStateString, UsableRoutes.CommnetPlanner));
 
     let orbitsResult = service.orbits$.value;
     let celestialBodiesResult = service.celestialBodies$.value;

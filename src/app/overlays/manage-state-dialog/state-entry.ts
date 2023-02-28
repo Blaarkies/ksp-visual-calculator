@@ -1,8 +1,8 @@
-import { UsableRoutes } from '../../usable-routes';
 import { Bytes } from '@firebase/firestore';
+import { GameStateType } from '../../common/domain/game-state-type';
 
 export interface StateEntry {
-  context: UsableRoutes;
+  context: GameStateType;
   name: string;
   timestamp: { seconds };
   version: number[];

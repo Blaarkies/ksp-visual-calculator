@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 import { Group } from '../../common/domain/group';
 import { CraftPart } from './domain/craft-part';
 import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 
 @Component({
   selector: 'cp-isru-heat-and-power-widget',

@@ -31,7 +31,7 @@ import { AuthErrorCode } from './auth-error-code';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UserData } from '../../services/data.service';
 import { InputFieldComponent } from '../controls/input-field/input-field.component';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import { AnalyticsService } from '../../services/analytics.service';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';

@@ -15,8 +15,7 @@ import {
   ActionBottomSheetData
 } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
 import { GlobalStyleClass } from '../../common/global-style-class';
-import { EventLogs } from '../../services/event-logs';
-import { UsableRoutes } from '../../usable-routes';
+import { EventLogs } from '../../services/domain/event-logs';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { BasicAnimations } from '../../common/animations/basic-animations';
@@ -33,6 +32,7 @@ import { FocusJumpToPanelComponent } from '../focus-jump-to-panel/focus-jump-to-
 import { ManeuverSequencePanelComponent } from '../maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { NegatePipe } from '../../common/negate.pipe';
 import { ManageStateDialogComponent } from "../../overlays/manage-state-dialog/manage-state-dialog.component";
+import { UsableRoutes } from '../../app.routes';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -116,7 +116,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
         icon: Icons.DeltaV,
         tooltip: 'This page handles Delta-v calculations, click the green menu for others',
       },
-      [UsableRoutes.SignalCheck]: {
+      [UsableRoutes.CommnetPlanner]: {
         icon: Icons.Relay,
         tooltip: 'This page handles CommNet calculations, click the green menu for others',
       }

@@ -1,0 +1,41 @@
+<div class="layout stack">
+
+  <cp-universe-map #universe (update)="updateUniverse($event)">
+
+    <ng-container aboveOrbits>
+      <cp-transmission-line [@fade]
+                            *ngFor="let line of transmissionLines$ | async"
+                            [transmissionLine]="line"
+                            [scale]="universe.camera.scale"></cp-transmission-line>
+    </ng-container>
+
+    <ng-container abovePlanets>
+      <cp-draggable-space-object [@fade]
+                                 *ngFor="let craft of crafts$ | async"
+                                 [spaceObject]="craft"
+                                 (dragSpaceObject)="universe.startBodyDrag(
+                                   craft,
+                                   $event,
+                                   universe.backboard.nativeElement,
+                                   universe.camera)"
+                                 (focusObject)="universe.focusBody(craft, $event)"
+                                 (editSpaceObject)="editCraft(craft)">
+        <div class="craft-icon-sprite-image"
+             draggable="false"
+             [style.background]="craft.draggableHandle.imageUrl"
+             [style.background-position-x.px]="craft.spriteLocation.x"
+             [style.background-position-y.px]="craft.spriteLocation.y"
+             [style.zoom]="craft.size * .025"></div>
+
+        <div [@fade]
+             *ngIf="craft.draggableHandle.isHover$ | async"
+             class="altitude-text">
+          {{craft.displayAltitude}}
+        </div>
+      </cp-draggable-space-object>
+    </ng-container>
+
+  </cp-universe-map>
+
+  <cp-hud></cp-hud>
+</div>

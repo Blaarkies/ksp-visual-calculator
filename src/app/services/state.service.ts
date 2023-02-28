@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { UsableRoutes } from '../usable-routes';
 import { SetupService } from './setup.service';
 import { StateSignalCheck } from './json-interfaces/state-signal-check';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
@@ -43,7 +42,8 @@ import { GlobalStyleClass } from '../common/global-style-class';
 import { environment } from '../../environments/environment';
 import { Namer } from '../common/namer';
 import { gzip, ungzip } from 'pako';
-import { Bytes } from '@firebase/firestore'
+import { Bytes } from '@firebase/firestore';
+import { GameStateType } from '../common/domain/game-state-type';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +52,7 @@ export class StateService {
 
   private name: string;
   private autoSaveUnsubscribe$ = new Subject<void>();
-  private context: UsableRoutes;
+  private context: GameStateType;
 
   private lastStateRecord: string;
 
@@ -64,7 +64,7 @@ export class StateService {
     return this.lastStateRecord !== JSON.stringify(this.state);
   }
 
-  set pageContext(value: UsableRoutes) {
+  set pageContext(value: GameStateType) {
     this.context = value;
     this.name = undefined;
   }
@@ -98,7 +98,7 @@ export class StateService {
     this.name = state.name;
 
     switch (this.context) {
-      case UsableRoutes.SignalCheck:
+      case GameStateType.CommnetPlanner:
         return {
           ...state,
           settings: {
@@ -108,7 +108,7 @@ export class StateService {
           craft: this.spaceObjectContainerService.crafts$.value
             .map(b => b.toJson()) as StateCraft[],
         };
-      case UsableRoutes.DvPlanner:
+      case GameStateType.DvPlanner:
         return {
           ...state,
           settings: {
@@ -194,12 +194,12 @@ export class StateService {
   private setContextualProperties({state, context, parsedState}:
                                     { state: string, context?: string, parsedState?: StateGame }) {
     if (state) {
-      switch (context as UsableRoutes) {
-        case UsableRoutes.SignalCheck:
+      switch (context as GameStateType) {
+        case GameStateType.CommnetPlanner:
           this.setupService.updateDifficultySetting(
             DifficultySetting.fromObject(parsedState.settings.difficulty));
           break;
-        case UsableRoutes.DvPlanner:
+        case GameStateType.DvPlanner:
           this.setupService.updateCheckpointPreferences(
             CheckpointPreferences.fromObject(parsedState.settings.preferences));
           break;
@@ -207,11 +207,11 @@ export class StateService {
           throw new Error(`Context "${context}" does not exist`);
       }
     } else {
-      switch (context as UsableRoutes) {
-        case UsableRoutes.SignalCheck:
+      switch (context as GameStateType) {
+        case GameStateType.CommnetPlanner:
           this.setupService.updateDifficultySetting(DifficultySetting.normal);
           break;
-        case UsableRoutes.DvPlanner:
+        case GameStateType.DvPlanner:
           this.setupService.updateCheckpointPreferences(CheckpointPreferences.default);
           break;
         default:

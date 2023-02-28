@@ -1,7 +1,6 @@
 import { ApplicationRef, Injectable } from '@angular/core';
 import { BehaviorSubject, filter, firstValueFrom, map, Observable, of, startWith, Subject, takeUntil } from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
-import { UsableRoutes } from '../usable-routes';
 import { ActionOption } from '../common/domain/action-option';
 import { Icons } from '../common/domain/icons';
 import { AnalyticsService } from './analytics.service';
@@ -29,8 +28,10 @@ import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/
 import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
 import { TutorialService } from './tutorial.service';
 import { GlobalStyleClass } from '../common/global-style-class';
-import { EventLogs } from './event-logs';
+import { EventLogs } from './domain/event-logs';
 import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
+import { UsableRoutes } from '../app.routes';
+import { GameStateType } from '../common/domain/game-state-type';
 
 let storageKeys = {
   firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
@@ -77,7 +78,7 @@ export class HudService {
 
   private getContextPanel(context: UsableRoutes): ActionPanelDetails {
     switch (context) {
-      case UsableRoutes.SignalCheck:
+      case UsableRoutes.CommnetPlanner:
         return this.signalCheckPanel;
       case UsableRoutes.DvPlanner:
         return this.dvPlannerPanel;
@@ -100,7 +101,7 @@ export class HudService {
       new ActionOption(
         'CommNet Planner',
         Icons.Relay,
-        {route: UsableRoutes.SignalCheck},
+        {route: UsableRoutes.CommnetPlanner},
         'Calculates CommNet ranges'),
       new ActionOption(
         'Pocket Calculators (Beta)',
@@ -218,7 +219,7 @@ export class HudService {
         },
       }),
       this.createActionOptionTutorial(),
-      this.createActionOptionManageSaveGames(UsableRoutes.SignalCheck),
+      this.createActionOptionManageSaveGames(GameStateType.CommnetPlanner),
     ];
 
     return {
@@ -232,7 +233,7 @@ export class HudService {
   private get dvPlannerPanel(): ActionPanelDetails {
     let options = [
       this.createActionOptionTutorial(),
-      this.createActionOptionManageSaveGames(UsableRoutes.DvPlanner),
+      this.createActionOptionManageSaveGames(GameStateType.DvPlanner),
     ];
 
     return {
@@ -255,7 +256,7 @@ export class HudService {
       });
   }
 
-  private createActionOptionManageSaveGames(context: UsableRoutes) {
+  private createActionOptionManageSaveGames(context: GameStateType) {
     return new ActionOption('Manage Save Games', Icons.Storage, {
         action: () => {
           this.analyticsService.logEvent('Call state dialog', {

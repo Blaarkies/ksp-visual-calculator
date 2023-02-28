@@ -5,7 +5,7 @@ import { PathDetailsReader } from './path-details-reader';
 import { ConnectionPositionPair, OverlayModule } from '@angular/cdk/overlay';
 import { BehaviorSubject } from 'rxjs';
 import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
-import { EventLogs } from '../../../services/event-logs';
+import { EventLogs } from '../../../services/domain/event-logs';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';

@@ -1,14 +1,18 @@
 import { Component, ViewChild } from '@angular/core';
-import { UsableRoutes } from '../../../usable-routes';
-import { WithDestroy } from '../../../common/with-destroy';
-import { HudService } from '../../../services/hud.service';
-import { StateService } from '../../../services/state.service';
-import { UniverseMapComponent } from '../../../components/universe-map/universe-map.component';
-import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { TravelService } from '../../../services/travel.service';
+import { WithDestroy } from '../../common/with-destroy';
+import { HudService } from '../../services/hud.service';
+import { StateService } from '../../services/state.service';
+import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { TravelService } from '../../services/travel.service';
 import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { MissionJourneyComponent } from '../../../components/mission-journey/mission-journey.component';
+import { MissionJourneyComponent } from '../../components/mission-journey/mission-journey.component';
+import { UsableRoutes } from '../../app.routes';
+import { GameStateType } from '../../common/domain/game-state-type';
+import { HudComponent } from '../../components/hud/hud.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'cp-page-dv-planner',
@@ -17,9 +21,12 @@ import { MissionJourneyComponent } from '../../../components/mission-journey/mis
     CommonModule,
     UniverseMapComponent,
     MissionJourneyComponent,
+    HudComponent,
+
+    MatBottomSheetModule,
   ],
   templateUrl: './page-dv-planner.component.html',
-  styleUrls: ['./page-dv-planner.component.scss'],
+  styleUrls: ['./page-dv-planner.component.scss', '../temp.calculators.scss'],
 })
 export class PageDvPlannerComponent extends WithDestroy() {
 
@@ -39,7 +46,7 @@ export class PageDvPlannerComponent extends WithDestroy() {
     };
 
     hudService.setPageContext(UsableRoutes.DvPlanner);
-    stateService.pageContext = UsableRoutes.DvPlanner;
+    stateService.pageContext = GameStateType.DvPlanner;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
   }
 

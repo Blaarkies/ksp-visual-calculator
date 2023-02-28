@@ -1,7 +1,6 @@
 import { MockBuilder, MockInstance, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { StateService } from './state.service';
-import { UsableRoutes } from '../usable-routes';
 import { SetupService } from './setup.service';
 import { catchError, EMPTY, firstValueFrom, of, Subject, take, timeout } from 'rxjs';
 import { SpaceObjectContainerService } from './space-object-container.service';
@@ -19,6 +18,7 @@ import anything = jasmine.anything;
 import arrayContaining = jasmine.arrayContaining;
 import createSpy = jasmine.createSpy;
 import stringMatching = jasmine.stringMatching;
+import { UsableRoutes } from '../app.routes';
 
 let serviceType = StateService;
 describe('StateService', () => {
@@ -46,7 +46,7 @@ describe('StateService', () => {
   it('stateIsUnsaved should return true when lastStateRecord differs from state', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
     (service as any).lastStateRecord = 'old-not-saved';
     spyOnProperty(service, 'state', 'get')
@@ -58,7 +58,7 @@ describe('StateService', () => {
   it('stateIsUnsaved should return false when lastStateRecord matches state', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
     let state = {name: 'test-state'};
     (service as any).lastStateRecord = JSON.stringify(state);
@@ -74,9 +74,9 @@ describe('StateService', () => {
 
     let serviceAsAny = service as any;
     serviceAsAny.name = 'test-name';
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
-    expect(serviceAsAny.context).toBe(UsableRoutes.SignalCheck);
+    expect(serviceAsAny.context).toBe(UsableRoutes.CommnetPlanner);
     expect(serviceAsAny.name).toBe(undefined);
   });
 
@@ -131,7 +131,7 @@ describe('StateService', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
     let serviceAsAny = service as any;
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
     serviceAsAny.name = 'test-name';
 
@@ -139,7 +139,7 @@ describe('StateService', () => {
     expect(state).toEqual(objectContaining({
       name: 'test-name',
       timestamp: anything(),
-      context: UsableRoutes.SignalCheck,
+      context: UsableRoutes.CommnetPlanner,
       version: anything(),
       settings: objectContaining({
         difficulty: objectContaining({
@@ -165,7 +165,7 @@ describe('StateService', () => {
 
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
     let state = service.state;
     expect(state.name).not.toBe(undefined);
@@ -176,7 +176,7 @@ describe('StateService', () => {
   it('stateRow should get a StateRow version of state', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
     spyOnProperty(service, 'state', 'get')
       .and.returnValue({
@@ -206,7 +206,7 @@ describe('StateService', () => {
     spyOnProperty(serviceAsAny, 'earlyState', 'get')
       .and.returnValue(EMPTY);
 
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
     service.loadState();
 
     expect(spyBuildStockState).toHaveBeenCalled();
@@ -222,7 +222,7 @@ describe('StateService', () => {
     let fixture = MockRender(serviceType);
     let service = fixture.point.componentInstance;
     let serviceAsAny = service as any;
-    service.pageContext = UsableRoutes.SignalCheck;
+    service.pageContext = UsableRoutes.CommnetPlanner;
 
     spyOnProperty(serviceAsAny, 'earlyState', 'get')
       .and.returnValue(EMPTY);
@@ -230,7 +230,7 @@ describe('StateService', () => {
 
     let state = {
       name: 'test-name',
-      context: UsableRoutes.SignalCheck,
+      context: UsableRoutes.CommnetPlanner,
       settings: {
         difficulty: 'test-difficulty',
       },

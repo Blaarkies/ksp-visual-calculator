@@ -1,45 +1,51 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { Craft } from '../../../common/domain/space-objects/craft';
-import { TransmissionLine } from '../../../common/domain/transmission-line';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
-import { SpaceObjectService } from '../../../services/space-object.service';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { Craft } from '../../common/domain/space-objects/craft';
+import { TransmissionLine } from '../../common/domain/transmission-line';
+import { BasicAnimations } from '../../common/animations/basic-animations';
+import { SpaceObjectService } from '../../services/space-object.service';
 import { filter, Observable, takeUntil } from 'rxjs';
 import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData
-} from '../../../overlays/craft-details-dialog/craft-details-dialog.component';
+} from '../../overlays/craft-details-dialog/craft-details-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { AnalyticsService } from '../../../services/analytics.service';
-import { WithDestroy } from '../../../common/with-destroy';
-import { Icons } from '../../../common/domain/icons';
-import { StateService } from '../../../services/state.service';
-import { UsableRoutes } from '../../../usable-routes';
-import { HudService } from '../../../services/hud.service';
-import { GlobalStyleClass } from '../../../common/global-style-class';
-import { EventLogs } from '../../../services/event-logs';
+import { AnalyticsService } from '../../services/analytics.service';
+import { WithDestroy } from '../../common/with-destroy';
+import { Icons } from '../../common/domain/icons';
+import { StateService } from '../../services/state.service';
+import { HudService } from '../../services/hud.service';
+import { GlobalStyleClass } from '../../common/global-style-class';
+import { EventLogs } from '../../services/domain/event-logs';
 import { CommonModule } from '@angular/common';
-import { UniverseMapComponent } from '../../../components/universe-map/universe-map.component';
-import { TransmissionLineComponent } from '../../../components/transmission-line/transmission-line.component';
+import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
+import { TransmissionLineComponent } from '../../components/transmission-line/transmission-line.component';
 import {
   DraggableSpaceObjectComponent
-} from '../../../components/draggable-space-object/draggable-space-object.component';
+} from '../../components/draggable-space-object/draggable-space-object.component';
+import { UsableRoutes } from '../../app.routes';
+import { GameStateType } from '../../common/domain/game-state-type';
+import { HudComponent } from '../../components/hud/hud.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 @Component({
-  selector: 'cp-page-signal-check',
+  selector: 'cp-commnet-planner',
   standalone: true,
   imports: [
     CommonModule,
     UniverseMapComponent,
     TransmissionLineComponent,
     DraggableSpaceObjectComponent,
+    HudComponent,
+
+    MatBottomSheetModule,
   ],
-  templateUrl: './page-signal-check.component.html',
-  styleUrls: ['./page-signal-check.component.scss'],
+  templateUrl: './page-commnet-planner.component.html',
+  styleUrls: ['./page-commnet-planner.component.scss', '../temp.calculators.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [BasicAnimations.fade],
 })
-export class PageSignalCheckComponent extends WithDestroy() {
+export class PageCommnetPlannerComponent extends WithDestroy() {
 
   transmissionLines$: Observable<TransmissionLine[]>;
   crafts$: Observable<Craft[]>;
@@ -54,8 +60,8 @@ export class PageSignalCheckComponent extends WithDestroy() {
               stateService: StateService) {
     super();
 
-    hudService.setPageContext(UsableRoutes.SignalCheck);
-    stateService.pageContext = UsableRoutes.SignalCheck;
+    hudService.setPageContext(UsableRoutes.CommnetPlanner);
+    stateService.pageContext = GameStateType.CommnetPlanner;
     stateService.loadState().pipe(takeUntil(this.destroy$)).subscribe();
 
     this.transmissionLines$ = this.spaceObjectService.transmissionLines$;

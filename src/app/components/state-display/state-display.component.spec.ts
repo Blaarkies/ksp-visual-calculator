@@ -3,11 +3,11 @@ import { AppModule } from '../../app.module';
 import { StateDisplayComponent } from './state-display.component';
 import { ineeda } from 'ineeda';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
-import { UsableRoutes } from '../../usable-routes';
 import * as savegameJson from 'src/test-resources/ksp-cp-savegame.json';
 import { filter, firstValueFrom, interval } from 'rxjs';
 import arrayContaining = jasmine.arrayContaining;
 import objectContaining = jasmine.objectContaining;
+import { UsableRoutes } from '../../app.routes';
 
 let componentType = StateDisplayComponent;
 describe('StateDisplayComponent', () => {
@@ -48,7 +48,7 @@ describe('StateDisplayComponent', () => {
 
   it('given a state string, it should populate the correct properties', async () => {
     let fixture = MockRender(componentType, {
-      context: UsableRoutes.SignalCheck,
+      context: UsableRoutes.CommnetPlanner,
       state: {
         name: 'name-test',
         timestamp: '5/24/2011, 12:00:00 PM',

@@ -6,7 +6,7 @@ import { CameraService } from '../../services/camera.service';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
 import { CommonModule } from '@angular/common';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';

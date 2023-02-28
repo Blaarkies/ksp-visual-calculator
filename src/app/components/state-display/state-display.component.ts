@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { StateGame } from '../../services/json-interfaces/state-game';
-import { UsableRoutes } from '../../usable-routes';
 import { StateSignalCheck } from '../../services/json-interfaces/state-signal-check';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import { StateDvPlanner } from '../../services/json-interfaces/state-dv-planner';
-import {CommonModule} from "@angular/common";
+import { CommonModule } from '@angular/common';
+import { GameStateType } from '../../common/domain/game-state-type';
 
 @Component({
   selector: 'cp-state-display',
@@ -24,9 +24,9 @@ export class StateDisplayComponent {
     this.updateProperties();
   }
 
-  private contextType: UsableRoutes;
+  private contextType: GameStateType;
 
-  @Input() set context(value: UsableRoutes) {
+  @Input() set context(value: GameStateType) {
     this.contextType = value;
     this.updateProperties();
   }
@@ -53,7 +53,7 @@ export class StateDisplayComponent {
       ['Celestial bodies', contents.celestialBodies.length.toString()],
     ];
 
-    if (this.contextType === UsableRoutes.SignalCheck) {
+    if (this.contextType === GameStateType.CommnetPlanner) {
       let contentsSC = contents as StateSignalCheck;
 
       let dsnPlanets = contents.celestialBodies
@@ -73,7 +73,7 @@ export class StateDisplayComponent {
       properties.push(...newProperties);
     }
 
-    if (this.contextType === UsableRoutes.DvPlanner) {
+    if (this.contextType === GameStateType.DvPlanner) {
       let contentsDP = contents as StateDvPlanner;
 
       let newProperties = [

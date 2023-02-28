@@ -20,7 +20,7 @@ import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint'
 import { CheckpointPreferences } from '../../common/domain/checkpoint-preferences';
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import { TravelService } from '../../services/travel.service';
 import { DvRouteType } from '../../common/domain/dv-route-type';
 import { CommonModule } from '@angular/common';

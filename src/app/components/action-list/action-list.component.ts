@@ -4,7 +4,7 @@ import { ActionOption, ActionOptionType } from '../../common/domain/action-optio
 import { AnalyticsService } from '../../services/analytics.service';
 import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { WithDestroy } from '../../common/with-destroy';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import { MatTooltipModule, TooltipPosition } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { MatBadgeModule } from '@angular/material/badge';

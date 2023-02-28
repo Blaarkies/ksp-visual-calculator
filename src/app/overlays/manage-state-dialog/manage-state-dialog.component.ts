@@ -9,7 +9,6 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
-import { UsableRoutes } from '../../usable-routes';
 import { StateService } from '../../services/state.service';
 import { Icons } from '../../common/domain/icons';
 import { UntypedFormControl, Validators } from '@angular/forms';
@@ -23,7 +22,7 @@ import { StateEntry } from './state-entry';
 import {MatListModule, MatSelectionList} from '@angular/material/list';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import {CommonModule} from "@angular/common";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatButtonModule} from "@angular/material/button";
@@ -33,9 +32,11 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import {FileDropDirective} from "../../directives/file-drop.directive";
 import {MatIconModule} from "@angular/material/icon";
 import {MatSelectModule} from "@angular/material/select";
+import { UsableRoutes } from '../../app.routes';
+import { GameStateType } from '../../common/domain/game-state-type';
 
 export class ManageStateDialogData {
-  context: UsableRoutes;
+  context: GameStateType;
 }
 
 @Component({
@@ -61,7 +62,7 @@ export class ManageStateDialogData {
 })
 export class ManageStateDialogComponent extends WithDestroy() implements OnDestroy {
 
-  context: UsableRoutes = this.data.context;
+  context: GameStateType = this.data.context;
   contextTitle = '';
   nowState: StateRow;
   states$ = this.getStates().pipe(startWith([]));
@@ -283,11 +284,11 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
     this.fileUploadInput.nativeElement.click();
   }
 
-  private getContextTitle(context: UsableRoutes): string {
+  private getContextTitle(context: GameStateType): string {
     switch (context) {
-      case UsableRoutes.SignalCheck:
+      case GameStateType.CommnetPlanner:
         return 'CommNet Planner';
-      case UsableRoutes.DvPlanner:
+      case GameStateType.DvPlanner:
         return 'Delta-v Planner';
       // default:
       //   throw new Error(`Context "${context}" does not exist`);

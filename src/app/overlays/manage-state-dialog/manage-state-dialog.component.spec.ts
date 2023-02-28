@@ -3,13 +3,13 @@ import { AppModule } from '../../app.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ManageStateDialogComponent } from './manage-state-dialog.component';
 import { ineeda } from 'ineeda';
-import { UsableRoutes } from '../../usable-routes';
 import { StateService } from '../../services/state.service';
 import { EMPTY, of } from 'rxjs';
 import { StateRow } from './state-row';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import createSpy = jasmine.createSpy;
 import createSpyObj = jasmine.createSpyObj;
+import { UsableRoutes } from '../../app.routes';
 
 let componentType = ManageStateDialogComponent;
 describe('ManageStateDialogComponent', () => {
@@ -18,7 +18,7 @@ describe('ManageStateDialogComponent', () => {
     .mock(AppModule)
     .mock(MatDialogRef)
     .mock(MAT_DIALOG_DATA, {
-      context: UsableRoutes.SignalCheck,
+      context: UsableRoutes.CommnetPlanner,
     })
     .mock(StateService, ineeda<StateService>({
       getStates: () => EMPTY,

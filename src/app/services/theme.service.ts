@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EventLogs } from './event-logs';
+import { EventLogs } from './domain/event-logs';
 import { AnalyticsService } from './analytics.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { MatSnackBar } from '@angular/material/snack-bar';

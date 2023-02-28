@@ -1,26 +1,59 @@
 import { Route, Routes } from '@angular/router';
-import { UsableRoutes } from './usable-routes';
 import { environment } from '../environments/environment';
+
+/** Legacy routes (Route name + App version) */
+const COMMNET_ROUTE_100 = 'signal-check';
+const DV_ROUTE_120 = 'dv-planner';
+const COMMNET_ROUTE_130 = 'calculators/signal-check';
+const DV_ROUTE_130 = 'calculators/dv-planner';
+
+export enum UsableRoutes {
+  CommnetPlanner = 'commnet-planner',
+  DvPlanner = 'dv-planner',
+  Intro = 'intro',
+  Policy = 'policy',
+  Feedback = 'feedback',
+  PocketCalculators = 'pocket-calculators',
+}
 
 const routes: Routes = [
   {
-    path: UsableRoutes.Intro,
-    loadComponent: () => import('./pages/article/page-article.component')
-      .then(m => m.PageArticleComponent),
+    path: UsableRoutes.CommnetPlanner,
+    loadComponent: () => import('./pages/commnet-planner/page-commnet-planner.component')
+      .then(m => m.PageCommnetPlannerComponent),
   },
 
   {
-    path: 'calculators',
-    loadChildren: () => import('./calculators/calculators.module').then(m => m.CalculatorsModule)
+    path: UsableRoutes.DvPlanner,
+    loadComponent: () => import('./pages/page-dv-planner/page-dv-planner.component')
+      .then(m => m.PageDvPlannerComponent),
   },
 
-  {path: UsableRoutes.DvPlanner, redirectTo: `calculators/${UsableRoutes.DvPlanner}`},
-  {path: UsableRoutes.SignalCheck, redirectTo: `calculators/${UsableRoutes.SignalCheck}`},
+  {path: COMMNET_ROUTE_130, redirectTo: UsableRoutes.CommnetPlanner},
+  {path: DV_ROUTE_130, redirectTo: UsableRoutes.DvPlanner},
+  {path: COMMNET_ROUTE_100, redirectTo: UsableRoutes.CommnetPlanner},
+  {path: DV_ROUTE_120, redirectTo: UsableRoutes.DvPlanner},
 
   {
     path: 'pocket-calculators',
     loadComponent: () => import('./components/isru-heat-and-power-widget/page-displayer/page-displayer.component')
       .then(m => m.PageDisplayerComponent)
+  },
+
+  {
+    path: UsableRoutes.Intro,
+    loadComponent: () => import('./pages/article/page-article.component')
+      .then(m => m.PageArticleComponent),
+  },
+  {
+    path: UsableRoutes.Policy,
+    loadComponent: () => import('./pages/policy/page-policy.component')
+      .then(m => m.PagePolicyComponent),
+  },
+  {
+    path: UsableRoutes.Feedback,
+    loadComponent: () => import('./pages/feedback/page-feedback.component')
+      .then(m => m.PageFeedbackComponent),
   },
 
   {path: '**', redirectTo: UsableRoutes.Intro},

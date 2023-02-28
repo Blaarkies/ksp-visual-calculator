@@ -1,10 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { WithDestroy } from './common/with-destroy';
-import { filter, Subject, takeUntil, timer } from 'rxjs';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
-import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
+import { Subject, takeUntil, timer } from 'rxjs';
+import { Router, RouterModule } from '@angular/router';
 import { ThemeService } from './services/theme.service';
 import { AuthService } from './services/auth.service';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -44,17 +42,6 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
 
     themeService.logThemeOrigin();
 
-    let specialRoutes = {
-      '/policy': () => dialog.open(PolicyDialogComponent),
-      '/feedback': () => dialog.open(FeedbackDialogComponent),
-    };
-
-    router.events
-      .pipe(
-        filter(e => e instanceof NavigationEnd),
-        takeUntil(this.destroy$))
-      .subscribe((e: NavigationEnd) => specialRoutes[e.url]?.());
-
     timer(30e3, 300e3)
       .pipe(
         takeUntil(this.unsubscribeHoliday$),
@@ -67,8 +54,6 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
   }
 
   ngOnDestroy() {
-    super.ngOnDestroy();
-
     this.unsubscribeHoliday$.next();
     this.unsubscribeHoliday$.complete();
   }

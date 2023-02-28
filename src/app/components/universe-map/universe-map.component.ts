@@ -23,7 +23,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { HudService } from '../../services/hud.service';
 import { StateService } from '../../services/state.service';
 import { CameraComponent } from '../camera/camera.component';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData

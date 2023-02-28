@@ -1,12 +1,12 @@
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../app.module';
 import { HudService } from './hud.service';
-import { UsableRoutes } from '../usable-routes';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { AuthService } from './auth.service';
 import objectContaining = jasmine.objectContaining;
 import arrayContaining = jasmine.arrayContaining;
+import { UsableRoutes } from '../app.routes';
 
 let serviceType = HudService;
 describe('HudService', () => {
@@ -36,7 +36,7 @@ describe('HudService', () => {
     spyOn(serviceAsAny.contextChange$, 'next');
     spyOn(service.contextPanel$, 'next');
 
-    service.setPageContext(UsableRoutes.SignalCheck);
+    service.setPageContext(UsableRoutes.CommnetPlanner);
 
     expect(serviceAsAny.contextChange$.next).toHaveBeenCalled();
     expect(service.contextPanel$.next).toHaveBeenCalledWith(

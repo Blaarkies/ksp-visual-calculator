@@ -18,10 +18,10 @@ import { SpaceObjectType } from '../common/domain/space-objects/space-object-typ
 import { StateSignalCheck } from './json-interfaces/state-signal-check';
 import { StateCraft } from './json-interfaces/state-craft';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
-import { EventLogs } from './event-logs';
-import { UsableRoutes } from '../usable-routes';
+import { EventLogs } from './domain/event-logs';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { TravelService } from './travel.service';
+import { GameStateType } from '../common/domain/game-state-type';
 
 @Injectable({
   providedIn: 'root',
@@ -41,11 +41,11 @@ export class SpaceObjectService extends WithDestroy() {
     super();
   }
 
-  private runWhenStockAssetsReady(context: UsableRoutes, callback?: ({listOrbits, celestialBodies, antennae}) => void)
+  private runWhenStockAssetsReady(context: GameStateType, callback?: ({listOrbits, celestialBodies, antennae}) => void)
     : Observable<void> {
     let stockPlanets$ = this.setupService.stockPlanets$;
 
-    let antennaeRequired = context === UsableRoutes.SignalCheck;
+    let antennaeRequired = context === GameStateType.CommnetPlanner;
     let stockAntennae$ = antennaeRequired
       ? this.setupService.availableAntennae$
         .pipe(filter(a => !!a.length))
@@ -60,7 +60,7 @@ export class SpaceObjectService extends WithDestroy() {
         takeUntil(this.destroy$));
   }
 
-  buildStockState(context: UsableRoutes): Observable<void> {
+  buildStockState(context: GameStateType): Observable<void> {
     return this.runWhenStockAssetsReady(context, ({listOrbits, celestialBodies, antennae}) => {
       this.orbits$.next(listOrbits);
       this.celestialBodies$.next(celestialBodies);
@@ -70,7 +70,7 @@ export class SpaceObjectService extends WithDestroy() {
       this.transmissionLines$.next([]);
       // TODO:
 
-      if (context === UsableRoutes.SignalCheck) {
+      if (context === GameStateType.CommnetPlanner) {
         this.crafts$.next([]);
         this.transmissionLines$.next([]);
 
@@ -84,7 +84,7 @@ export class SpaceObjectService extends WithDestroy() {
 
         this.updateTransmissionLines();
 
-      } else if (context === UsableRoutes.DvPlanner) {
+      } else if (context === GameStateType.DvPlanner) {
         this.travelService.resetCheckpoints();
       }
     });
@@ -92,11 +92,11 @@ export class SpaceObjectService extends WithDestroy() {
 
   buildState(lastState: string, context: string): Observable<void> {
     let parseState = () => {
-      switch (context as UsableRoutes) {
-        case UsableRoutes.SignalCheck:
+      switch (context as GameStateType) {
+        case GameStateType.CommnetPlanner:
           this.buildStateSignalCheck(lastState);
           break;
-        case UsableRoutes.DvPlanner:
+        case GameStateType.DvPlanner:
           this.buildStateDvPlanner(lastState);
           break;
         default:
@@ -104,7 +104,7 @@ export class SpaceObjectService extends WithDestroy() {
       }
     };
 
-    return this.runWhenStockAssetsReady(context as UsableRoutes, () => parseState());
+    return this.runWhenStockAssetsReady(context as GameStateType, () => parseState());
   }
 
   private makeOrbitsLabelMap(jsonCelestialBodies: StateSpaceObject[]) {

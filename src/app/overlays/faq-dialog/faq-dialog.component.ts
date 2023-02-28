@@ -19,11 +19,11 @@ import { HttpClient } from '@angular/common/http';
 import {FaqSectionComponent, Section} from './faq-section/faq-section.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HudService } from '../../services/hud.service';
-import { UsableRoutes } from '../../usable-routes';
 import {CommonModule} from "@angular/common";
 import {InputFieldComponent} from "../../components/controls/input-field/input-field.component";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatButtonModule} from "@angular/material/button";
+import { UsableRoutes } from '../../app.routes';
 
 export class FaqDialogData {
   sections: Section[];
@@ -107,7 +107,7 @@ export class FaqDialogComponent extends WithDestroy() {
 
   private getFilePathForPageContextFaq(context: UsableRoutes): string {
     switch (context) {
-      case UsableRoutes.SignalCheck:
+      case UsableRoutes.CommnetPlanner:
         return 'assets/faq/signal-check.json';
       case UsableRoutes.DvPlanner:
         return 'assets/faq/dv-planner.json';

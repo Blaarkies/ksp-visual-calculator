@@ -5,7 +5,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountDialogComponent } from '../../overlays/account-dialog/account-dialog.component';
 import { WithDestroy } from '../../common/with-destroy';
-import { EventLogs } from '../../services/event-logs';
+import { EventLogs } from '../../services/domain/event-logs';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { BasicAnimations } from '../../common/animations/basic-animations';
 import { CommonModule } from '@angular/common';

@@ -20,9 +20,9 @@ import {
 } from 'rxjs';
 import { AnalyticsService } from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
-import { EventLogs } from './event-logs';
-import { UsableRoutes } from '../usable-routes';
+import { EventLogs } from './domain/event-logs';
 import { StateService } from './state.service';
+import { UsableRoutes } from '../app.routes';
 
 @Injectable({
   providedIn: 'root',
@@ -76,7 +76,7 @@ export class TutorialService {
 
   private getStepDetails(context: UsableRoutes) {
     switch (context) {
-      case UsableRoutes.SignalCheck:
+      case UsableRoutes.CommnetPlanner:
         return this.getSignalCheckStepDetails();
       case UsableRoutes.DvPlanner:
         return this.getDvPlannerStepDetails();
@@ -262,7 +262,7 @@ export class TutorialService {
     } as StepDetails;
 
     switch (context) {
-      case UsableRoutes.SignalCheck:
+      case UsableRoutes.CommnetPlanner:
         startTutorial.dialogTitle = 'CommNet Planner Tutorial';
         startTutorial.dialogMessages = [
           'This page helps setup satellite communication networks by letting you place craft with specific antennae.',

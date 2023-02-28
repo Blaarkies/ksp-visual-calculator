@@ -9,7 +9,7 @@ import { Checkpoint } from '../common/data-structures/delta-v-map/checkpoint';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
 import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { SetupService } from './setup.service';
-import { EventLogs } from './event-logs';
+import { EventLogs } from './domain/event-logs';
 import { AnalyticsService } from './analytics.service';
 
 @Injectable({
