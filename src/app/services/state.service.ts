@@ -34,7 +34,7 @@ import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { DifficultySetting } from '../overlays/difficulty-settings-dialog/difficulty-setting';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { TravelService } from './travel.service';
+import { TravelService } from '../pages/page-dv-planner/services/travel.service';
 import { StateCheckpoint } from './json-interfaces/state-checkpoint';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
@@ -67,22 +67,6 @@ export class StateService {
   set pageContext(value: GameStateType) {
     this.context = value;
     this.name = undefined;
-  }
-
-  get earlyState(): Observable<StateGame> {
-    return zip(
-      this.setupService.stockPlanets$,
-      this.setupService.availableAntennae$.pipe(filter(a => !!a.length)))
-      .pipe(
-        take(1),
-        delay(0),
-        // TODO: StateService should be independent of the specifics in the universe (crafts$ might not exist in other
-        // universe types)
-        switchMap(() => of(this.spaceObjectContainerService.celestialBodies$, this.spaceObjectContainerService.crafts$)),
-        combineLatestAll(),
-        filter(([a, b]) => !!a && !!b),
-        delay(0),
-        map(() => this.state));
   }
 
   get state(): StateGame | StateSignalCheck | StateDvPlanner {
@@ -144,7 +128,9 @@ export class StateService {
   }
 
   loadState(state?: string): Observable<void> {
-    // todo: use npm i `shrink-string` for 70% shorter strings
+    // todo: save hash to compare
+    /*
+
     let oldState: string;
     let setAndCompareState = () => {
       let newState = this.state;
@@ -173,6 +159,7 @@ export class StateService {
         tap(() => this.snackBar.open(`Saved changes to "${this.name}"`)),
         takeUntil(this.autoSaveUnsubscribe$))
       .subscribe();
+      */
 
     let buildStateResult: Observable<void>;
     if (state) {
@@ -199,10 +186,10 @@ export class StateService {
           this.setupService.updateDifficultySetting(
             DifficultySetting.fromObject(parsedState.settings.difficulty));
           break;
-        case GameStateType.DvPlanner:
-          this.setupService.updateCheckpointPreferences(
-            CheckpointPreferences.fromObject(parsedState.settings.preferences));
-          break;
+        // case GameStateType.DvPlanner:
+        //   this.setupService.updateCheckpointPreferences(
+        //     CheckpointPreferences.fromObject(parsedState.settings.preferences));
+        //   break;
         default:
           throw new Error(`Context "${context}" does not exist`);
       }
@@ -211,9 +198,9 @@ export class StateService {
         case GameStateType.CommnetPlanner:
           this.setupService.updateDifficultySetting(DifficultySetting.normal);
           break;
-        case GameStateType.DvPlanner:
-          this.setupService.updateCheckpointPreferences(CheckpointPreferences.default);
-          break;
+        // case GameStateType.DvPlanner:
+        //   this.setupService.updateCheckpointPreferences(CheckpointPreferences.default);
+        //   break;
         default:
           throw new Error(`Context "${context}" does not exist`);
       }
