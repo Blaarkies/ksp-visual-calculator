@@ -1,19 +1,32 @@
-import { ApplicationRef, Injectable } from '@angular/core';
-import { BehaviorSubject, filter, firstValueFrom, map, Observable, of, startWith, Subject, takeUntil } from 'rxjs';
+import {
+  ApplicationRef,
+  Injectable,
+} from '@angular/core';
+import {
+  BehaviorSubject,
+  filter,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  takeUntil,
+} from 'rxjs';
 import { ActionPanelDetails } from '../components/hud/hud.component';
 import { ActionOption } from '../common/domain/action-option';
 import { Icons } from '../common/domain/icons';
 import { AnalyticsService } from './analytics.service';
 import {
   CraftDetailsDialogComponent,
-  CraftDetailsDialogData
+  CraftDetailsDialogData,
 } from '../overlays/craft-details-dialog/craft-details-dialog.component';
 import {
-  DifficultySettingsDialogComponent
+  DifficultySettingsDialogComponent,
 } from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import {
   ManageStateDialogComponent,
-  ManageStateDialogData
+  ManageStateDialogData,
 } from '../overlays/manage-state-dialog/manage-state-dialog.component';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +34,10 @@ import { SpaceObjectService } from './space-object.service';
 import { SetupService } from './setup.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from './auth.service';
-import { SimpleDialogComponent, SimpleDialogData } from '../overlays/simple-dialog/simple-dialog.component';
+import {
+  SimpleDialogComponent,
+  SimpleDialogData,
+} from '../overlays/simple-dialog/simple-dialog.component';
 import { AnalyticsDialogComponent } from '../overlays/analytics-dialog/analytics-dialog.component';
 import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
@@ -32,6 +48,10 @@ import { EventLogs } from './domain/event-logs';
 import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
 import { UsableRoutes } from '../app.routes';
 import { GameStateType } from '../common/domain/game-state-type';
+import {
+  FaqDialogComponent,
+  FaqDialogData,
+} from '../overlays/faq-dialog/faq-dialog.component';
 
 let storageKeys = {
   firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
@@ -88,80 +108,80 @@ export class HudService {
   }
 
   navigationOptions: ActionOption[] = [
-      new ActionOption(
-        'Introduction',
-        Icons.BookOpen,
-        {route: UsableRoutes.Intro},
-        'Article that explains the details of each calculator'),
-      new ActionOption(
-        'Delta-v Planner',
-        Icons.DeltaV,
-        {route: UsableRoutes.DvPlanner},
-        'Calculates the required delta-v for a specified mission'),
-      new ActionOption(
-        'CommNet Planner',
-        Icons.Relay,
-        {route: UsableRoutes.CommnetPlanner},
-        'Calculates CommNet ranges'),
-      new ActionOption(
-        'Pocket Calculators (Beta)',
-        Icons.PocketCalculator,
-        {route: UsableRoutes.PocketCalculators},
-        'Simple calculators for that solve specific problems'),
-      new ActionOption('', '', {divider: true}),
-      new ActionOption(
-        'Source Code - GitHub',
-        Icons.SourceCode,
-        {externalRoute: 'https://github.com/Blaarkies/ksp-visual-calculator'}),
-      new ActionOption(
-        'Blaarkies Hub',
-        Icons.Blaarkies,
-        {externalRoute: 'https://blaarkies.com/'},
-        'More tools made by Blaarkies'),
-    ];
+    new ActionOption(
+      'Introduction',
+      Icons.BookOpen,
+      {route: UsableRoutes.Intro},
+      'Article that explains the details of each calculator'),
+    new ActionOption(
+      'Delta-v Planner',
+      Icons.DeltaV,
+      {route: UsableRoutes.DvPlanner},
+      'Calculates the required delta-v for a specified mission'),
+    new ActionOption(
+      'CommNet Planner',
+      Icons.Relay,
+      {route: UsableRoutes.CommnetPlanner},
+      'Calculates CommNet ranges'),
+    new ActionOption(
+      'Pocket Calculators (Beta)',
+      Icons.PocketCalculator,
+      {route: UsableRoutes.PocketCalculators},
+      'Simple calculators for that solve specific problems'),
+    new ActionOption('', '', {divider: true}),
+    new ActionOption(
+      'Source Code - GitHub',
+      Icons.SourceCode,
+      {externalRoute: 'https://github.com/Blaarkies/ksp-visual-calculator'}),
+    new ActionOption(
+      'Blaarkies Hub',
+      Icons.Blaarkies,
+      {externalRoute: 'https://blaarkies.com/'},
+      'More tools made by Blaarkies'),
+  ];
 
   infoOptions: ActionOption[] = [
-      new ActionOption('Analytics', Icons.Analytics, {
-          action: () => {
-            this.analyticsService.logEvent('Call analytics dialog', {
-              category: EventLogs.Category.Privacy,
-            });
-
-            this.dialog.open(AnalyticsDialogComponent);
-          },
-        },
-        undefined,
-        !localStorage.getItem(storageKeys.analyticsViewed),
-        () => localStorage.setItem(storageKeys.analyticsViewed, true.toString())),
-      new ActionOption('Credits', Icons.Credits, {
+    new ActionOption('Analytics', Icons.Analytics, {
         action: () => {
-          this.analyticsService.logEvent('Call Credits dialog', {
-            category: EventLogs.Category.Credits,
+          this.analyticsService.logEvent('Call analytics dialog', {
+            category: EventLogs.Category.Privacy,
           });
 
-          this.dialog.open(CreditsDialogComponent);
+          this.dialog.open(AnalyticsDialogComponent);
         },
-      }),
-      new ActionOption('Buy Me a Coffee', Icons.Coffee, {
-          action: () => {
-            this.analyticsService.logEvent('Call coffee dialog from Information', {
-              category: EventLogs.Category.Coffee,
-            });
+      },
+      undefined,
+      !localStorage.getItem(storageKeys.analyticsViewed),
+      () => localStorage.setItem(storageKeys.analyticsViewed, true.toString())),
+    new ActionOption('Credits', Icons.Credits, {
+      action: () => {
+        this.analyticsService.logEvent('Call Credits dialog', {
+          category: EventLogs.Category.Credits,
+        });
 
-            this.dialog.open(BuyMeACoffeeDialogComponent);
-          },
-        },
-        'A platform for supporting the developer'),
-      new ActionOption('Feedback', Icons.Feedback, {
+        this.dialog.open(CreditsDialogComponent);
+      },
+    }),
+    new ActionOption('Buy Me a Coffee', Icons.Coffee, {
         action: () => {
-          this.analyticsService.logEvent('Call feedback dialog', {
-            category: EventLogs.Category.Feedback,
+          this.analyticsService.logEvent('Call coffee dialog from Information', {
+            category: EventLogs.Category.Coffee,
           });
 
-          this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+          this.dialog.open(BuyMeACoffeeDialogComponent);
         },
-      }),
-      new ActionOption('Privacy Policy', Icons.Policy, {
+      },
+      'A platform for supporting the developer'),
+    new ActionOption('Feedback', Icons.Feedback, {
+      action: () => {
+        this.analyticsService.logEvent('Call feedback dialog', {
+          category: EventLogs.Category.Feedback,
+        });
+
+        this.dialog.open(FeedbackDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+      },
+    }),
+    new ActionOption('Privacy Policy', Icons.Policy, {
         action: () => {
           this.analyticsService.logEvent('Call privacy policy dialog', {
             category: EventLogs.Category.Policy,
@@ -170,10 +190,10 @@ export class HudService {
           this.dialog.open(PolicyDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
         },
       },
-        undefined,
-        !localStorage.getItem(storageKeys.privacyPolicyViewed),
-        () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
-    ];
+      undefined,
+      !localStorage.getItem(storageKeys.privacyPolicyViewed),
+      () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
+  ];
 
   private get signalCheckPanel(): ActionPanelDetails {
     let options = [
@@ -256,7 +276,7 @@ export class HudService {
       });
   }
 
-  private createActionOptionManageSaveGames(context: GameStateType) {
+  createActionOptionManageSaveGames(context: GameStateType) {
     return new ActionOption('Manage Save Games', Icons.Storage, {
         action: () => {
           this.analyticsService.logEvent('Call state dialog', {
@@ -291,7 +311,7 @@ export class HudService {
     );
   }
 
-  private createActionOptionTutorial(): ActionOption {
+  createActionOptionTutorial(): ActionOption {
     return new ActionOption('Tutorial', Icons.Help, {
         action: () => {
           this.analyticsService.logEvent('Call tutorial dialog', {
@@ -318,4 +338,19 @@ export class HudService {
       () => localStorage.setItem(storageKeys.tutorialViewed, true.toString()));
   }
 
+  createActionOptionFaq(context: GameStateType) {
+    return new ActionOption('FAQ', Icons.Help, {
+        action: () => {
+          this.analyticsService.logEvent('Open faq dialog', {
+            category: EventLogs.Category.Help,
+          });
+
+          this.dialog.open(FaqDialogComponent, {
+            data: {gameStateType: context} as FaqDialogData,
+            backdropClass: GlobalStyleClass.MobileFriendly,
+          });
+        },
+      },
+    );
+  }
 }

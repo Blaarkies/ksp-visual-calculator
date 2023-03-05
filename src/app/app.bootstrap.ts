@@ -25,9 +25,6 @@ export const appOptions: ApplicationConfig = {
       MatSnackBarModule,
       HttpClientModule,
       MatDialogModule,
-
-      // ScreenTrackingService,
-      // UserTrackingService,
     ),
     provideAnimations(),
     provideRouter(appRoutes),

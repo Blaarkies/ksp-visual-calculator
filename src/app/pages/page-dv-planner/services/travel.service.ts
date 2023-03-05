@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Subject, take, takeUntil } from 'rxjs';
-import { SpaceObject } from '../common/domain/space-objects/space-object';
-import { DeltaVGraph } from '../common/data-structures/delta-v-map/delta-v-graph';
-import { TravelCondition } from '../common/data-structures/delta-v-map/travel-condition';
-import { CheckpointNode } from '../common/data-structures/delta-v-map/checkpoint-node';
-import { CheckpointEdge } from '../common/data-structures/delta-v-map/checkpoint-edge';
-import { Checkpoint } from '../common/data-structures/delta-v-map/checkpoint';
-import { CheckpointPreferences } from '../common/domain/checkpoint-preferences';
-import { StateCheckpoint } from './json-interfaces/state-checkpoint';
-import { SetupService } from './setup.service';
-import { EventLogs } from './domain/event-logs';
-import { AnalyticsService } from './analytics.service';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { DeltaVGraph } from '../../../common/data-structures/delta-v-map/delta-v-graph';
+import { TravelCondition } from '../../../common/data-structures/delta-v-map/travel-condition';
+import { CheckpointNode } from '../../../common/data-structures/delta-v-map/checkpoint-node';
+import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
+import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoint';
+import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
+import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
+import { SetupService } from '../../../services/setup.service';
+import { EventLogs } from '../../../services/domain/event-logs';
+import { AnalyticsService } from '../../../services/analytics.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'any'
 })
 export class TravelService {
 

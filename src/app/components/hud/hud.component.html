@@ -1,11 +1,12 @@
 <div *ngIf="isHandset$ | async; else desktopScreen"
      class="handset-layout">
 
+  <ng-container *ngTemplateOutlet="pageIcon"></ng-container>
   <ng-container *ngTemplateOutlet="pageContext"></ng-container>
   <ng-container *ngTemplateOutlet="profile"></ng-container>
-  <ng-container *ngTemplateOutlet="zoom"></ng-container>
-  <ng-container *ngTemplateOutlet="focus"></ng-container>
-  <ng-container *ngTemplateOutlet="dv"></ng-container>
+  <ng-container *ngTemplateOutlet="top"></ng-container>
+  <ng-container *ngTemplateOutlet="left"></ng-container>
+  <ng-container *ngTemplateOutlet="right"></ng-container>
 
   <div class="fab-buttons">
     <cp-action-fab color="green"
@@ -37,14 +38,17 @@
 
 <ng-template #desktopScreen>
   <div class="hud-layout">
+    <ng-container *ngTemplateOutlet="left"></ng-container>
+    <ng-container *ngTemplateOutlet="right"></ng-container>
+    <ng-container *ngTemplateOutlet="top"></ng-container>
 
-    <cp-action-panel class="navigation"
+    <cp-action-panel class="top-left"
                      startTitle="KSP Visual Calculator"
-                     [options]="navigationOptions"></cp-action-panel>
+                     [options]="navigationOptions">
+      <ng-container *ngTemplateOutlet="pageIcon"></ng-container>
+    </cp-action-panel>
 
-    <ng-container *ngTemplateOutlet="pageContext"></ng-container>
-
-    <cp-action-panel class="information"
+    <cp-action-panel class="top-right"
                      startTitle="Information"
                      location="top-right"
                      color="cosmic-blue"
@@ -52,12 +56,9 @@
       <ng-container *ngTemplateOutlet="profile"></ng-container>
     </cp-action-panel>
 
-    <ng-container *ngTemplateOutlet="zoom"></ng-container>
-    <ng-container *ngTemplateOutlet="focus"></ng-container>
-    <ng-container *ngTemplateOutlet="dv"></ng-container>
-    <cp-action-panel class="menu-context"
+    <cp-action-panel class="bottom-left"
                      id="context-panel"
-                     *ngIf="contextPanel$ | async as details"
+                     *ngIf="contextPanelDetails as details"
                      [startTitle]="details.startTitle"
                      location="bottom-left"
                      [color]="details.color || 'orange'"
@@ -72,21 +73,16 @@
   <cp-user-profile class="profile"></cp-user-profile>
 </ng-template>
 
+<ng-template #pageIcon>
+  <div class="page-icon">
+    <mat-icon [matTooltip]="tooltip"
+              color="mute"
+              [svgIcon]="icon"></mat-icon>
+  </div>
+</ng-template>
+
 <ng-template #pageContext>
   <div class="page-context">
-    <div class="page-icon">
-      <mat-icon [matTooltip]="pageContextInfo?.tooltip"
-                color="primary"
-                [svgIcon]="pageContextInfo?.icon"></mat-icon>
-    </div>
-
-    <button mat-icon-button
-            color="accent"
-            [matTooltip]="'Open the wiki'"
-            (click)="openFaq()">
-      <mat-icon [svgIcon]="icons.Help"></mat-icon>
-    </button>
-
     <button class="theme-icon"
             mat-icon-button
             [matTooltip]="'Toggle theme'"
@@ -106,15 +102,27 @@
   </div>
 </ng-template>
 
-<ng-template #zoom>
-  <cp-zoom-indicator class="zoom no-mouse"></cp-zoom-indicator>
+
+<ng-template #top>
+  <div class="top">
+    <ng-content select="[top]"></ng-content>
+  </div>
 </ng-template>
 
-<ng-template #focus>
-  <cp-focus-jump-to-panel class="focus"></cp-focus-jump-to-panel>
+<ng-template #left>
+  <div class="left">
+    <ng-content select="[left]"></ng-content>
+  </div>
 </ng-template>
 
-<ng-template #dv>
-  <cp-maneuver-sequence-panel class="dv" *ngIf="(context$ | async) === contextTypes.DvPlanner">
-  </cp-maneuver-sequence-panel>
+<ng-template #right>
+  <div class="right">
+    <ng-content select="[right]"></ng-content>
+  </div>
+</ng-template>
+
+<ng-template #bottomLeft>
+  <div class="bottom-left">
+    <ng-content select="[bottom-left]"></ng-content>
+  </div>
 </ng-template>

@@ -1,9 +1,6 @@
-<div class="layout">
-  <div>
-    <router-outlet></router-outlet>
-  </div>
+<router-outlet></router-outlet>
 
-  <cp-holiday-theme-sprite *ngIf="showHolidayTheme"
-                           (noThemeDetected)="unsubscribeHoliday$.next(0)"></cp-holiday-theme-sprite>
-
-</div>
+<!--<cp-holiday-theme-sprite-->
+<!--  *ngIf="showHolidayTheme"-->
+<!--  (noThemeDetected)="unsubscribeHoliday$.next(0)"-->
+<!--&gt;</cp-holiday-theme-sprite>-->

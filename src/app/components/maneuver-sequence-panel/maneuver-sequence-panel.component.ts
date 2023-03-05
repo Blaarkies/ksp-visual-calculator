@@ -21,7 +21,7 @@ import { CheckpointPreferences } from '../../common/domain/checkpoint-preference
 import { SetupService } from '../../services/setup.service';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
-import { TravelService } from '../../services/travel.service';
+import { TravelService } from '../../pages/page-dv-planner/services/travel.service';
 import { DvRouteType } from '../../common/domain/dv-route-type';
 import { CommonModule } from '@angular/common';
 import { MspListComponent } from './msp-list/msp-list.component';

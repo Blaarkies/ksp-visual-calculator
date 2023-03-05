@@ -20,7 +20,7 @@ import { StateCraft } from './json-interfaces/state-craft';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { EventLogs } from './domain/event-logs';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
-import { TravelService } from './travel.service';
+import { TravelService } from '../pages/page-dv-planner/services/travel.service';
 import { GameStateType } from '../common/domain/game-state-type';
 
 @Injectable({

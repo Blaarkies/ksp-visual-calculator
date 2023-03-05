@@ -1,26 +1,48 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActionOption } from '../../common/domain/action-option';
 import { Icons } from '../../common/domain/icons';
 import { HudService } from '../../services/hud.service';
 import { AnalyticsService } from '../../services/analytics.service';
-import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq-dialog.component';
+import {
+  FaqDialogComponent,
+  FaqDialogData,
+} from '../../overlays/faq-dialog/faq-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { WithDestroy } from '../../common/with-destroy';
-import { firstValueFrom, map, Observable, takeUntil } from 'rxjs';
-import { ActionPanelColors, ActionPanelComponent } from '../action-panel/action-panel.component';
+import {
+  firstValueFrom,
+  map,
+  Observable,
+  takeUntil,
+} from 'rxjs';
+import {
+  ActionPanelColors,
+  ActionPanelComponent,
+} from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import {
+  MatBottomSheet,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
 import {
   ActionBottomSheetComponent,
-  ActionBottomSheetData
+  ActionBottomSheetData,
 } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { EventLogs } from '../../services/domain/event-logs';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { BasicAnimations } from '../../common/animations/basic-animations';
-import { DomPortal } from '@angular/cdk/portal';
-import { ThemeService, ThemeTypeEnum } from '../../services/theme.service';
+import {
+  ThemeService,
+  ThemeTypeEnum,
+} from '../../services/theme.service';
 import { CommonModule } from '@angular/common';
 import { ActionFabComponent } from './action-fab/action-fab.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
@@ -31,8 +53,9 @@ import { ZoomIndicatorComponent } from '../zoom-indicator/zoom-indicator.compone
 import { FocusJumpToPanelComponent } from '../focus-jump-to-panel/focus-jump-to-panel.component';
 import { ManeuverSequencePanelComponent } from '../maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { NegatePipe } from '../../common/negate.pipe';
-import { ManageStateDialogComponent } from "../../overlays/manage-state-dialog/manage-state-dialog.component";
+import { ManageStateDialogComponent } from '../../overlays/manage-state-dialog/manage-state-dialog.component';
 import { UsableRoutes } from '../../app.routes';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 export class ActionPanelDetails {
   startTitle?: string;
@@ -64,12 +87,18 @@ export class ActionGroupType {
     MatIconModule,
 
     ManageStateDialogComponent,
+    MatTooltipModule,
   ],
   templateUrl: './hud.component.html',
   styleUrls: ['./hud.component.scss'],
+  encapsulation: ViewEncapsulation.None,
   animations: [BasicAnimations.fade],
 })
 export class HudComponent extends WithDestroy() implements AfterViewInit {
+
+  @Input() tooltip: string;
+  @Input() icon: string;
+  @Input() contextPanelDetails: ActionPanelDetails;
 
   navigationOptions = this.hudService.navigationOptions;
   infoOptions = this.hudService.infoOptions;

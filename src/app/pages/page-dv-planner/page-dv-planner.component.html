@@ -1,16 +1,21 @@
-<div class="layout stack">
+<cp-universe-map #universeMap
+                 [allowEdit]="false"
+                 (startDrag)="selectCheckpoint($event)">
 
-  <cp-universe-map #universeMap
-                   [allowEdit]="false"
-                   (startDrag)="selectCheckpoint($event)">
+  <cp-mission-journey aboveOrbits
+                      class="no-mouse"
+                      [scale]="universeMap.camera.scale"
+                      [checkpoints]="checkpoints$ | async"
+                      [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
+  </cp-mission-journey>
+</cp-universe-map>
 
-    <cp-mission-journey aboveOrbits
-                        class="no-mouse"
-                        [scale]="universeMap.camera.scale"
-                        [checkpoints]="checkpoints$ | async"
-                        [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
-    </cp-mission-journey>
-  </cp-universe-map>
-
-  <cp-hud></cp-hud>
-</div>
+<cp-hud
+  tooltip="This page handles Delta-v calculations, click the green menu for others"
+  [icon]="icons.DeltaV"
+  [contextPanelDetails]="contextPanelDetails"
+>
+  <cp-zoom-indicator top class="no-mouse"></cp-zoom-indicator>
+  <cp-focus-jump-to-panel left></cp-focus-jump-to-panel>
+  <cp-maneuver-sequence-panel right></cp-maneuver-sequence-panel>
+</cp-hud>

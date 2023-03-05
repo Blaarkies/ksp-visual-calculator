@@ -24,9 +24,10 @@ import {InputFieldComponent} from "../../components/controls/input-field/input-f
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatButtonModule} from "@angular/material/button";
 import { UsableRoutes } from '../../app.routes';
+import { GameStateType } from '../../common/domain/game-state-type';
 
 export class FaqDialogData {
-  sections: Section[];
+  gameStateType: GameStateType;
 }
 
 @Component({
@@ -55,8 +56,7 @@ export class FaqDialogComponent extends WithDestroy() {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FaqDialogData,
               http: HttpClient,
-              breakpointObserver: BreakpointObserver,
-              hudService: HudService) {
+              breakpointObserver: BreakpointObserver) {
     super();
 
     this.isHandset$ = breakpointObserver.observe([
@@ -67,7 +67,7 @@ export class FaqDialogComponent extends WithDestroy() {
 
     let sections$ = zip(
       http.get<Section[]>('assets/faq/general.json'),
-      http.get<Section[]>(this.getFilePathForPageContextFaq(hudService.pageContext)))
+      http.get<Section[]>(this.getFilePathForPageContextFaq(data.gameStateType)))
       .pipe(
         map(([general, contextual]) => [...general, ...contextual]),
         publishReplay(1),
@@ -105,11 +105,11 @@ export class FaqDialogComponent extends WithDestroy() {
     this.searchControl.setValue(query);
   }
 
-  private getFilePathForPageContextFaq(context: UsableRoutes): string {
+  private getFilePathForPageContextFaq(context: GameStateType): string {
     switch (context) {
-      case UsableRoutes.CommnetPlanner:
+      case GameStateType.CommnetPlanner:
         return 'assets/faq/signal-check.json';
-      case UsableRoutes.DvPlanner:
+      case GameStateType.DvPlanner:
         return 'assets/faq/dv-planner.json';
       default:
         throw new Error(`Context "${context}" does not exist`);
