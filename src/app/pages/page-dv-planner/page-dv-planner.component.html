@@ -1,6 +1,10 @@
 <cp-universe-map #universeMap
                  [allowEdit]="false"
-                 (startDrag)="selectCheckpoint($event)">
+                 (startDrag)="selectCheckpoint($event)"
+                 [orbits]="orbits$ | async"
+                 [planets]="planets$ | async"
+                 (editPlanet)="editPlanet($event)"
+>
 
   <cp-mission-journey aboveOrbits
                       class="no-mouse"
@@ -16,6 +20,9 @@
   [contextPanelDetails]="contextPanelDetails"
 >
   <cp-zoom-indicator top class="no-mouse"></cp-zoom-indicator>
-  <cp-focus-jump-to-panel left></cp-focus-jump-to-panel>
+  <cp-focus-jump-to-panel
+    left
+    [focusables]="planets$ | async"
+  ></cp-focus-jump-to-panel>
   <cp-maneuver-sequence-panel right></cp-maneuver-sequence-panel>
 </cp-hud>

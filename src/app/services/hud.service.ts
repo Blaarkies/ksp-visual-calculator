@@ -239,7 +239,7 @@ export class HudService {
         },
       }),
       this.createActionOptionTutorial(),
-      this.createActionOptionManageSaveGames(GameStateType.CommnetPlanner),
+      // this.createActionOptionManageSaveGames(GameStateType.CommnetPlanner),
     ];
 
     return {
@@ -253,7 +253,7 @@ export class HudService {
   private get dvPlannerPanel(): ActionPanelDetails {
     let options = [
       this.createActionOptionTutorial(),
-      this.createActionOptionManageSaveGames(GameStateType.DvPlanner),
+      // this.createActionOptionManageSaveGames(GameStateType.DvPlanner),
     ];
 
     return {
@@ -276,7 +276,7 @@ export class HudService {
       });
   }
 
-  createActionOptionManageSaveGames(context: GameStateType) {
+  createActionOptionManageSaveGames(data: ManageStateDialogData): ActionOption {
     return new ActionOption('Manage Save Games', Icons.Storage, {
         action: () => {
           this.analyticsService.logEvent('Call state dialog', {
@@ -284,8 +284,7 @@ export class HudService {
           });
 
           this.dialog.open(ManageStateDialogComponent, {
-            data: {context} as ManageStateDialogData,
-            backdropClass: GlobalStyleClass.MobileFriendly,
+            data, backdropClass: GlobalStyleClass.MobileFriendly,
           });
         },
       }, undefined, false, undefined,

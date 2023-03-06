@@ -1,5 +1,5 @@
 <div mat-dialog-content class="manage-state-layout">
-  <div class="text dialog-title">Manage {{contextTitle}} Save Games</div>
+  <div class="text dialog-title">Manage {{data.contextTitle}} Save Games</div>
 
   <mat-tab-group mat-align-tabs="start" (drop)="$event.stopImmediatePropagation()">
     <mat-tab label="Current">
@@ -45,7 +45,7 @@
 
       <cp-state-display [hiddenFields]="['Name', 'Last saved']"
                         [state]="nowState"
-                        [context]="context"></cp-state-display>
+                        [context]="data.context"></cp-state-display>
     </div>
 
     <div class="import-and-new-state">

@@ -5,7 +5,7 @@ import { UniverseMapComponent } from '../../components/universe-map/universe-map
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { TravelService } from './services/travel.service';
 import { CommonModule } from '@angular/common';
-import { MissionJourneyComponent } from '../../components/mission-journey/mission-journey.component';
+import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 import { GameStateType } from '../../common/domain/game-state-type';
 import {
   ActionPanelDetails,
@@ -17,6 +17,8 @@ import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/
 import { ManeuverSequencePanelComponent } from '../../components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { Icons } from '../../common/domain/icons';
 import { DvStateService } from './services/dv-state.service';
+import { DvUniverseBuilderService } from './services/dv-universe-builder.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'cp-page-dv-planner',
@@ -42,10 +44,15 @@ export class PageDvPlannerComponent extends WithDestroy() {
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
   contextPanelDetails: ActionPanelDetails;
 
+  orbits$ = this.universeBuilderService.orbits$;
+  planets$ = this.universeBuilderService.celestialBodies$;
+
   constructor(
     private hudService: HudService,
     private dvStateService: DvStateService,
-    private travelService: TravelService) {
+    private universeBuilderService: DvUniverseBuilderService,
+    private travelService: TravelService,
+  ) {
     super();
     super.ngOnDestroy = () => {
       // workaround, error NG2007: Class is using Angular features but is not decorated.
@@ -59,7 +66,11 @@ export class PageDvPlannerComponent extends WithDestroy() {
   private getContextPanelDetails(): ActionPanelDetails {
     let options = [
       this.hudService.createActionOptionTutorial(),
-      this.hudService.createActionOptionManageSaveGames(GameStateType.DvPlanner),
+      this.hudService.createActionOptionManageSaveGames({
+        context: GameStateType.DvPlanner,
+        contextTitle: 'Delta-v Planner',
+        stateHandler: this.dvStateService,
+      }),
       this.hudService.createActionOptionFaq(GameStateType.DvPlanner),
     ];
 
@@ -75,4 +86,7 @@ export class PageDvPlannerComponent extends WithDestroy() {
     this.travelService.selectCheckpoint(spaceObject);
   }
 
+  editPlanet({body, details}) {
+    this.universeBuilderService.editCelestialBody(body, details);
+  }
 }

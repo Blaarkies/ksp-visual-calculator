@@ -15,7 +15,6 @@ import { environment } from '../../environments/environment';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { StateRow } from '../overlays/manage-state-dialog/state-row';
 import { SpaceObjectContainerService } from './space-object-container.service';
-import { SpaceObjectService } from './space-object.service';
 import { SetupService } from './setup.service';
 import {
   gzip,
@@ -28,7 +27,12 @@ import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 
 export abstract class AbstractStateService {
 
-  abstract context: GameStateType;
+  protected abstract context: GameStateType;
+
+  protected abstract spaceObjectContainerService: SpaceObjectContainerService;
+  protected abstract setupService: SetupService;
+  protected abstract dataService: DataService;
+  protected abstract snackBar: MatSnackBar;
 
   private name: string;
   private autoSaveUnsubscribe$ = new Subject<void>();
@@ -68,12 +72,6 @@ export abstract class AbstractStateService {
     });
   }
 
-  protected abstract spaceObjectContainerService: SpaceObjectContainerService;
-  protected abstract spaceObjectService: SpaceObjectService;
-  protected abstract setupService: SetupService;
-  protected abstract dataService: DataService;
-  protected abstract snackBar: MatSnackBar;
-
   loadState(state?: string): Observable<void> {
     let buildStateResult: Observable<void>;
     if (state) {
@@ -83,20 +81,21 @@ export abstract class AbstractStateService {
       let imageFormatFix = state.replace(/.png/g, '.webp');
 
       this.setStatefulDetails(parsedState);
-      buildStateResult = this.spaceObjectService.buildState(imageFormatFix, parsedState.context);
+      buildStateResult = this.buildExistingState(imageFormatFix);
     } else {
       this.name = Namer.savegame;
 
       this.setStatelessDetails();
-      buildStateResult = this.spaceObjectService.buildStockState(this.context);
+      buildStateResult = this.buildFreshState();
     }
 
     return buildStateResult.pipe(tap(() => this.setStateRecord()));
   }
 
-  abstract setStatefulDetails(parsedState: StateGame)
-
-  abstract setStatelessDetails()
+  protected abstract setStatefulDetails(parsedState: StateGame)
+  protected abstract setStatelessDetails()
+  protected abstract buildExistingState(state: string): Observable<any>
+  protected abstract buildFreshState(): Observable<any>
 
   async addStateToStore(state: StateGame) {
     let compressed = gzip(JSON.stringify(state));

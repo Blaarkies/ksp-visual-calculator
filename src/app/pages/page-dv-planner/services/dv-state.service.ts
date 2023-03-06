@@ -10,22 +10,24 @@ import { GameStateType } from '../../../common/domain/game-state-type';
 import { DataService } from '../../../services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
-import { SpaceObjectService } from '../../../services/space-object.service';
+import { DvUniverseBuilderService } from './dv-universe-builder.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'any',
 })
 export class DvStateService extends AbstractStateService {
 
-  context = GameStateType.DvPlanner;
+  protected context = GameStateType.DvPlanner;
 
   constructor(
-    private travelService: TravelService,
     protected spaceObjectContainerService: SpaceObjectContainerService,
-    protected spaceObjectService: SpaceObjectService,
+    protected universeBuilderService: DvUniverseBuilderService,
     protected setupService: SetupService,
     protected dataService: DataService,
     protected snackBar: MatSnackBar,
+
+    private travelService: TravelService,
   ) {
     super();
     this.loadState().subscribe();
@@ -45,12 +47,20 @@ export class DvStateService extends AbstractStateService {
     };
   }
 
-  setStatefulDetails(parsedState: StateGame) {
+  protected setStatefulDetails(parsedState: StateGame) {
     this.setupService.updateCheckpointPreferences(CheckpointPreferences.fromObject(parsedState.settings.preferences));
   }
 
-  setStatelessDetails() {
+  protected setStatelessDetails() {
     this.setupService.updateCheckpointPreferences(CheckpointPreferences.default);
+  }
+
+  protected buildExistingState(state: string): Observable<any> {
+    return this.universeBuilderService.buildState(state);
+  }
+
+  protected buildFreshState(): Observable<any> {
+    return this.universeBuilderService.buildStockState();
   }
 
 }

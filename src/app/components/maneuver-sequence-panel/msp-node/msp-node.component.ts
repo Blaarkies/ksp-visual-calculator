@@ -59,9 +59,9 @@ export class MspNodeComponent {
     this.update.emit();
   }
 
-  toggleGravityAssist() {
-    this.details.gravityAssist = !this.details.gravityAssist;
-    this.update.emit();
-  }
+  // toggleGravityAssist() {
+  //   this.details.gravityAssist = !this.details.gravityAssist;
+  //   this.update.emit();
+  // }
 
 }

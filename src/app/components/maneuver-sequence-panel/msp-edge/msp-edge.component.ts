@@ -36,8 +36,6 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class MspEdgeComponent {
 
-  missionEdge: CheckpointEdge;
-
   @Input() set details(edge: CheckpointEdge) {
     this.missionEdge = edge;
     this.path = edge.pathDetails
@@ -51,10 +49,9 @@ export class MspEdgeComponent {
       });
   }
 
+  missionEdge: CheckpointEdge;
   icons = Icons;
   isPanelOpen = false;
-  isPanelOpenAnimate = new BehaviorSubject(false);
-
   path: { cost, description }[];
 
   positionLeftCenter = [new ConnectionPositionPair(

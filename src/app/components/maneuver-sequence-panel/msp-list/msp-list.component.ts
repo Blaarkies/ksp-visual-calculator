@@ -29,8 +29,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class MspListComponent {
 
-  missionCheckpoints: Checkpoint[];
-
   @Input() set checkpoints(value: Checkpoint[]) {
     this.missionCheckpoints = value;
 
@@ -47,6 +45,7 @@ export class MspListComponent {
   @Output() removeNode = new EventEmitter<Checkpoint>();
   @Output() updateNode = new EventEmitter<Checkpoint>();
 
+  missionCheckpoints: Checkpoint[];
   deltaVTotal: number;
   // twrMinimum: number;
   icons = Icons;
