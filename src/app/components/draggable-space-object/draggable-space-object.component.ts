@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';

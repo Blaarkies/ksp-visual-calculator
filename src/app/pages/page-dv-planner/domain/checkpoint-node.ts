@@ -1,4 +1,4 @@
-import { SpaceObject } from '../../domain/space-objects/space-object';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { TravelCondition } from './travel-condition';
 
 export class CheckpointNode {

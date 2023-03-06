@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Icons } from '../../../common/domain/icons';
+import { Icons } from '../../../../../common/domain/icons';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PathDetailsReader } from '../msp-edge/path-details-reader';
-import { CheckpointNode } from '../../../common/data-structures/delta-v-map/checkpoint-node';
+import { CheckpointNode } from '../../../domain/checkpoint-node';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';

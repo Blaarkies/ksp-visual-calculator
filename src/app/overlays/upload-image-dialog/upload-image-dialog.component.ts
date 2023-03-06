@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject } from 'rxjs';
 import { Icons } from '../../common/domain/icons';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import {
   FormArray,
   FormControl,

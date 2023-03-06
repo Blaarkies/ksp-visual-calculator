@@ -7,7 +7,7 @@ import { AccountDialogComponent } from '../../overlays/account-dialog/account-di
 import { WithDestroy } from '../../common/with-destroy';
 import { EventLogs } from '../../services/domain/event-logs';
 import { GlobalStyleClass } from '../../common/global-style-class';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { CommonModule } from '@angular/common';
 import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';

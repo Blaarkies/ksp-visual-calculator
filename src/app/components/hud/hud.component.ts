@@ -38,7 +38,7 @@ import { GlobalStyleClass } from '../../common/global-style-class';
 import { EventLogs } from '../../services/domain/event-logs';
 import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { AuthService } from '../../services/auth.service';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import {
   ThemeService,
   ThemeTypeEnum,
@@ -51,7 +51,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatBadgeModule } from '@angular/material/badge';
 import { ZoomIndicatorComponent } from '../zoom-indicator/zoom-indicator.component';
 import { FocusJumpToPanelComponent } from '../focus-jump-to-panel/focus-jump-to-panel.component';
-import { ManeuverSequencePanelComponent } from '../maneuver-sequence-panel/maneuver-sequence-panel.component';
+import { ManeuverSequencePanelComponent } from '../../pages/page-dv-planner/components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { NegatePipe } from '../../common/negate.pipe';
 import { ManageStateDialogComponent } from '../../overlays/manage-state-dialog/manage-state-dialog.component';
 import { UsableRoutes } from '../../app.routes';

@@ -40,7 +40,7 @@ import {
   MatListModule,
   MatSelectionList,
 } from '@angular/material/list';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
 import { CommonModule } from '@angular/common';

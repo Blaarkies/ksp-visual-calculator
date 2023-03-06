@@ -1,3 +1,4 @@
+// TODO: build from compressed asset
 export class Words {
 
   static adjectives = [

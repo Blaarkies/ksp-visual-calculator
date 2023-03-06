@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { Icons } from '../../common/domain/icons';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
+import { Icons } from '../../../../common/domain/icons';
+import { BasicAnimations } from '../../../../animations/basic-animations';
 import { filter, fromEvent, interval, map, mapTo, merge, Observable, sampleTime, scan, startWith } from 'rxjs';
-import { Vector2 } from '../../common/domain/vector2';
-import { CameraService } from '../../services/camera.service';
+import { Vector2 } from '../../../../common/domain/vector2';
+import { CameraService } from '../../../../services/camera.service';
 import memoize from 'fast-memoize';
-import { Checkpoint } from '../../common/data-structures/delta-v-map/checkpoint';
+import { Checkpoint } from '../../domain/checkpoint';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 

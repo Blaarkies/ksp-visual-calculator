@@ -1,6 +1,6 @@
 import { CheckpointNode } from './checkpoint-node';
 import { CheckpointEdge } from './checkpoint-edge';
-import { SpaceObject } from '../../domain/space-objects/space-object';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { TravelCondition } from './travel-condition';
 
 export class Checkpoint {

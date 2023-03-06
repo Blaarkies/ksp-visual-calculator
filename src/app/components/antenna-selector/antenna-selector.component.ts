@@ -9,7 +9,7 @@ import { Antenna } from '../../common/domain/antenna';
 import { Group } from '../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import {CommonModule} from "@angular/common";
 import {MatTabsModule} from "@angular/material/tabs";
 import {InputFieldComponent} from "../controls/input-field/input-field.component";

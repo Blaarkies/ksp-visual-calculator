@@ -20,7 +20,7 @@ import {
 } from '@angular/material/button';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
-import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
+import { ConfigurableAnimations } from '../../animations/configurable-animations';
 import { CommonModule } from '@angular/common';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
 import { MatTooltipModule } from '@angular/material/tooltip';

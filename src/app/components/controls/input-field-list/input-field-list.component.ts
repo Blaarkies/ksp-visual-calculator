@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {InputField} from '../../../common/domain/input-fields/input-fields';
 import {ControlMetaType} from '../../../common/domain/input-fields/control-meta-type';
-import {BasicAnimations} from '../../../common/animations/basic-animations';
+import {BasicAnimations} from '../../../animations/basic-animations';
 import {CommonModule} from "@angular/common";
 import {InputFieldComponent} from "../input-field/input-field.component";
 import {InputTextAreaComponent} from "../input-text-area/input-text-area.component";

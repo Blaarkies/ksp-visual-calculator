@@ -4,7 +4,7 @@ import { Group } from '../../../common/domain/group';
 import { IsruStatisticsGenerator, Statistic } from '../domain/isru-statistics-generator';
 import { MatIconModule } from '@angular/material/icon';
 import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { BasicAnimations } from '../../../animations/basic-animations';
 import { IsruWidgetService } from '../isru-widget.service';
 import { combineLatest, scan, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../../common/with-destroy';

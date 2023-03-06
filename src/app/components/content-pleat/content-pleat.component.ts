@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {BasicAnimations} from '../../common/animations/basic-animations';
-import {ConfigurableAnimations} from '../../common/animations/configurable-animations';
+import {BasicAnimations} from '../../animations/basic-animations';
+import {ConfigurableAnimations} from '../../animations/configurable-animations';
 import {CommonModule} from "@angular/common";
 
 @Component({

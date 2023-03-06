@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

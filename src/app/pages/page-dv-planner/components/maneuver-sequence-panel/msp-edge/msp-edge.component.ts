@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { Icons } from '../../../common/domain/icons';
+import { Icons } from '../../../../../common/domain/icons';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { PathDetailsReader } from './path-details-reader';
 import { ConnectionPositionPair, OverlayModule } from '@angular/cdk/overlay';
 import { BehaviorSubject } from 'rxjs';
-import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
-import { EventLogs } from '../../../services/domain/event-logs';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { CheckpointEdge } from '../../../domain/checkpoint-edge';
+import { EventLogs } from '../../../../../services/domain/event-logs';
+import { AnalyticsService } from '../../../../../services/analytics.service';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 

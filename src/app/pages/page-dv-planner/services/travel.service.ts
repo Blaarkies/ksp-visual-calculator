@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, finalize, Subject, take, takeUntil } from 'rxjs';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { DeltaVGraph } from '../../../common/data-structures/delta-v-map/delta-v-graph';
-import { TravelCondition } from '../../../common/data-structures/delta-v-map/travel-condition';
-import { CheckpointNode } from '../../../common/data-structures/delta-v-map/checkpoint-node';
-import { CheckpointEdge } from '../../../common/data-structures/delta-v-map/checkpoint-edge';
-import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoint';
+import { DeltaVGraph } from '../domain/delta-v-graph';
+import { TravelCondition } from '../domain/travel-condition';
+import { CheckpointNode } from '../domain/checkpoint-node';
+import { CheckpointEdge } from '../domain/checkpoint-edge';
+import { Checkpoint } from '../domain/checkpoint';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
 import { SetupService } from '../../../services/setup.service';

@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { TransmissionLine } from '../../common/domain/transmission-line';
 import { Subject } from 'rxjs';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { CameraService } from '../../services/camera.service';
 import { CommonModule } from '@angular/common';
 

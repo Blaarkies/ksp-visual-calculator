@@ -3,7 +3,7 @@ import { Icons } from '../../common/domain/icons';
 import { ActionOption } from '../../common/domain/action-option';
 import { fromEvent, take, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

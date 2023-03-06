@@ -1,5 +1,5 @@
-import { TravelCondition } from '../data-structures/delta-v-map/travel-condition';
-import { DvRouteType } from './dv-route-type';
+import { TravelCondition } from '../../pages/page-dv-planner/domain/travel-condition';
+import { DvRouteType } from '../../pages/page-dv-planner/domain/dv-route-type';
 
 export class CheckpointPreferences {
 

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
-import { Icons } from '../../../common/domain/icons';
-import { Checkpoint } from '../../../common/data-structures/delta-v-map/checkpoint';
+import { BasicAnimations } from '../../../../../animations/basic-animations';
+import { Icons } from '../../../../../common/domain/icons';
+import { Checkpoint } from '../../../domain/checkpoint';
 import { CommonModule } from '@angular/common';
 import { MspEdgeComponent } from '../msp-edge/msp-edge.component';
 import { MspNodeComponent } from '../msp-node/msp-node.component';

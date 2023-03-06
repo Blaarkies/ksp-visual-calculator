@@ -1,4 +1,4 @@
-import { TravelCondition } from '../../../common/data-structures/delta-v-map/travel-condition';
+import { TravelCondition } from '../../../domain/travel-condition';
 
 export class PathDetailsReader {
 

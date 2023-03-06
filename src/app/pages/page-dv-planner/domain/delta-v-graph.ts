@@ -2,7 +2,7 @@ import { DeltavDestination } from './deltav-destination';
 import { GraphDataStructure, NodeGraph } from './graph-data-structure';
 import { TravelCondition } from './travel-condition';
 import { CheckpointNode } from './checkpoint-node';
-import { DvRouteType } from '../../domain/dv-route-type';
+import { DvRouteType } from './dv-route-type';
 
 type DeltaVStep = (string | number)[];
 

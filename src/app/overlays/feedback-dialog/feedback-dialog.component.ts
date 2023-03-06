@@ -7,7 +7,7 @@ import { ControlMetaFreeText } from '../../common/domain/input-fields/control-me
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
 import { HttpClient } from '@angular/common/http';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { firstValueFrom } from 'rxjs';
 import {CommonModule} from "@angular/common";
 import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";

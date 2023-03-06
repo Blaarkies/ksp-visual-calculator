@@ -14,7 +14,7 @@ import {
 import { NG_VALUE_ACCESSOR, UntypedFormControl } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { BasicAnimations } from '../../../animations/basic-animations';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
 import { fromEvent, Subject, takeUntil, timer } from 'rxjs';

@@ -7,7 +7,7 @@ import { LabeledOption } from '../../../common/domain/input-fields/labeled-optio
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { Icons } from '../../../common/domain/icons';
 import { BehaviorSubject, map, Subject, takeUntil } from 'rxjs';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { BasicAnimations } from '../../../animations/basic-animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
