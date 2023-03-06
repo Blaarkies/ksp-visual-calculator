@@ -24,8 +24,7 @@
                    [options]="infoOptions"
                    (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
 
-
-    <cp-action-fab *ngIf="contextPanel$ | async as details"
+    <cp-action-fab *ngIf="contextPanelDetails as details"
                    id="context-fab"
                    color="orange"
                    [tooltip]="details.startTitle"

@@ -139,21 +139,6 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
       '(max-height: 800px)',
     ])
       .pipe(map(bp => bp.matches));
-
-    let contextVisualMap = {
-      [UsableRoutes.DvPlanner]: {
-        icon: Icons.DeltaV,
-        tooltip: 'This page handles Delta-v calculations, click the green menu for others',
-      },
-      [UsableRoutes.CommnetPlanner]: {
-        icon: Icons.Relay,
-        tooltip: 'This page handles CommNet calculations, click the green menu for others',
-      }
-    };
-
-    hudService.pageContextChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(context => this.pageContextInfo = contextVisualMap[context]);
   }
 
   ngAfterViewInit() {
@@ -162,17 +147,6 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
 
   toggleTheme() {
     this.lastTheme = this.themeService.toggleTheme();
-  }
-
-  openFaq() {
-    this.analyticsService.logEvent('Open faq dialog', {
-      category: EventLogs.Category.Help,
-    });
-
-    this.dialog.open(FaqDialogComponent, {
-      data: {} as FaqDialogData,
-      backdropClass: GlobalStyleClass.MobileFriendly,
-    });
   }
 
   async openBottomSheet(group: ActionGroupType, updateUnreadCountCallback: () => void) {
@@ -197,7 +171,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
         });
         break;
       case ActionGroupType.Context:
-        let panel = await firstValueFrom(this.contextPanel$);
+        let panel = this.contextPanelDetails;
         result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
             startTitle: panel.startTitle,

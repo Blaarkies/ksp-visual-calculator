@@ -18,7 +18,6 @@ import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-p
 import { Icons } from '../../common/domain/icons';
 import { DvStateService } from './services/dv-state.service';
 import { DvUniverseBuilderService } from './services/dv-universe-builder.service';
-import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'cp-page-dv-planner',
@@ -42,8 +41,8 @@ export class PageDvPlannerComponent extends WithDestroy() {
   icons = Icons;
   checkpoints$ = this.travelService.checkpoints$.asObservable();
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
-  contextPanelDetails: ActionPanelDetails;
 
+  contextPanelDetails: ActionPanelDetails;
   orbits$ = this.universeBuilderService.orbits$;
   planets$ = this.universeBuilderService.celestialBodies$;
 
