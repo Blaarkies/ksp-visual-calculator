@@ -1,5 +1,5 @@
 <div mat-dialog-content class="manage-state-layout">
-  <div class="text dialog-title">Manage {{data.contextTitle}} Save Games</div>
+  <div class="text dialog-title">Manage {{contextTitle}} Save Games</div>
 
   <mat-tab-group mat-align-tabs="start" (drop)="$event.stopImmediatePropagation()">
     <mat-tab label="Current">
@@ -22,7 +22,7 @@
 
 <!--TEMPLATES-->
 <ng-template #currentTab>
-  <div class="current-state-layout">
+  <div class="current-state-layout" *ngIf="nowState?.state">
     <div>
       <div>
         <div class="name-row-layout">
@@ -45,7 +45,7 @@
 
       <cp-state-display [hiddenFields]="['Name', 'Last saved']"
                         [state]="nowState"
-                        [context]="data.context"></cp-state-display>
+                        [context]="context"></cp-state-display>
     </div>
 
     <div class="import-and-new-state">

@@ -1,6 +1,7 @@
 import {
-  BehaviorSubject,
+  delayWhen,
   Observable,
+  ReplaySubject,
   take,
   takeUntil,
   tap,
@@ -22,8 +23,9 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   protected abstract setupService: SetupService;
   protected abstract analyticsService: AnalyticsService;
 
-  orbits$ = new BehaviorSubject<Orbit[]>(null);
-  abstract celestialBodies$: BehaviorSubject<SpaceObject[]>;
+  abstract celestialBodies$: ReplaySubject<SpaceObject[]>;
+
+  orbits$ = new ReplaySubject<Orbit[]>();
 
   private stockAssetsReady(): Observable<{ listOrbits, celestialBodies }> {
     let stockOrbitsPlanets$ = this.setupService.stockPlanets$;
@@ -39,19 +41,19 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
       tap(({listOrbits, celestialBodies}) => {
         this.orbits$.next(listOrbits);
         this.celestialBodies$.next(celestialBodies);
-
-        this.setDetails();
       }),
+      delayWhen(() => this.setDetails()),
     );
   }
 
-  protected setDetails() {
+  protected async setDetails() {
   }
-  protected abstract buildContextState(lastState: string)
+
+  protected abstract buildContextState(lastState: string): Promise<void>
 
   buildState(lastState: string): Observable<any> {
     return this.stockAssetsReady().pipe(
-      tap(() => this.buildContextState(lastState))
+      delayWhen(() => this.buildContextState(lastState)),
     );
   }
 

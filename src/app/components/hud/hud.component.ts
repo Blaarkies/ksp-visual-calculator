@@ -103,17 +103,9 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   navigationOptions = this.hudService.navigationOptions;
   infoOptions = this.hudService.infoOptions;
 
-  get contextPanel$(): Observable<ActionPanelDetails> {
-    return this.hudService.contextPanel$.asObservable();
-  }
-
-  context$ = this.hudService.context$;
-  contextTypes = UsableRoutes;
-
   isHandset$: Observable<boolean>;
   icons = Icons;
   actionGroupTypes = ActionGroupType;
-  pageContextInfo: { icon, tooltip };
   hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
 
   lastTheme: string;
@@ -142,7 +134,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.cdr.detectChanges();
+    // this.cdr.detectChanges();
   }
 
   toggleTheme() {

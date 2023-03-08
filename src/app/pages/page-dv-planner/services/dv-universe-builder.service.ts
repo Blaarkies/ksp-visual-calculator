@@ -8,31 +8,33 @@ import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-p
 import { TravelService } from './travel.service';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { SetupService } from 'src/app/services/setup.service';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import {
+  firstValueFrom,
+  ReplaySubject,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'any',
 })
 export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
 
-  celestialBodies$ = this.spaceObjectContainerService.celestialBodies$;
+  celestialBodies$ = new ReplaySubject<SpaceObject[]>();
 
   constructor(
     protected setupService: SetupService,
     protected analyticsService: AnalyticsService,
-    protected spaceObjectContainerService: SpaceObjectContainerService,
 
     private travelService: TravelService,
   ) {
     super();
   }
 
-  protected setDetails() {
-    super.setDetails();
+  protected async setDetails() {
+    await super.setDetails();
     this.travelService.resetCheckpoints();
   }
 
-  protected buildContextState(lastState: string) {
+  protected async buildContextState(lastState: string) {
     let state: StateDvPlanner = JSON.parse(lastState);
     let {celestialBodies: jsonCelestialBodies, checkpoints: jsonCheckpoints} = state;
 
@@ -67,7 +69,8 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
     });
     this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
 
-    let getBodyByLabel = (label: string) => this.celestialBodies$.value.find(b => b.label.like(label));
+    let planets = await firstValueFrom<SpaceObject[]>(this.celestialBodies$);
+    let getBodyByLabel = (label: string) => planets.find(b => b.label.like(label));
     this.travelService.buildState(jsonCheckpoints, getBodyByLabel);
   }
 

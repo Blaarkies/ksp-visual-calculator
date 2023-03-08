@@ -43,13 +43,13 @@ export class PageDvPlannerComponent extends WithDestroy() {
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
 
   contextPanelDetails: ActionPanelDetails;
-  orbits$ = this.universeBuilderService.orbits$;
-  planets$ = this.universeBuilderService.celestialBodies$;
+  orbits$ = this.dvUniverseBuilderService.orbits$;
+  planets$ = this.dvUniverseBuilderService.celestialBodies$;
 
   constructor(
     private hudService: HudService,
     private dvStateService: DvStateService,
-    private universeBuilderService: DvUniverseBuilderService,
+    private dvUniverseBuilderService: DvUniverseBuilderService,
     private travelService: TravelService,
   ) {
     super();
@@ -64,12 +64,12 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
   private getContextPanelDetails(): ActionPanelDetails {
     let options = [
-      this.hudService.createActionOptionTutorial(),
-      this.hudService.createActionOptionManageSaveGames({
-        context: GameStateType.DvPlanner,
-        contextTitle: 'Delta-v Planner',
-        stateHandler: this.dvStateService,
-      }),
+      this.hudService.createActionOptionTutorial(GameStateType.DvPlanner),
+      // this.hudService.createActionOptionManageSaveGames({
+      //   context: GameStateType.DvPlanner,
+      //   contextTitle: 'Delta-v Planner',
+      //   stateHandler: this.dvStateService,
+      // }),
       this.hudService.createActionOptionFaq(GameStateType.DvPlanner),
     ];
 
@@ -86,6 +86,6 @@ export class PageDvPlannerComponent extends WithDestroy() {
   }
 
   editPlanet({body, details}) {
-    this.universeBuilderService.editCelestialBody(body, details);
+    this.dvUniverseBuilderService.editCelestialBody(body, details);
   }
 }

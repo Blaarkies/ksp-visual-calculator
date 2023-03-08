@@ -1,14 +1,18 @@
 import {
+  delayWhen,
   firstValueFrom,
   from,
   map,
   Observable,
   Subject,
+  take,
+  takeUntil,
   tap,
+  timestamp,
 } from 'rxjs';
 import { GameStateType } from '../common/domain/game-state-type';
 import { StateGame } from './json-interfaces/state-game';
-import { StateSignalCheck } from './json-interfaces/state-signal-check';
+import { StateCommnetPlanner } from './json-interfaces/state-commnet-planner';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { Namer } from '../common/namer';
 import { environment } from '../../environments/environment';
@@ -24,12 +28,15 @@ import { Bytes } from '@firebase/firestore';
 import { DataService } from './data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
+import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
+import { state } from '@angular/animations';
 
 export abstract class AbstractStateService {
 
   protected abstract context: GameStateType;
 
   protected abstract spaceObjectContainerService: SpaceObjectContainerService;
+  protected abstract universeBuilderService: AbstractUniverseBuilderService;
   protected abstract setupService: SetupService;
   protected abstract dataService: DataService;
   protected abstract snackBar: MatSnackBar;
@@ -38,38 +45,40 @@ export abstract class AbstractStateService {
   private autoSaveUnsubscribe$ = new Subject<void>();
   private lastStateRecord: string;
 
-  setStateRecord() {
-    this.lastStateRecord = JSON.stringify(this.state);
+  setStateRecord(): Observable<unknown> {
+    return this.state.pipe(
+      tap(state => this.lastStateRecord = JSON.stringify(state)),
+    );
   }
 
-  get stateIsUnsaved(): boolean {
-    return this.lastStateRecord !== JSON.stringify(this.state);
+  get stateIsUnsaved(): Observable<boolean> {
+    return this.state.pipe(
+      map(state => this.lastStateRecord !== JSON.stringify(state)),
+    );
   }
 
-  get state(): StateGame | StateSignalCheck | StateDvPlanner {
-    let state: StateGame = {
-      name: this.name || Namer.savegame,
-      timestamp: new Date(),
-      context: this.context,
-      version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
-      celestialBodies: this.spaceObjectContainerService.celestialBodies$.value
-        .map(b => b.toJson()) as StateSpaceObject[],
-    };
-
-    this.name = state.name;
-
-    return state;
+  get state(): Observable<StateGame | StateCommnetPlanner | StateDvPlanner> {
+    return this.universeBuilderService.celestialBodies$.pipe(
+      take(1),
+      map(planets => ({
+        name: this.name || Namer.savegame,
+        timestamp: new Date(),
+        context: this.context,
+        version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
+        celestialBodies: planets.map(b => b.toJson()) as StateSpaceObject[],
+      })),
+      tap(state => this.name = state.name));
   }
 
-  get stateRow(): StateRow {
-    let state = this.state;
-    let {name, timestamp, version} = state;
-    return new StateRow({
-      name,
-      timestamp: {seconds: timestamp.getTime() * .001},
-      version,
-      state: JSON.stringify(state),
-    });
+  get stateRow(): Observable<StateRow> {
+    return this.state.pipe(
+      map(state => {
+        let {name, timestamp, version} = state;
+        return new StateRow({
+          name, version, state: JSON.stringify(state),
+          timestamp: {seconds: timestamp.getTime() * .001},
+        });
+      }));
   }
 
   loadState(state?: string): Observable<void> {
@@ -89,12 +98,16 @@ export abstract class AbstractStateService {
       buildStateResult = this.buildFreshState();
     }
 
-    return buildStateResult.pipe(tap(() => this.setStateRecord()));
+    return buildStateResult.pipe(
+      delayWhen(() => this.setStateRecord()));
   }
 
   protected abstract setStatefulDetails(parsedState: StateGame)
+
   protected abstract setStatelessDetails()
+
   protected abstract buildExistingState(state: string): Observable<any>
+
   protected abstract buildFreshState(): Observable<any>
 
   async addStateToStore(state: StateGame) {

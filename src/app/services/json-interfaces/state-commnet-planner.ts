@@ -1,7 +1,7 @@
 import { StateCraft } from './state-craft';
 import { StateGame } from './state-game';
 
-export interface StateSignalCheck extends StateGame {
+export interface StateCommnetPlanner extends StateGame {
   craft: StateCraft[];
 }
 

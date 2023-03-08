@@ -11,7 +11,10 @@ import { DataService } from '../../../services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
 import { DvUniverseBuilderService } from './dv-universe-builder.service';
-import { Observable } from 'rxjs';
+import {
+  map,
+  Observable,
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'any',
@@ -33,18 +36,18 @@ export class DvStateService extends AbstractStateService {
     this.loadState().subscribe();
   }
 
-  get state(): StateDvPlanner {
-    let state = super.state;
-
-    return {
-      ...state,
-      settings: {
-        ...state.settings,
-        preferences: this.setupService.checkpointPreferences$.value,
-      },
-      checkpoints: this.travelService.checkpoints$.value
-        .map(c => c.toJson()) as StateCheckpoint[],
-    };
+  get state(): Observable<StateDvPlanner> {
+    return super.state.pipe(
+      map(state => ({
+        ...state,
+        settings: {
+          ...state.settings,
+          preferences: this.setupService.checkpointPreferences$.value,
+        },
+        checkpoints: this.travelService.checkpoints$.value
+          .map(c => c.toJson()) as StateCheckpoint[],
+      })),
+    );
   }
 
   protected setStatefulDetails(parsedState: StateGame) {

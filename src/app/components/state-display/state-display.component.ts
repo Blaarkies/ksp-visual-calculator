@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { StateGame } from '../../services/json-interfaces/state-game';
-import { StateSignalCheck } from '../../services/json-interfaces/state-signal-check';
+import { StateCommnetPlanner } from '../../services/json-interfaces/state-commnet-planner';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
@@ -54,7 +54,7 @@ export class StateDisplayComponent {
     ];
 
     if (this.contextType === GameStateType.CommnetPlanner) {
-      let contentsSC = contents as StateSignalCheck;
+      let contentsSC = contents as StateCommnetPlanner;
 
       let dsnPlanets = contents.celestialBodies
         .filter(cb => cb.trackingStation);

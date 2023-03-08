@@ -1,38 +1,19 @@
+import { Injectable } from '@angular/core';
 import {
-  ApplicationRef,
-  Injectable,
-} from '@angular/core';
-import {
-  BehaviorSubject,
   filter,
   firstValueFrom,
   map,
-  Observable,
-  of,
   startWith,
-  Subject,
-  takeUntil,
 } from 'rxjs';
-import { ActionPanelDetails } from '../components/hud/hud.component';
 import { ActionOption } from '../common/domain/action-option';
 import { Icons } from '../common/domain/icons';
 import { AnalyticsService } from './analytics.service';
-import {
-  CraftDetailsDialogComponent,
-  CraftDetailsDialogData,
-} from '../overlays/craft-details-dialog/craft-details-dialog.component';
-import {
-  DifficultySettingsDialogComponent,
-} from '../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
-import {
-  ManageStateDialogComponent,
-  ManageStateDialogData,
-} from '../overlays/manage-state-dialog/manage-state-dialog.component';
+import { ManageStateDialogComponent } from '../overlays/manage-state-dialog/manage-state-dialog.component';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { SpaceObjectService } from './space-object.service';
-import { SetupService } from './setup.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { AuthService } from './auth.service';
 import {
   SimpleDialogComponent,
@@ -60,51 +41,17 @@ let storageKeys = {
   privacyPolicyViewed: 'ksp-visual-calculator-privacy-policy-viewed',
 };
 
+type HookIO<T> = (ref: MatDialogRef<T>) => void;
+
 @Injectable({
   providedIn: 'root',
 })
 export class HudService {
 
-  contextPanel$ = new BehaviorSubject<ActionPanelDetails>(null);
-  private contextChange$ = new BehaviorSubject<UsableRoutes>(null);
-  context$ = this.contextChange$.asObservable();
-  // fix dialog takeUntil using BehaviorSubject, because it cancels the stream immediately
-  unsubscribeDialog$ = new Subject<void>();
-
-  get pageContext(): UsableRoutes {
-    return this.contextChange$.value;
-  }
-
-  get pageContextChange$(): Observable<UsableRoutes> {
-    return this.contextChange$.asObservable();
-  }
-
-  setPageContext(value: UsableRoutes) {
-    this.contextChange$.next(value);
-    let newPanel = this.getContextPanel(value);
-    this.contextPanel$.next(newPanel);
-    this.unsubscribeDialog$.next();
-  }
-
   constructor(private dialog: MatDialog,
-              private spaceObjectService: SpaceObjectService,
-              private setupService: SetupService,
               private tutorialService: TutorialService,
-              private cdr: ApplicationRef,
-              private snackBar: MatSnackBar,
               private analyticsService: AnalyticsService,
               private authService: AuthService) {
-  }
-
-  private getContextPanel(context: UsableRoutes): ActionPanelDetails {
-    switch (context) {
-      case UsableRoutes.CommnetPlanner:
-        return this.signalCheckPanel;
-      case UsableRoutes.DvPlanner:
-        return this.dvPlannerPanel;
-      default:
-        throw new Error(`No context panel for context "${context}"`);
-    }
   }
 
   navigationOptions: ActionOption[] = [
@@ -195,97 +142,16 @@ export class HudService {
       () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
   ];
 
-  private get signalCheckPanel(): ActionPanelDetails {
-    let options = [
-      new ActionOption('New Craft', Icons.Craft, {
-        action: () => {
-          this.analyticsService.logEventThrottled(EventLogs.Name.CallNewCraftDialog, {
-            category: EventLogs.Category.Craft,
-          });
-
-          this.dialog.open(CraftDetailsDialogComponent, {
-            data: {
-              forbiddenNames: this.spaceObjectService.crafts$.value.map(c => c.label),
-            } as CraftDetailsDialogData,
-            backdropClass: GlobalStyleClass.MobileFriendly,
-          })
-            .afterClosed()
-            .pipe(
-              filter(craftDetails => craftDetails),
-              takeUntil(this.unsubscribeDialog$))
-            .subscribe(craftDetails => {
-              this.spaceObjectService.addCraftToUniverse(craftDetails);
-              this.cdr.tick();
-            });
-        },
-      }),
-      new ActionOption('Difficulty Settings', Icons.Difficulty, {
-        action: () => {
-          this.analyticsService.logEvent('Call difficulty settings dialog', {
-            category: EventLogs.Category.Difficulty,
-          });
-
-          this.dialog.open(DifficultySettingsDialogComponent,
-            {data: this.setupService.difficultySetting})
-            .afterClosed()
-            .pipe(
-              filter(details => details),
-              takeUntil(this.unsubscribeDialog$))
-            .subscribe(details => {
-              this.setupService.updateDifficultySetting(details);
-              this.cdr.tick();
-              // todo: refresh universe, because 0 strength transmission lines are still visible
-            });
-        },
-      }),
-      this.createActionOptionTutorial(),
-      // this.createActionOptionManageSaveGames(GameStateType.CommnetPlanner),
-    ];
-
-    return {
-      startTitle: 'CommNet Planner',
-      startIcon: Icons.OpenDetails,
-      color: 'orange',
-      options,
-    };
-  }
-
-  private get dvPlannerPanel(): ActionPanelDetails {
-    let options = [
-      this.createActionOptionTutorial(),
-      // this.createActionOptionManageSaveGames(GameStateType.DvPlanner),
-    ];
-
-    return {
-      startTitle: 'Delta-v Planner',
-      startIcon: Icons.OpenDetails,
-      color: 'orange',
-      options,
-    };
-  }
-
-  private createActionOptionNewCelestialBody() {
-    return new ActionOption('New Celestial Body', Icons.Planet, {action: () => void 0}, undefined, false, undefined,
-      {
-        unavailable$: of(true),
-        tooltip: 'Adding moons, planets, and stars are coming soon!',
-        action: () => {
-          this.analyticsService.logEvent('Call new celestial body dialog', {category: EventLogs.Category.CelestialBody});
-          this.snackBar.open('Adding moons, planets, and stars are coming soon!');
-        },
-      });
-  }
-
-  createActionOptionManageSaveGames(data: ManageStateDialogData): ActionOption {
+  createActionOptionManageSaveGames(hookIO: HookIO<ManageStateDialogComponent>): ActionOption {
     return new ActionOption('Manage Save Games', Icons.Storage, {
         action: () => {
           this.analyticsService.logEvent('Call state dialog', {
             category: EventLogs.Category.State,
           });
 
-          this.dialog.open(ManageStateDialogComponent, {
-            data, backdropClass: GlobalStyleClass.MobileFriendly,
-          });
+          let dialogRef = this.dialog.open(ManageStateDialogComponent,
+            {backdropClass: GlobalStyleClass.MobileFriendly});
+          hookIO(dialogRef);
         },
       }, undefined, false, undefined,
       {
@@ -310,7 +176,7 @@ export class HudService {
     );
   }
 
-  createActionOptionTutorial(): ActionOption {
+  createActionOptionTutorial(gameStateType: GameStateType): ActionOption {
     return new ActionOption('Tutorial', Icons.Help, {
         action: () => {
           this.analyticsService.logEvent('Call tutorial dialog', {
@@ -329,7 +195,7 @@ export class HudService {
           })
             .afterClosed()
             .pipe(filter(ok => ok))
-            .subscribe(() => this.tutorialService.startFullTutorial(this.pageContext));
+            .subscribe(() => this.tutorialService.startFullTutorial(gameStateType));
         },
       },
       undefined,

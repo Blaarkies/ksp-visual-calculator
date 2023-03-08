@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { StepDetails, WizardSpotlightService } from './wizard-spotlight.service';
+import {
+  StepDetails,
+  WizardSpotlightService,
+} from './wizard-spotlight.service';
 import { Icons } from '../common/domain/icons';
 import {
   defer,
   delay,
-  filter, firstValueFrom,
+  filter,
   fromEvent,
   interval,
   map,
@@ -16,13 +19,12 @@ import {
   Subject,
   take,
   takeUntil,
-  timer
+  timer,
 } from 'rxjs';
 import { AnalyticsService } from './analytics.service';
 import { Vector2 } from '../common/domain/vector2';
 import { EventLogs } from './domain/event-logs';
-import { StateService } from './state.service';
-import { UsableRoutes } from '../app.routes';
+import { GameStateType } from '../common/domain/game-state-type';
 
 @Injectable({
   providedIn: 'root',
@@ -32,21 +34,21 @@ export class TutorialService {
   resetTutorial$ = new Subject<void>();
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
-              private analyticsService: AnalyticsService,
-              private stateService: StateService) {
+              private analyticsService: AnalyticsService) {
   }
 
-  async startFullTutorial(context: UsableRoutes) {
+  async startFullTutorial(gameStateType: GameStateType) {
     this.analyticsService.logEvent('Start tutorial', {
       category: EventLogs.Category.Tutorial,
-      context,
+      context: gameStateType,
     });
 
     // reset universe
-    await firstValueFrom(this.stateService.loadState());
+    // TODO: give callback/trigger for method to reset universe
+    // await firstValueFrom(this.stateService.loadState());
 
     this.resetTutorial$.next();
-    let compiledSteps = this.getCompiledSteps(context);
+    let compiledSteps = this.getCompiledSteps(gameStateType);
 
     this.wizardSpotlightService
       .stopTutorial$
@@ -62,7 +64,7 @@ export class TutorialService {
       .subscribe();
   }
 
-  private getCompiledSteps(context: UsableRoutes): Observable<any>[] {
+  private getCompiledSteps(context: GameStateType): Observable<any>[] {
     let stepDetails;
     stepDetails = [
       this.getStepStartOfTutorial(context),
@@ -74,11 +76,11 @@ export class TutorialService {
     return stepDetails.map(detail => this.wizardSpotlightService.compileStep(detail));
   }
 
-  private getStepDetails(context: UsableRoutes) {
+  private getStepDetails(context: GameStateType) {
     switch (context) {
-      case UsableRoutes.CommnetPlanner:
+      case GameStateType.CommnetPlanner:
         return this.getSignalCheckStepDetails();
-      case UsableRoutes.DvPlanner:
+      case GameStateType.DvPlanner:
         return this.getDvPlannerStepDetails();
     }
     throw new Error(`Context "${context}" is not recognized`);
@@ -238,7 +240,7 @@ export class TutorialService {
     return [dragPlanet, moveCamera, zoomCamera];
   }
 
-  private getStepStartOfTutorial(context: UsableRoutes): StepDetails {
+  private getStepStartOfTutorial(context: GameStateType): StepDetails {
     let startTutorialNext$ = new Subject<void>();
     let startTutorial = {
       stepType: 'waitForNext',
@@ -262,7 +264,7 @@ export class TutorialService {
     } as StepDetails;
 
     switch (context) {
-      case UsableRoutes.CommnetPlanner:
+      case GameStateType.CommnetPlanner:
         startTutorial.dialogTitle = 'CommNet Planner Tutorial';
         startTutorial.dialogMessages = [
           'This page helps setup satellite communication networks by letting you place craft with specific antennae.',
@@ -270,7 +272,7 @@ export class TutorialService {
         ];
         startTutorial.dialogIcon = Icons.Relay;
         break;
-      case UsableRoutes.DvPlanner:
+      case GameStateType.DvPlanner:
         startTutorial.dialogTitle = 'Delta-v Mission Tutorial';
         startTutorial.dialogMessages = [
           'This page calculates the required amount of delta-v a rocket needs to reach a specific destination.',
