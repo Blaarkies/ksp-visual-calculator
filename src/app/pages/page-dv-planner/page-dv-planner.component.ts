@@ -3,6 +3,7 @@ import { WithDestroy } from '../../common/with-destroy';
 import { HudService } from '../../services/hud.service';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { AbstractStateService } from '../../services/state.abstract.service';
 import { TravelService } from './services/travel.service';
 import { CommonModule } from '@angular/common';
 import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
@@ -33,6 +34,9 @@ import { DvUniverseBuilderService } from './services/dv-universe-builder.service
 
     MatBottomSheetModule,
   ],
+  providers: [
+    {provide: AbstractStateService, useClass: DvStateService}
+  ],
   templateUrl: './page-dv-planner.component.html',
   styleUrls: ['./page-dv-planner.component.scss', '../temp.calculators.scss'],
 })
@@ -44,7 +48,7 @@ export class PageDvPlannerComponent extends WithDestroy() {
 
   contextPanelDetails: ActionPanelDetails;
   orbits$ = this.dvUniverseBuilderService.orbits$;
-  planets$ = this.dvUniverseBuilderService.celestialBodies$;
+  planets$ = this.dvUniverseBuilderService.planets$;
 
   constructor(
     private hudService: HudService,

@@ -7,7 +7,7 @@ import { SpaceObject } from './space-object';
 import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
 import { WithDestroy } from '../../with-destroy';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { MoveType } from './move-type';
 
 export class Draggable extends WithDestroy() {
@@ -173,7 +173,7 @@ export class Draggable extends WithDestroy() {
       return;
     }
 
-    SpaceObjectContainerService.instance.celestialBodies$.value
+    UniverseContainerInstance.instance.celestialBodies$.value
       .map(cb => cb.draggableHandle)
       .forEach(d => d.removeChild(this));
 
@@ -191,7 +191,7 @@ export class Draggable extends WithDestroy() {
       return;
     }
 
-    let soiParent = SpaceObjectContainerService.instance
+    let soiParent = UniverseContainerInstance.instance
       .getSoiParent(this.location);
 
     if (this.lastActivatedSoi) {

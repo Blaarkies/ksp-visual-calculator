@@ -7,16 +7,16 @@ import { Vector2 } from '../common/domain/vector2';
 @Injectable({
   providedIn: 'root',
 })
-export class SpaceObjectContainerService {
+export class UniverseContainerInstance {
 
   // Removes the circular dependency from Craft <-> SpaceObjectService
-  static instance: SpaceObjectContainerService;
+  static instance: UniverseContainerInstance;
 
   celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
   crafts$ = new BehaviorSubject<Craft[]>(null);
 
   constructor() {
-    SpaceObjectContainerService.instance = this;
+    UniverseContainerInstance.instance = this;
   }
 
   getSoiParent(location: Vector2): SpaceObject {

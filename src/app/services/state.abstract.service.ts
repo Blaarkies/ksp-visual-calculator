@@ -1,41 +1,38 @@
+import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Bytes } from '@firebase/firestore';
 import {
-  delayWhen,
+  gzip,
+  ungzip,
+} from 'pako';
+import {
   firstValueFrom,
   from,
   map,
   Observable,
   Subject,
-  take,
-  takeUntil,
   tap,
-  timestamp,
 } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { GameStateType } from '../common/domain/game-state-type';
-import { StateGame } from './json-interfaces/state-game';
+import { Namer } from '../common/namer';
+import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
+import { StateRow } from '../overlays/manage-state-dialog/state-row';
+import { DataService } from './data.service';
 import { StateCommnetPlanner } from './json-interfaces/state-commnet-planner';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
-import { Namer } from '../common/namer';
-import { environment } from '../../environments/environment';
+import { StateGame } from './json-interfaces/state-game';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
-import { StateRow } from '../overlays/manage-state-dialog/state-row';
-import { SpaceObjectContainerService } from './space-object-container.service';
 import { SetupService } from './setup.service';
-import {
-  gzip,
-  ungzip,
-} from 'pako';
-import { Bytes } from '@firebase/firestore';
-import { DataService } from './data.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
-import { state } from '@angular/animations';
+import { UniverseContainerInstance } from './universe-container-instance.service';
 
+@Injectable({providedIn: 'root'})
 export abstract class AbstractStateService {
 
   protected abstract context: GameStateType;
 
-  protected abstract spaceObjectContainerService: SpaceObjectContainerService;
+  protected abstract spaceObjectContainerService: UniverseContainerInstance;
   protected abstract universeBuilderService: AbstractUniverseBuilderService;
   protected abstract setupService: SetupService;
   protected abstract dataService: DataService;
@@ -45,40 +42,31 @@ export abstract class AbstractStateService {
   private autoSaveUnsubscribe$ = new Subject<void>();
   private lastStateRecord: string;
 
-  setStateRecord(): Observable<unknown> {
-    return this.state.pipe(
-      tap(state => this.lastStateRecord = JSON.stringify(state)),
-    );
+  setStateRecord() {
+    this.lastStateRecord = JSON.stringify(this.state)
   }
 
-  get stateIsUnsaved(): Observable<boolean> {
-    return this.state.pipe(
-      map(state => this.lastStateRecord !== JSON.stringify(state)),
-    );
+  get stateIsUnsaved(): boolean {
+    return this.lastStateRecord !== JSON.stringify(this.state);
   }
 
-  get state(): Observable<StateGame | StateCommnetPlanner | StateDvPlanner> {
-    return this.universeBuilderService.celestialBodies$.pipe(
-      take(1),
-      map(planets => ({
-        name: this.name || Namer.savegame,
-        timestamp: new Date(),
-        context: this.context,
-        version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
-        celestialBodies: planets.map(b => b.toJson()) as StateSpaceObject[],
-      })),
-      tap(state => this.name = state.name));
+  get state(): StateGame | StateCommnetPlanner | StateDvPlanner {
+    let planets = this.universeBuilderService.planets$.value;
+    return {
+      name: this.name,
+      timestamp: new Date(),
+      context: this.context,
+      version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
+      celestialBodies: planets?.map(b => b.toJson()) as StateSpaceObject[],
+    };
   }
 
-  get stateRow(): Observable<StateRow> {
-    return this.state.pipe(
-      map(state => {
-        let {name, timestamp, version} = state;
-        return new StateRow({
-          name, version, state: JSON.stringify(state),
-          timestamp: {seconds: timestamp.getTime() * .001},
-        });
-      }));
+  get stateRow(): StateRow {
+    let {name, timestamp, version} = this.state;
+    return new StateRow({
+      name, version, state: JSON.stringify(this.state),
+      timestamp: {seconds: timestamp.getTime() * .001},
+    });
   }
 
   loadState(state?: string): Observable<void> {
@@ -98,8 +86,7 @@ export abstract class AbstractStateService {
       buildStateResult = this.buildFreshState();
     }
 
-    return buildStateResult.pipe(
-      delayWhen(() => this.setStateRecord()));
+    return buildStateResult.pipe(tap(() => this.setStateRecord()));
   }
 
   protected abstract setStatefulDetails(parsedState: StateGame)

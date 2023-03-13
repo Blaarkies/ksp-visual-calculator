@@ -31,7 +31,7 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
     router: Router,
     cdr: ChangeDetectorRef,
     themeService: ThemeService,
-    authService: AuthService,
+    // authService: AuthService,
     matIconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
   ) {

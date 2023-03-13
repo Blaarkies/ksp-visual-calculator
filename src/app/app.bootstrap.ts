@@ -28,6 +28,7 @@ export const appOptions: ApplicationConfig = {
     ),
     provideAnimations(),
     provideRouter(appRoutes),
+
     {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 4e3}},
   ],
 };

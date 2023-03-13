@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { AbstractStateService } from '../../../services/state.abstract.service';
 import { StateGame } from '../../../services/json-interfaces/state-game';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
@@ -9,7 +10,6 @@ import { CheckpointPreferences } from '../../../common/domain/checkpoint-prefere
 import { GameStateType } from '../../../common/domain/game-state-type';
 import { DataService } from '../../../services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
 import { DvUniverseBuilderService } from './dv-universe-builder.service';
 import {
   map,
@@ -17,14 +17,14 @@ import {
 } from 'rxjs';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class DvStateService extends AbstractStateService {
 
   protected context = GameStateType.DvPlanner;
 
   constructor(
-    protected spaceObjectContainerService: SpaceObjectContainerService,
+    protected spaceObjectContainerService: UniverseContainerInstance,
     protected universeBuilderService: DvUniverseBuilderService,
     protected setupService: SetupService,
     protected dataService: DataService,
@@ -36,18 +36,17 @@ export class DvStateService extends AbstractStateService {
     this.loadState().subscribe();
   }
 
-  get state(): Observable<StateDvPlanner> {
-    return super.state.pipe(
-      map(state => ({
-        ...state,
-        settings: {
-          ...state.settings,
-          preferences: this.setupService.checkpointPreferences$.value,
-        },
-        checkpoints: this.travelService.checkpoints$.value
-          .map(c => c.toJson()) as StateCheckpoint[],
-      })),
-    );
+  get state(): StateDvPlanner {
+    let state = super.state;
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        preferences: this.setupService.checkpointPreferences$.value,
+      },
+      checkpoints: this.travelService.checkpoints$.value
+        .map(c => c.toJson()) as StateCheckpoint[],
+    };
   }
 
   protected setStatefulDetails(parsedState: StateGame) {

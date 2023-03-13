@@ -1,47 +1,51 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
 } from '@angular/core';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { Craft } from '../../common/domain/space-objects/craft';
-import { TransmissionLine } from '../../common/domain/transmission-line';
-import { BasicAnimations } from '../../animations/basic-animations';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatDialog } from '@angular/material/dialog';
 import {
   combineLatest,
   delayWhen,
   filter,
   map,
   Observable,
+  pipe,
   switchMap,
+  take,
   takeUntil,
 } from 'rxjs';
-import {
-  CraftDetailsDialogComponent,
-  CraftDetailsDialogData,
-} from '../../overlays/craft-details-dialog/craft-details-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { AnalyticsService } from '../../services/analytics.service';
-import { WithDestroy } from '../../common/with-destroy';
-import { Icons } from '../../common/domain/icons';
-import { HudService } from '../../services/hud.service';
-import { GlobalStyleClass } from '../../common/global-style-class';
-import { EventLogs } from '../../services/domain/event-logs';
-import { CommonModule } from '@angular/common';
-import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
-import { TransmissionLineComponent } from '../../components/transmission-line/transmission-line.component';
-import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { ActionOption } from '../../common/domain/action-option';
 import { GameStateType } from '../../common/domain/game-state-type';
+import { Icons } from '../../common/domain/icons';
+import { Craft } from '../../common/domain/space-objects/craft';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { TransmissionLine } from '../../common/domain/transmission-line';
+import { GlobalStyleClass } from '../../common/global-style-class';
+import { WithDestroy } from '../../common/with-destroy';
+import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
+import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
 import {
   ActionPanelDetails,
   HudComponent,
 } from '../../components/hud/hud.component';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
-import { ActionOption } from '../../common/domain/action-option';
-import { DifficultySettingsDialogComponent } from '../../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
-import { SetupService } from '../../services/setup.service';
+import { TransmissionLineComponent } from '../../components/transmission-line/transmission-line.component';
+import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
-import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
+import {
+  CraftDetailsDialogComponent,
+  CraftDetailsDialogData,
+} from '../../overlays/craft-details-dialog/craft-details-dialog.component';
+import { DifficultySettingsDialogComponent } from '../../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import { AnalyticsService } from '../../services/analytics.service';
+import { EventLogs } from '../../services/domain/event-logs';
+import { HudService } from '../../services/hud.service';
+import { SetupService } from '../../services/setup.service';
+import { AbstractStateService } from '../../services/state.abstract.service';
+import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
 
@@ -59,6 +63,9 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
     ZoomIndicatorComponent,
     FocusJumpToPanelComponent,
   ],
+  providers: [
+    {provide: AbstractStateService, useClass: CommnetStateService},
+  ],
   templateUrl: './page-commnet-planner.component.html',
   styleUrls: ['./page-commnet-planner.component.scss', '../temp.calculators.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,10 +74,10 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
 export class PageCommnetPlannerComponent extends WithDestroy() {
 
   icons = Icons;
-  transmissionLines$ = this.commnetUniverseBuilderService.transmissionLines$;
-  crafts$ = this.commnetUniverseBuilderService.crafts$;
-  orbits$ = this.commnetUniverseBuilderService.orbits$;
-  planets$ = this.commnetUniverseBuilderService.celestialBodies$;
+  signals$ = this.commnetUniverseBuilderService.signals$.stream$;
+  crafts$ = this.commnetUniverseBuilderService.craft$.stream$;
+  orbits$ = this.commnetUniverseBuilderService.orbits$.stream$;
+  planets$ = this.commnetUniverseBuilderService.planets$.stream$;
 
   contextPanelDetails: ActionPanelDetails;
   focusables$: Observable<SpaceObject[]>;
@@ -81,18 +88,14 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
               private hudService: HudService,
               private setupService: SetupService,
               private commnetStateService: CommnetStateService,
-              private commnetUniverseBuilderService: CommnetUniverseBuilderService,
-  ) {
+              private commnetUniverseBuilderService: CommnetUniverseBuilderService) {
     super();
 
     this.contextPanelDetails = this.getContextPanelDetails();
-    this.focusables$ = combineLatest([
-      this.crafts$,
-      this.commnetUniverseBuilderService.celestialBodies$,
-    ]).pipe(
-      filter(([craft, planets]) => !!craft && !!planets),
-      map(lists => lists.flatMap() as SpaceObject[]),
-    );
+    this.focusables$ = combineLatest([this.crafts$, this.planets$])
+      .pipe(
+        filter(([craft, planets]) => !!craft && !!planets),
+        map(lists => lists.flatMap() as SpaceObject[]));
   }
 
   private getContextPanelDetails(): ActionPanelDetails {
@@ -103,17 +106,18 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
             category: EventLogs.Category.Craft,
           });
 
-          this.commnetUniverseBuilderService.crafts$.pipe(
-            switchMap(allCraft => this.dialog.open(CraftDetailsDialogComponent, {
-              data: {
-                forbiddenNames: allCraft.map(c => c.label),
-              } as CraftDetailsDialogData,
-              backdropClass: GlobalStyleClass.MobileFriendly,
-            })
-              .afterClosed()),
-            filter(craftDetails => craftDetails),
-            delayWhen(craftDetails => this.commnetUniverseBuilderService.addCraftToUniverse(craftDetails)),
-            takeUntil(this.destroy$))
+          let allCraft = this.commnetUniverseBuilderService.craft$.value;
+          this.dialog.open(CraftDetailsDialogComponent, {
+            data: {
+              forbiddenNames: allCraft.map(c => c.label),
+            } as CraftDetailsDialogData,
+            backdropClass: GlobalStyleClass.MobileFriendly,
+          })
+            .afterClosed()
+            .pipe(
+              filter(craftDetails => craftDetails),
+              delayWhen(craftDetails => this.commnetUniverseBuilderService.addCraftToUniverse(craftDetails)),
+              takeUntil(this.destroy$))
             .subscribe(() => {
               // this.cdr.tick();
             });
@@ -149,8 +153,6 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
       this.hudService.createActionOptionFaq(GameStateType.CommnetPlanner),
     ];
 
-    this.commnetStateService.stateRow;
-
     return {
       startTitle: 'CommNet Planner',
       startIcon: Icons.OpenDetails,
@@ -171,18 +173,19 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
       category: EventLogs.Category.Craft,
     });
 
-    this.commnetUniverseBuilderService.crafts$.pipe(
-      switchMap(allCraft => this.dialog.open(CraftDetailsDialogComponent, {
-        data: {
-          forbiddenNames: allCraft.map(c => c.label),
-          edit: craft,
-        } as CraftDetailsDialogData,
-        backdropClass: GlobalStyleClass.MobileFriendly,
-      })
-        .afterClosed()),
-      filter(details => details),
-      delayWhen(details => this.commnetUniverseBuilderService.editCraft(craft, details)),
-      takeUntil(this.destroy$))
+    let allCraft = this.commnetUniverseBuilderService.craft$.value;
+    this.dialog.open(CraftDetailsDialogComponent, {
+      data: {
+        forbiddenNames: allCraft.map(c => c.label),
+        edit: craft,
+      } as CraftDetailsDialogData,
+      backdropClass: GlobalStyleClass.MobileFriendly,
+    })
+      .afterClosed()
+      .pipe(
+        filter(details => details),
+        delayWhen(details => this.commnetUniverseBuilderService.editCraft(craft, details)),
+        takeUntil(this.destroy$))
       .subscribe(() => {
         // this.cdr.markForCheck();
       });
@@ -193,7 +196,7 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
   }
 
   trackSignal(index: number, item: TransmissionLine): string {
-    return item.id;
+    return item.nodes[0].label + item.nodes[1].label;
   }
 
 }

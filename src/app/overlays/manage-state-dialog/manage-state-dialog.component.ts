@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
@@ -9,21 +10,26 @@ import {
   ViewChildren,
   ViewEncapsulation,
 } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
-import { Icons } from '../../common/domain/icons';
 import {
   FormControl,
   UntypedFormControl,
   Validators,
 } from '@angular/forms';
-import { CommonValidators } from '../../common/validators/common-validators';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import {
+  MatListModule,
+  MatSelectionList,
+} from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   delay,
   filter,
   finalize,
-  firstValueFrom,
   map,
   Observable,
   of,
@@ -33,26 +39,19 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
-import { StateRow } from './state-row';
-import { StateEntry } from './state-entry';
-import {
-  MatListModule,
-  MatSelectionList,
-} from '@angular/material/list';
 import { BasicAnimations } from '../../animations/basic-animations';
+import { GameStateType } from '../../common/domain/game-state-type';
+import { Icons } from '../../common/domain/icons';
+import { CommonValidators } from '../../common/validators/common-validators';
+import { WithDestroy } from '../../common/with-destroy';
+import { StateDisplayComponent } from '../../components/state-display/state-display.component';
+import { FileDropDirective } from '../../directives/file-drop.directive';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
-import { CommonModule } from '@angular/common';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { StateDisplayComponent } from '../../components/state-display/state-display.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { FileDropDirective } from '../../directives/file-drop.directive';
-import { MatIconModule } from '@angular/material/icon';
-import { GameStateType } from '../../common/domain/game-state-type';
 import { AbstractStateService } from '../../services/state.abstract.service';
+import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
+import { StateEntry } from './state-entry';
+import { StateRow } from './state-row';
 
 @Component({
   selector: 'cp-manage-state-dialog',
@@ -106,7 +105,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
   }
 
   async ngOnInit() {
-    this.nowState = await firstValueFrom(this.stateHandler.stateRow);
+    this.nowState = this.stateHandler.stateRow;
     this.states$ = this.getStates().pipe(startWith([]));
     this.states$
       .pipe(
@@ -131,7 +130,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     // if the current loaded state is the one being renamed, then update nowState as well
     if (this.nowState.name === oldName) {
       this.stateHandler.renameCurrentState(state.name);
-      this.nowState = await firstValueFrom(this.stateHandler.stateRow);
+      this.nowState = this.stateHandler.stateRow;
     }
 
     this.analyticsService.logEvent('Edit state name', {
@@ -184,7 +183,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     this.buttonLoaders.load$.next(true);
     this.stateHandler.loadState(selectedState.state)
       .pipe(
-        switchMap(() => this.stateHandler.stateRow),
+        map(() => this.stateHandler.stateRow),
         finalize(() => this.buttonLoaders.load$.next(false)),
         takeUntil(this.destroy$))
       .subscribe(state => {
@@ -203,7 +202,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     this.buttonLoaders.new$.next(true);
     this.stateHandler.loadState()
       .pipe(
-        switchMap(() => this.stateHandler.stateRow),
+        map(() => this.stateHandler.stateRow),
         finalize(() => this.buttonLoaders.new$.next(false)),
         takeUntil(this.destroy$))
       .subscribe(state => {
@@ -245,7 +244,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
       let stateString: string = await files[0].text();
       await this.stateHandler.importState(stateString);
 
-      this.nowState = await firstValueFrom(this.stateHandler.stateRow);
+      this.nowState = this.stateHandler.stateRow;
       await this.stateHandler.saveState(this.nowState);
       this.updateStates();
 

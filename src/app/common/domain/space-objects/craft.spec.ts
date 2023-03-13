@@ -1,6 +1,6 @@
 import { Craft } from './craft';
 import { CraftType } from './craft-type';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { Vector2 } from '../vector2';
 import { SpaceObject } from './space-object';
 
@@ -16,11 +16,11 @@ let craftType = CraftType.Relay;
 describe('Craft class', () => {
 
   beforeEach(() => {
-    new SpaceObjectContainerService();
+    new UniverseContainerInstance();
   });
 
   afterAll(() => {
-    delete SpaceObjectContainerService.instance;
+    delete UniverseContainerInstance.instance;
   });
 
   describe('displayAltitude', () => {
@@ -63,7 +63,7 @@ describe('Craft class', () => {
         ? `craft at "${scenario.craftLocation.toList()}" should have altitude "${scenario.expectedAltitude}" over planet with ${scenario.equatorialRadius} m radius`
         : `craft at "${scenario.craftLocation.toList()}" should have altitude "${scenario.expectedAltitude}"`;
       it(itName, () => {
-        SpaceObjectContainerService.instance.getSoiParent = () => ({
+        UniverseContainerInstance.instance.getSoiParent = () => ({
           location: Vector2.zero,
           equatorialRadius: scenario.equatorialRadius,
         } as SpaceObject);

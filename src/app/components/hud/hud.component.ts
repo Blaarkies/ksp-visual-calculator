@@ -19,6 +19,7 @@ import {
   firstValueFrom,
   map,
   Observable,
+  of,
   takeUntil,
 } from 'rxjs';
 import {
@@ -106,7 +107,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   isHandset$: Observable<boolean>;
   icons = Icons;
   actionGroupTypes = ActionGroupType;
-  hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
+  hasBoughtCoffee$ = of(true)//TODO: this.auth.user$.pipe(map(u => u?.isCustomer));
 
   lastTheme: string;
   themeIconMap = {

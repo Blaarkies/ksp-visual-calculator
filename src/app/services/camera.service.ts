@@ -2,7 +2,7 @@ import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
 import { Vector2 } from '../common/domain/vector2';
 import { Draggable } from '../common/domain/space-objects/draggable';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
-import { SpaceObjectContainerService } from './space-object-container.service';
+import { UniverseContainerInstance } from './universe-container-instance.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { ReplaySubject } from 'rxjs';
 
@@ -124,7 +124,7 @@ export class CameraService {
   }
 
   private getScaleForCraft(newLocation: Vector2): number {
-    let spaceObjectContainerService = SpaceObjectContainerService.instance;
+    let spaceObjectContainerService = UniverseContainerInstance.instance;
     let parent = spaceObjectContainerService.getSoiParent(newLocation);
     return this.getScaleForFocus(newLocation, parent.type);
   }

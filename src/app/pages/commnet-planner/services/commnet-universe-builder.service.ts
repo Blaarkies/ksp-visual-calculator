@@ -1,59 +1,56 @@
 import { Injectable } from '@angular/core';
-import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
-import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
-import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
+import { takeUntil } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { SetupService } from 'src/app/services/setup.service';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
-import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
-import { Craft } from '../../../common/domain/space-objects/craft';
-import { StateCraft } from '../../../services/json-interfaces/state-craft';
-import {
-  combineLatest,
-  firstValueFrom,
-  map,
-  ReplaySubject,
-  take,
-  takeUntil,
-} from 'rxjs';
-import { TransmissionLine } from '../../../common/domain/transmission-line';
-import { CraftDetails } from '../../../overlays/craft-details-dialog/craft-details';
-import { EventLogs } from '../../../services/domain/event-logs';
-import { Group } from '../../../common/domain/group';
 import { Antenna } from '../../../common/domain/antenna';
+import { Group } from '../../../common/domain/group';
+import { Craft } from '../../../common/domain/space-objects/craft';
+import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
+import { TransmissionLine } from '../../../common/domain/transmission-line';
+import { Vector2 } from '../../../common/domain/vector2';
+import { SubjectHandle } from '../../../common/subject-handle';
+import { CraftDetails } from '../../../overlays/craft-details-dialog/craft-details';
 import { CameraService } from '../../../services/camera.service';
+import { EventLogs } from '../../../services/domain/event-logs';
+import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
+import { StateCraft } from '../../../services/json-interfaces/state-craft';
+import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
+import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService {
 
-  crafts$ = new ReplaySubject<Craft[]>();
-  transmissionLines$ = new ReplaySubject<TransmissionLine[]>();
-
-  celestialBodies$ = new ReplaySubject<SpaceObject[]>();
+  craft$ = new SubjectHandle<Craft[]>();
+  signals$ = new SubjectHandle<TransmissionLine[]>();
 
   constructor(
+    protected spaceObjectContainerService: UniverseContainerInstance,
     protected setupService: SetupService,
     protected analyticsService: AnalyticsService,
-
-    private spaceObjectContainerService: SpaceObjectContainerService,
     private cameraService: CameraService,
   ) {
-    super();
+    super(new SubjectHandle<SpaceObject[]>());
+    // TODO: remove this
+    this.craft$.stream$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(craft => {
+        this.spaceObjectContainerService.crafts$.next(craft);
+      });
   }
 
   protected async setDetails() {
     await super.setDetails();
 
-    this.crafts$.next([]);
-    this.transmissionLines$.next([]);
+    this.craft$.set([]);
+    this.signals$.set([]);
 
     // todo: hasDsn is removed. add default tracking station another way
-    let planets = await firstValueFrom<SpaceObject[]>(this.celestialBodies$);
-    let needsBasicDsn = planets
+    let needsBasicDsn = this.planets$.value
       .find(cb => cb.hasDsn && cb.antennae?.length === 0);
     if (needsBasicDsn) {
       needsBasicDsn.antennae.push(
@@ -103,16 +100,16 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         b.draggableHandle.updateConstrainLocation(parameters);
       }
     });
-    this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
+    this.planets$.set(bodies.map(([b]: [SpaceObject]) => b));
 
     craft.forEach(c => c.draggableHandle.updateConstrainLocation(
       new OrbitParameterData(
         craftJsonMap.get(c).location, // setChildren() above resets craft locations. get original location from json
         undefined,
         c.draggableHandle.parent)));
-    this.crafts$.next(craft);
+    this.craft$.set(craft);
 
-    this.transmissionLines$.next([]);
+    this.signals$.set([]);
     this.updateTransmissionLines();
   }
 
@@ -135,16 +132,8 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   }
 
   updateTransmissionLines() {
-    combineLatest([this.celestialBodies$, this.crafts$, this.transmissionLines$])
-      .pipe(
-        take(1),
-        map(([planets, craft, signals]) => ({
-          nodes: planets.concat(craft),
-          signals,
-        })),
-        takeUntil(this.destroy$))
-      .subscribe(({nodes, signals}) => this.transmissionLines$.next(
-        this.getFreshTransmissionLines(nodes, signals)));
+    let nodes = this.planets$.value.concat(this.craft$.value);
+    this.signals$.set(this.getFreshTransmissionLines(nodes, this.signals$.value));
   }
 
   private addCraft(details: CraftDetails, allCraft: Craft[]) {
@@ -152,15 +141,14 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       ?? this.cameraService.convertScreenToGameSpace(this.cameraService.screenCenterOffset);
 
     let craft = new Craft(details.name, details.craftType, details.antennae);
-    let parent = this.spaceObjectContainerService.getSoiParent(location);
+    let parent = this.getSoiParent(location);
     parent.draggableHandle.addChild(craft.draggableHandle);
     craft.draggableHandle.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggableHandle));
-    this.crafts$.next([...allCraft, craft]);
+    this.craft$.set([...allCraft, craft]);
   }
 
   async addCraftToUniverse(details: CraftDetails) {
-    let allCraft = await this.getAllCraft();
-    this.addCraft(details, allCraft);
+    this.addCraft(details, this.craft$.value);
     this.updateTransmissionLines();
 
     this.analyticsService.logEvent('Add craft', {
@@ -175,21 +163,18 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     });
   }
 
-  private async getAllCraft(): Promise<Craft[]> {
-    return firstValueFrom<Craft[]>(this.crafts$);
-  }
-
   async editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
     let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
-    let parent = craftDetails.advancedPlacement?.orbitParent ?? this.spaceObjectContainerService.getSoiParent(oldCraft.location);
+    let parent = craftDetails.advancedPlacement?.orbitParent
+      ?? this.getSoiParent(oldCraft.location);
+
     parent.draggableHandle.replaceChild(oldCraft.draggableHandle, newCraft.draggableHandle);
     newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(
       craftDetails.advancedPlacement?.location?.toList() ?? oldCraft.location.toList(),
       undefined,
       parent.draggableHandle));
 
-    let allCraft = await this.getAllCraft();
-    this.crafts$.next(allCraft.replace(oldCraft, newCraft));
+    this.craft$.set(list => list.replace(oldCraft, newCraft));
     this.updateTransmissionLines();
 
     this.analyticsService.logEvent('Edit craft', {
@@ -214,8 +199,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   async removeCraft(existing: Craft) {
     existing.draggableHandle.parent.removeChild(existing.draggableHandle);
 
-    let allCraft = await this.getAllCraft();
-    this.crafts$.next(allCraft.remove(existing));
+    this.craft$.set(list => list.remove(existing));
     this.updateTransmissionLines();
 
     this.analyticsService.logEvent('Remove craft', {
@@ -228,6 +212,13 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         })),
       },
     });
+  }
+
+  getSoiParent(location: Vector2): SpaceObject {
+    return this.planets$.value
+      .filter(cb => !cb.sphereOfInfluence || location.distance(cb.location) <= cb.sphereOfInfluence)
+      .sort((a, b) => a.location.distance(location) - b.location.distance(location))
+      .first();
   }
 
 }

@@ -1,12 +1,15 @@
-import { Component, Input } from '@angular/core';
-import { StateGame } from '../../services/json-interfaces/state-game';
-import { StateCommnetPlanner } from '../../services/json-interfaces/state-commnet-planner';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+} from '@angular/core';
+import { GameStateType } from '../../common/domain/game-state-type';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
+import { StateCommnetPlanner } from '../../services/json-interfaces/state-commnet-planner';
 import { StateDvPlanner } from '../../services/json-interfaces/state-dv-planner';
-import { CommonModule } from '@angular/common';
-import { GameStateType } from '../../common/domain/game-state-type';
+import { StateGame } from '../../services/json-interfaces/state-game';
 
 @Component({
   selector: 'cp-state-display',

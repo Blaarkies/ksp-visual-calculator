@@ -13,7 +13,7 @@ import { SetupService } from './setup.service';
 import { CelestialBodyDetails } from '../overlays/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService } from './analytics.service';
 import { WithDestroy } from '../common/with-destroy';
-import { SpaceObjectContainerService } from './space-object-container.service';
+import { UniverseContainerInstance } from './universe-container-instance.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { StateCommnetPlanner } from './json-interfaces/state-commnet-planner';
 import { StateCraft } from './json-interfaces/state-craft';
@@ -36,7 +36,7 @@ export class SpaceObjectService extends WithDestroy() {
   constructor(private cameraService: CameraService,
               private setupService: SetupService,
               private analyticsService: AnalyticsService,
-              private spaceObjectContainerService: SpaceObjectContainerService) {
+              private spaceObjectContainerService: UniverseContainerInstance) {
     super();
   }
 

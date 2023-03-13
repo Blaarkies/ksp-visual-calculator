@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { AnalyticsEventName, EventLogs } from './event-logs';
 import { Subject, throttleTime } from 'rxjs';
 import { getApp } from '@angular/fire/app';
 import { Analytics, initializeAnalytics, logEvent, setAnalyticsCollectionEnabled } from '@angular/fire/analytics';
+import {
+  AnalyticsEventName,
+  EventLogs,
+} from './domain/event-logs';
 
 let localStorageKeys = {
   doNotTrack: 'ksp-visual-calculator-user-opted-out-of-tracking',
@@ -37,9 +40,7 @@ class ThrottledEvents {
 
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class AnalyticsService {
 
   isTracking: boolean;
@@ -47,13 +48,13 @@ export class AnalyticsService {
   private throttledEvents = new ThrottledEvents(this);
 
   constructor() {
-    let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
+/*    let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
     if (optedOut?.toBoolean()) {
       this.isTracking = false;
       return;
     }
 
-    this.setupAnalytics();
+    this.setupAnalytics();*/
   }
 
   private setupAnalytics() {
@@ -76,7 +77,7 @@ export class AnalyticsService {
   }
 
   logEvent(name: string, details?: any) {
-    let newDetails = {
+/*    let newDetails = {
       ...this.flattenObject(details),
       environment: environment.production ? 'prod' : 'dev',
     };
@@ -84,7 +85,7 @@ export class AnalyticsService {
       ? logEvent(this.analyticsInstance, name, newDetails)
       // tslint:disable-next-line:no-console
       : console.info('%c analytics.logEvent()', 'color: #9ff',
-        name, newDetails);
+        name, newDetails);*/
   }
 
   private flattenObject(object: {} | null, parentKey = ''): {} {

@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
-import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
-import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
-import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
-import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
-import { TravelService } from './travel.service';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { SetupService } from 'src/app/services/setup.service';
-import {
-  firstValueFrom,
-  ReplaySubject,
-} from 'rxjs';
+import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
+import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
+import { SubjectHandle } from '../../../common/subject-handle';
+import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
+import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
+import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
+import { TravelService } from './travel.service';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
 
-  celestialBodies$ = new ReplaySubject<SpaceObject[]>();
-
   constructor(
+    protected spaceObjectContainerService: UniverseContainerInstance,
     protected setupService: SetupService,
     protected analyticsService: AnalyticsService,
 
     private travelService: TravelService,
   ) {
-    super();
+    super(new SubjectHandle<SpaceObject[]>());
   }
 
   protected async setDetails() {
@@ -67,10 +64,9 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
         b.draggableHandle.updateConstrainLocation(parameters);
       }
     });
-    this.celestialBodies$.next(bodies.map(([b]: [SpaceObject]) => b));
+    this.planets$.set(bodies.map(([b]: [SpaceObject]) => b));
 
-    let planets = await firstValueFrom<SpaceObject[]>(this.celestialBodies$);
-    let getBodyByLabel = (label: string) => planets.find(b => b.label.like(label));
+    let getBodyByLabel = (label: string) => this.planets$.value.find(b => b.label.like(label));
     this.travelService.buildState(jsonCheckpoints, getBodyByLabel);
   }
 

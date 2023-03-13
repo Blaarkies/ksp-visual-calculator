@@ -1,30 +1,26 @@
 import { Injectable } from '@angular/core';
-import { AbstractStateService } from '../../../services/state.abstract.service';
-import { GameStateType } from '../../../common/domain/game-state-type';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
-import { SetupService } from '../../../services/setup.service';
-import { DataService } from '../../../services/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { StateGame } from '../../../services/json-interfaces/state-game';
-import {
-  combineLatest,
-  map,
-  Observable,
-} from 'rxjs';
-import { StateCraft } from '../../../services/json-interfaces/state-craft';
-import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
+import { Observable } from 'rxjs';
+import { GameStateType } from '../../../common/domain/game-state-type';
 import { DifficultySetting } from '../../../overlays/difficulty-settings-dialog/difficulty-setting';
+import { DataService } from '../../../services/data.service';
+import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
+import { StateCraft } from '../../../services/json-interfaces/state-craft';
+import { StateGame } from '../../../services/json-interfaces/state-game';
+import { SetupService } from '../../../services/setup.service';
+import { AbstractStateService } from '../../../services/state.abstract.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 
 @Injectable({
-  providedIn: 'any',
+  providedIn: 'root',
 })
 export class CommnetStateService extends AbstractStateService {
 
   protected context = GameStateType.CommnetPlanner;
 
   constructor(
-    protected spaceObjectContainerService: SpaceObjectContainerService,
+    protected spaceObjectContainerService: UniverseContainerInstance,
     protected universeBuilderService: CommnetUniverseBuilderService,
     protected setupService: SetupService,
     protected dataService: DataService,
@@ -34,18 +30,17 @@ export class CommnetStateService extends AbstractStateService {
     this.loadState().subscribe();
   }
 
-  get state(): Observable<StateCommnetPlanner> {
-    return combineLatest([super.state, this.universeBuilderService.crafts$])
-      .pipe(
-        map(([state, allCraft]) => ({
-          ...state,
-          settings: {
-            ...state.settings,
-            difficulty: this.setupService.difficultySetting,
-          },
-          craft: allCraft.map(b => b.toJson()) as StateCraft[],
-        })),
-      );
+  get state(): StateCommnetPlanner {
+    let state = super.state;
+    let craft = this.universeBuilderService.craft$.value;
+      return {
+      ...state,
+      settings: {
+        ...state.settings,
+        difficulty: this.setupService.difficultySetting,
+      },
+      craft: craft?.map(b => b.toJson()) as StateCraft[],
+    };
   }
 
   protected setStatefulDetails(parsedState: StateGame) {

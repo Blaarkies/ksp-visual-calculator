@@ -6,7 +6,7 @@
 
   <ng-container aboveOrbits>
     <cp-transmission-line [@fade]
-                          *ngFor="let line of transmissionLines$ | async; trackBy: trackSignal"
+                          *ngFor="let line of signals$ | async; trackBy: trackSignal"
                           [transmissionLine]="line"
                           [scale]="universe.camera.scale">
     </cp-transmission-line>

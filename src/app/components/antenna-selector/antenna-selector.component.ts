@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import {UntypedFormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { FormControlError } from '../../common/domain/input-fields/form-control-error';
@@ -29,6 +30,7 @@ import {InputSelectComponent} from "../controls/input-select/input-select.compon
     ReactiveFormsModule,
     MatTooltipModule,
     MatIconModule,
+    MatButtonModule,
     InputSelectComponent,
     AntennaStatsComponent,
   ],

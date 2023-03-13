@@ -14,7 +14,6 @@ import {
 } from 'rxjs';
 import { Router } from '@angular/router';
 import { DataService, UserData } from './data.service';
-import { StateService } from './state.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
@@ -32,6 +31,7 @@ import {
   UserCredential,
 } from '@angular/fire/auth';
 import { authState, user } from 'rxfire/auth';
+import { AbstractStateService } from './state.abstract.service';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +43,7 @@ export class AuthService {
   constructor(private auth: Auth,
               private router: Router,
               private dataService: DataService,
-              private stateService: StateService,
+              private stateService: AbstractStateService,
               private snackBar: MatSnackBar,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
@@ -58,7 +58,7 @@ export class AuthService {
           : of(null)) as Observable<UserData>),
         shareReplay(1));
 
-    stateService.earlyState
+/*    stateService.earlyState
       .pipe(
         map(state => JSON.stringify(stateService.getTimestamplessState(state))),
         switchMap(state => zip(of(state), this.user$)),
@@ -86,7 +86,7 @@ export class AuthService {
           return stateService.loadState(newestState.state);
         }),
       )
-      .subscribe();
+      .subscribe();*/
   }
 
   async googleSignIn(agreedPolicy: boolean) {
