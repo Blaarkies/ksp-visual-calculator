@@ -12,9 +12,6 @@ import {
   filter,
   map,
   Observable,
-  pipe,
-  switchMap,
-  take,
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
@@ -44,8 +41,6 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
 import { HudService } from '../../services/hud.service';
 import { SetupService } from '../../services/setup.service';
-import { AbstractStateService } from '../../services/state.abstract.service';
-import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
 
@@ -62,9 +57,6 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
     MatBottomSheetModule,
     ZoomIndicatorComponent,
     FocusJumpToPanelComponent,
-  ],
-  providers: [
-    {provide: AbstractStateService, useClass: CommnetStateService},
   ],
   templateUrl: './page-commnet-planner.component.html',
   styleUrls: ['./page-commnet-planner.component.scss', '../temp.calculators.scss'],

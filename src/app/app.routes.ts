@@ -19,8 +19,7 @@ export enum UsableRoutes {
 const routes: Routes = [
   {
     path: UsableRoutes.CommnetPlanner,
-    loadComponent: () => import('./pages/commnet-planner/page-commnet-planner.component')
-      .then(m => m.PageCommnetPlannerComponent),
+    loadComponent: () => import('./pages/commnet-planner/provider/page-commnet-planner.provider'),
   },
 
   {
