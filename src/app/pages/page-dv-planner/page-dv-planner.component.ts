@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+} from '@angular/core';
 import { WithDestroy } from '../../common/with-destroy';
 import { HudService } from '../../services/hud.service';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
@@ -40,15 +43,15 @@ import { DvUniverseBuilderService } from './services/dv-universe-builder.service
   templateUrl: './page-dv-planner.component.html',
   styleUrls: ['./page-dv-planner.component.scss', '../temp.calculators.scss'],
 })
-export class PageDvPlannerComponent extends WithDestroy() {
+export class PageDvPlannerComponent extends WithDestroy() implements OnDestroy {
 
   icons = Icons;
-  checkpoints$ = this.travelService.checkpoints$.asObservable();
+  checkpoints$ = this.travelService.checkpoints$.stream$;
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
 
   contextPanelDetails: ActionPanelDetails;
-  orbits$ = this.dvUniverseBuilderService.orbits$;
-  planets$ = this.dvUniverseBuilderService.planets$;
+  orbits$ = this.dvUniverseBuilderService.orbits$.stream$;
+  planets$ = this.dvUniverseBuilderService.planets$.stream$;
 
   constructor(
     private hudService: HudService,
@@ -57,13 +60,13 @@ export class PageDvPlannerComponent extends WithDestroy() {
     private travelService: TravelService,
   ) {
     super();
-    super.ngOnDestroy = () => {
-      // workaround, error NG2007: Class is using Angular features but is not decorated.
-      super.ngOnDestroy();
-      this.travelService.unsubscribeFromComponent();
-    };
 
     this.contextPanelDetails = this.getContextPanelDetails();
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.travelService.unsubscribeFromComponent();
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

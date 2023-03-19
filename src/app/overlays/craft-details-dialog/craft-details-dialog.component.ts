@@ -1,5 +1,9 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Inject,
+  ViewEncapsulation,
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -7,39 +11,46 @@ import {
   FormGroup,
   ValidationErrors,
   ValidatorFn,
-  Validators
+  Validators,
 } from '@angular/forms';
-import { CraftType } from '../../common/domain/space-objects/craft-type';
-import { InputField, InputFields } from '../../common/domain/input-fields/input-fields';
-import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { takeUntil } from 'rxjs';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { Group } from '../../common/domain/group';
+import { Icons } from '../../common/domain/icons';
 import { ControlMetaAntennaSelector } from '../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
-import { CommonValidators } from '../../common/validators/common-validators';
-import { Craft } from '../../common/domain/space-objects/craft';
-import { CraftDetails } from './craft-details';
-import { SetupService } from '../../services/setup.service';
-import { Group } from '../../common/domain/group';
-import { SpaceObjectService } from '../../services/space-object.service';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
-import { WithDestroy } from '../../common/with-destroy';
-import { Icons } from '../../common/domain/icons';
-import { BasicAnimations } from '../../animations/basic-animations';
-import { AdvancedPlacement } from './advanced-placement';
+import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
-import { takeUntil } from 'rxjs';
-import {CommonModule} from "@angular/common";
-import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatDividerModule} from "@angular/material/divider";
+import {
+  InputField,
+  InputFields,
+} from '../../common/domain/input-fields/input-fields';
+import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { Craft } from '../../common/domain/space-objects/craft';
+import { CraftType } from '../../common/domain/space-objects/craft-type';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { CommonValidators } from '../../common/validators/common-validators';
+import { WithDestroy } from '../../common/with-destroy';
+import { InputFieldListComponent } from '../../components/controls/input-field-list/input-field-list.component';
+import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
+import { AdvancedPlacement } from './advanced-placement';
+import { CraftDetails } from './craft-details';
 
 export class CraftDetailsDialogData {
   forbiddenNames: string[];
   edit?: Craft;
+  universeBuilderHandler: CommnetUniverseBuilderService;
 }
 
 @Component({
@@ -62,67 +73,24 @@ export class CraftDetailsDialogData {
 })
 export class CraftDetailsDialogComponent extends WithDestroy() {
 
-  inputFields = {
-    name: {
-      label: 'Name',
-      control: new FormControl(this.data.edit?.label ?? 'Untitled Space Craft', [
-        Validators.required,
-        Validators.maxLength(128),
-        CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
-      ),
-      controlMeta: new ControlMetaInput(),
-    },
-    craftType: {
-      label: 'Type',
-      control: new FormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
-      controlMeta: new ControlMetaSelect(CraftType.List, undefined, 'Icon to represent this craft'),
-    },
-    antennaSelection: {
-      label: 'Antennae Onboard',
-      control: new FormControl(this.data.edit?.antennae ?? [new Group(this.setupService.getAntenna('Internal'))]),
-      controlMeta: new ControlMetaAntennaSelector(this.setupService.antennaList),
-    },
-  } as InputFields;
-  inputListCraft = [this.inputFields.name, this.inputFields.craftType];
-  inputListAntenna = [this.inputFields.antennaSelection];
-  inputFieldsList = Object.values(this.inputFields);
-
-  private orbitParentOptions = this.spaceObjectService.celestialBodies$.value
-    .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
-  advancedInputFields = {
-    orbitParent: {
-      label: 'Orbit Parent',
-      control: new FormControl<SpaceObject>(null),
-      controlMeta: new ControlMetaSelect(
-        this.orbitParentOptions,
-        new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
-    },
-    altitude: {} as InputField,
-    angle: {
-      label: 'Angle',
-      control: new FormControl<number>(null),
-      controlMeta: {
-        type: ControlMetaType.Number,
-        min: 0,
-        max: 360,
-        factor: 1,
-        suffix: '°',
-      } as ControlMetaNumber,
-    },
-  } as InputFields;
   advancedInputFieldsList: InputField[];
   advancedForm: FormGroup;
-  advancedIsOpen = false;
-
+  advancedIsOpen = false
   form: FormArray;
-
+  inputListCraft: InputField[];
+  inputListAntenna: InputField[];
   Icons = Icons;
 
+  private inputFields: InputFields;
+  private inputFieldsList: InputField[];
+  private orbitParentOptions: LabeledOption<SpaceObject>[];
+  private advancedInputFields: InputFields;
+
   constructor(private dialogRef: MatDialogRef<CraftDetailsDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData,
-              private setupService: SetupService,
-              private spaceObjectService: SpaceObjectService) {
+              @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData) {
     super();
+
+    this.setupInputFields();
 
     this.updateAdvancedPlacementFields(126123); // Gilly Soi == 126123
     this.updateMainForm();
@@ -179,8 +147,8 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     this.dialogRef.close(craftDetails);
   }
 
-  remove() {
-    this.spaceObjectService.removeCraft(this.data.edit);
+  async remove() {
+    await this.data.universeBuilderHandler.removeCraft(this.data.edit)
     this.dialogRef.close();
   }
 
@@ -204,5 +172,58 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
 
       return null;
     };
+  }
+
+  private setupInputFields() {
+    this.inputFields = {
+      name: {
+        label: 'Name',
+        control: new FormControl(this.data.edit?.label ?? 'Untitled Space Craft', [
+          Validators.required,
+          Validators.maxLength(128),
+          CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
+        ),
+        controlMeta: new ControlMetaInput(),
+      },
+      craftType: {
+        label: 'Type',
+        control: new FormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
+        controlMeta: new ControlMetaSelect(CraftType.List, undefined, 'Icon to represent this craft'),
+      },
+      antennaSelection: {
+        label: 'Antennae Onboard',
+        control: new FormControl(this.data.edit?.antennae
+          ?? [new Group(this.data.universeBuilderHandler.getAntenna('Internal'))]),
+        controlMeta: new ControlMetaAntennaSelector(this.data.universeBuilderHandler.antennaList),
+      },
+    } as InputFields;
+    this.inputListCraft = [this.inputFields.name, this.inputFields.craftType];
+    this.inputListAntenna = [this.inputFields.antennaSelection];
+    this.inputFieldsList = Object.values(this.inputFields);
+
+    this.orbitParentOptions = this.data.universeBuilderHandler.planets$.value
+      .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
+
+    this.advancedInputFields = {
+      orbitParent: {
+        label: 'Orbit Parent',
+        control: new FormControl<SpaceObject>(null),
+        controlMeta: new ControlMetaSelect(
+          this.orbitParentOptions,
+          new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
+      },
+      altitude: {} as InputField,
+      angle: {
+        label: 'Angle',
+        control: new FormControl<number>(null),
+        controlMeta: {
+          type: ControlMetaType.Number,
+          min: 0,
+          max: 360,
+          factor: 1,
+          suffix: '°',
+        } as ControlMetaNumber,
+      },
+    } as InputFields;
   }
 }

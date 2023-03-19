@@ -1,5 +1,5 @@
+import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
 import { SpaceObject } from './space-objects/space-object';
-import { SetupService } from '../../services/setup.service';
 import memoize from 'fast-memoize';
 import { Vector2 } from './vector2';
 
@@ -116,7 +116,7 @@ export class TransmissionLine {
     }
 
     let distance = this.nodes[0].location.distance(this.nodes[1].location);
-    let maxRange = (this.setupService.difficultySetting.rangeModifier
+    let maxRange = (this.universeBuilderService.difficultySetting.rangeModifier
       * powerRatingCallback(this.nodes[0])
       * powerRatingCallback(this.nodes[1]))
       .sqrt();
@@ -131,7 +131,7 @@ export class TransmissionLine {
 
   constructor(public nodes: SpaceObject[],
               /*todo: use a better reference to an up to date difficulty setting*/
-              private setupService: SetupService) {
+              private universeBuilderService: CommnetUniverseBuilderService) {
     this.id = Math.random().toString().slice(2);
   }
 

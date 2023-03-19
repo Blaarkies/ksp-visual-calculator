@@ -19,6 +19,7 @@ import {
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
 import { CameraService } from '../../services/camera.service';
 import { Icons } from '../../common/domain/icons';
 import { MatDialog } from '@angular/material/dialog';
@@ -93,7 +94,8 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
   constructor(private cdr: ChangeDetectorRef,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
-              private cameraService: CameraService) {
+              private cameraService: CameraService,
+              private universeBuilderService: CommnetUniverseBuilderService) {
     super();
   }
 
@@ -128,6 +130,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
       data: {
         forbiddenNames: this.allPlanets.map(c => c.label),
         edit: body,
+        universeBuilderHandler: this.universeBuilderService,
       } as CelestialBodyDetailsDialogData,
       backdropClass: GlobalStyleClass.MobileFriendly,
     })

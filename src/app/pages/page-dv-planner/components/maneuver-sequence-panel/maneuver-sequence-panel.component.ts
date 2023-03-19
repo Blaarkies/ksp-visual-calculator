@@ -1,10 +1,13 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { TravelCondition } from '../../domain/travel-condition';
-import { BasicAnimations } from '../../../../animations/basic-animations';
-import { Icons } from '../../../../common/domain/icons';
-import { ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
-import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
-import { WithDestroy } from '../../../../common/with-destroy';
+import {
+  FormControl,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   BehaviorSubject,
   combineLatest,
@@ -13,24 +16,24 @@ import {
   sampleTime,
   startWith,
   Subject,
-  takeUntil
+  takeUntil,
 } from 'rxjs';
-import { PathDetailsReader } from './msp-edge/path-details-reader';
-import { Checkpoint } from '../../domain/checkpoint';
+import { BasicAnimations } from '../../../../animations/basic-animations';
 import { CheckpointPreferences } from '../../../../common/domain/checkpoint-preferences';
-import { SetupService } from '../../../../services/setup.service';
-import { AnalyticsService } from '../../../../services/analytics.service';
-import { EventLogs } from '../../../../services/domain/event-logs';
-import { TravelService } from '../../services/travel.service';
-import { DvRouteType } from '../../domain/dv-route-type';
-import { CommonModule } from '@angular/common';
-import { MspListComponent } from './msp-list/msp-list.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Icons } from '../../../../common/domain/icons';
+import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
+import { WithDestroy } from '../../../../common/with-destroy';
 import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
 import { InputToggleComponent } from '../../../../components/controls/input-toggle/input-toggle.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { AnalyticsService } from '../../../../services/analytics.service';
+import { EventLogs } from '../../../../services/domain/event-logs';
+import { Checkpoint } from '../../domain/checkpoint';
+import { DvRouteType } from '../../domain/dv-route-type';
+import { TravelCondition } from '../../domain/travel-condition';
+import { DvUniverseBuilderService } from '../../services/dv-universe-builder.service';
+import { TravelService } from '../../services/travel.service';
+import { PathDetailsReader } from './msp-edge/path-details-reader';
+import { MspListComponent } from './msp-list/msp-list.component';
 
 @Component({
   selector: 'cp-maneuver-sequence-panel',
@@ -52,7 +55,7 @@ import { MatMenuModule } from '@angular/material/menu';
 })
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 
-  checkpoints$ = this.travelService.checkpoints$.asObservable();
+  checkpoints$ = this.travelService.checkpoints$.stream$;
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
   isOptionsOpen = false;
   icons = Icons;
@@ -69,25 +72,25 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
   };
   routeTypes = [DvRouteType.lessDv, DvRouteType.lessDetours];
 
-  aerobrakeControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.aerobraking);
+  aerobrakeControl = new FormControl(this.universeBuilderService.checkpointPreferences$.value.aerobraking);
 
-  errorMarginControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.errorMargin);
+  errorMarginControl = new FormControl(this.universeBuilderService.checkpointPreferences$.value.errorMargin);
   errorMarginControlMeta = new ControlMetaNumber(0, 150, 2);
 
-  planeChangeControl = new UntypedFormControl(this.setupService.checkpointPreferences$.value.planeChangeCost);
+  planeChangeControl = new FormControl(this.universeBuilderService.checkpointPreferences$.value.planeChangeCost);
   planeChangeControlMeta = new ControlMetaNumber(0, 100, 1.5);
 
-  preferredCondition$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.condition);
-  routeType$ = new BehaviorSubject(this.setupService.checkpointPreferences$.value.routeType);
+  preferredCondition$ = new BehaviorSubject(this.universeBuilderService.checkpointPreferences$.value.condition);
+  routeType$ = new BehaviorSubject(this.universeBuilderService.checkpointPreferences$.value.routeType);
 
   constructor(private travelService: TravelService,
-              private setupService: SetupService,
+              private universeBuilderService: DvUniverseBuilderService,
               private analyticsService: AnalyticsService) {
     super();
 
     let preferencesDebouncer$ = new Subject<CheckpointPreferences>();
     combineLatest([
-      this.errorMarginControl.valueChanges.pipe(startWith(this.errorMarginControl.value as boolean)),
+      this.errorMarginControl.valueChanges.pipe(startWith(this.errorMarginControl.value as number)),
       this.aerobrakeControl.valueChanges.pipe(startWith(this.aerobrakeControl.value as boolean)),
       this.planeChangeControl.valueChanges.pipe(startWith(this.planeChangeControl.value as number)),
       this.preferredCondition$,
@@ -102,7 +105,7 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
         preferencesDebouncer$.next(preferences);
       });
 
-    this.setupService.checkpointPreferences$
+    this.universeBuilderService.checkpointPreferences$.stream$
       .pipe(takeUntil(this.destroy$))
       .subscribe(cp => {
         this.errorMarginControl.setValue(cp.errorMargin);
@@ -163,8 +166,8 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
     this.travelService.updateCheckpoint(checkpoint);
   }
 
-  updatePreferences(newPreferences: CheckpointPreferences) {
-    this.travelService.updatePreferences(newPreferences);
+  updatePreferences(value: CheckpointPreferences) {
+    this.universeBuilderService.updateCheckpointPreferences(value);
   }
 
 }

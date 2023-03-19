@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import { takeUntil } from 'rxjs';
+import {
+  take,
+  takeUntil,
+} from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
-import { SetupService } from 'src/app/services/setup.service';
 import { Antenna } from '../../../common/domain/antenna';
 import { Group } from '../../../common/domain/group';
+import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
@@ -11,7 +14,9 @@ import { SpaceObjectType } from '../../../common/domain/space-objects/space-obje
 import { TransmissionLine } from '../../../common/domain/transmission-line';
 import { Vector2 } from '../../../common/domain/vector2';
 import { SubjectHandle } from '../../../common/subject-handle';
+import { StockEntitiesCacheService } from '../../../components/isru-heat-and-power-widget/stock-entities-cache.service';
 import { CraftDetails } from '../../../overlays/craft-details-dialog/craft-details';
+import { DifficultySetting } from '../../../overlays/difficulty-settings-dialog/difficulty-setting';
 import { CameraService } from '../../../services/camera.service';
 import { EventLogs } from '../../../services/domain/event-logs';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
@@ -20,27 +25,38 @@ import { StateSpaceObject } from '../../../services/json-interfaces/state-space-
 import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService {
 
   craft$ = new SubjectHandle<Craft[]>();
   signals$ = new SubjectHandle<TransmissionLine[]>();
+  antennae$ = new SubjectHandle<Antenna[]>();
+  difficultySetting: DifficultySetting;
+
+  private antennaeLabelMap: Map<string, Antenna>;
 
   constructor(
-    protected spaceObjectContainerService: UniverseContainerInstance,
-    protected setupService: SetupService,
+    protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
+    protected cacheService: StockEntitiesCacheService,
     private cameraService: CameraService,
   ) {
     super(new SubjectHandle<SpaceObject[]>());
+
+    this.cacheService.antennae$
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe(antennae => {
+        this.antennae$.set(antennae);
+        this.antennaeLabelMap = new Map<string, Antenna>(
+          antennae.map(a => [a.label, a]));
+      });
+
+    this.difficultySetting = DifficultySetting.normal;
+
     // TODO: remove this
     this.craft$.stream$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(craft => {
-        this.spaceObjectContainerService.crafts$.next(craft);
-      });
+      .subscribe(craft => this.universeContainerInstance.crafts$.next(craft));
   }
 
   protected async setDetails() {
@@ -54,7 +70,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       .find(cb => cb.hasDsn && cb.antennae?.length === 0);
     if (needsBasicDsn) {
       needsBasicDsn.antennae.push(
-        new Group<Antenna>(this.setupService.getAntenna('Tracking Station 1')));
+        new Group<Antenna>(this.getAntenna('Tracking Station 1')));
     }
 
     this.updateTransmissionLines();
@@ -66,7 +82,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     let orbitsLabelMap = this.makeOrbitsLabelMap(jsonCelestialBodies);
 
-    let antennaGetter = name => this.setupService.getAntenna(name);
+    let antennaGetter = name => this.getAntenna(name);
 
     let bodies = jsonCelestialBodies.filter(json => [
       SpaceObjectType.types.star,
@@ -127,7 +143,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       // combinations
       .map(pair => // leave existing transmission lines here so that visuals do not flicker
         signals.find(t => pair.every(n => t.nodes.includes(n)))
-        ?? new TransmissionLine(pair, this.setupService))
+        ?? new TransmissionLine(pair, this))
       .filter(tl => tl.strengthTotal);
   }
 
@@ -219,6 +235,18 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       .filter(cb => !cb.sphereOfInfluence || location.distance(cb.location) <= cb.sphereOfInfluence)
       .sort((a, b) => a.location.distance(location) - b.location.distance(location))
       .first();
+  }
+
+  getAntenna(search: string): Antenna {
+    return this.antennaeLabelMap.get(search);
+  }
+
+  get antennaList(): LabeledOption<Antenna>[] {
+    return this.antennae$.value.map(a => new LabeledOption<Antenna>(a.label, a));
+  }
+
+  updateDifficultySetting(details: DifficultySetting) {
+    this.difficultySetting = details;
   }
 
 }

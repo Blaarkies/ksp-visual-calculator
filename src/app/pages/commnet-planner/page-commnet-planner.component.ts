@@ -40,7 +40,6 @@ import { DifficultySettingsDialogComponent } from '../../overlays/difficulty-set
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
 import { HudService } from '../../services/hud.service';
-import { SetupService } from '../../services/setup.service';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
 
@@ -78,7 +77,6 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               private hudService: HudService,
-              private setupService: SetupService,
               private commnetStateService: CommnetStateService,
               private commnetUniverseBuilderService: CommnetUniverseBuilderService) {
     super();
@@ -102,6 +100,7 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
           this.dialog.open(CraftDetailsDialogComponent, {
             data: {
               forbiddenNames: allCraft.map(c => c.label),
+              universeBuilderHandler: this.commnetUniverseBuilderService,
             } as CraftDetailsDialogData,
             backdropClass: GlobalStyleClass.MobileFriendly,
           })
@@ -122,13 +121,13 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
           });
 
           this.dialog.open(DifficultySettingsDialogComponent,
-            {data: this.setupService.difficultySetting})
+            {data: this.commnetUniverseBuilderService.difficultySetting})
             .afterClosed()
             .pipe(
               filter(details => details),
               takeUntil(this.destroy$))
             .subscribe(details => {
-              this.setupService.updateDifficultySetting(details);
+              this.commnetUniverseBuilderService.updateDifficultySetting(details);
               // this.cdr.tick();
               // todo: refresh universe, because 0 strength transmission lines are still visible
             });
@@ -170,6 +169,7 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
       data: {
         forbiddenNames: allCraft.map(c => c.label),
         edit: craft,
+        universeBuilderHandler: this.commnetUniverseBuilderService,
       } as CraftDetailsDialogData,
       backdropClass: GlobalStyleClass.MobileFriendly,
     })

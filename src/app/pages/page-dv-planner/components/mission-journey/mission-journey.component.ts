@@ -30,7 +30,7 @@ class TripTrajectory {
 export class MissionJourneyComponent implements AfterViewInit {
 
   @Input() set checkpoints(value: Checkpoint[]) {
-    if (!value.length) {
+    if (!(value?.length)) {
       this.trajectories = [];
       return;
     }

@@ -1,25 +1,26 @@
 import { Injectable } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics.service';
-import { SetupService } from 'src/app/services/setup.service';
+import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { SubjectHandle } from '../../../common/subject-handle';
+import { StockEntitiesCacheService } from '../../../components/isru-heat-and-power-widget/stock-entities-cache.service';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
 import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
 import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { TravelService } from './travel.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
 
+  checkpointPreferences$ = new SubjectHandle<CheckpointPreferences>({defaultValue: CheckpointPreferences.default});
+
   constructor(
-    protected spaceObjectContainerService: UniverseContainerInstance,
-    protected setupService: SetupService,
+    protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
+    protected cacheService: StockEntitiesCacheService,
 
     private travelService: TravelService,
   ) {
@@ -68,6 +69,11 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
 
     let getBodyByLabel = (label: string) => this.planets$.value.find(b => b.label.like(label));
     this.travelService.buildState(jsonCheckpoints, getBodyByLabel);
+  }
+
+  updateCheckpointPreferences(details: CheckpointPreferences) {
+    this.checkpointPreferences$.set(details);
+    this.travelService.updateCheckpointPreferences(details);
   }
 
 }

@@ -23,18 +23,14 @@ import { StateCommnetPlanner } from './json-interfaces/state-commnet-planner';
 import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { StateGame } from './json-interfaces/state-game';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
-import { SetupService } from './setup.service';
 import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
-import { UniverseContainerInstance } from './universe-container-instance.service';
 
 @Injectable({providedIn: 'root'})
 export abstract class AbstractStateService {
 
   protected abstract context: GameStateType;
 
-  protected abstract spaceObjectContainerService: UniverseContainerInstance;
   protected abstract universeBuilderService: AbstractUniverseBuilderService;
-  protected abstract setupService: SetupService;
   protected abstract dataService: DataService;
   protected abstract snackBar: MatSnackBar;
 

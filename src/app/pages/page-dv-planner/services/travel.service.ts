@@ -1,23 +1,32 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, finalize, Subject, take, takeUntil } from 'rxjs';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@angular/core';
+import {
+  BehaviorSubject,
+  finalize,
+  Subject,
+  take,
+  takeUntil,
+} from 'rxjs';
+import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { SubjectHandle } from '../../../common/subject-handle';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { EventLogs } from '../../../services/domain/event-logs';
+import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
+import { Checkpoint } from '../domain/checkpoint';
+import { CheckpointEdge } from '../domain/checkpoint-edge';
+import { CheckpointNode } from '../domain/checkpoint-node';
 import { DeltaVGraph } from '../domain/delta-v-graph';
 import { TravelCondition } from '../domain/travel-condition';
-import { CheckpointNode } from '../domain/checkpoint-node';
-import { CheckpointEdge } from '../domain/checkpoint-edge';
-import { Checkpoint } from '../domain/checkpoint';
-import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
-import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
-import { SetupService } from '../../../services/setup.service';
-import { EventLogs } from '../../../services/domain/event-logs';
-import { AnalyticsService } from '../../../services/analytics.service';
+import { DvUniverseBuilderService } from './dv-universe-builder.service';
 
-@Injectable({
-  providedIn: 'any'
-})
+@Injectable({providedIn: 'root'})
 export class TravelService {
 
-  checkpoints$ = new BehaviorSubject<Checkpoint[]>([]);
+  checkpoints$ = new SubjectHandle<Checkpoint[]>({defaultValue: []});
   selectedCheckpoint$ = new Subject<SpaceObject>();
   unsubscribeSelectedCheckpoint$ = new Subject<void>();
   unsubscribeLockedCheckpointMode$ = new Subject<void>();
@@ -25,8 +34,9 @@ export class TravelService {
 
   dvMap = new DeltaVGraph();
 
-  constructor(private setupService: SetupService,
-              private analyticsService: AnalyticsService) {
+  private checkpointPreferences: CheckpointPreferences;
+
+  constructor(private analyticsService: AnalyticsService) {
   }
 
   addCheckpoint() {
@@ -66,10 +76,10 @@ export class TravelService {
     let node = new CheckpointNode({
       body: so,
       name: so.label,
-      condition: availableConditions.find(c => c === this.setupService.checkpointPreferences$.value.condition)
+      condition: availableConditions.find(c => c === this.checkpointPreferences.condition)
         ?? availableConditions.first(),
       availableConditions,
-      aerobraking: this.setupService.checkpointPreferences$.value.aerobraking,
+      aerobraking: this.checkpointPreferences.aerobraking,
       gravityAssist: false,
     });
 
@@ -93,7 +103,7 @@ export class TravelService {
   }
 
   resetCheckpoints() {
-    this.checkpoints$.next([]);
+    this.checkpoints$.set([]);
 
     this.stopCheckpointSelection();
 
@@ -126,14 +136,15 @@ export class TravelService {
     this.stopCheckpointSelection();
   }
 
-  updatePreferences(newPreferences: CheckpointPreferences) {
+  updateCheckpointPreferences(newPreferences: CheckpointPreferences) {
     let preferredAerobrakingChanged =
-      newPreferences.aerobraking !== this.setupService.checkpointPreferences$.value.aerobraking;
+      newPreferences.aerobraking !== this.checkpointPreferences?.aerobraking;
     let preferredConditionChanged =
-      newPreferences.condition !== this.setupService.checkpointPreferences$.value.condition;
+      newPreferences.condition !== this.checkpointPreferences?.condition;
 
-    this.setupService.updateCheckpointPreferences(newPreferences);
-    if (!this.checkpoints$.value.length) {
+    this.checkpointPreferences = newPreferences;
+
+    if (!(this.checkpoints$.value?.length)) {
       return;
     }
 
@@ -144,8 +155,7 @@ export class TravelService {
     if (preferredConditionChanged) {
       this.checkpoints$.value.forEach(({node}) => {
         let availableConditions = this.dvMap.getAvailableConditionsFor(node.name);
-        node.condition = availableConditions.find(c =>
-            c === this.setupService.checkpointPreferences$.value.condition)?.toString()
+        node.condition = availableConditions.find(c => c === newPreferences.condition)?.toString()
           ?? node.condition;
       });
     }
@@ -157,13 +167,13 @@ export class TravelService {
 
   private updateCheckpoints(newList: Checkpoint[]) {
     if (!newList.length) {
-      return this.checkpoints$.next([]);
+      return this.checkpoints$.set([]);
     }
 
     let nodeList = newList.map(md => md.node);
     nodeList = this.calculateNodeDetails(nodeList);
     let updatedList = this.calculateEdgesDetails(nodeList, newList.first());
-    this.checkpoints$.next(updatedList);
+    this.checkpoints$.set(updatedList);
   }
 
   private calculateNodeDetails(nodes: CheckpointNode[]): CheckpointNode[] {
@@ -178,7 +188,7 @@ export class TravelService {
   }
 
   private calculateEdgesDetails(nodes: CheckpointNode[], firstCheckpoint: Checkpoint): Checkpoint[] {
-    let checkpointPreferences = this.setupService.checkpointPreferences$.value;
+    let checkpointPreferences = this.checkpointPreferences;
     let destinationEdges = nodes.windowed(2)
       .map(([a, b]) => {
         let trip = this.dvMap.getTripDetails(
@@ -202,11 +212,6 @@ export class TravelService {
       firstCheckpoint,
       ...destinationEdges,
     ];
-  }
-
-  // TODO: add visual hover effect on planets while user is adding a checkpoint
-  setHoverBody(body: SpaceObject, hover: boolean) {
-
   }
 
   unsubscribeFromComponent() {
