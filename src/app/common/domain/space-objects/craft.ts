@@ -13,6 +13,7 @@ export class Craft extends SpaceObject {
 
   get displayAltitude(): string {
     // performance impact on this function seems minimal, since it's called from inside an *ngIf
+    // TODO: remove UniverseContainerInstance usages
     let soiParent = UniverseContainerInstance.instance
       .getSoiParent(this.location);
 

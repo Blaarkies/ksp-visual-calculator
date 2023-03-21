@@ -26,9 +26,7 @@ import { Vector2 } from '../common/domain/vector2';
 import { EventLogs } from './domain/event-logs';
 import { GameStateType } from '../common/domain/game-state-type';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class TutorialService {
 
   resetTutorial$ = new Subject<void>();

@@ -10,9 +10,7 @@ import { StateGame } from '../../../services/json-interfaces/state-game';
 import { AbstractStateService } from '../../../services/state.abstract.service';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CommnetStateService extends AbstractStateService {
 
   protected context = GameStateType.CommnetPlanner;

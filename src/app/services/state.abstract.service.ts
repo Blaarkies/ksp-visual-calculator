@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable,
+  InjectionToken,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Bytes } from '@firebase/firestore';
 import {
@@ -25,7 +28,6 @@ import { StateGame } from './json-interfaces/state-game';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
 
-@Injectable({providedIn: 'root'})
 export abstract class AbstractStateService {
 
   protected abstract context: GameStateType;

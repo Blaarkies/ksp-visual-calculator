@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -9,32 +10,30 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { BasicAnimations } from '../../animations/basic-animations';
-import { WithDestroy } from '../../common/with-destroy';
+import { MatDialog } from '@angular/material/dialog';
 import {
   filter,
-  Observable,
   takeUntil,
 } from 'rxjs';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { Icons } from '../../common/domain/icons';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
-import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
-import { CameraService } from '../../services/camera.service';
-import { Icons } from '../../common/domain/icons';
-import { MatDialog } from '@angular/material/dialog';
-import { AnalyticsService } from '../../services/analytics.service';
-import { CameraComponent } from '../camera/camera.component';
-import { EventLogs } from '../../services/domain/event-logs';
+import { GlobalStyleClass } from '../../common/global-style-class';
+import { WithDestroy } from '../../common/with-destroy';
+import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
 import {
   CelestialBodyDetailsDialogComponent,
   CelestialBodyDetailsDialogData,
 } from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
-import { GlobalStyleClass } from '../../common/global-style-class';
-import { CommonModule } from '@angular/common';
-import { OrbitLineComponent } from '../orbit-line/orbit-line.component';
+import { AnalyticsService } from '../../services/analytics.service';
+import { CameraService } from '../../services/camera.service';
+import { EventLogs } from '../../services/domain/event-logs';
+import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
+import { CameraComponent } from '../camera/camera.component';
 import { DraggableSpaceObjectComponent } from '../draggable-space-object/draggable-space-object.component';
-import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
+import { OrbitLineComponent } from '../orbit-line/orbit-line.component';
 import { SoiCircleComponent } from '../soi-circle/soi-circle.component';
 
 @Component({
@@ -74,19 +73,14 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
   @Output() startDrag = new EventEmitter<SpaceObject>();
   @Output() hoverBody = new EventEmitter<{ body: SpaceObject, hover: boolean }>();
 
-  orbits$: Observable<Orbit[]>;
-  celestialBodies$: Observable<SpaceObject[]>;
-
-  spaceObjectTypes = SpaceObjectType;
-  scaleToShowMoons = CameraService.scaleToShowMoons;
-
-  icons = Icons;
-
   @ViewChild(CameraComponent, {static: true}) camera: CameraComponent;
   @ViewChild('backboard', {static: true}) backboard: ElementRef<HTMLDivElement>;
 
   filteredOrbits: Orbit[];
   filteredPlanets: SpaceObject[];
+  spaceObjectTypes = SpaceObjectType;
+  scaleToShowMoons = CameraService.scaleToShowMoons;
+  icons = Icons;
 
   private spaceObjectTypesToShow = [SpaceObjectType.Star, SpaceObjectType.Planet, SpaceObjectType.Moon];
   private allPlanets: SpaceObject[];
@@ -95,7 +89,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               private cameraService: CameraService,
-              private universeBuilderService: CommnetUniverseBuilderService) {
+              private universeBuilderService: AbstractUniverseBuilderService) {
     super();
   }
 

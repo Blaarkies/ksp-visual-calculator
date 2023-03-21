@@ -1,7 +1,14 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
-import { ActionListComponent } from "../../components/action-list/action-list.component";
+import {
+  Component,
+  Inject,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  MAT_BOTTOM_SHEET_DATA,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import { ActionOption } from '../../common/domain/action-option';
+import { ActionListComponent } from '../../components/action-list/action-list.component';
 
 export class ActionBottomSheetData {
   startIcon: string;

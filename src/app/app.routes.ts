@@ -19,13 +19,12 @@ export enum UsableRoutes {
 const routes: Routes = [
   {
     path: UsableRoutes.CommnetPlanner,
-    loadComponent: () => import('./pages/commnet-planner/provider/page-commnet-planner.provider'),
+    loadComponent: () => import('./pages/commnet-planner/page-commnet-planner.component'),
   },
 
   {
     path: UsableRoutes.DvPlanner,
-    loadComponent: () => import('./pages/page-dv-planner/page-dv-planner.component')
-      .then(m => m.PageDvPlannerComponent),
+    loadComponent: () => import('./pages/page-dv-planner/page-dv-planner.component'),
   },
 
   {path: COMMNET_ROUTE_130, redirectTo: UsableRoutes.CommnetPlanner},

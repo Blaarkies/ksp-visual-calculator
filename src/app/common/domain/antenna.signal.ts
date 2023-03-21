@@ -1,6 +1,5 @@
-import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
-import { SpaceObject } from './space-objects/space-object';
 import memoize from 'fast-memoize';
+import { SpaceObject } from './space-objects/space-object';
 import { Vector2 } from './vector2';
 
 export class AntennaSignal {
@@ -116,7 +115,7 @@ export class AntennaSignal {
     }
 
     let distance = this.nodes[0].location.distance(this.nodes[1].location);
-    let maxRange = (this.universeBuilderService.difficultySetting.rangeModifier
+    let maxRange = (this.getRangeModifier()
       * powerRatingCallback(this.nodes[0])
       * powerRatingCallback(this.nodes[1]))
       .sqrt();
@@ -124,14 +123,13 @@ export class AntennaSignal {
     if (distance > maxRange) {
       return 0;
     }
-    let x = 1 - distance / maxRange; // relativeDistance
+    let x = 1 - distance / maxRange; // relative distance
     let signalStrength = (3 - 2 * x) * x.pow(2);
     return signalStrength;
   }
 
   constructor(public nodes: SpaceObject[],
-              /*todo: use a better reference to an up to date difficulty setting*/
-              private universeBuilderService: CommnetUniverseBuilderService) {
+              private getRangeModifier: () => number) {
     this.id = Math.random().toString().slice(2);
   }
 

@@ -1,3 +1,4 @@
+import { InjectionToken } from '@angular/core';
 import {
   delayWhen,
   map,
@@ -44,7 +45,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     public planets$: SubjectHandle<SpaceObject[]>,
   ) {
     super();
-    // TODO: remove this
+    // TODO: remove UniverseContainerInstance usages
     this.planets$.stream$
       .pipe(takeUntil(this.destroy$))
       .subscribe(planets => {

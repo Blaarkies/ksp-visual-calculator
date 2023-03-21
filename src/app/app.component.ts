@@ -1,15 +1,24 @@
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { WithDestroy } from './common/with-destroy';
-import { Subject, takeUntil, timer } from 'rxjs';
-import { Router, RouterModule } from '@angular/router';
-import { AbstractStateService } from './services/state.abstract.service';
-import { ThemeService } from './services/theme.service';
-import { AuthService } from './services/auth.service';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
+import {
+  Router,
+  RouterModule,
+} from '@angular/router';
+import {
+  Subject,
+  takeUntil,
+  timer,
+} from 'rxjs';
+import { WithDestroy } from './common/with-destroy';
 import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/holiday-theme-sprite.component';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'cp-root',
@@ -18,9 +27,6 @@ import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/hol
     CommonModule,
     RouterModule,
     HolidayThemeSpriteComponent,
-  ],
-  providers: [
-    {provide: AbstractStateService, useValue: null},
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],

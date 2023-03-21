@@ -1,22 +1,24 @@
-import { Injectable } from '@angular/core';
 import {
+  Injectable,
+  OnDestroy,
+} from '@angular/core';
+import {
+  firstValueFrom,
   take,
   takeUntil,
 } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { Antenna } from '../../../common/domain/antenna';
+import { AntennaSignal } from '../../../common/domain/antenna.signal';
 import { Group } from '../../../common/domain/group';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import { AntennaSignal } from '../../../common/domain/antenna.signal';
 import { Vector2 } from '../../../common/domain/vector2';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { StockEntitiesCacheService } from '../../../components/isru-heat-and-power-widget/stock-entities-cache.service';
-import { CraftDetails } from '../components/craft-details-dialog/craft-details';
-import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CameraService } from '../../../services/camera.service';
 import { EventLogs } from '../../../services/domain/event-logs';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
@@ -24,9 +26,11 @@ import { StateCraft } from '../../../services/json-interfaces/state-craft';
 import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
 import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
+import { CraftDetails } from '../components/craft-details-dialog/craft-details';
+import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 
-@Injectable({providedIn: 'root'})
-export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService {
+@Injectable()
+export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
 
   craft$ = new SubjectHandle<Craft[]>();
   signals$ = new SubjectHandle<AntennaSignal[]>();
@@ -53,10 +57,18 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     this.difficultySetting = DifficultySetting.normal;
 
-    // TODO: remove this
+    // TODO: remove UniverseContainerInstance usages
     this.craft$.stream$
       .pipe(takeUntil(this.destroy$))
       .subscribe(craft => this.universeContainerInstance.crafts$.next(craft));
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    super.destroy();
+
+    this.craft$.set([]);
+    this.signals$.set([]);
   }
 
   protected async setDetails() {
@@ -69,6 +81,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     let needsBasicDsn = this.planets$.value
       .find(cb => cb.hasDsn && cb.antennae?.length === 0);
     if (needsBasicDsn) {
+      await firstValueFrom(this.cacheService.antennae$);
       needsBasicDsn.antennae.push(
         new Group<Antenna>(this.getAntenna('Tracking Station 1')));
     }
@@ -134,22 +147,23 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       item.every(so =>
         parentItem.includes(so)));
 
-  private getFreshTransmissionLines(nodes: SpaceObject[], signals: AntennaSignal[]) {
+  private getFreshTransmissionLines(nodes: SpaceObject[], signals: AntennaSignal[]): AntennaSignal[] {
     return nodes
       .filter(so => so.antennae?.length)
       .joinSelf()
       .distinct(this.getIndexOfSameCombination)
-      .distinct(this.getIndexOfSameCombination) // run again, opposing permutations are still similar as
-      // combinations
-      .map(pair => // leave existing transmission lines here so that visuals do not flicker
+      // run again, opposing permutations are still similar as combinations
+      .distinct(this.getIndexOfSameCombination)
+      .map(pair => // leave existing signals here so that visuals do not flicker
         signals.find(t => pair.every(n => t.nodes.includes(n)))
-        ?? new AntennaSignal(pair, this))
+        ?? new AntennaSignal(pair, () => this.difficultySetting.rangeModifier))
       .filter(tl => tl.strengthTotal);
   }
 
-  updateTransmissionLines() {
+  updateTransmissionLines({reset}: { reset?: boolean } = {}) {
     let nodes = this.planets$.value.concat(this.craft$.value);
-    this.signals$.set(this.getFreshTransmissionLines(nodes, this.signals$.value));
+    let signals = reset ? [] : this.signals$.value;
+    this.signals$.set(this.getFreshTransmissionLines(nodes, signals));
   }
 
   private addCraft(details: CraftDetails, allCraft: Craft[]) {
@@ -247,6 +261,9 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
   updateDifficultySetting(details: DifficultySetting) {
     this.difficultySetting = details;
+    if (this.planets$.value) {
+      this.updateTransmissionLines({reset: true});
+    }
   }
 
 }

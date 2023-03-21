@@ -1,24 +1,8 @@
-import { Injectable } from '@angular/core';
 import {
-  distinctUntilChanged,
-  filter,
-  firstValueFrom,
-  map,
-  Observable,
-  of,
-  shareReplay,
-  switchMap,
-  take,
-  tap,
-  zip
-} from 'rxjs';
-import { Router } from '@angular/router';
-import { DataService, UserData } from './data.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { AnalyticsService } from './analytics.service';
-import { AuthErrorCode } from '../components/account-details/auth-error-code';
+  HttpClient,
+  HttpParams,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -30,12 +14,32 @@ import {
   User,
   UserCredential,
 } from '@angular/fire/auth';
-import { authState, user } from 'rxfire/auth';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import {
+  authState,
+  user,
+} from 'rxfire/auth';
+import {
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { AuthErrorCode } from '../components/account-details/auth-error-code';
+import { AnalyticsService } from './analytics.service';
+import {
+  DataService,
+  UserData,
+} from './data.service';
 import { AbstractStateService } from './state.abstract.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AuthService {
 
   user$: Observable<UserData>;

@@ -38,7 +38,7 @@ export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
   show = false;
 
   private limits: number[];
-  private range: number;
+  private range: number = CameraService.scaleToShowMoons;
   private zoomChange$ = new Subject<void>();
 
   constructor(cdr: ChangeDetectorRef,

@@ -11,7 +11,7 @@ import { AbstractStateService } from '../../../services/state.abstract.service';
 import { DvUniverseBuilderService } from './dv-universe-builder.service';
 import { TravelService } from './travel.service';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class DvStateService extends AbstractStateService {
 
   protected context = GameStateType.DvPlanner;

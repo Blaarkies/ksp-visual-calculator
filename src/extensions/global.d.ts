@@ -88,12 +88,6 @@ declare global {
     splitFilter(this: Array<T>, callback: (item: T) => number): Array<Array<T>>;
   }
 
-  // interface Object {
-  //   let<T, O>(this: T, callback: (it: T) => O): O;
-  //
-  //   also<T>(this: T, callback: (it: T) => void): T;
-  // }
-
   interface Boolean {
     toString(this: Boolean, variety?: 'yes' | 'good' | '✅' | 'on'): string;
 

@@ -1,27 +1,29 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   OnDestroy,
 } from '@angular/core';
-import { WithDestroy } from '../../common/with-destroy';
-import { HudService } from '../../services/hud.service';
-import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { AbstractStateService } from '../../services/state.abstract.service';
-import { TravelService } from './services/travel.service';
-import { CommonModule } from '@angular/common';
-import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { GameStateType } from '../../common/domain/game-state-type';
+import { Icons } from '../../common/domain/icons';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { WithDestroy } from '../../common/with-destroy';
+import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
 import {
   ActionPanelDetails,
   HudComponent,
 } from '../../components/hud/hud.component';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
-import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
+import { AuthService } from '../../services/auth.service';
+import { HudService } from '../../services/hud.service';
+import { AbstractStateService } from '../../services/state.abstract.service';
+import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
 import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-panel/maneuver-sequence-panel.component';
-import { Icons } from '../../common/domain/icons';
+import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 import { DvStateService } from './services/dv-state.service';
 import { DvUniverseBuilderService } from './services/dv-universe-builder.service';
+import { TravelService } from './services/travel.service';
 
 @Component({
   selector: 'cp-page-dv-planner',
@@ -38,12 +40,17 @@ import { DvUniverseBuilderService } from './services/dv-universe-builder.service
     MatBottomSheetModule,
   ],
   providers: [
-    {provide: AbstractStateService, useClass: DvStateService}
+    DvUniverseBuilderService,
+    DvStateService,
+    AuthService,
+    HudService,
+    {provide: AbstractUniverseBuilderService, useExisting: DvUniverseBuilderService},
+    {provide: AbstractStateService, useExisting: DvStateService},
   ],
   templateUrl: './page-dv-planner.component.html',
   styleUrls: ['./page-dv-planner.component.scss', '../temp.calculators.scss'],
 })
-export class PageDvPlannerComponent extends WithDestroy() implements OnDestroy {
+export default class PageDvPlannerComponent extends WithDestroy() implements OnDestroy {
 
   icons = Icons;
   checkpoints$ = this.travelService.checkpoints$.stream$;

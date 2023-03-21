@@ -16,11 +16,11 @@ import {
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { ActionOption } from '../../common/domain/action-option';
+import { AntennaSignal } from '../../common/domain/antenna.signal';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { AntennaSignal } from '../../common/domain/antenna.signal';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
 import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
@@ -29,22 +29,25 @@ import {
   ActionPanelDetails,
   HudComponent,
 } from '../../components/hud/hud.component';
-import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
+import { AnalyticsService } from '../../services/analytics.service';
+import { AuthService } from '../../services/auth.service';
+import { EventLogs } from '../../services/domain/event-logs';
+import { HudService } from '../../services/hud.service';
+import { AbstractStateService } from '../../services/state.abstract.service';
+import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
+import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData,
 } from './components/craft-details-dialog/craft-details-dialog.component';
 import { DifficultySettingsDialogComponent } from './components/difficulty-settings-dialog/difficulty-settings-dialog.component';
-import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/domain/event-logs';
-import { HudService } from '../../services/hud.service';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
 
 @Component({
-  selector: 'cp-commnet-planner',
+  selector: 'cp-page-commnet-planner',
   standalone: true,
   imports: [
     CommonModule,
@@ -57,12 +60,20 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
     ZoomIndicatorComponent,
     FocusJumpToPanelComponent,
   ],
+  providers: [
+    CommnetUniverseBuilderService,
+    CommnetStateService,
+    AuthService,
+    HudService,
+    {provide: AbstractUniverseBuilderService, useExisting: CommnetUniverseBuilderService},
+    {provide: AbstractStateService, useExisting: CommnetStateService},
+  ],
   templateUrl: './page-commnet-planner.component.html',
   styleUrls: ['./page-commnet-planner.component.scss', '../temp.calculators.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [BasicAnimations.fade],
 })
-export class PageCommnetPlannerComponent extends WithDestroy() {
+export default class PageCommnetPlannerComponent extends WithDestroy() {
 
   icons = Icons;
   signals$ = this.commnetUniverseBuilderService.signals$.stream$;
@@ -109,9 +120,7 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
               filter(craftDetails => craftDetails),
               delayWhen(craftDetails => this.commnetUniverseBuilderService.addCraftToUniverse(craftDetails)),
               takeUntil(this.destroy$))
-            .subscribe(() => {
-              // this.cdr.tick();
-            });
+            .subscribe();
         },
       }),
       new ActionOption('Difficulty Settings', Icons.Difficulty, {
@@ -126,11 +135,8 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
             .pipe(
               filter(details => details),
               takeUntil(this.destroy$))
-            .subscribe(details => {
-              this.commnetUniverseBuilderService.updateDifficultySetting(details);
-              // this.cdr.tick();
-              // todo: refresh universe, because 0 strength transmission lines are still visible
-            });
+            .subscribe(details =>
+              this.commnetUniverseBuilderService.updateDifficultySetting(details));
         },
       }),
       this.hudService.createActionOptionTutorial(GameStateType.CommnetPlanner),
@@ -178,9 +184,7 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
         filter(details => details),
         delayWhen(details => this.commnetUniverseBuilderService.editCraft(craft, details)),
         takeUntil(this.destroy$))
-      .subscribe(() => {
-        // this.cdr.markForCheck();
-      });
+      .subscribe();
   }
 
   editPlanet({body, details}) {

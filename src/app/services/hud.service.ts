@@ -43,7 +43,7 @@ let storageKeys = {
 
 type HookIO<T> = (ref: MatDialogRef<T>) => void;
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class HudService {
 
   constructor(private dialog: MatDialog,

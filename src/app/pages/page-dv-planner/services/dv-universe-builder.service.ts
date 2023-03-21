@@ -1,4 +1,7 @@
-import { Injectable } from '@angular/core';
+import {
+  Injectable,
+  OnDestroy,
+} from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
@@ -12,8 +15,8 @@ import { AbstractUniverseBuilderService } from '../../../services/universe-build
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { TravelService } from './travel.service';
 
-@Injectable({providedIn: 'root'})
-export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
+@Injectable()
+export class DvUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
 
   checkpointPreferences$ = new SubjectHandle<CheckpointPreferences>({defaultValue: CheckpointPreferences.default});
 
@@ -25,6 +28,13 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
     private travelService: TravelService,
   ) {
     super(new SubjectHandle<SpaceObject[]>());
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    super.destroy();
+
+    this.travelService.resetCheckpoints();
   }
 
   protected async setDetails() {
