@@ -1,4 +1,4 @@
-import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
 
 export class DifficultySetting {
 

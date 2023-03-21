@@ -1,14 +1,14 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
-import { InputFields } from '../../common/domain/input-fields/input-fields';
-import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
+import { InputFields } from '../../../../common/domain/input-fields/input-fields';
+import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
 import {MatButtonToggleGroup, MatButtonToggleModule} from '@angular/material/button-toggle';
 import { DifficultySetting } from './difficulty-setting';
-import { WithDestroy } from '../../common/with-destroy';
+import { WithDestroy } from '../../../../common/with-destroy';
 import { takeUntil } from 'rxjs';
 import {CommonModule} from "@angular/common";
-import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";
+import {InputFieldListComponent} from "../../../../components/controls/input-field-list/input-field-list.component";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatButtonModule} from "@angular/material/button";
 

@@ -10,7 +10,7 @@ import { WithDestroy } from '../../with-destroy';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { MoveType } from './move-type';
 
-export class Draggable extends WithDestroy() {
+export class Draggable {
 
   isGrabbing: boolean;
   isHover$ = new Subject<boolean>();
@@ -22,6 +22,8 @@ export class Draggable extends WithDestroy() {
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
   private lastActivatedSoi: SpaceObject;
+  private destroy$ = new Subject<void>();
+
   public parent: Draggable;
   public orbit: Orbit;
 
@@ -40,13 +42,12 @@ export class Draggable extends WithDestroy() {
   constructor(public label: string,
               public imageUrl: string,
               public moveType: MoveType) {
-    super();
-    super.ngOnDestroy = () => {
-      // workaround, error NG2007: Class is using Angular features but is not decorated.
-      super.ngOnDestroy();
-      this.isHover$.complete();
-    };
   }
+
+  // TODO: destroy/dispose
+  // this.isHover$.complete();
+  // this.destroy$.next();
+  // this.destroy$.complete();
 
   startDrag(event: PointerEvent,
             screen: HTMLDivElement,
@@ -95,7 +96,7 @@ export class Draggable extends WithDestroy() {
     pointerStream.pipe(
       map(vector => camera.convertScreenToGameSpace(vector)),
       finalize(() => {
-        this.placeCraftInSoiLock();
+        this.placeInSoiLock();
         updateCallback();
       }),
       takeUntil(this.destroy$))
@@ -104,7 +105,7 @@ export class Draggable extends WithDestroy() {
 
         this.lastAttemptLocation = xy;
         this.setNewLocation(xy);
-        this.showSoiUnderCraft();
+        this.showSoiUnderDraggable();
         updateCallback();
       });
   }
@@ -168,7 +169,7 @@ export class Draggable extends WithDestroy() {
     this.parameterData.r = orbit.parameters.r;
   }
 
-  private placeCraftInSoiLock() {
+  private placeInSoiLock() {
     if (this.moveType !== 'soiLock' || !this.lastActivatedSoi) {
       return;
     }
@@ -186,7 +187,7 @@ export class Draggable extends WithDestroy() {
     this.lastActivatedSoi = undefined;
   }
 
-  private showSoiUnderCraft() {
+  private showSoiUnderDraggable() {
     if (this.moveType !== 'soiLock') {
       return;
     }

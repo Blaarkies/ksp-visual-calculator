@@ -8,7 +8,7 @@ import {InputTextAreaComponent} from "../input-text-area/input-text-area.compone
 import {InputNumberComponent} from "../input-number/input-number.component";
 import {InputSelectComponent} from "../input-select/input-select.component";
 import {InputToggleComponent} from "../input-toggle/input-toggle.component";
-import {AntennaSelectorComponent} from "../../antenna-selector/antenna-selector.component";
+import {AntennaSelectorComponent} from "../../../pages/commnet-planner/components/antenna-selector/antenna-selector.component";
 import { ReactiveFormsModule } from "@angular/forms";
 
 @Component({

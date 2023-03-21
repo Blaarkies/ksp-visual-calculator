@@ -1,5 +1,5 @@
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { Antenna } from '../../common/domain/antenna';
+import { Antenna } from '../../../../common/domain/antenna';
 
 export class AntennaInput {
 

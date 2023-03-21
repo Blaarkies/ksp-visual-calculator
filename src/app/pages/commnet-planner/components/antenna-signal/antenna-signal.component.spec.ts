@@ -1,13 +1,13 @@
-import { TransmissionLineComponent } from './transmission-line.component';
+import { AntennaSignalComponent } from './antenna-signal.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
-import { TransmissionLine } from '../../common/domain/transmission-line';
+import { AntennaSignal } from '../../../../common/domain/antenna.signal';
 import { ineeda } from 'ineeda';
 import { of } from 'rxjs';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { Draggable } from '../../common/domain/space-objects/draggable';
+import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
+import { Draggable } from '../../../../common/domain/space-objects/draggable';
 
-let componentType = TransmissionLineComponent;
+let componentType = AntennaSignalComponent;
 describe('TransmissionLineComponent', () => {
 
   beforeEach(() => MockBuilder(componentType).mock(AppModule));
@@ -18,7 +18,7 @@ describe('TransmissionLineComponent', () => {
         isHover$: of(0) as any,
       }),
     });
-    let transmissionLine = ineeda<TransmissionLine>({
+    let transmissionLine = ineeda<AntennaSignal>({
       nodes: [so, so],
     });
 

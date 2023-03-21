@@ -5,11 +5,11 @@
                  (update)="updateUniverse($event)">
 
   <ng-container aboveOrbits>
-    <cp-transmission-line [@fade]
+    <cp-antenna-signal [@fade]
                           *ngFor="let line of signals$ | async; trackBy: trackSignal"
-                          [transmissionLine]="line"
+                          [antennaSignal]="line"
                           [scale]="universe.camera.scale">
-    </cp-transmission-line>
+    </cp-antenna-signal>
   </ng-container>
 
   <ng-container abovePlanets>

@@ -11,12 +11,12 @@ import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import { TransmissionLine } from '../../../common/domain/transmission-line';
+import { AntennaSignal } from '../../../common/domain/antenna.signal';
 import { Vector2 } from '../../../common/domain/vector2';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { StockEntitiesCacheService } from '../../../components/isru-heat-and-power-widget/stock-entities-cache.service';
-import { CraftDetails } from '../../../overlays/craft-details-dialog/craft-details';
-import { DifficultySetting } from '../../../overlays/difficulty-settings-dialog/difficulty-setting';
+import { CraftDetails } from '../components/craft-details-dialog/craft-details';
+import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CameraService } from '../../../services/camera.service';
 import { EventLogs } from '../../../services/domain/event-logs';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
@@ -29,7 +29,7 @@ import { UniverseContainerInstance } from '../../../services/universe-container-
 export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService {
 
   craft$ = new SubjectHandle<Craft[]>();
-  signals$ = new SubjectHandle<TransmissionLine[]>();
+  signals$ = new SubjectHandle<AntennaSignal[]>();
   antennae$ = new SubjectHandle<Antenna[]>();
   difficultySetting: DifficultySetting;
 
@@ -134,7 +134,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       item.every(so =>
         parentItem.includes(so)));
 
-  private getFreshTransmissionLines(nodes: SpaceObject[], signals: TransmissionLine[]) {
+  private getFreshTransmissionLines(nodes: SpaceObject[], signals: AntennaSignal[]) {
     return nodes
       .filter(so => so.antennae?.length)
       .joinSelf()
@@ -143,7 +143,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       // combinations
       .map(pair => // leave existing transmission lines here so that visuals do not flicker
         signals.find(t => pair.every(n => t.nodes.includes(n)))
-        ?? new TransmissionLine(pair, this))
+        ?? new AntennaSignal(pair, this))
       .filter(tl => tl.strengthTotal);
   }
 

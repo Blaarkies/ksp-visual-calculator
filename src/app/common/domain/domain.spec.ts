@@ -1,11 +1,11 @@
 import * as antennaPartsJson from 'src/assets/stock/antenna-parts.json';
 import { Antenna } from './antenna';
 import { AntennaPart } from '../../services/json-interfaces/antenna-part';
-import { TransmissionLine } from './transmission-line';
+import { AntennaSignal } from './antenna.signal';
 import { SpaceObject } from './space-objects/space-object';
 import { Group } from './group';
 import { SetupService } from '../../services/setup.service';
-import { DifficultySetting } from '../../overlays/difficulty-settings-dialog/difficulty-setting';
+import { DifficultySetting } from '../../pages/commnet-planner/components/difficulty-settings-dialog/difficulty-setting';
 import { SpaceObjectType } from './space-objects/space-object-type';
 import { filter, firstValueFrom, interval } from 'rxjs';
 
@@ -319,7 +319,7 @@ describe('Domain tests', () => {
 
         scenario.craft.location.x = scenario.distance;
 
-        let transmissionLine = new TransmissionLine([
+        let transmissionLine = new AntennaSignal([
             scenario.craft,
             scenario.relay ?? spaceObjectMap.dsn1],
           setupServiceMock);

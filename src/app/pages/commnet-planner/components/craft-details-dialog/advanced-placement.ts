@@ -1,5 +1,5 @@
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { Vector2 } from '../../common/domain/vector2';
+import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
+import { Vector2 } from '../../../../common/domain/vector2';
 
 export class AdvancedPlacement {
 

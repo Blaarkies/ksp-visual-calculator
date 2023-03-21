@@ -2,8 +2,8 @@ import { AntennaStatsComponent } from './antenna-stats.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { AntennaInput } from '../antenna-selector/antenna-input';
-import { Antenna } from '../../common/domain/antenna';
-import { AntennaPart } from '../../services/json-interfaces/antenna-part';
+import { Antenna } from '../../../../common/domain/antenna';
+import { AntennaPart } from '../../../../services/json-interfaces/antenna-part';
 
 let componentType = AntennaStatsComponent;
 describe('AntennaStatsComponent', () => {

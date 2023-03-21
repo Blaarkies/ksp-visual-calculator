@@ -1,23 +1,38 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import {UntypedFormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
+import {
+  Component,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  UntypedFormControl,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { BasicValueAccessor } from '../../common/domain/input-fields/basic-value-accessor';
-import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
-import { FormControlError } from '../../common/domain/input-fields/form-control-error';
-import { Icons } from '../../common/domain/icons';
-import { Subject, takeUntil } from 'rxjs';
-import { Antenna } from '../../common/domain/antenna';
-import { Group } from '../../common/domain/group';
+import { BasicValueAccessor } from '../../../../common/domain/input-fields/basic-value-accessor';
+import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
+import { FormControlError } from '../../../../common/domain/input-fields/form-control-error';
+import { Icons } from '../../../../common/domain/icons';
+import {
+  Subject,
+  takeUntil,
+} from 'rxjs';
+import { Antenna } from '../../../../common/domain/antenna';
+import { Group } from '../../../../common/domain/group';
 import { AntennaInput } from './antenna-input';
 import { AntennaStatsComponent } from '../antenna-stats/antenna-stats.component';
-import { BasicAnimations } from '../../animations/basic-animations';
-import {CommonModule} from "@angular/common";
-import {MatTabsModule} from "@angular/material/tabs";
-import {InputFieldComponent} from "../controls/input-field/input-field.component";
-import {InputNumberComponent} from "../controls/input-number/input-number.component";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatIconModule} from "@angular/material/icon";
-import {InputSelectComponent} from "../controls/input-select/input-select.component";
+import { BasicAnimations } from '../../../../animations/basic-animations';
+import { CommonModule } from '@angular/common';
+import { MatTabsModule } from '@angular/material/tabs';
+import { InputFieldComponent } from '../../../../components/controls/input-field/input-field.component';
+import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { InputSelectComponent } from '../../../../components/controls/input-select/input-select.component';
 
 @Component({
   selector: 'cp-antenna-selector',

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { AntennaInput } from '../antenna-selector/antenna-input';
-import { Antenna } from '../../common/domain/antenna';
-import { Group } from '../../common/domain/group';
-import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { Antenna } from '../../../../common/domain/antenna';
+import { Group } from '../../../../common/domain/group';
+import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
 import { AntennaStats } from './antenna-stats';
 import {CommonModule} from "@angular/common";
 import {MatTooltipModule} from "@angular/material/tooltip";

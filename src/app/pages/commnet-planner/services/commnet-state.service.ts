@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
-import { DifficultySetting } from '../../../overlays/difficulty-settings-dialog/difficulty-setting';
+import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { DataService } from '../../../services/data.service';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
 import { StateCraft } from '../../../services/json-interfaces/state-craft';

@@ -1,6 +1,6 @@
-import { CraftType } from '../../common/domain/space-objects/craft-type';
-import { Group } from '../../common/domain/group';
-import { Antenna } from '../../common/domain/antenna';
+import { CraftType } from '../../../../common/domain/space-objects/craft-type';
+import { Group } from '../../../../common/domain/group';
+import { Antenna } from '../../../../common/domain/antenna';
 import { AdvancedPlacement } from './advanced-placement';
 
 export class CraftDetails {

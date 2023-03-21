@@ -3,7 +3,7 @@ import { SpaceObject } from './space-objects/space-object';
 import memoize from 'fast-memoize';
 import { Vector2 } from './vector2';
 
-export class TransmissionLine {
+export class AntennaSignal {
 
   id: string;
 

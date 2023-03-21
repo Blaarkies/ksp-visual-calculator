@@ -24,26 +24,26 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntil } from 'rxjs';
-import { BasicAnimations } from '../../animations/basic-animations';
-import { Group } from '../../common/domain/group';
-import { Icons } from '../../common/domain/icons';
-import { ControlMetaAntennaSelector } from '../../common/domain/input-fields/control-meta-antenna-selector';
-import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
-import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
-import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
-import { ControlMetaType } from '../../common/domain/input-fields/control-meta-type';
+import { BasicAnimations } from '../../../../animations/basic-animations';
+import { Group } from '../../../../common/domain/group';
+import { Icons } from '../../../../common/domain/icons';
+import { ControlMetaAntennaSelector } from '../../../../common/domain/input-fields/control-meta-antenna-selector';
+import { ControlMetaInput } from '../../../../common/domain/input-fields/control-meta-input';
+import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
+import { ControlMetaSelect } from '../../../../common/domain/input-fields/control-meta-select';
+import { ControlMetaType } from '../../../../common/domain/input-fields/control-meta-type';
 import {
   InputField,
   InputFields,
-} from '../../common/domain/input-fields/input-fields';
-import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
-import { Craft } from '../../common/domain/space-objects/craft';
-import { CraftType } from '../../common/domain/space-objects/craft-type';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { CommonValidators } from '../../common/validators/common-validators';
-import { WithDestroy } from '../../common/with-destroy';
-import { InputFieldListComponent } from '../../components/controls/input-field-list/input-field-list.component';
-import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
+} from '../../../../common/domain/input-fields/input-fields';
+import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
+import { Craft } from '../../../../common/domain/space-objects/craft';
+import { CraftType } from '../../../../common/domain/space-objects/craft-type';
+import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
+import { CommonValidators } from '../../../../common/validators/common-validators';
+import { WithDestroy } from '../../../../common/with-destroy';
+import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
+import { CommnetUniverseBuilderService } from '../../services/commnet-universe-builder.service';
 import { AdvancedPlacement } from './advanced-placement';
 import { CraftDetails } from './craft-details';
 

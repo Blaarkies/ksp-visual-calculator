@@ -459,10 +459,10 @@ export class TutorialService {
         },
         {
           callback: input => defer(() => {
-            let transmissionLineCount = document.querySelectorAll('cp-transmission-line').length;
+            let transmissionLineCount = document.querySelectorAll('cp-antenna-signal').length;
             return interval(500).pipe(
               filter(() =>
-                transmissionLineCount !== document.querySelectorAll('cp-transmission-line').length),
+                transmissionLineCount !== document.querySelectorAll('cp-antenna-signal').length),
               take(1),
               delay(500),
               mapTo(input));

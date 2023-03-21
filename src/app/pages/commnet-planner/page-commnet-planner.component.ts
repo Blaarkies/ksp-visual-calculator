@@ -20,7 +20,7 @@ import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { TransmissionLine } from '../../common/domain/transmission-line';
+import { AntennaSignal } from '../../common/domain/antenna.signal';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
 import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
@@ -29,14 +29,14 @@ import {
   ActionPanelDetails,
   HudComponent,
 } from '../../components/hud/hud.component';
-import { TransmissionLineComponent } from '../../components/transmission-line/transmission-line.component';
+import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
 import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData,
-} from '../../overlays/craft-details-dialog/craft-details-dialog.component';
-import { DifficultySettingsDialogComponent } from '../../overlays/difficulty-settings-dialog/difficulty-settings-dialog.component';
+} from './components/craft-details-dialog/craft-details-dialog.component';
+import { DifficultySettingsDialogComponent } from './components/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
 import { HudService } from '../../services/hud.service';
@@ -49,7 +49,7 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   imports: [
     CommonModule,
     UniverseMapComponent,
-    TransmissionLineComponent,
+    AntennaSignalComponent,
     DraggableSpaceObjectComponent,
     HudComponent,
 
@@ -187,7 +187,7 @@ export class PageCommnetPlannerComponent extends WithDestroy() {
     this.commnetUniverseBuilderService.editCelestialBody(body, details);
   }
 
-  trackSignal(index: number, item: TransmissionLine): string {
+  trackSignal(index: number, item: AntennaSignal): string {
     return item.nodes[0].label + item.nodes[1].label;
   }
 
