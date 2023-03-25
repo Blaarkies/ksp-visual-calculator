@@ -275,7 +275,7 @@ describe('Draggable class', () => {
           addChild: createSpy(),
         })
       });
-      UniverseContainerInstance.instance.celestialBodies$.next([fakePlanet]);
+      UniverseContainerInstance.instance.planets$.next([fakePlanet]);
       spyOn(UniverseContainerInstance.instance, 'getSoiParent')
         .and.returnValue(fakePlanet);
 

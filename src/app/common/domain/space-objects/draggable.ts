@@ -175,7 +175,7 @@ export class Draggable {
     }
 
     // TODO: remove UniverseContainerInstance usages
-    UniverseContainerInstance.instance.celestialBodies$.value
+    UniverseContainerInstance.instance.planets$.value
       .map(cb => cb.draggableHandle)
       .forEach(d => d.removeChild(this));
 

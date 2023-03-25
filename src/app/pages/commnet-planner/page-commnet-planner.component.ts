@@ -1,9 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-} from '@angular/core';
+import { Component } from '@angular/core';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -12,6 +8,7 @@ import {
   filter,
   map,
   Observable,
+  startWith,
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
@@ -20,6 +17,7 @@ import { AntennaSignal } from '../../common/domain/antenna.signal';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Craft } from '../../common/domain/space-objects/craft';
+import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
@@ -37,6 +35,7 @@ import { EventLogs } from '../../services/domain/event-logs';
 import { HudService } from '../../services/hud.service';
 import { AbstractStateService } from '../../services/state.abstract.service';
 import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
+import { UniverseContainerInstance } from '../../services/universe-container-instance.service';
 import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import {
   CraftDetailsDialogComponent,
@@ -70,22 +69,19 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   ],
   templateUrl: './page-commnet-planner.component.html',
   styleUrls: ['./page-commnet-planner.component.scss', '../temp.calculators.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [BasicAnimations.fade],
 })
 export default class PageCommnetPlannerComponent extends WithDestroy() {
 
   icons = Icons;
-  signals$ = this.commnetUniverseBuilderService.signals$.stream$;
-  crafts$ = this.commnetUniverseBuilderService.craft$.stream$;
-  orbits$ = this.commnetUniverseBuilderService.orbits$.stream$;
-  planets$ = this.commnetUniverseBuilderService.planets$.stream$;
-
   contextPanelDetails: ActionPanelDetails;
+  signals$: Observable<AntennaSignal[]>;
+  crafts$: Observable<Craft[]>;
+  orbits$: Observable<Orbit[]>;
+  planets$: Observable<SpaceObject[]>;
   focusables$: Observable<SpaceObject[]>;
 
-  constructor(private cdr: ChangeDetectorRef,
-              private dialog: MatDialog,
+  constructor(private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               private hudService: HudService,
               private commnetStateService: CommnetStateService,
@@ -93,7 +89,14 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
     super();
 
     this.contextPanelDetails = this.getContextPanelDetails();
-    this.focusables$ = combineLatest([this.crafts$, this.planets$])
+
+    let universe = commnetUniverseBuilderService;
+    this.signals$ = universe.signals$.stream$;
+    this.crafts$ = universe.craft$.stream$;
+    this.orbits$ = universe.orbits$;
+    this.planets$ = universe.planets$;
+
+    this.focusables$ = combineLatest([this.crafts$.pipe(startWith([])), this.planets$])
       .pipe(
         filter(([craft, planets]) => !!craft && !!planets),
         map(lists => lists.flatMap() as SpaceObject[]));

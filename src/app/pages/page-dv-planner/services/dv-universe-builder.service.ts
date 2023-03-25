@@ -2,8 +2,13 @@ import {
   Injectable,
   OnDestroy,
 } from '@angular/core';
+import {
+  BehaviorSubject,
+  takeUntil,
+} from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
+import { Orbit } from '../../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
@@ -18,7 +23,8 @@ import { TravelService } from './travel.service';
 @Injectable()
 export class DvUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
 
-  checkpointPreferences$ = new SubjectHandle<CheckpointPreferences>({defaultValue: CheckpointPreferences.default});
+  checkpointPreferences$ = new SubjectHandle<CheckpointPreferences>(
+    {defaultValue: CheckpointPreferences.default});
 
   constructor(
     protected universeContainerInstance: UniverseContainerInstance,
@@ -27,7 +33,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
 
     private travelService: TravelService,
   ) {
-    super(new SubjectHandle<SpaceObject[]>());
+    super();
   }
 
   ngOnDestroy() {
@@ -75,7 +81,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
         b.draggableHandle.updateConstrainLocation(parameters);
       }
     });
-    this.planets$.set(bodies.map(([b]: [SpaceObject]) => b));
+    this.planets$.next(bodies.map(([b]: [SpaceObject]) => b));
 
     let getBodyByLabel = (label: string) => this.planets$.value.find(b => b.label.like(label));
     this.travelService.buildState(jsonCheckpoints, getBodyByLabel);

@@ -65,7 +65,7 @@ export class CameraService {
   reset(scale?: number, location?: Vector2) {
     this._scale = scale ?? defaultScale;
     this.location = location ?? defaultLocation.clone();
-    this.cdr.markForCheck();
+    this.cdr?.markForCheck();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
@@ -102,7 +102,7 @@ export class CameraService {
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
     this.lastFocusObject = spaceObject.draggableHandle;
     this.focusAt(spaceObject.location, spaceObject.type, zoomIn);
-    this.cdr.markForCheck();
+    this.cdr?.markForCheck();
 
     this.cameraChange$.next();
   }

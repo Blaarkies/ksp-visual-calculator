@@ -6,9 +6,9 @@
 
   <ng-container aboveOrbits>
     <cp-antenna-signal [@fade]
-                          *ngFor="let line of signals$ | async; trackBy: trackSignal"
-                          [antennaSignal]="line"
-                          [scale]="universe.camera.scale">
+                       *ngFor="let line of signals$ | async; trackBy: trackSignal"
+                       [antennaSignal]="line"
+                       [scale]="universe.camera.scale">
     </cp-antenna-signal>
   </ng-container>
 

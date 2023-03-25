@@ -3,6 +3,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
+  BehaviorSubject,
   firstValueFrom,
   take,
   takeUntil,
@@ -13,6 +14,7 @@ import { AntennaSignal } from '../../../common/domain/antenna.signal';
 import { Group } from '../../../common/domain/group';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { Craft } from '../../../common/domain/space-objects/craft';
+import { Orbit } from '../../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
@@ -43,9 +45,10 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
+
     private cameraService: CameraService,
   ) {
-    super(new SubjectHandle<SpaceObject[]>());
+    super();
 
     this.cacheService.antennae$
       .pipe(take(1), takeUntil(this.destroy$))
@@ -67,8 +70,8 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     super.ngOnDestroy();
     super.destroy();
 
-    this.craft$.set([]);
-    this.signals$.set([]);
+    this.craft$.destroy();
+    this.signals$.destroy();
   }
 
   protected async setDetails() {
@@ -129,7 +132,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         b.draggableHandle.updateConstrainLocation(parameters);
       }
     });
-    this.planets$.set(bodies.map(([b]: [SpaceObject]) => b));
+    this.planets$.next(bodies.map(([b]: [SpaceObject]) => b));
 
     craft.forEach(c => c.draggableHandle.updateConstrainLocation(
       new OrbitParameterData(
@@ -161,7 +164,10 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   }
 
   updateTransmissionLines({reset}: { reset?: boolean } = {}) {
-    let nodes = this.planets$.value.concat(this.craft$.value);
+    let nodes = [
+      ...this.planets$.value ?? [],
+      ...this.craft$.value ?? [],
+    ];
     let signals = reset ? [] : this.signals$.value;
     this.signals$.set(this.getFreshTransmissionLines(nodes, signals));
   }

@@ -1,5 +1,5 @@
-import { InjectionToken } from '@angular/core';
 import {
+  BehaviorSubject,
   delayWhen,
   map,
   Observable,
@@ -35,23 +35,27 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
 
   protected abstract analyticsService: AnalyticsService;
   protected abstract universeContainerInstance: UniverseContainerInstance;
-
   protected abstract cacheService: StockEntitiesCacheService;
 
-  lastPlanetsValue: SpaceObject[] = [];
-  orbits$ = new SubjectHandle<Orbit[]>();
+  orbits$ = new BehaviorSubject<Orbit[]>([]);
+  planets$ = new BehaviorSubject<SpaceObject[]>([]);
 
-  protected constructor(
-    public planets$: SubjectHandle<SpaceObject[]>,
-  ) {
+  protected constructor() {
     super();
+
     // TODO: remove UniverseContainerInstance usages
-    this.planets$.stream$
+    setTimeout(() => this.planets$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(planets => {
-        this.lastPlanetsValue = planets;
-        this.universeContainerInstance.celestialBodies$.next(planets);
-      });
+      .subscribe(planets =>
+        this.universeContainerInstance.planets$.next(planets)));
+  }
+
+  protected destroy() {
+    this.orbits$.complete();
+    this.planets$.complete();
+
+    this.universeContainerInstance.planets$.next([]);
+    this.universeContainerInstance.crafts$.next([]);
   }
 
   private stockAssetsReady(): Observable<OrbitsBodies> {
@@ -63,13 +67,13 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   }
 
   buildStockState(): Observable<OrbitsBodies> {
-    return this.stockAssetsReady().pipe(
-      tap(({listOrbits, celestialBodies}) => {
-        this.orbits$.set(listOrbits);
-        this.planets$.set(celestialBodies);
-      }),
-      delayWhen(() => this.setDetails()),
-    );
+    return this.stockAssetsReady()
+      .pipe(
+        tap(({listOrbits, celestialBodies}) => {
+          this.orbits$.next(listOrbits);
+          this.planets$.next(celestialBodies);
+        }),
+        delayWhen(() => this.setDetails()));
   }
 
   protected async setDetails() {
@@ -94,7 +98,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
         return [draggable.label, orbit];
       });
     let orbitsLabelMap = new Map<string, Orbit>(orbitsLabels as []);
-    this.orbits$.set(orbitsLabels.map(([, orbit]) => orbit) as Orbit[]);
+    this.orbits$.next(orbitsLabels.map(([, orbit]) => orbit) as Orbit[]);
     return orbitsLabelMap;
   }
 
@@ -125,7 +129,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   }
 
   getSoiParent(location: Vector2): SpaceObject {
-    return this.lastPlanetsValue
+    return this.planets$.value
       .filter(p => !p.sphereOfInfluence || location.distance(p.location) <= p.sphereOfInfluence)
       .sort((a, b) => a.location.distance(location) - b.location.distance(location))
       .first();

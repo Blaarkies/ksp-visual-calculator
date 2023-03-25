@@ -12,7 +12,7 @@ export class UniverseContainerInstance {
   // Removes the circular dependency from Craft <-> SpaceObjectService
   static instance: UniverseContainerInstance;
 
-  celestialBodies$ = new BehaviorSubject<SpaceObject[]>(null);
+  planets$ = new BehaviorSubject<SpaceObject[]>(null);
   crafts$ = new BehaviorSubject<Craft[]>(null);
 
   constructor() {
@@ -20,7 +20,7 @@ export class UniverseContainerInstance {
   }
 
   getSoiParent(location: Vector2): SpaceObject {
-    return this.celestialBodies$.value
+    return this.planets$.value
       .filter(cb => !cb.sphereOfInfluence || location.distance(cb.location) <= cb.sphereOfInfluence)
       .sort((a, b) => a.location.distance(location) - b.location.distance(location))
       .first();

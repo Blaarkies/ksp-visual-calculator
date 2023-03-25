@@ -4,8 +4,10 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { Observable } from 'rxjs';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
+import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { WithDestroy } from '../../common/with-destroy';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
@@ -55,10 +57,9 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
   icons = Icons;
   checkpoints$ = this.travelService.checkpoints$.stream$;
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
-
   contextPanelDetails: ActionPanelDetails;
-  orbits$ = this.dvUniverseBuilderService.orbits$.stream$;
-  planets$ = this.dvUniverseBuilderService.planets$.stream$;
+  orbits$: Observable<Orbit[]>;
+  planets$: Observable<SpaceObject[]>;
 
   constructor(
     private hudService: HudService,
@@ -69,6 +70,10 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
     super();
 
     this.contextPanelDetails = this.getContextPanelDetails();
+
+    let universe = dvUniverseBuilderService;
+    this.orbits$ = universe.orbits$;
+    this.planets$ = universe.planets$;
   }
 
   ngOnDestroy() {

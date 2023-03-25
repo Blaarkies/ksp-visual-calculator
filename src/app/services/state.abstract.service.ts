@@ -1,7 +1,3 @@
-import {
-  Injectable,
-  InjectionToken,
-} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Bytes } from '@firebase/firestore';
 import {
@@ -22,8 +18,6 @@ import { Namer } from '../common/namer';
 import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { StateRow } from '../overlays/manage-state-dialog/state-row';
 import { DataService } from './data.service';
-import { StateCommnetPlanner } from './json-interfaces/state-commnet-planner';
-import { StateDvPlanner } from './json-interfaces/state-dv-planner';
 import { StateGame } from './json-interfaces/state-game';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
@@ -48,7 +42,7 @@ export abstract class AbstractStateService {
     return this.lastStateRecord !== JSON.stringify(this.state);
   }
 
-  get state(): StateGame | StateCommnetPlanner | StateDvPlanner {
+  get state(): StateGame {
     let planets = this.universeBuilderService.planets$.value;
     return {
       name: this.name,
