@@ -35,7 +35,6 @@ import { EventLogs } from '../../services/domain/event-logs';
 import { HudService } from '../../services/hud.service';
 import { AbstractStateService } from '../../services/state.abstract.service';
 import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
-import { UniverseContainerInstance } from '../../services/universe-container-instance.service';
 import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import {
   CraftDetailsDialogComponent,

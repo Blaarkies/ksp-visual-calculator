@@ -1,4 +1,4 @@
-import { TravelCondition } from '../../../domain/travel-condition';
+import { TravelCondition } from './travel-condition';
 
 export class PathDetailsReader {
 

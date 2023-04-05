@@ -1,40 +1,43 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { BasicAnimations } from '../../../../../animations/basic-animations';
-import { Icons } from '../../../../../common/domain/icons';
-import { Checkpoint } from '../../../domain/checkpoint';
 import { CommonModule } from '@angular/common';
-import { MspEdgeComponent } from '../msp-edge/msp-edge.component';
-import { MspNodeComponent } from '../msp-node/msp-node.component';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BasicAnimations } from '../../../../animations/basic-animations';
+import { Icons } from '../../../../common/domain/icons';
+import { Checkpoint } from '../../domain/checkpoint';
+import { MspListComponent } from '../msp-list/msp-list.component';
 
 @Component({
-  selector: 'cp-msp-list',
+  selector: 'cp-msp-list-manager',
   standalone: true,
   imports: [
     CommonModule,
-    MspEdgeComponent,
-    MspNodeComponent,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
+    MatMenuModule,
+    MspListComponent,
   ],
-  templateUrl: './msp-list.component.html',
-  styleUrls: ['./msp-list.component.scss'],
+  templateUrl: './msp-list-manager.component.html',
+  styleUrls: ['./msp-list-manager.component.scss'],
   animations: [
     BasicAnimations.height,
-    BasicAnimations.fade,
   ],
 })
-export class MspListComponent {
+export class MspListManagerComponent {
 
   @Input() set checkpoints(value: Checkpoint[]) {
     this.missionCheckpoints = value;
 
     let edges = value.slice(1).map(md => md.edge);
     this.deltaVTotal = edges.map(edge => edge.dv).sum();
-    // this.twrMinimum = edges.map(edge => edge.twr).sort().first();
   }
 
   @Input() isAddingCheckpoint: boolean;
@@ -43,17 +46,14 @@ export class MspListComponent {
   @Output() checkpointMode = new EventEmitter<boolean>();
   @Output() resetAll = new EventEmitter();
   @Output() removeNode = new EventEmitter<Checkpoint>();
+  @Output() updateAll = new EventEmitter<Checkpoint[]>();
   @Output() updateNode = new EventEmitter<Checkpoint>();
 
   missionCheckpoints: Checkpoint[];
   deltaVTotal: number;
-  // twrMinimum: number;
   icons = Icons;
   isTapCheckpointMode = false;
-
-  getNode(index: number, item: Checkpoint): string {
-    return item.node.name;
-  }
+  dragModeActive = false;
 
   toggleTapCheckpointMode() {
     this.isTapCheckpointMode = !this.isTapCheckpointMode;
@@ -72,6 +72,12 @@ export class MspListComponent {
     this.checkpointMode.emit(false);
 
     this.resetAll.emit();
+  }
+
+  setDragMode(active?: boolean) {
+    this.dragModeActive = active === undefined
+      ? !this.dragModeActive
+      : active;
   }
 
 }

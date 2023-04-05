@@ -1,38 +1,36 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import {
   filter,
   firstValueFrom,
   map,
   startWith,
 } from 'rxjs';
-import { ActionOption } from '../common/domain/action-option';
-import { Icons } from '../common/domain/icons';
-import { AnalyticsService } from './analytics.service';
-import { ManageStateDialogComponent } from '../overlays/manage-state-dialog/manage-state-dialog.component';
-import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
-import {
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
-import { AuthService } from './auth.service';
-import {
-  SimpleDialogComponent,
-  SimpleDialogData,
-} from '../overlays/simple-dialog/simple-dialog.component';
-import { AnalyticsDialogComponent } from '../overlays/analytics-dialog/analytics-dialog.component';
-import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialog.component';
-import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
-import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
-import { TutorialService } from './tutorial.service';
-import { GlobalStyleClass } from '../common/global-style-class';
-import { EventLogs } from './domain/event-logs';
-import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
 import { UsableRoutes } from '../app.routes';
+import { ActionOption } from '../common/domain/action-option';
 import { GameStateType } from '../common/domain/game-state-type';
+import { Icons } from '../common/domain/icons';
+import { HookIO } from '../common/domain/mat-dialog-handler/hook-io';
+import { GlobalStyleClass } from '../common/global-style-class';
+import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
+import { AnalyticsDialogComponent } from '../overlays/analytics-dialog/analytics-dialog.component';
+import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
+import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialog.component';
 import {
   FaqDialogComponent,
   FaqDialogData,
 } from '../overlays/faq-dialog/faq-dialog.component';
+import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
+import { ManageStateDialogComponent } from '../overlays/manage-state-dialog/manage-state-dialog.component';
+import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
+import {
+  SimpleDialogComponent,
+  SimpleDialogData,
+} from '../overlays/simple-dialog/simple-dialog.component';
+import { AnalyticsService } from './analytics.service';
+import { AuthService } from './auth.service';
+import { EventLogs } from './domain/event-logs';
+import { TutorialService } from './tutorial.service';
 
 let storageKeys = {
   firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
@@ -40,8 +38,6 @@ let storageKeys = {
   analyticsViewed: 'ksp-visual-calculator-analytics-viewed',
   privacyPolicyViewed: 'ksp-visual-calculator-privacy-policy-viewed',
 };
-
-type HookIO<T> = (ref: MatDialogRef<T>) => void;
 
 @Injectable()
 export class HudService {

@@ -1,14 +1,25 @@
-import { Component, Input } from '@angular/core';
-import { Icons } from '../../../../../common/domain/icons';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { PathDetailsReader } from './path-details-reader';
-import { ConnectionPositionPair, OverlayModule } from '@angular/cdk/overlay';
-import { BehaviorSubject } from 'rxjs';
-import { CheckpointEdge } from '../../../domain/checkpoint-edge';
-import { EventLogs } from '../../../../../services/domain/event-logs';
-import { AnalyticsService } from '../../../../../services/analytics.service';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
+  ConnectionPositionPair,
+  OverlayModule,
+} from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { Icons } from '../../../../common/domain/icons';
+import { AnalyticsService } from '../../../../services/analytics.service';
+import { EventLogs } from '../../../../services/domain/event-logs';
+import { CheckpointEdge } from '../../domain/checkpoint-edge';
+import { PathDetailsReader } from '../../domain/path-details-reader';
 
 @Component({
   selector: 'cp-msp-edge',
@@ -21,6 +32,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './msp-edge.component.html',
   styleUrls: ['./msp-edge.component.scss'],
   animations: [
+    // custom shrink animation
     trigger('animateSlidePanel', [
       state('*', style({transform: 'translateX(-90%) scaleY(1)'})),
       transition(':enter', [

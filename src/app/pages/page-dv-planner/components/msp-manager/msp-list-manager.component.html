@@ -1,0 +1,93 @@
+<cp-msp-list
+  [dragModeActive]="dragModeActive"
+  [missionCheckpoints]="missionCheckpoints"
+  (removeNode)="removeNode.emit($event)"
+  (updateAll)="updateAll.emit($event)"
+  (updateNode)="updateNode.emit($event)"
+  (dragSuccess)="setDragMode(false)"
+></cp-msp-list>
+
+<div class="destination-controls">
+
+  <div class="inline-children">
+    <button class="button-lock-mode"
+            mat-flat-button
+            [matTooltip]="(isTapCheckpointMode ? 'Disable' : 'Enable') + ' tap-checkpoint mode'"
+            (click)="toggleTapCheckpointMode()">
+      <div>
+        <mat-icon [svgIcon]="isTapCheckpointMode ? icons.Lock : icons.Unlock"></mat-icon>
+      </div>
+    </button>
+
+    <button class="button-single-checkpoint"
+            mat-flat-button
+            id="add-dv-mission-checkpoint-button"
+            [matTooltip]="isAddingCheckpoint ? 'Now tap a planet' : 'Add new checkpoint'"
+            (click)="addCheckpoint()">
+      <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>
+      <ng-template #isBusy>
+        <div class="animate-flashing">Done</div>
+      </ng-template>
+      <ng-template #idleIcon>
+        <div>
+          <mat-icon [svgIcon]="icons.AddMapMarker"></mat-icon>
+        </div>
+      </ng-template>
+    </button>
+  </div>
+
+  <button *ngIf="dragModeActive; else additionalMenu"
+          mat-button
+          class="additional-actions"
+          matTooltip="Stop drag mode"
+          (click)="setDragMode(false)">
+    <div>
+      <mat-icon [svgIcon]="icons.Cancel"></mat-icon>
+    </div>
+  </button>
+
+  <ng-template #additionalMenu>
+    <button mat-button
+            [matMenuTriggerFor]="menu"
+            class="additional-actions"
+            matTooltip="More actions for checkpoints">
+      <div>
+        <mat-icon [svgIcon]="icons.MenuVertical"></mat-icon>
+      </div>
+    </button>
+  </ng-template>
+  <mat-menu #menu="matMenu">
+    <button mat-button
+            [matTooltip]="'Reorder checkpoints'"
+            (click)="setDragMode()">
+      <div>
+        <mat-icon [svgIcon]="icons.Move"></mat-icon>
+      </div>
+    </button>
+
+    <button mat-button
+            id="clear-dv-mission-button"
+            class="fix-disabled-color"
+            color="warn"
+            [matTooltip]="'Clear entire mission'"
+            [disabled]="!missionCheckpoints.length"
+            (click)="resetMission()">
+      <div>
+        <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
+      </div>
+    </button>
+  </mat-menu>
+
+</div>
+
+<div class="totals-layout text-white" *ngIf="missionCheckpoints.length">
+  <div>Total delta-v</div>
+  <div>{{deltaVTotal}} m/s</div>
+</div>
+
+<pre [@height]="!missionCheckpoints.length"
+     class="text-mute empty-state-msp">
+No checkpoints selected.
+Start by adding your
+first checkpoint.
+</pre>

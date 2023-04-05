@@ -34,13 +34,20 @@
     }
   }
 
-  .delete-button {
+  .node-actions {
+    justify-self: end;
     min-width: 0;
     padding: 4px;
-    justify-self: end;
-
+    margin-right: 8px;
     @extend .dim-until-hover;
   }
+
+}
+
+.is-draggable {
+  cursor: grab;
+  border-radius: 4px;
+  background-color: #8882;
 }
 
 .destination {

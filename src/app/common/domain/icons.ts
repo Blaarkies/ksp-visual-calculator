@@ -11,6 +11,8 @@ export class Icons {
   static Backspace = 'backspace';
   static Delete = 'delete-forever';
   static DeleteAll = 'delete-sweep';
+  static Move = 'cursor-move';
+  static MenuVertical = 'dots-vertical';
   static Add = 'plus';
   static AddMapMarker = 'map-marker-plus';
   static ChevronLeft = 'chevron-left';

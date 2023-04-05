@@ -2,7 +2,7 @@
   <div class="panel-header">
     <div class="text-white">Mission Checkpoints</div>
     <button mat-icon-button
-            [matTooltip]="'Adjust defaults'"
+            [matTooltip]="'Preferences'"
             matTooltipPosition="left"
             (click)="toggleOptions()">
       <mat-icon [svgIcon]="icons.Configure"></mat-icon>
@@ -30,7 +30,8 @@
                      label="Aerobraking"
                      [formControl]="aerobrakeControl"></cp-input-toggle>
 
-    <div class="plane-change-control">
+    <div class="plane-change-control"
+         matTooltip="Adds the cost of orbital plane changes">
       <cp-input-number #planeChange
                        class="hidden" style="transform: translateY(-1em);"
                        [formControl]="planeChangeControl"
@@ -44,7 +45,8 @@
       <div class="text-white">Plane Change Cost</div>
     </div>
 
-    <div class="flight-situation">
+    <div class="flight-situation"
+         matTooltip="Set the default situation">
       <mat-menu #menuSituation="matMenu" class="menu-vertical buttons-left">
         <button mat-button
                 *ngFor="let condition of availableConditions"
@@ -62,7 +64,8 @@
       <div class="text-white">Flight Situation</div>
     </div>
 
-    <div class="route-type">
+    <div class="route-type"
+         matTooltip="Efficient routes may include extra destinations to decrease dv cost">
       <mat-menu #menuRoute="matMenu" class="menu-vertical buttons-left">
         <button mat-button
                 *ngFor="let routeType of routeTypes"
@@ -81,13 +84,14 @@
     </div>
   </div>
 
-  <cp-msp-list #list
+  <cp-msp-list-manager #list
                [checkpoints]="checkpoints$ | async"
                [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
                (add)="addCheckpoint(list.isAddingCheckpoint)"
                (checkpointMode)="setCheckpointMode($event)"
                (resetAll)="resetMission()"
                (removeNode)="removeCheckpoint($event)"
-               (updateNode)="updateCheckpoint($event)">
-  </cp-msp-list>
+               (updateNode)="updateCheckpoint($event)"
+               (updateAll)="updateMission($event)">
+  </cp-msp-list-manager>
 </div>

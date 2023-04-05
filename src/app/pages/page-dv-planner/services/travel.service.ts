@@ -130,6 +130,12 @@ export class TravelService {
     });
   }
 
+  refreshCheckpoints(checkpoints: Checkpoint[]) {
+    this.updateCheckpoints(checkpoints);
+
+    this.stopCheckpointSelection();
+  }
+
   updateCheckpoint(checkpoint: Checkpoint) {
     this.updateCheckpoints(this.checkpoints$.value);
 

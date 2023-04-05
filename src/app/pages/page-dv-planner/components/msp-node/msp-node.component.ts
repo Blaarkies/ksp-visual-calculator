@@ -1,15 +1,29 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Icons } from '../../../../../common/domain/icons';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { animate, state, style, transition, trigger } from '@angular/animations';
-import { PathDetailsReader } from '../msp-edge/path-details-reader';
-import { CheckpointNode } from '../../../domain/checkpoint-node';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import {
+  MatSelectChange,
+  MatSelectModule,
+} from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Icons } from '../../../../common/domain/icons';
+import { CheckpointNode } from '../../domain/checkpoint-node';
+import { PathDetailsReader } from '../../domain/path-details-reader';
 
 @Component({
   selector: 'cp-msp-node',
@@ -26,6 +40,7 @@ import { MatOptionModule } from '@angular/material/core';
   templateUrl: './msp-node.component.html',
   styleUrls: ['./msp-node.component.scss'],
   animations: [
+    // custom animation to accompany icon styling
     trigger('animateSelected', [
       state('false', style({opacity: .6, color: '#fff'})),
       state('true', style({opacity: 1, backgroundColor: '#fff2', color: '#7f7'})),
@@ -41,13 +56,13 @@ import { MatOptionModule } from '@angular/material/core';
 export class MspNodeComponent {
 
   @Input() details: CheckpointNode;
+  @Input() dragModeActive: boolean;
 
   @Output() remove = new EventEmitter();
   @Output() update = new EventEmitter();
 
   icons = Icons;
   conditionReadableMap = PathDetailsReader.conditionMap;
-  isPopoverOpen = false;
 
   setCondition(event: MatSelectChange) {
     this.details.condition = event.value;
@@ -58,10 +73,5 @@ export class MspNodeComponent {
     this.details.aerobraking = !this.details.aerobraking;
     this.update.emit();
   }
-
-  // toggleGravityAssist() {
-  //   this.details.gravityAssist = !this.details.gravityAssist;
-  //   this.update.emit();
-  // }
 
 }

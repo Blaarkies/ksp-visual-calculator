@@ -1,0 +1,50 @@
+<div class="node-layout stack" [class.is-draggable]="dragModeActive">
+  <div class="destination-layout">
+    <div class="destination">{{details.name}}</div>
+    <button mat-button
+            class="condition"
+            [disabled]="dragModeActive"
+            (click)="matSelect.open()">
+      {{conditionReadableMap[details.condition.toString()]}}
+    </button>
+  </div>
+
+  <ng-container *ngIf="!dragModeActive; else dragIcon">
+    <div class="capture-methods">
+      <button *ngIf="details.allowAerobraking"
+              [@animateSelected]="details.aerobraking || false"
+              [matTooltip]="'Use aerobraking'"
+              mat-button
+              disableRipple
+              (click)="toggleAerobraking()">
+        <div>
+          <mat-icon [svgIcon]="icons.Aerobraking"></mat-icon>
+        </div>
+      </button>
+    </div>
+
+    <button mat-button
+            class="node-actions"
+            [matTooltip]="'Remove checkpoint'"
+            (click)="remove.emit()">
+      <div>
+        <mat-icon color="warn" [svgIcon]="icons.Delete"></mat-icon>
+      </div>
+    </button>
+  </ng-container>
+
+  <ng-template #dragIcon>
+    <mat-icon [svgIcon]="icons.DragIndicator"></mat-icon>
+  </ng-template>
+</div>
+
+<mat-form-field class="hidden-condition">
+  <mat-select [value]="details.condition"
+              (selectionChange)="setCondition($event)"
+              #matSelect>
+    <mat-option *ngFor="let condition of details.availableConditions"
+                [value]="condition">
+      {{conditionReadableMap[condition]}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

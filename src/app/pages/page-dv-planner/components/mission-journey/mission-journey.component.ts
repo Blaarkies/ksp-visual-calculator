@@ -1,20 +1,29 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
-import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
-import { Icons } from '../../../../common/domain/icons';
+import { CommonModule } from '@angular/common';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+} from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import memoize from 'fast-memoize';
+import {
+  filter,
+  fromEvent,
+  interval,
+  map,
+  merge,
+  Observable,
+  sampleTime,
+  scan,
+  startWith,
+} from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
-import { filter, fromEvent, interval, map, mapTo, merge, Observable, sampleTime, scan, startWith } from 'rxjs';
+import { Icons } from '../../../../common/domain/icons';
+import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
 import { Vector2 } from '../../../../common/domain/vector2';
 import { CameraService } from '../../../../services/camera.service';
-import memoize from 'fast-memoize';
 import { Checkpoint } from '../../domain/checkpoint';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-
-class TripTrajectory {
-  sequence: number;
-  a: SpaceObject;
-  b?: SpaceObject;
-}
+import { TripTrajectory } from '../../domain/trip-trajectory';
 
 @Component({
   selector: 'cp-mission-journey',
@@ -51,14 +60,15 @@ export class MissionJourneyComponent implements AfterViewInit {
   mouseLocation$: Observable<Vector2>;
   trajectories: TripTrajectory[] = [];
   tripIndexMarginMap: number[] = [];
-  trajectoryPathMap = new Map<TripTrajectory, string>([]);
 
   constructor(private cameraService: CameraService) {
   }
 
   ngAfterViewInit() {
     let screenSpace = this.cameraService.cameraController.nativeElement;
-    this.mouseLocation$ = merge(fromEvent(screenSpace, 'mousemove'), interval(17).pipe(mapTo(null)))
+    this.mouseLocation$ = merge(
+      fromEvent(screenSpace, 'mousemove'),
+      interval(17).pipe(map(() => null)))
       .pipe(
         scan((acc, value) => value || acc),
         filter(e => e),

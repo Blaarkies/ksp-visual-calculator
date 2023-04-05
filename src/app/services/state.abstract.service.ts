@@ -64,11 +64,11 @@ export abstract class AbstractStateService {
   loadState(state?: string): Observable<void> {
     let buildStateResult: Observable<void>;
     if (state) {
-      let parsedState: StateGame = JSON.parse(state);
-      this.name = parsedState.name;
       // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
       let imageFormatFix = state.replace(/.png/g, '.webp');
 
+      let parsedState: StateGame = JSON.parse(imageFormatFix);
+      this.name = parsedState.name;
       this.setStatefulDetails(parsedState);
       buildStateResult = this.buildExistingState(imageFormatFix);
     } else {

@@ -29,18 +29,17 @@ import { AnalyticsService } from '../../../../services/analytics.service';
 import { EventLogs } from '../../../../services/domain/event-logs';
 import { Checkpoint } from '../../domain/checkpoint';
 import { DvRouteType } from '../../domain/dv-route-type';
+import { PathDetailsReader } from '../../domain/path-details-reader';
 import { TravelCondition } from '../../domain/travel-condition';
 import { DvUniverseBuilderService } from '../../services/dv-universe-builder.service';
 import { TravelService } from '../../services/travel.service';
-import { PathDetailsReader } from './msp-edge/path-details-reader';
-import { MspListComponent } from './msp-list/msp-list.component';
+import { MspListManagerComponent } from '../msp-manager/msp-list-manager.component';
 
 @Component({
   selector: 'cp-maneuver-sequence-panel',
   standalone: true,
   imports: [
     CommonModule,
-    MspListComponent,
     InputNumberComponent,
     InputToggleComponent,
     MatButtonModule,
@@ -48,6 +47,7 @@ import { MspListComponent } from './msp-list/msp-list.component';
     MatTooltipModule,
     MatMenuModule,
     ReactiveFormsModule,
+    MspListManagerComponent,
   ],
   templateUrl: './maneuver-sequence-panel.component.html',
   styleUrls: ['./maneuver-sequence-panel.component.scss'],
@@ -72,21 +72,27 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
   };
   routeTypes = [DvRouteType.lessDv, DvRouteType.lessDetours];
 
-  aerobrakeControl = new FormControl(this.universeBuilderService.checkpointPreferences$.value.aerobraking);
-
-  errorMarginControl = new FormControl(this.universeBuilderService.checkpointPreferences$.value.errorMargin);
-  errorMarginControlMeta = new ControlMetaNumber(0, 150, 2);
-
-  planeChangeControl = new FormControl(this.universeBuilderService.checkpointPreferences$.value.planeChangeCost);
-  planeChangeControlMeta = new ControlMetaNumber(0, 100, 1.5);
-
-  preferredCondition$ = new BehaviorSubject(this.universeBuilderService.checkpointPreferences$.value.condition);
-  routeType$ = new BehaviorSubject(this.universeBuilderService.checkpointPreferences$.value.routeType);
+  aerobrakeControl: FormControl<boolean>;
+  errorMarginControl: FormControl<number>;
+  errorMarginControlMeta: ControlMetaNumber;
+  planeChangeControl: FormControl<number>;
+  planeChangeControlMeta: ControlMetaNumber;
+  preferredCondition$: BehaviorSubject<TravelCondition>;
+  routeType$: BehaviorSubject<DvRouteType>;
 
   constructor(private travelService: TravelService,
               private universeBuilderService: DvUniverseBuilderService,
               private analyticsService: AnalyticsService) {
     super();
+
+    let preferences = this.universeBuilderService.checkpointPreferences$.value;
+    this.aerobrakeControl = new FormControl(preferences.aerobraking);
+    this.errorMarginControl = new FormControl(preferences.errorMargin);
+    this.errorMarginControlMeta = new ControlMetaNumber(0, 150, 2);
+    this.planeChangeControl = new FormControl(preferences.planeChangeCost);
+    this.planeChangeControlMeta = new ControlMetaNumber(0, 100, 1.5);
+    this.preferredCondition$ = new BehaviorSubject(preferences.condition);
+    this.routeType$ = new BehaviorSubject(preferences.routeType);
 
     let preferencesDebouncer$ = new Subject<CheckpointPreferences>();
     combineLatest([
@@ -156,6 +162,10 @@ export class ManeuverSequencePanelComponent extends WithDestroy() {
 
   resetMission() {
     this.travelService.resetCheckpoints();
+  }
+
+  updateMission(checkpoints: Checkpoint[]) {
+    this.travelService.refreshCheckpoints(checkpoints);
   }
 
   removeCheckpoint(checkpoint: Checkpoint) {
