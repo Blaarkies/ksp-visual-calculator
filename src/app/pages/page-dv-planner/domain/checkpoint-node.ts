@@ -7,7 +7,6 @@ export class CheckpointNode {
   name: string;
   condition: TravelCondition;
   aerobraking: boolean;
-  gravityAssist: boolean;
   availableConditions: TravelCondition[];
 
   allowAerobraking: boolean;
@@ -18,14 +17,12 @@ export class CheckpointNode {
     name: string,
     condition: TravelCondition,
     aerobraking: boolean,
-    gravityAssist: boolean,
     availableConditions: TravelCondition[],
   }) {
     this.body = params.body;
     this.name = params.name;
     this.condition = params.condition;
     this.aerobraking = params.aerobraking;
-    this.gravityAssist = params.gravityAssist;
     this.availableConditions = params.availableConditions;
   }
 
@@ -34,7 +31,6 @@ export class CheckpointNode {
       name: this.name,
       condition: this.condition,
       aerobraking: this.aerobraking,
-      // gravityAssist: this.gravityAssist,
     };
   }
 

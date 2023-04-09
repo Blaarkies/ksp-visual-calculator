@@ -79,8 +79,9 @@ export class TravelService {
       condition: availableConditions.find(c => c === this.checkpointPreferences.condition)
         ?? availableConditions.first(),
       availableConditions,
-      aerobraking: this.checkpointPreferences.aerobraking,
-      gravityAssist: false,
+      aerobraking: so.label === 'Kerbin'
+        ? true
+        : this.checkpointPreferences.aerobraking,
     });
 
     let newList = [...this.checkpoints$.value, new Checkpoint(node)];
