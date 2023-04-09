@@ -19,6 +19,11 @@
   }
 }
 
+.drag-list-layout {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
 @media screen and (max-width: 600px), (max-height: 500px) {
   .list-layout {
     max-height: 200px;

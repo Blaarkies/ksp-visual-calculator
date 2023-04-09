@@ -38,7 +38,6 @@
 
   <button *ngIf="dragModeActive; else additionalMenu"
           mat-button
-          class="additional-actions"
           matTooltip="Stop drag mode"
           (click)="setDragMode(false)">
     <div>
@@ -49,7 +48,6 @@
   <ng-template #additionalMenu>
     <button mat-button
             [matMenuTriggerFor]="menu"
-            class="additional-actions"
             matTooltip="More actions for checkpoints">
       <div>
         <mat-icon [svgIcon]="icons.MenuVertical"></mat-icon>
@@ -59,7 +57,7 @@
   <mat-menu #menu="matMenu">
     <button mat-button
             [matTooltip]="'Reorder checkpoints'"
-            (click)="setDragMode()">
+            (click)="setDragMode(true)">
       <div>
         <mat-icon [svgIcon]="icons.Move"></mat-icon>
       </div>

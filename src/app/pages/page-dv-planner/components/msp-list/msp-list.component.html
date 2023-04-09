@@ -17,6 +17,7 @@
 
 <ng-template #dragMode>
   <div #dragList
+       class="drag-list-layout"
        [@height]
        [class.border-transparent]="!missionCheckpoints.length"
        cdkDropList
