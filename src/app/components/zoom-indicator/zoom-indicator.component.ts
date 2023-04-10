@@ -1,8 +1,21 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
-import { CameraService } from '../../services/camera.service';
-import { debounceTime, finalize, skip, Subject, takeUntil, tap } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
 import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+} from '@angular/core';
+import {
+  debounceTime,
+  finalize,
+  sampleTime,
+  skip,
+  Subject,
+  takeUntil,
+  tap,
+  throttleTime,
+} from 'rxjs';
+import { WithDestroy } from '../../common/with-destroy';
+import { CameraService } from '../../services/camera.service';
 
 @Component({
   selector: 'cp-zoom-indicator',
@@ -13,17 +26,18 @@ import { CommonModule } from '@angular/common';
 })
 export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
 
-  setCameraScale(value: number) {
-    let ratio = value / this.range;
+  set cameraScale(value: number) {
+    let adjusted = value - this.limits[0];
+    let ratio = (adjusted ?? 1e-9) / this.range;
     ratio = this.transformToLinear(ratio);
 
-    this.zoomPoint = ratio * 100;
+    this.zoomPoint = (ratio * 100).coerceIn(0, 99);
     this.zoomChange$.next();
   }
 
-  setZoomLimits(value: number[]) {
+  set zoomLimits(value: number[]) {
     this.limits = value;
-    this.range = this.limits[1] - this.limits[0];
+    this.range = this.limits[1];
 
     let moonsRatio = this.transformToLinear(CameraService.scaleToShowMoons / this.range) + .01;
     let planetsRatio = moonsRatio * .5;
@@ -33,7 +47,7 @@ export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
     };
   }
 
-  zoomPoint: number = 0;
+  zoomPoint = 0;
   positions: { planets, moons };
   show = false;
 
@@ -46,10 +60,12 @@ export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
     super();
 
     cameraService.cameraChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.setCameraScale(cameraService.scale));
+      .pipe(
+        sampleTime(200),
+        takeUntil(this.destroy$))
+      .subscribe(() => this.cameraScale = cameraService.scale);
 
-    this.setZoomLimits(CameraService.zoomLimits);
+    this.zoomLimits = CameraService.zoomLimits;
 
     this.zoomChange$
       .pipe(

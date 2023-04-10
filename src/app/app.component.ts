@@ -4,13 +4,9 @@ import {
   Component,
   OnDestroy,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import {
-  Router,
-  RouterModule,
-} from '@angular/router';
+import { RouterModule } from '@angular/router';
 import {
   Subject,
   takeUntil,
@@ -34,14 +30,11 @@ import { ThemeService } from './services/theme.service';
 export class AppComponent extends WithDestroy() implements OnDestroy {
 
   showHolidayTheme = false;
-  unsubscribeHoliday$ = new Subject<void>();
+  private unsubscribeHoliday$ = new Subject<void>();
 
   constructor(
-    dialog: MatDialog,
-    router: Router,
     cdr: ChangeDetectorRef,
     themeService: ThemeService,
-    // authService: AuthService,
     matIconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
   ) {
@@ -58,7 +51,7 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
         takeUntil(this.destroy$))
       .subscribe(() => {
         this.showHolidayTheme = false;
-        cdr.detectChanges();
+        // cdr.detectChanges();
         this.showHolidayTheme = true;
       });
   }
@@ -68,4 +61,8 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
     this.unsubscribeHoliday$.complete();
   }
 
+  cancelHolidayTheme() {
+    this.unsubscribeHoliday$.next();
+    this.unsubscribeHoliday$.complete();
+  }
 }

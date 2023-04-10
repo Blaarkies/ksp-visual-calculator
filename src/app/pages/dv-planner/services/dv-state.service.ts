@@ -7,7 +7,6 @@ import {
 } from 'rxjs';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { GameStateType } from '../../../common/domain/game-state-type';
-import { AuthService } from '../../../services/auth.service';
 import { DataService } from '../../../services/data.service';
 import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
@@ -29,17 +28,6 @@ export class DvStateService extends AbstractStateService {
     private travelService: TravelService,
   ) {
     super();
-    // this.loadState().subscribe();
-    timer(1e3).pipe(
-      switchMap(() => this.getStatesInContext()),
-      switchMap(s => {
-        let state1 = s[0];
-        return state1
-          ? this.loadState(state1.state as string)
-          : this.loadState();
-      }),
-    )
-    .subscribe();
   }
 
   get state(): StateDvPlanner {

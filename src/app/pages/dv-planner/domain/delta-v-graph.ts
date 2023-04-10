@@ -9,7 +9,6 @@ type DeltaVStep = (string | number)[];
 class MissionNodeAbilities {
   allowConditions: TravelCondition[];
   allowAerobraking: boolean;
-  // allowGravityAssist: boolean;
 }
 
 class TripDetails {

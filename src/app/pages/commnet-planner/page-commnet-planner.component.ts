@@ -1,14 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import {
   combineLatest,
   delayWhen,
   filter,
   map,
+  merge,
   Observable,
   startWith,
+  take,
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
@@ -23,10 +25,8 @@ import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
 import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
-import {
-  ActionPanelDetails,
-  HudComponent,
-} from '../../components/hud/hud.component';
+import { ActionPanelDetails } from '../../components/hud/action-panel-details';
+import { HudComponent } from '../../components/hud/hud.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
 import { AnalyticsService } from '../../services/analytics.service';
@@ -49,20 +49,17 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   standalone: true,
   imports: [
     CommonModule,
+    HudComponent,
+    ZoomIndicatorComponent,
+    FocusJumpToPanelComponent,
     UniverseMapComponent,
     AntennaSignalComponent,
     DraggableSpaceObjectComponent,
-    HudComponent,
-
-    MatBottomSheetModule,
-    ZoomIndicatorComponent,
-    FocusJumpToPanelComponent,
   ],
   providers: [
+    HudService,
     CommnetUniverseBuilderService,
     CommnetStateService,
-    AuthService,
-    HudService,
     {provide: AbstractUniverseBuilderService, useExisting: CommnetUniverseBuilderService},
     {provide: AbstractStateService, useExisting: CommnetStateService},
   ],
@@ -80,11 +77,14 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
   planets$: Observable<SpaceObject[]>;
   focusables$: Observable<SpaceObject[]>;
 
-  constructor(private dialog: MatDialog,
-              private analyticsService: AnalyticsService,
-              private hudService: HudService,
-              private commnetStateService: CommnetStateService,
-              private commnetUniverseBuilderService: CommnetUniverseBuilderService) {
+  constructor(
+    private authService: AuthService,
+    private activatedRoute: ActivatedRoute,
+    private dialog: MatDialog,
+    private analyticsService: AnalyticsService,
+    private hudService: HudService,
+    private commnetStateService: CommnetStateService,
+    private commnetUniverseBuilderService: CommnetUniverseBuilderService) {
     super();
 
     this.contextPanelDetails = this.getContextPanelDetails();
@@ -99,6 +99,12 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
       .pipe(
         filter(([craft, planets]) => !!craft && !!planets),
         map(lists => lists.flatMap() as SpaceObject[]));
+
+    merge(
+      this.authService.user$.pipe(take(1)),
+      this.authService.signIn$)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(u => this.commnetStateService.handleUserSingIn(u));
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

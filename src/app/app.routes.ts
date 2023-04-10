@@ -19,12 +19,14 @@ export enum UsableRoutes {
 const routes: Routes = [
   {
     path: UsableRoutes.CommnetPlanner,
+    title: 'CommNet Planner',
     loadComponent: () => import('./pages/commnet-planner/page-commnet-planner.component'),
   },
 
   {
     path: UsableRoutes.DvPlanner,
-    loadComponent: () => import('./pages/page-dv-planner/page-dv-planner.component'),
+    title: 'DV Planner',
+    loadComponent: () => import('./pages/dv-planner/page-dv-planner.component'),
   },
 
   {path: COMMNET_ROUTE_130, redirectTo: UsableRoutes.CommnetPlanner},
@@ -34,12 +36,14 @@ const routes: Routes = [
 
   {
     path: 'pocket-calculators',
+    title: 'KSP Visual Calculator',
     loadComponent: () => import('./components/isru-heat-and-power-widget/page-displayer/page-displayer.component')
       .then(m => m.PageDisplayerComponent)
   },
 
   {
     path: UsableRoutes.Intro,
+    title: 'KSP Visual Calculator',
     loadComponent: () => import('./pages/article/page-article.component')
       .then(m => m.PageArticleComponent),
   },

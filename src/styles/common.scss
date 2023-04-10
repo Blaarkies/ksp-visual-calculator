@@ -46,6 +46,10 @@
   pointer-events: none;
 }
 
+.screen-border-margin {
+  margin: 8px;
+}
+
 .input-field-contrast-text {
   input {
     color: var(--color-text) !important;

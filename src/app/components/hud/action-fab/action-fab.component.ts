@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ActionGroupType } from '../hud.component';
+import { ActionGroupType } from '../action-group-type';
 import { ActionPanelColors } from '../../action-panel/action-panel.component';
 import { ActionOption } from '../../../common/domain/action-option';
 import { CommonModule } from '@angular/common';

@@ -17,7 +17,10 @@ import { GameStateType } from '../common/domain/game-state-type';
 import { Namer } from '../common/namer';
 import { StateEntry } from '../overlays/manage-state-dialog/state-entry';
 import { StateRow } from '../overlays/manage-state-dialog/state-row';
-import { DataService } from './data.service';
+import {
+  DataService,
+  UserData,
+} from './data.service';
 import { StateGame } from './json-interfaces/state-game';
 import { StateSpaceObject } from './json-interfaces/state-space-object';
 import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
@@ -35,11 +38,12 @@ export abstract class AbstractStateService {
   private lastStateRecord: string;
 
   setStateRecord() {
-    this.lastStateRecord = JSON.stringify(this.state)
+    this.lastStateRecord = JSON.stringify(this.state);
   }
 
-  get stateIsUnsaved(): boolean {
-    return this.lastStateRecord !== JSON.stringify(this.state);
+  get pendingChanges(): boolean {
+    return this.lastStateRecord
+      && this.lastStateRecord !== JSON.stringify(this.state);
   }
 
   get state(): StateGame {
@@ -132,10 +136,15 @@ export abstract class AbstractStateService {
         })));
   }
 
-  getStatesInContext(): Observable<StateEntry[]> {
-    return this.getStates().pipe(map(states => states
-      .filter(s => s.context === this.context)
-      .sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)));
+  getStatesInContext({sorted} = {sorted: true}): Observable<StateEntry[]> {
+    return this.getStates().pipe(map(states => {
+        let list = states.filter(s => s.context === this.context);
+        list = sorted
+          ? list.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds)
+          : list;
+        return list;
+      },
+    ));
   }
 
   async importState(stateString: string) {
@@ -165,6 +174,34 @@ export abstract class AbstractStateService {
         throw error;
       })
       .then(() => this.snackBar.open(`Renamed "${oldName}" to "${state.name}"`));
+  }
+
+  async handleUserSingIn(user?: UserData) {
+    if (!user) {
+      await firstValueFrom(this.loadState());
+      return;
+    }
+
+    let states = await firstValueFrom(this.getStatesInContext({sorted: true}));
+    let newestState = states[0];
+    if (!newestState) {
+      return;
+    }
+
+    if (this.pendingChanges) {
+      let snackbarResult$ = this.snackBar
+        .open(`Latest savegame found, discard current changes and load "${newestState?.name}"?`,
+          'Discard Changes', {duration: 15e3})
+        .afterDismissed();
+      let {dismissedByAction} = await firstValueFrom(snackbarResult$);
+      if (!dismissedByAction) {
+        return;
+      }
+    }
+
+    await firstValueFrom(this.loadState(newestState?.state as string));
+    // todo: add snackbar queue service to stop message overriding each other
+    this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
 
 }

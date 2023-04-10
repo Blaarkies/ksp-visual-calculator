@@ -3,18 +3,20 @@ import {
   Component,
   OnDestroy,
 } from '@angular/core';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
-import { Observable } from 'rxjs';
+import {
+  merge,
+  Observable,
+  take,
+  takeUntil,
+} from 'rxjs';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { WithDestroy } from '../../common/with-destroy';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
-import {
-  ActionPanelDetails,
-  HudComponent,
-} from '../../components/hud/hud.component';
+import { ActionPanelDetails } from '../../components/hud/action-panel-details';
+import { HudComponent } from '../../components/hud/hud.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
 import { AuthService } from '../../services/auth.service';
@@ -32,20 +34,17 @@ import { TravelService } from './services/travel.service';
   standalone: true,
   imports: [
     CommonModule,
-    UniverseMapComponent,
-    MissionJourneyComponent,
     HudComponent,
     ZoomIndicatorComponent,
     FocusJumpToPanelComponent,
+    UniverseMapComponent,
+    MissionJourneyComponent,
     ManeuverSequencePanelComponent,
-
-    MatBottomSheetModule,
   ],
   providers: [
+    HudService,
     DvUniverseBuilderService,
     DvStateService,
-    AuthService,
-    HudService,
     {provide: AbstractUniverseBuilderService, useExisting: DvUniverseBuilderService},
     {provide: AbstractStateService, useExisting: DvStateService},
   ],
@@ -62,6 +61,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
   planets$: Observable<SpaceObject[]>;
 
   constructor(
+    private authService: AuthService,
     private hudService: HudService,
     private dvStateService: DvStateService,
     private dvUniverseBuilderService: DvUniverseBuilderService,
@@ -74,6 +74,12 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
     let universe = dvUniverseBuilderService;
     this.orbits$ = universe.orbits$;
     this.planets$ = universe.planets$;
+
+    merge(
+      this.authService.user$.pipe(take(1)),
+      this.authService.signIn$)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(u => this.dvStateService.handleUserSingIn(u));
   }
 
   ngOnDestroy() {

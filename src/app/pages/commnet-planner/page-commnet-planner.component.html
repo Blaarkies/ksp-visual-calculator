@@ -45,7 +45,9 @@
   [icon]="icons.Relay"
   [contextPanelDetails]="contextPanelDetails"
 >
-  <cp-zoom-indicator top class="no-mouse"></cp-zoom-indicator>
+  <div top class="screen-border-margin">
+    <cp-zoom-indicator class="no-mouse"></cp-zoom-indicator>
+  </div>
   <cp-focus-jump-to-panel
     left
     [focusables]="focusables$ | async"

@@ -2,13 +2,8 @@ import {
   Injectable,
   OnDestroy,
 } from '@angular/core';
-import {
-  BehaviorSubject,
-  takeUntil,
-} from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
-import { Orbit } from '../../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';

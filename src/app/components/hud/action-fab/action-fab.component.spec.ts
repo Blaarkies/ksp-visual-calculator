@@ -1,9 +1,9 @@
 import { MockBuilder, MockRender } from 'ng-mocks';
+import { ActionGroupType } from '../action-group-type';
 import { ActionFabComponent } from './action-fab.component';
 import { AppModule } from '../../../app.module';
 import { ActionOption } from '../../../common/domain/action-option';
 import { ineeda } from 'ineeda';
-import { ActionGroupType } from '../hud.component';
 import { fakeAsync } from '@angular/core/testing';
 
 let componentType = ActionFabComponent;

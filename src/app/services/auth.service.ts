@@ -14,9 +14,7 @@ import {
   User,
   UserCredential,
 } from '@angular/fire/auth';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import {
   authState,
   user,
@@ -28,29 +26,26 @@ import {
   Observable,
   of,
   shareReplay,
+  Subject,
   switchMap,
   tap,
 } from 'rxjs';
 import { AuthErrorCode } from '../components/account-details/auth-error-code';
-import { AnalyticsService } from './analytics.service';
 import {
   DataService,
   UserData,
 } from './data.service';
-import { AbstractStateService } from './state.abstract.service';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AuthService {
 
   user$: Observable<UserData>;
+  signIn$ = new Subject<UserData>();
+  signOut$ = new Subject<void>();
 
   constructor(private auth: Auth,
-              private router: Router,
               private dataService: DataService,
-              private stateService: AbstractStateService,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog,
-              private analyticsService: AnalyticsService,
               private http: HttpClient) {
     this.user$ = authState(auth)
       .pipe(
@@ -61,52 +56,22 @@ export class AuthService {
           ? this.dataService.getUser(uid)
           : of(null)) as Observable<UserData>),
         shareReplay(1));
-
-/*    stateService.earlyState
-      .pipe(
-        map(state => JSON.stringify(stateService.getTimestamplessState(state))),
-        switchMap(state => zip(of(state), this.user$)),
-        take(1),
-        filter(([, user]) => user !== null),
-        switchMap(([state]) => zip(of(state), stateService.getStatesInContext())),
-        switchMap(([earlyState, states]) => {
-          if (states.length === 0) {
-            return zip(of(false), of(states));
-          }
-
-          let newState = JSON.stringify(stateService.getTimestamplessState(stateService.state));
-          if (earlyState !== newState) {
-            return snackBar.open(`Latest save game found, discard current changes and load "${states[0]?.name}"?`,
-              'Discard Changes', {duration: 15e3})
-              .afterDismissed()
-              .pipe(map(value => [value.dismissedByAction, states]));
-          } else {
-            return zip(of(true), of(states));
-          }
-        }),
-        filter(([shouldLoad]) => !!shouldLoad),
-        switchMap(([, states]) => {
-          let newestState = states[0];
-          return stateService.loadState(newestState.state);
-        }),
-      )
-      .subscribe();*/
   }
 
   async googleSignIn(agreedPolicy: boolean) {
     const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
-    await this.loadUserLastSaveGame();
+    let user = await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
+    this.signIn$.next(user);
   }
 
   async emailSignIn(email: string, password: string, agreedPolicy: boolean): Promise<UserCredential> {
     let credential = await signInWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
-    await this.loadUserLastSaveGame();
+    let user = await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
+    this.signIn$.next(user);
     return credential;
   }
 
@@ -121,8 +86,7 @@ export class AuthService {
 
   async signOut() {
     await signOut(this.auth);
-    await firstValueFrom(this.stateService.loadState());
-    this.stateService.setStateRecord();
+    this.signOut$.next();
   }
 
   async updateUserData(user: UserData | User, extra?: {userAgreedToPrivacyPolicy: boolean}): Promise<UserData> {
@@ -159,31 +123,6 @@ export class AuthService {
     }
 
     return await sendPasswordResetEmail(this.auth, email);
-  }
-
-  private async loadUserLastSaveGame(): Promise<void> {
-    await firstValueFrom(this.user$);
-
-    let states = await firstValueFrom(this.stateService.getStatesInContext());
-    let newestState = states[0];
-    if (!newestState) {
-      return;
-    }
-
-    if (this.stateService.stateIsUnsaved) {
-      let snackbarResult$ = this.snackBar
-        .open(`Latest save game found, discard current changes and load "${newestState?.name}"?`,
-          'Discard Changes', {duration: 15e3})
-        .afterDismissed();
-      let {dismissedByAction} = await firstValueFrom(snackbarResult$);
-      if (!dismissedByAction) {
-        return;
-      }
-    }
-
-    await firstValueFrom(this.stateService.loadState(newestState?.state as string));
-    // todo: add snackbar queue service to stop message overriding each other
-    this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
 
   /**

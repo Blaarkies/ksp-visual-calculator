@@ -1,10 +1,5 @@
+import { Injectable } from '@angular/core';
 import {
-  forwardRef,
-  Inject,
-  Injectable,
-} from '@angular/core';
-import {
-  BehaviorSubject,
   finalize,
   Subject,
   take,
@@ -21,7 +16,6 @@ import { CheckpointEdge } from '../domain/checkpoint-edge';
 import { CheckpointNode } from '../domain/checkpoint-node';
 import { DeltaVGraph } from '../domain/delta-v-graph';
 import { TravelCondition } from '../domain/travel-condition';
-import { DvUniverseBuilderService } from './dv-universe-builder.service';
 
 @Injectable({providedIn: 'root'})
 export class TravelService {

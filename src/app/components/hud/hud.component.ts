@@ -1,3 +1,5 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -5,71 +7,44 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { ActionOption } from '../../common/domain/action-option';
-import { Icons } from '../../common/domain/icons';
-import { HudService } from '../../services/hud.service';
-import { AnalyticsService } from '../../services/analytics.service';
+import { MatBadgeModule } from '@angular/material/badge';
 import {
-  FaqDialogComponent,
-  FaqDialogData,
-} from '../../overlays/faq-dialog/faq-dialog.component';
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { WithDestroy } from '../../common/with-destroy';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   firstValueFrom,
   map,
   Observable,
   of,
-  takeUntil,
 } from 'rxjs';
-import {
-  ActionPanelColors,
-  ActionPanelComponent,
-} from '../action-panel/action-panel.component';
-import { BreakpointObserver } from '@angular/cdk/layout';
-import {
-  MatBottomSheet,
-  MatBottomSheetRef,
-} from '@angular/material/bottom-sheet';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { Icons } from '../../common/domain/icons';
+import { NegatePipe } from '../../common/negate.pipe';
+import { WithDestroy } from '../../common/with-destroy';
+import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import {
   ActionBottomSheetComponent,
   ActionBottomSheetData,
 } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
-import { GlobalStyleClass } from '../../common/global-style-class';
-import { EventLogs } from '../../services/domain/event-logs';
-import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
+import { AnalyticsService } from '../../services/analytics.service';
 import { AuthService } from '../../services/auth.service';
-import { BasicAnimations } from '../../animations/basic-animations';
+import { EventLogs } from '../../services/domain/event-logs';
+import { HudService } from '../../services/hud.service';
 import {
   ThemeService,
   ThemeTypeEnum,
 } from '../../services/theme.service';
-import { CommonModule } from '@angular/common';
-import { ActionFabComponent } from './action-fab/action-fab.component';
+import { ActionPanelComponent } from '../action-panel/action-panel.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';
-import { ZoomIndicatorComponent } from '../zoom-indicator/zoom-indicator.component';
-import { FocusJumpToPanelComponent } from '../focus-jump-to-panel/focus-jump-to-panel.component';
-import { ManeuverSequencePanelComponent } from '../../pages/page-dv-planner/components/maneuver-sequence-panel/maneuver-sequence-panel.component';
-import { NegatePipe } from '../../common/negate.pipe';
-import { ManageStateDialogComponent } from '../../overlays/manage-state-dialog/manage-state-dialog.component';
-import { UsableRoutes } from '../../app.routes';
-import { MatTooltipModule } from '@angular/material/tooltip';
-
-export class ActionPanelDetails {
-  startTitle?: string;
-  color: ActionPanelColors;
-  startIcon: Icons;
-  options: ActionOption[];
-}
-
-export class ActionGroupType {
-  static General = 'general';
-  static Information = 'information';
-  static Context = 'context';
-}
+import { ActionFabComponent } from './action-fab/action-fab.component';
+import { ActionGroupType } from './action-group-type';
+import { ActionPanelDetails } from './action-panel-details';
 
 @Component({
   selector: 'cp-hud',
@@ -79,20 +54,16 @@ export class ActionGroupType {
     ActionFabComponent,
     ActionPanelComponent,
     UserProfileComponent,
-    FocusJumpToPanelComponent,
-    ManeuverSequencePanelComponent,
-    ZoomIndicatorComponent,
     NegatePipe,
     MatBadgeModule,
     MatButtonModule,
     MatIconModule,
-
-    ManageStateDialogComponent,
     MatTooltipModule,
+    MatBottomSheetModule,
   ],
   templateUrl: './hud.component.html',
   styleUrls: ['./hud.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   animations: [BasicAnimations.fade],
 })
 export class HudComponent extends WithDestroy() implements AfterViewInit {
@@ -107,7 +78,7 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
   isHandset$: Observable<boolean>;
   icons = Icons;
   actionGroupTypes = ActionGroupType;
-  hasBoughtCoffee$ = of(true)//TODO: this.auth.user$.pipe(map(u => u?.isCustomer));
+  hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
 
   lastTheme: string;
   themeIconMap = {

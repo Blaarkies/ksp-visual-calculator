@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
-import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { DataService } from '../../../services/data.service';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
 import { StateCraft } from '../../../services/json-interfaces/state-craft';
 import { StateGame } from '../../../services/json-interfaces/state-game';
 import { AbstractStateService } from '../../../services/state.abstract.service';
+import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 
 @Injectable()
@@ -21,7 +21,6 @@ export class CommnetStateService extends AbstractStateService {
     protected snackBar: MatSnackBar,
   ) {
     super();
-    this.loadState().subscribe();
   }
 
   get state(): StateCommnetPlanner {

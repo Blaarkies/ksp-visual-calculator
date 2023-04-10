@@ -1,4 +1,10 @@
-.layout {
+.zoom-indicator-layout {
+  padding-right: 5px;
+  padding-left: 23px;
+  padding-top: 23px;
+  overflow: hidden;
+  height: max-content;
+
   &.transition-in {
     transition: .5s ease-out;
     opacity: .7;
@@ -9,8 +15,6 @@
     opacity: 0;
   }
 
-  height: 0;
-
   svg {
     overflow: visible;
     width: 100%;
@@ -18,5 +22,11 @@
 
   .move-smooth {
     transition: .2s linear;
+  }
+}
+
+.hover-show {
+  &:hover {
+    box-shadow: 0 0 1px 1px white;
   }
 }

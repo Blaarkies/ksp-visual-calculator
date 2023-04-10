@@ -1,6 +1,6 @@
 <router-outlet></router-outlet>
 
-<!--<cp-holiday-theme-sprite-->
-<!--  *ngIf="showHolidayTheme"-->
-<!--  (noThemeDetected)="unsubscribeHoliday$.next(0)"-->
-<!--&gt;</cp-holiday-theme-sprite>-->
+<cp-holiday-theme-sprite
+  *ngIf="showHolidayTheme"
+  (noThemeDetected)="cancelHolidayTheme()"
+></cp-holiday-theme-sprite>
