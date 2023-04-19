@@ -30,6 +30,8 @@ declare global {
 
     toInt(this: number): number;
 
+    round(this: number, decimals?: number): number;
+
     sqrt(this: number): number;
 
     odd(this: number): boolean;

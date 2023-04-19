@@ -48,7 +48,7 @@ import { StateDisplayComponent } from '../../components/state-display/state-disp
 import { FileDropDirective } from '../../directives/file-drop.directive';
 import { AnalyticsService } from '../../services/analytics.service';
 import { EventLogs } from '../../services/domain/event-logs';
-import { AbstractStateService } from '../../services/state.abstract.service';
+import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
 import { StateEntry } from './state-entry';
 import { StateRow } from './state-row';
@@ -78,7 +78,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
 
   @Input() contextTitle: string;
   @Input() context: GameStateType;
-  @Input() stateHandler: AbstractStateService;
+  @Input() stateHandler: AbstractUniverseStateService;
 
   nowState: StateRow;
   states$: Observable<StateRow[]>;

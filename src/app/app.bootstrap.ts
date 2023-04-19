@@ -1,10 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import {
-  getAnalytics,
-  provideAnalytics,
-} from '@angular/fire/analytics';
-import {
   initializeApp,
   provideFirebaseApp,
 } from '@angular/fire/app';
@@ -34,7 +30,6 @@ export const appOptions: ApplicationConfig = {
   providers: [
     importProvidersFrom(
       provideFirebaseApp(() => initializeApp(environment.firebase)),
-      provideAnalytics(() => getAnalytics()),
       provideAuth(() => getAuth()),
       provideFirestore(() => getFirestore()),
 

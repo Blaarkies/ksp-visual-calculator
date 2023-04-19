@@ -65,10 +65,11 @@ export class HudService {
       {route: UsableRoutes.CommnetPlanner},
       'Calculates CommNet ranges'),
     new ActionOption(
-      'Pocket Calculators (Beta)',
-      Icons.PocketCalculator,
-      {route: UsableRoutes.PocketCalculators},
-      'Simple calculators for that solve specific problems'),
+      'ISRU Mining Station',
+      Icons.Harvester,
+      {route: UsableRoutes.MiningStation},
+      'Solves and balances the requirements of a mining base'),
+
     new ActionOption('', '', {divider: true}),
     new ActionOption(
       'Source Code - GitHub',

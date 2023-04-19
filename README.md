@@ -61,8 +61,9 @@ network is capable of relaying a signal from a distant planet, back to Kerbin.
 
 By dragging planets into specific positions, the user can determine where/when the satellite will have a connection.
 
-The communication lines appear between spacecraft and/or Kerbin, and imitate those seen in-game: a solid green line
-shows that both ends have a good connection to each other.
+The communication lines appear between spacecraft and/or Kerbin, and imitate those seen in-game: 
+
+A solid green line shows that both ends have a good connection to each other.
 
 ![Good signal](./storage/green-line.jpg?raw=true "Good signal")
 
@@ -85,14 +86,6 @@ any of the source files.
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag
 for a production build.
-
-#### Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-#### Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 #### Further help
 

@@ -17,6 +17,11 @@ Number.prototype.pow = function (this: number, exponent: number = 2): number {
   return Math.pow(this, exponent);
 };
 
+Number.prototype.round = function (this: number, decimals = 0): number {
+  let factor = Math.pow(10, decimals);
+  return Math.round(this * factor) / factor;
+};
+
 Number.prototype.toInt = function (this: number): number {
   return Math.round(this);
 };

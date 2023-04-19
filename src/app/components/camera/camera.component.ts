@@ -23,7 +23,7 @@ import {
 import { Vector2 } from '../../common/domain/vector2';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
-import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
+import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
 
 interface TouchCameraControl {
   dxy: Vector2;

@@ -1,22 +1,18 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  Observable,
-  switchMap,
-  timer,
-} from 'rxjs';
+import { Observable } from 'rxjs';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { GameStateType } from '../../../common/domain/game-state-type';
+import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { DataService } from '../../../services/data.service';
 import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
-import { StateGame } from '../../../services/json-interfaces/state-game';
-import { AbstractStateService } from '../../../services/state.abstract.service';
+import { StateUniverse } from '../../../services/json-interfaces/state-universe';
 import { DvUniverseBuilderService } from './dv-universe-builder.service';
 import { TravelService } from './travel.service';
 
 @Injectable()
-export class DvStateService extends AbstractStateService {
+export class DvStateService extends AbstractUniverseStateService {
 
   protected context = GameStateType.DvPlanner;
 
@@ -43,7 +39,7 @@ export class DvStateService extends AbstractStateService {
     };
   }
 
-  protected setStatefulDetails(parsedState: StateGame) {
+  protected setStatefulDetails(parsedState: StateUniverse) {
     this.universeBuilderService.updateCheckpointPreferences(CheckpointPreferences.fromObject(parsedState.settings.preferences));
   }
 

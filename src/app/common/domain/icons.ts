@@ -14,6 +14,7 @@ export class Icons {
   static Move = 'cursor-move';
   static MenuVertical = 'dots-vertical';
   static Add = 'plus';
+  static Share = 'share-variant';
   static AddMapMarker = 'map-marker-plus';
   static ChevronLeft = 'chevron-left';
   static ChevronDown = 'chevron-down';

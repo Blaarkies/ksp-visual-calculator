@@ -8,10 +8,10 @@ import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-p
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { SubjectHandle } from '../../../common/subject-handle';
-import { StockEntitiesCacheService } from '../../../components/isru-heat-and-power-widget/stock-entities-cache.service';
+import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
 import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
-import { AbstractUniverseBuilderService } from '../../../services/universe-builder.abstract.service';
+import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { TravelService } from './travel.service';
 

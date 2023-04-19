@@ -1,4 +1,7 @@
-import { Route, Routes } from '@angular/router';
+import {
+  Route,
+  Routes,
+} from '@angular/router';
 import { environment } from '../environments/environment';
 
 /** Legacy routes (Route name + App version) */
@@ -10,10 +13,10 @@ const DV_ROUTE_130 = 'calculators/dv-planner';
 export enum UsableRoutes {
   CommnetPlanner = 'commnet-planner',
   DvPlanner = 'dv-planner',
+  MiningStation = 'mining-station',
   Intro = 'intro',
   Policy = 'policy',
   Feedback = 'feedback',
-  PocketCalculators = 'pocket-calculators',
 }
 
 const routes: Routes = [
@@ -35,10 +38,9 @@ const routes: Routes = [
   {path: DV_ROUTE_120, redirectTo: UsableRoutes.DvPlanner},
 
   {
-    path: 'pocket-calculators',
-    title: 'KSP Visual Calculator',
-    loadComponent: () => import('./components/isru-heat-and-power-widget/page-displayer/page-displayer.component')
-      .then(m => m.PageDisplayerComponent)
+    path: UsableRoutes.MiningStation,
+    title: 'ISRU Mining Station',
+    loadComponent: () => import('./pages/mining-station/page-mining-station.component'),
   },
 
   {
@@ -49,11 +51,13 @@ const routes: Routes = [
   },
   {
     path: UsableRoutes.Policy,
+    title: 'KSP Visual Calculator',
     loadComponent: () => import('./pages/policy/page-policy.component')
       .then(m => m.PagePolicyComponent),
   },
   {
     path: UsableRoutes.Feedback,
+    title: 'KSP Visual Calculator',
     loadComponent: () => import('./pages/feedback/page-feedback.component')
       .then(m => m.PageFeedbackComponent),
   },
@@ -65,7 +69,8 @@ if (!environment.production) {
   let bookPath = 'blaarkies-book';
   let blaarkiesBook: Route = {
     path: bookPath,
-    loadComponent: () => import('./blaarkies-book/home/home.component').then(m => m.HomeComponent)
+    title: 'Blaarkies Book',
+    loadComponent: () => import('./blaarkies-book/home/blaarkies-book-home.component').then(m => m.BlaarkiesBookHomeComponent),
   };
   routes.splice(-1, 0, blaarkiesBook);
   routes[routes.length - 1].redirectTo = bookPath;

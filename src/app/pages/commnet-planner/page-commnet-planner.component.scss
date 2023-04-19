@@ -1,3 +1,9 @@
+@use '../../../styles/common';
+
+:host {
+  @extend .full-page;
+}
+
 .craft-icon-sprite-image {
   width: 65px;
   height: 65px;

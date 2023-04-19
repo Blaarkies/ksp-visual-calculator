@@ -9,7 +9,7 @@ import { SpaceObjectType } from '../../common/domain/space-objects/space-object-
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import { StateCommnetPlanner } from '../../services/json-interfaces/state-commnet-planner';
 import { StateDvPlanner } from '../../services/json-interfaces/state-dv-planner';
-import { StateGame } from '../../services/json-interfaces/state-game';
+import { StateUniverse } from '../../services/json-interfaces/state-universe';
 
 @Component({
   selector: 'cp-state-display',
@@ -44,7 +44,7 @@ export class StateDisplayComponent {
     }
 
     let state = this.stateRow;
-    let contents = JSON.parse(state.state) as StateGame;
+    let contents = JSON.parse(state.state) as StateUniverse;
 
     let date = new Date(state.timestamp);
     let daysSince = Math.round((Number(new Date()) - Number(date)) / (1000 * 60 * 60 * 24));

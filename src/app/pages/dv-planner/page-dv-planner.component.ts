@@ -21,8 +21,8 @@ import { UniverseMapComponent } from '../../components/universe-map/universe-map
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
 import { AuthService } from '../../services/auth.service';
 import { HudService } from '../../services/hud.service';
-import { AbstractStateService } from '../../services/state.abstract.service';
-import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
+import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
+import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
 import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 import { DvStateService } from './services/dv-state.service';
@@ -46,10 +46,10 @@ import { TravelService } from './services/travel.service';
     DvUniverseBuilderService,
     DvStateService,
     {provide: AbstractUniverseBuilderService, useExisting: DvUniverseBuilderService},
-    {provide: AbstractStateService, useExisting: DvStateService},
+    {provide: AbstractUniverseStateService, useExisting: DvStateService},
   ],
   templateUrl: './page-dv-planner.component.html',
-  styleUrls: ['./page-dv-planner.component.scss', '../temp.calculators.scss'],
+  styleUrls: ['./page-dv-planner.component.scss'],
 })
 export default class PageDvPlannerComponent extends WithDestroy() implements OnDestroy {
 

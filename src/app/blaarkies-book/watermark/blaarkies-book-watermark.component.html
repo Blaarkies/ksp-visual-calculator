@@ -1,0 +1,24 @@
+<div class="text title" style="
+                          opacity: .2;
+                          position: absolute;
+                          left:50px;
+                          bottom: 50px;
+                          font-size: 3em;
+                          pointer-events: none;">
+  Blaarkies Book
+  <button mat-button
+          style="pointer-events: all;"
+          [matMenuTriggerFor]="menu">
+    <div>
+      <mat-icon [svgIcon]="icons.MenuVertical"></mat-icon>
+    </div>
+  </button>
+  <mat-menu #menu="matMenu">
+    <a mat-stroked-button
+       style="display: grid; text-decoration: none;"
+       *ngFor="let link of routes"
+       [href]="link">
+      {{link}}
+    </a>
+  </mat-menu>
+</div>

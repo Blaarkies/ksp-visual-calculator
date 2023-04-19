@@ -1,6 +1,6 @@
 https://ksp-visual-calculator.blaarkies.com/intro
 https://ksp-visual-calculator.blaarkies.com/feedback
 https://ksp-visual-calculator.blaarkies.com/policy
-https://ksp-visual-calculator.blaarkies.com/calculators/dv-planner
-https://ksp-visual-calculator.blaarkies.com/calculators/signal-check
-https://ksp-visual-calculator.blaarkies.com/pocket-calculators
+https://ksp-visual-calculator.blaarkies.com/dv-planner
+https://ksp-visual-calculator.blaarkies.com/commnet-planner
+https://ksp-visual-calculator.blaarkies.com/mining-station

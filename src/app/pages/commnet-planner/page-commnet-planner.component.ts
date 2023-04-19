@@ -33,8 +33,8 @@ import { AnalyticsService } from '../../services/analytics.service';
 import { AuthService } from '../../services/auth.service';
 import { EventLogs } from '../../services/domain/event-logs';
 import { HudService } from '../../services/hud.service';
-import { AbstractStateService } from '../../services/state.abstract.service';
-import { AbstractUniverseBuilderService } from '../../services/universe-builder.abstract.service';
+import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
+import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
 import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import {
   CraftDetailsDialogComponent,
@@ -61,10 +61,10 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
     CommnetUniverseBuilderService,
     CommnetStateService,
     {provide: AbstractUniverseBuilderService, useExisting: CommnetUniverseBuilderService},
-    {provide: AbstractStateService, useExisting: CommnetStateService},
+    {provide: AbstractUniverseStateService, useExisting: CommnetStateService},
   ],
   templateUrl: './page-commnet-planner.component.html',
-  styleUrls: ['./page-commnet-planner.component.scss', '../temp.calculators.scss'],
+  styleUrls: ['./page-commnet-planner.component.scss'],
   animations: [BasicAnimations.fade],
 })
 export default class PageCommnetPlannerComponent extends WithDestroy() {
@@ -167,7 +167,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
   }
 
   updateUniverse(dragged: SpaceObject) {
-    // todo: check if children in SOI feature have antennae
+    // TODO: check if children in SOI feature have antennae
     if (dragged.antennae?.length) {
       this.commnetUniverseBuilderService.updateTransmissionLines();
     }

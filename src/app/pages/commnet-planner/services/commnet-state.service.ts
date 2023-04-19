@@ -5,13 +5,13 @@ import { GameStateType } from '../../../common/domain/game-state-type';
 import { DataService } from '../../../services/data.service';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
 import { StateCraft } from '../../../services/json-interfaces/state-craft';
-import { StateGame } from '../../../services/json-interfaces/state-game';
-import { AbstractStateService } from '../../../services/state.abstract.service';
+import { StateUniverse } from '../../../services/json-interfaces/state-universe';
+import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 
 @Injectable()
-export class CommnetStateService extends AbstractStateService {
+export class CommnetStateService extends AbstractUniverseStateService {
 
   protected context = GameStateType.CommnetPlanner;
 
@@ -36,20 +36,20 @@ export class CommnetStateService extends AbstractStateService {
     };
   }
 
-  protected setStatefulDetails(parsedState: StateGame) {
-    this.universeBuilderService.updateDifficultySetting(DifficultySetting.fromObject(parsedState.settings.difficulty));
-  }
-
-  protected setStatelessDetails() {
-    this.universeBuilderService.updateDifficultySetting(DifficultySetting.normal);
-  }
-
   protected buildExistingState(state: string): Observable<any> {
     return this.universeBuilderService.buildState(state);
   }
 
   protected buildFreshState(): Observable<any> {
     return this.universeBuilderService.buildStockState();
+  }
+
+  protected setStatefulDetails(parsedState: StateUniverse) {
+    this.universeBuilderService.updateDifficultySetting(DifficultySetting.fromObject(parsedState.settings.difficulty));
+  }
+
+  protected setStatelessDetails() {
+    this.universeBuilderService.updateDifficultySetting(DifficultySetting.normal);
   }
 
 }

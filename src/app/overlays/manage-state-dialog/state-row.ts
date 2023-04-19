@@ -1,4 +1,4 @@
-import { StateGame } from '../../services/json-interfaces/state-game';
+import { StateUniverse } from '../../services/json-interfaces/state-universe';
 import { environment } from '../../../environments/environment';
 
 export class StateRow {
@@ -16,8 +16,8 @@ export class StateRow {
     this.state = stateEntry.state;
   }
 
-  toUpdatedStateGame(): StateGame {
-    let parsedState: StateGame = JSON.parse(this.state);
+  toUpdatedStateGame(): StateUniverse {
+    let parsedState: StateUniverse = JSON.parse(this.state);
     parsedState.name = this.name;
     parsedState.timestamp = new Date();
     parsedState.version = environment.APP_VERSION.split('.').map(t => t.toNumber());
