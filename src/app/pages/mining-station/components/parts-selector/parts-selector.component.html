@@ -8,26 +8,39 @@
     [options]="filteredPartOptions$ | async"
   ></cp-input-select>
 
-  <ng-container *ngFor="let entry of controlEntities$ | async;
-                        let i = index;
-                        trackBy: getEntryLabel">
-    <cp-input-number
-      class="small-number-width"
-      [label]="null"
-      [formControl]="entry.control"
-      [controlMeta]="defaultControlMeta"
-    ></cp-input-number>
+  <ng-container *ngIf="controlEntities$ | async as controlItems">
 
-    <div>{{entry.value.label}}</div>
+    <ng-container *ngIf="controlItems.length; else noSelection">
+      <ng-container *ngFor="let entry of controlItems;
+                   let i = index;
+                   trackBy: getEntryLabel">
+        <cp-input-number
+          @expandY
+          class="small-number-width"
+          [label]="null"
+          [formControl]="entry.control"
+          [controlMeta]="defaultControlMeta"
+        ></cp-input-number>
 
-    <button
-      class="dim-until-hover"
-      mat-icon-button
-      color="warn"
-      (click)="removeEntry(entry, i)"
-    >
-      <mat-icon [svgIcon]="icons.Delete"></mat-icon>
-    </button>
+        <div @expandY>{{entry.value.label}}</div>
+
+        <button
+          @expandY
+          class="dim-until-hover"
+          mat-icon-button
+          color="warn"
+          (click)="removeControl(entry, i)"
+        >
+          <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+        </button>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #noSelection>
+      <div @expandY class="text caption center empty-state">
+        No parts selected
+      </div>
+    </ng-template>
   </ng-container>
 </div>
 

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BasicAnimations } from '../../../../animations/basic-animations';
 import { StatisticsMapType, StatisticType } from '../../domain/isru-statistics-generator';
 import { combineLatest, map, Observable, takeUntil } from 'rxjs';
 import { WithDestroy } from '../../../../common/with-destroy';
@@ -33,6 +34,7 @@ interface InfoPack {
   ],
   templateUrl: './isru-warnings.component.html',
   styleUrls: ['./isru-warnings.component.scss'],
+  animations: [BasicAnimations.expandY],
 })
 export class IsruWarningsComponent extends WithDestroy() {
 
@@ -43,7 +45,7 @@ export class IsruWarningsComponent extends WithDestroy() {
 
     this.warnings$ = combineLatest([
       isruService.statisticsMap$,
-      isruService.craftPartGroups$,
+      isruService.craftPartTypes$,
       isruService.oreConcentration$,
       isruService.activeConverters$,
     ]).pipe(
@@ -54,6 +56,10 @@ export class IsruWarningsComponent extends WithDestroy() {
         return [];
       }),
       takeUntil(this.destroy$));
+  }
+
+  trackLabel(index: number, item: WarningMessage): string {
+    return item.message;
   }
 
   private getWarnings(infoPack: InfoPack): WarningMessage[] {

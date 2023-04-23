@@ -5,7 +5,6 @@
   @extend .widget-details;
 }
 
-
 .parts-listed {
   display: grid;
   grid-template-columns: max-content auto max-content;
@@ -22,4 +21,9 @@
   }
 }
 
-
+.empty-state {
+  border-radius: 8px;
+  background-color: var(--color-background-description-glass);
+  padding: 40px 10px;
+  grid-column: 1/-1;
+}

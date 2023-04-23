@@ -1,16 +1,26 @@
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Group } from '../../../../common/domain/group';
-import { IsruStatisticsGenerator, Statistic } from '../../domain/isru-statistics-generator';
+import {
+  Component,
+  Input,
+} from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { CelestialBody } from '../../../../services/json-interfaces/kerbol-system-characteristics';
+import {
+  combineLatest,
+  scan,
+  takeUntil,
+} from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
-import { MiningBaseService } from '../../services/mining-base.service';
-import { combineLatest, scan, takeUntil } from 'rxjs';
+import { Group } from '../../../../common/domain/group';
 import { WithDestroy } from '../../../../common/with-destroy';
-import { CraftPart } from '../../domain/craft-part';
+import { CelestialBody } from '../../../../services/json-interfaces/kerbol-system-characteristics';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
-import { StatisticColorCodedComponent } from './statistic-color-coded/statistic-color-coded.component';
+import { CraftPart } from '../../domain/craft-part';
+import {
+  IsruStatisticsGenerator,
+  Statistic,
+} from '../../domain/isru-statistics-generator';
+import { MiningBaseService } from '../../services/mining-base.service';
+import { StatisticColorCodedComponent } from '../statistic-color-coded/statistic-color-coded.component';
 
 class CraftSettings {
   planet: CelestialBody;
@@ -29,16 +39,16 @@ class CraftSettings {
 }
 
 @Component({
-  standalone: true,
   selector: 'cp-craft-part-statistics',
-  templateUrl: './craft-part-statistics.component.html',
-  styleUrls: ['./craft-part-statistics.component.scss'],
-  animations: [BasicAnimations.expandY],
+  standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
     StatisticColorCodedComponent,
-  ]
+  ],
+  templateUrl: './craft-part-statistics.component.html',
+  styleUrls: ['./craft-part-statistics.component.scss'],
+  animations: [BasicAnimations.expandY],
 })
 export class CraftPartStatisticsComponent extends WithDestroy() {
 
@@ -48,7 +58,7 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
 
   private planetMap: Map<string, CelestialBody>;
 
-  constructor(private isruService: MiningBaseService,
+  constructor(private miningBaseService: MiningBaseService,
               cacheService: StockEntitiesCacheService) {
     super();
 
@@ -59,11 +69,12 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
           characteristics.bodies.map(p => [p.id, p])));
 
     combineLatest([
-      this.isruService.planet$,
-      this.isruService.oreConcentration$,
-      this.isruService.engineerBonus$,
-      this.isruService.activeConverters$,
-      this.isruService.craftPartGroups$,
+      this.miningBaseService.planet$,
+      this.miningBaseService.oreConcentration$,
+      this.miningBaseService.engineerBonus$,
+      this.miningBaseService.activeConverters$,
+      this.miningBaseService.craftPartTypes$,
+      cacheService.planets$,
     ]).pipe(
       scan(([acc = []], newValue) => {
         let changesList = newValue.map((v, i) => v === acc[i] ? undefined : v);
@@ -74,23 +85,24 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
         this.setup(new CraftSettings(values), new CraftSettings(changes));
       });
 
-    this.isruService.craftPartCounts$
+    this.miningBaseService.craftPartCounts$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(g => this.statistics?.updatePartCount(g))
+      .subscribe(g => this.statistics?.updatePartCount(g));
   }
 
   private setup(values: CraftSettings, changes: CraftSettings) {
-    if (!this.statistics) {
-      return;
-    }
     if (changes.craftPartGroups) {
       this.statistics = new IsruStatisticsGenerator(
         values.craftPartGroups,
-        statsMap => this.isruService.updateStatisticsMap(statsMap));
+        statsMap => this.miningBaseService.updateStatisticsMap(statsMap));
       this.statistics.updateConverters(values.activeConverters);
       this.statistics.updateBonus(values.engineerBonus);
       this.statistics.updateOreConcentration(values.oreConcentration);
       this.statistics.updatePlanet(values.planet, this.planetMap);
+    }
+
+    if (!this.statistics) {
+      return;
     }
 
     if (changes.activeConverters) {

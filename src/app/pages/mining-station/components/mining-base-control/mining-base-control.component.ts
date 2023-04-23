@@ -9,7 +9,10 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {
-  Subject,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
   takeUntil,
 } from 'rxjs';
 import { Group } from '../../../../common/domain/group';
@@ -20,14 +23,8 @@ import { converterSortMap } from '../../domain/converter-sort-map';
 import { CraftPart } from '../../domain/craft-part';
 import { MiningBaseService } from '../../services/mining-base.service';
 import { PlanetMoonSelectorComponent } from '../planet-moon-selector/planet-moon-selector.component';
-import { EngineerSkillSelectorComponent } from './engineer-skill-selector/engineer-skill-selector.component';
-import { ResourceProcessorsComponent } from './resource-processors/resource-processors.component';
-
-export class ControlItem<T, U> {
-  label?: string;
-  value?: T;
-  control: FormControl<U>;
-}
+import { EngineerSkillSelectorComponent } from '../engineer-skill-selector/engineer-skill-selector.component';
+import { ResourceProcessorsComponent } from '../resource-processors/resource-processors.component';
 
 @Component({
   selector: 'cp-mining-base-control',
@@ -47,62 +44,40 @@ export class MiningBaseControlComponent extends WithDestroy() implements OnDestr
 
   @Input() title = 'Environment';
 
-  @Input() set craftPartGroups(groups: Group<CraftPart>[]) {
-    this.converters = groups
-      ? groups
-        .map(g => g.item.converters ?? [])
-        .flatMap()
-        .map(c => c.converterName)
-        .distinct()
-        .sort((a, b) => converterSortMap.get(a) - converterSortMap.get(b))
-      : [];
-  }
-
-  @Input() set oreConcentration(value: number) {
-    this.stopOreControl$.next();
-
-    this.controlOreConcentration = new FormControl<number>(value);
-    this.controlOreConcentration.valueChanges
-      .pipe(takeUntil(this.stopOreControl$))
-      .subscribe(value => this.isruService.updateOreConcentration(value * .01)); // convert to percentage
-  }
-
-  @Input() set engineerBonus(value: number) {
-    this.stopEngineerControl$.next();
-
-    this.controlEngineerBonus = new FormControl<number>(value);
-    this.controlEngineerBonus.valueChanges
-      .pipe(takeUntil(this.stopEngineerControl$))
-      .subscribe(value => this.isruService.updateEngineerBonus(value));
-  }
-
-  converters: string[];
+  selectedPlanet = this.miningBaseService.planet$;
   controlOreConcentration: FormControl<number>;
   controlEngineerBonus: FormControl<number>;
 
-  private stopOreControl$ = new Subject<void>();
-  private stopEngineerControl$ = new Subject<void>();
-
-  constructor(private isruService: MiningBaseService) {
+  constructor(private miningBaseService: MiningBaseService) {
     super();
-  }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
+    miningBaseService.oreConcentration$
+      .pipe(
+        distinctUntilChanged(),
+        map(value => (value * 100).round(2)),
+        filter(scaledValue => scaledValue !== this.controlOreConcentration?.value),
+        switchMap(scaledValue => {
+          this.controlOreConcentration = new FormControl<number>(scaledValue);
+          return this.controlOreConcentration.valueChanges;
+        }),
+        takeUntil(this.destroy$))
+      .subscribe(valueChange =>
+        this.miningBaseService.updateOreConcentration(valueChange * .01));
 
-    this.stopOreControl$.next();
-    this.stopOreControl$.complete();
-
-    this.stopEngineerControl$.next();
-    this.stopEngineerControl$.complete();
+    miningBaseService.engineerBonus$
+      .pipe(
+        distinctUntilChanged(),
+        switchMap(value => {
+          this.controlEngineerBonus = new FormControl<number>(value);
+          return this.controlEngineerBonus.valueChanges;
+        }),
+        takeUntil(this.destroy$))
+      .subscribe(valueChange =>
+        this.miningBaseService.updateEngineerBonus(valueChange));
   }
 
   updatePlanet(body: CelestialBody) {
-    this.isruService.updatePlanet(body);
-  }
-
-  updateConverters(activeConverters: string[]) {
-    this.isruService.updateConverters(activeConverters);
+    this.miningBaseService.updatePlanet(body);
   }
 
 }

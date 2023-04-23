@@ -5,12 +5,17 @@ import {
   ungzip,
 } from 'pako';
 import {
+  combineLatestWith,
+  delayWhen,
+  filter,
   firstValueFrom,
   from,
   map,
   Observable,
   Subject,
+  takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { GameStateType } from '../../common/domain/game-state-type';
@@ -22,28 +27,32 @@ import {
   UserData,
 } from '../data.service';
 import { StateBase } from '../json-interfaces/state-base';
-import { StateUniverse } from '../json-interfaces/state-universe';
+import { StateContextual } from '../json-interfaces/state-contextual';
 
 export abstract class AbstractBaseStateService {
 
   protected abstract context: GameStateType;
   protected abstract dataService: DataService;
   protected abstract snackBar: MatSnackBar;
+  protected abstract autoSaveInterval: number;
 
   private name: string;
-  private autoSaveUnsubscribe$ = new Subject<void>();
   private lastStateRecord: string;
+  private autoSaveStop$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   setStateRecord() {
-    this.lastStateRecord = JSON.stringify(this.state);
+    this.lastStateRecord = JSON.stringify(this.stateContextual);
   }
 
-  get pendingChanges(): boolean {
+  get hasPendingChanges(): boolean {
     return this.lastStateRecord
-      && this.lastStateRecord !== JSON.stringify(this.state);
+      && this.lastStateRecord !== JSON.stringify(this.stateContextual);
   }
 
-  get state(): StateBase {
+  protected abstract get stateContextual(): StateContextual;
+
+  get stateBase(): StateBase {
     return {
       name: this.name,
       timestamp: new Date(),
@@ -53,21 +62,28 @@ export abstract class AbstractBaseStateService {
   }
 
   get stateRow(): StateRow {
-    let {name, timestamp, version} = this.state;
+    let {name, timestamp, version} = this.stateBase;
     return new StateRow({
-      name, version, state: JSON.stringify(this.state),
+      name, version, state: JSON.stringify(this.stateContextual),
       timestamp: {seconds: timestamp.getTime() * .001},
     });
   }
 
-  loadState(state?: string): Observable<void> {
-    let buildStateResult: Observable<void>;
-    if (state) {
-      // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
-      let imageFormatFix = state.replace(/.png/g, '.webp');
+  destroy() {
+    this.autoSaveStop$.next();
+    this.autoSaveStop$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-      let parsedState: StateBase = JSON.parse(imageFormatFix);
-      this.name = parsedState.name;
+  loadState(state?: StateBase): Observable<void> {
+    let buildStateResult: Observable<void>;
+    if (state && typeof state.state === 'string') {
+      // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
+      let imageFormatFix = state.state.replace(/.png/g, '.webp');
+
+      let parsedState: StateContextual = JSON.parse(imageFormatFix);
+      this.name = state.name;
       this.setStatefulDetails(parsedState);
       buildStateResult = this.buildExistingState(imageFormatFix);
     } else {
@@ -77,10 +93,22 @@ export abstract class AbstractBaseStateService {
       buildStateResult = this.buildFreshState();
     }
 
+    this.autoSaveStop$.next();
+    buildStateResult.pipe(
+      combineLatestWith(timer(this.autoSaveInterval, this.autoSaveInterval)),
+      // TODO: block while handleUserSingIn() snackbar is open
+      filter(() => {
+        return this.hasPendingChanges;
+      }),
+      delayWhen(() => this.save()),
+      takeUntil(this.autoSaveStop$),
+      takeUntil(this.destroy$))
+      .subscribe();
+
     return buildStateResult.pipe(tap(() => this.setStateRecord()));
   }
 
-  protected abstract setStatefulDetails(parsedState: StateBase)
+  protected abstract setStatefulDetails(parsedState: StateContextual)
 
   protected abstract setStatelessDetails()
 
@@ -88,17 +116,14 @@ export abstract class AbstractBaseStateService {
 
   protected abstract buildFreshState(): Observable<any>
 
-  async addStateToStore(state: StateBase) {
-    let compressed = gzip(JSON.stringify(state));
+  async addStateToStore(state: StateBase, contextual: StateContextual) {
+    let compressed = gzip(JSON.stringify(contextual));
     let bytes = Bytes.fromUint8Array(compressed);
 
     return this.dataService.write('states',
       {
         [state.name]: {
-          name: state.name,
-          context: state.context,
-          timestamp: state.timestamp,
-          version: state.version,
+          ...state,
           state: bytes,
         } as StateBase,
       },
@@ -143,26 +168,30 @@ export abstract class AbstractBaseStateService {
   }
 
   async importState(stateString: string) {
-    await firstValueFrom(this.loadState(stateString));
+    let {name, timestamp, context, version} = JSON.parse(stateString);
+    await firstValueFrom(this.loadState({
+      name,
+      timestamp,
+      context,
+      version,
+      state: stateString,
+    }));
   }
 
-  async saveState(state: StateRow) {
-    return this.addStateToStore(state.toUpdatedStateGame());
+  async save() {
+    let stateBase = this.stateBase;
+    let contextual = this.stateContextual;
+    return this.addStateToStore(stateBase, contextual)
+      .then(() => this.setStateRecord());
   }
 
   renameCurrentState(name: string) {
     this.name = name;
   }
 
-  getTimestamplessState(state: StateUniverse): StateUniverse {
-    let safeToChange = JSON.stringify(state);
-    let reparsed: StateUniverse = JSON.parse(safeToChange);
-    reparsed.timestamp = undefined;
-    return reparsed;
-  }
-
   async renameState(oldName: string, state: StateRow) {
-    return this.addStateToStore(state.toUpdatedStateGame())
+    let updatedStateGame = state.toUpdatedStateGame();
+    return this.addStateToStore(updatedStateGame as StateBase, updatedStateGame)
       .then(() => this.removeStateFromStore(oldName))
       .catch(error => {
         this.snackBar.open(`Could not rename "${oldName}"`);
@@ -173,6 +202,7 @@ export abstract class AbstractBaseStateService {
 
   async handleUserSingIn(user?: UserData) {
     if (!user) {
+      // No user logged in
       await firstValueFrom(this.loadState());
       return;
     }
@@ -180,11 +210,12 @@ export abstract class AbstractBaseStateService {
     let states = await firstValueFrom(this.getStatesInContext({sorted: true}));
     let newestState = states[0];
     if (!newestState) {
+      // New user without state
       await firstValueFrom(this.loadState());
       return;
     }
 
-    if (this.pendingChanges) {
+    if (this.hasPendingChanges) {
       let snackbarResult$ = this.snackBar
         .open(`Latest savegame found, discard current changes and load "${newestState?.name}"?`,
           'Discard Changes', {duration: 15e3})
@@ -195,7 +226,11 @@ export abstract class AbstractBaseStateService {
       }
     }
 
-    await firstValueFrom(this.loadState(newestState?.state as string));
+    let {name, timestamp, context, version} = newestState;
+    let jsDate = new Date(timestamp.seconds * 1e3);
+    await firstValueFrom(this.loadState({
+      name, timestamp: jsDate, context, version, state: newestState.state,
+    }));
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }

@@ -1,10 +1,15 @@
-import { Injectable } from '@angular/core';
+import { state } from '@angular/animations';
+import {
+  Inject,
+  Injectable,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
 import { DataService } from '../../../services/data.service';
 import { AbstractBaseStateService } from '../../../services/domain/base-state.abstract.service';
 import { StateBase } from '../../../services/json-interfaces/state-base';
+import { AUTO_SAVE_INTERVAL } from '../domain/config';
 import { MiningBaseService } from './mining-base.service';
 import { StateIsru } from '../domain/state-isru';
 
@@ -16,29 +21,26 @@ export class IsruStateService extends AbstractBaseStateService {
   constructor(
     protected dataService: DataService,
     protected snackBar: MatSnackBar,
+    @Inject(AUTO_SAVE_INTERVAL) protected autoSaveInterval,
     private miningBaseService: MiningBaseService,
   ) {
     super();
   }
 
-  get state(): StateIsru {
-    let state = super.state;
+  get stateContextual(): StateIsru {
     return {
-      ...state,
       landed: true,
       distanceFromStar: null,
       planet: this.miningBaseService.planet$.value?.id,
-      oreConcentration: this.miningBaseService.oreConcentration$.value,
+      oreConcentration: this.miningBaseService.oreConcentration$.value?.round(2),
       engineerBonus: this.miningBaseService.engineerBonus$.value,
       activeConverters: this.miningBaseService.activeConverters$.value,
-      craftPartGroups: this.miningBaseService.craftPartGroups$
-        .value?.map(({item, count}) =>
-          ({id: item.label, count})),
+      craftPartGroups: this.miningBaseService.craftParts
+        ?.map(({item, count}) => ({id: item.label, count})),
     };
   }
 
   protected buildExistingState(state: string): Observable<any> {
-    console.log('parsed state', JSON.parse(state));
     return this.miningBaseService.buildState(JSON.parse(state));
   }
 

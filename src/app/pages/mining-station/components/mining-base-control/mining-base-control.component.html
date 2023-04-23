@@ -3,6 +3,7 @@
 <cp-planet-moon-selector
   [title]="null"
   [filter]="['moon', 'planet']"
+  [selected]="selectedPlanet | async"
   (update)="updatePlanet($event)"
 ></cp-planet-moon-selector>
 
@@ -19,7 +20,4 @@
   [formControl]="controlEngineerBonus"
 ></cp-engineer-skill-selector>
 
-<cp-resource-processors
-  [converters]="converters"
-  (update)="updateConverters($event)"
-></cp-resource-processors>
+<cp-resource-processors></cp-resource-processors>

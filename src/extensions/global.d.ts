@@ -68,6 +68,8 @@ declare global {
 
     random(this: Array<T>): T;
 
+    compare(this: Array<T>, other: Array<T>): boolean;
+
     sum(this: Array<number>): number;
 
     add(this: Array<T>, fresh: T): Array<T>;

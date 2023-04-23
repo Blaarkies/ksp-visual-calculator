@@ -1,3 +1,4 @@
+import { state } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -30,6 +31,7 @@ import {
   delay,
   filter,
   finalize,
+  firstValueFrom,
   map,
   Observable,
   of,
@@ -181,7 +183,15 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     });
 
     this.buttonLoaders.load$.next(true);
-    this.stateHandler.loadState(selectedState.state)
+    let {name, timestamp, version, state} = selectedState;
+    let jsDate = new Date(timestamp);
+    this.stateHandler.loadState({
+      name,
+      timestamp: jsDate,
+      context: this.context,
+      version: version.split('.').slice(1).map(t => t.toNumber()),
+      state,
+    })
       .pipe(
         map(() => this.stateHandler.stateRow),
         finalize(() => this.buttonLoaders.load$.next(false)),
@@ -244,12 +254,12 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
       let stateString: string = await files[0].text();
       await this.stateHandler.importState(stateString);
 
-      this.nowState = this.stateHandler.stateRow;
-      await this.stateHandler.saveState(this.nowState);
+      let state = this.stateHandler.stateBase;
+      await this.stateHandler.save();
       this.updateStates();
 
       this.buttonLoaders.import$.next(false);
-      this.snackBar.open(`Imported "${this.nowState.name}"`);
+      this.snackBar.open(`Imported "${state.name}"`);
     }
 
     this.analyticsService.logEvent('Import state', {
@@ -265,9 +275,10 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     });
   }
 
-  async saveState(state: StateRow) {
+  async saveState() {
     this.buttonLoaders.save$.next(true);
-    await this.stateHandler.saveState(state)
+    let state = this.stateHandler.stateBase;
+    await this.stateHandler.save()
       .catch(error => {
         this.snackBar.open(`Could not save "${state.name}"`);
         throw error;

@@ -131,3 +131,7 @@ Array.prototype.random = function (this: Array<any>): any {
   let randomIndex = Math.round(Math.random() * (this.length - 1));
   return this[randomIndex];
 };
+
+Array.prototype.compare = function (this: Array<any>, other: Array<any>): boolean {
+  return this.every((e, i) => e === other[i]);
+};

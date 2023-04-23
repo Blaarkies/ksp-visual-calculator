@@ -1,9 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MouseHoverDirective } from '../../../../../directives/mouse-hover.directive';
-import { BasicAnimations } from '../../../../../animations/basic-animations';
-import { ConfigurableAnimations } from '../../../../../animations/configurable-animations';
-import { Common } from '../../../../../common/common';
+import { MouseHoverDirective } from '../../../../directives/mouse-hover.directive';
+import { BasicAnimations } from '../../../../animations/basic-animations';
+import { ConfigurableAnimations } from '../../../../animations/configurable-animations';
+import { Common } from '../../../../common/common';
 
 @Component({
   selector: 'cp-statistic-color-coded',

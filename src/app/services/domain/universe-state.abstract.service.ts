@@ -7,11 +7,9 @@ export abstract class AbstractUniverseStateService extends AbstractBaseStateServ
 
   protected abstract universeBuilderService: AbstractUniverseBuilderService;
 
-  get state(): StateUniverse {
-    let state = super.state;
+  get stateContextual(): StateUniverse {
     let planets = this.universeBuilderService.planets$.value;
     return {
-      ...state,
       celestialBodies: planets?.map(b => b.toJson()) as StateSpaceObject[],
     };
   }

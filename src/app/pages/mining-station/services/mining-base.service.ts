@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
+  filter,
   firstValueFrom,
   Observable,
   of,
-  ReplaySubject,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { Group } from '../../../common/domain/group';
@@ -18,14 +18,25 @@ import { StateIsru } from '../domain/state-isru';
 export class MiningBaseService {
 
   planet$ = new BehaviorSubject<CelestialBody>(null);
-  oreConcentration$ = new BehaviorSubject<number>(null);
+  oreConcentration$ = new BehaviorSubject<number>(.05);
   engineerBonus$ = new BehaviorSubject<number>(null);
-  activeConverters$ = new BehaviorSubject<string[]>(null);
-  craftPartGroups$ = new BehaviorSubject<Group<CraftPart>[]>(null);
+  activeConverters$ = new BehaviorSubject<string[]>([]);
+  craftPartTypes$ = new BehaviorSubject<Group<CraftPart>[]>([]);
   craftPartCounts$ = new BehaviorSubject<Group<CraftPart>>(null);
   statisticsMap$ = new BehaviorSubject<StatisticsMapType>(null);
 
+  craftParts: Group<CraftPart>[];
+
   constructor(private cacheService: StockEntitiesCacheService) {
+    this.craftPartTypes$.subscribe(types => this.craftParts = types);
+    this.craftPartCounts$
+      .pipe(filter(updated => !!updated))
+      .subscribe(updated => {
+        let match = this.craftParts.find(stale => stale.item === updated.item);
+        if (match) {
+          match.count = updated.count;
+        }
+      });
   }
 
   destroy() {
@@ -33,7 +44,7 @@ export class MiningBaseService {
     this.oreConcentration$.complete();
     this.engineerBonus$.complete();
     this.activeConverters$.complete();
-    this.craftPartGroups$.complete();
+    this.craftPartTypes$.complete();
     this.craftPartCounts$.complete();
     this.statisticsMap$.complete();
   }
@@ -50,12 +61,12 @@ export class MiningBaseService {
     this.engineerBonus$.next(value);
   }
 
-  updateConverters(list: string[]) {
+  updateActiveConverters(list: string[]) {
     this.activeConverters$.next(list);
   }
 
   updatePartList(list: Group<CraftPart>[]) {
-    this.craftPartGroups$.next(list);
+    this.craftPartTypes$.next(list);
   }
 
   updatePartCount(value: number, part: CraftPart) {
@@ -70,20 +81,18 @@ export class MiningBaseService {
     this.updatePlanet(null);
     this.updateOreConcentration(null);
     this.updateEngineerBonus(null);
-    this.updateConverters([]);
+    this.updateActiveConverters([]);
     this.updatePartList([]);
     this.updateStatisticsMap(null);
   }
 
-  async setupFullState(state: StateIsru) {
+  async setupFullState(state: StateIsru): Promise<boolean> {
     let planets = await firstValueFrom(this.cacheService.planets$);
     let planet = planets.bodies.find(b => b.id === state.planet);
     this.updatePlanet(planet);
-
-    let ore = state.oreConcentration * 100;
-    this.updateOreConcentration(ore.round(2));
+    this.updateOreConcentration(state.oreConcentration);
     this.updateEngineerBonus(state.engineerBonus);
-    this.updateConverters(state.activeConverters ?? []);
+    this.updateActiveConverters(state.activeConverters ?? []);
 
     let parts = await firstValueFrom(this.cacheService.miningParts$);
     let partList = state.craftPartGroups.map(g => {
@@ -92,7 +101,7 @@ export class MiningBaseService {
     });
     this.updatePartList(partList);
     this.updateStatisticsMap(null);
-    return 1;
+    return true;
   }
 
   buildState(state?: StateIsru): Observable<any> {

@@ -1,11 +1,7 @@
 <div class="isru-layout">
   <div class="text title center">ISRU Heat & Power Calculator</div>
 
-  <cp-mining-base-control
-    [craftPartGroups]="craftPartGroups$ | async"
-    [oreConcentration]="oreConcentration$ | async"
-    [engineerBonus]="engineerBonus$ | async"
-  ></cp-mining-base-control>
+  <cp-mining-base-control></cp-mining-base-control>
   <cp-parts-selector></cp-parts-selector>
 
   <div class="statistics-messages">

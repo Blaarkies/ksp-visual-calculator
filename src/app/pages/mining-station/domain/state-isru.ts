@@ -1,7 +1,7 @@
-import { StateBase } from '../../../services/json-interfaces/state-base';
+import { StateContextual } from '../../../services/json-interfaces/state-contextual';
 import { StateCraftPart } from '../../../services/json-interfaces/state-craft-part';
 
-export interface StateIsru extends StateBase {
+export interface StateIsru extends StateContextual {
   landed: boolean;
   planet?: string;
   distanceFromStar?: number;

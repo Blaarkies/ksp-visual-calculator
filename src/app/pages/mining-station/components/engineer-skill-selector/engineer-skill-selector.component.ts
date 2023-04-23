@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { BasicValueAccessor } from '../../../../../common/domain/input-fields/basic-value-accessor';
-import { Icons } from '../../../../../common/domain/icons';
+import { BasicValueAccessor } from '../../../../common/domain/input-fields/basic-value-accessor';
+import { Icons } from '../../../../common/domain/icons';
 import { Subject, takeUntil } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSliderModule } from '@angular/material/slider';
-import { Common } from '../../../../../common/common';
+import { Common } from '../../../../common/common';
 
 /** <pre>
  * -1  = No engineer onboard
@@ -26,15 +26,8 @@ export const engineerBonusMap = new Map<number, number>([
 ]);
 
 @Component({
-  standalone: true,
   selector: 'cp-engineer-skill-selector',
-  templateUrl: './engineer-skill-selector.component.html',
-  styleUrls: ['./engineer-skill-selector.component.scss'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => EngineerSkillSelectorComponent),
-    multi: true,
-  }],
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -43,6 +36,13 @@ export const engineerBonusMap = new Map<number, number>([
     MatTooltipModule,
     MatSliderModule,
   ],
+  templateUrl: './engineer-skill-selector.component.html',
+  styleUrls: ['./engineer-skill-selector.component.scss'],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => EngineerSkillSelectorComponent),
+    multi: true,
+  }],
 })
 export class EngineerSkillSelectorComponent extends BasicValueAccessor {
 
