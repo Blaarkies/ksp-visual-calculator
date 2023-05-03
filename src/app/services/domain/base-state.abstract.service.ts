@@ -20,6 +20,7 @@ import {
 import { environment } from '../../../environments/environment';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Namer } from '../../common/namer';
+import { Uid } from '../../common/uid';
 import { StateEntry } from '../../overlays/manage-state-dialog/state-entry';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import {
@@ -36,6 +37,7 @@ export abstract class AbstractBaseStateService {
   protected abstract snackBar: MatSnackBar;
   protected abstract autoSaveInterval: number;
 
+  private id: string;
   private name: string;
   private lastStateRecord: string;
   private autoSaveStop$ = new Subject<void>();
@@ -54,6 +56,7 @@ export abstract class AbstractBaseStateService {
 
   get stateBase(): StateBase {
     return {
+      id: this.id,
       name: this.name,
       timestamp: new Date(),
       context: this.context,
@@ -62,13 +65,15 @@ export abstract class AbstractBaseStateService {
   }
 
   get stateRow(): StateRow {
-    let {name, timestamp, version} = this.stateBase;
+    let {id, name, timestamp, version} = this.stateBase;
     return new StateRow({
-      name, version, state: JSON.stringify(this.stateContextual),
+      id, name, version,
       timestamp: {seconds: timestamp.getTime() * .001},
+      state: JSON.stringify(this.stateContextual),
     });
   }
 
+  // TODO: force a call on each page component
   destroy() {
     this.autoSaveStop$.next();
     this.autoSaveStop$.complete();
@@ -83,10 +88,12 @@ export abstract class AbstractBaseStateService {
       let imageFormatFix = state.state.replace(/.png/g, '.webp');
 
       let parsedState: StateContextual = JSON.parse(imageFormatFix);
+      this.id = state.id ?? state.name; // @fix v1.3.0:null check for ids did not previously exist
       this.name = state.name;
       this.setStatefulDetails(parsedState);
       buildStateResult = this.buildExistingState(imageFormatFix);
     } else {
+      this.id = Uid.new;
       this.name = Namer.savegame;
 
       this.setStatelessDetails();
@@ -122,7 +129,7 @@ export abstract class AbstractBaseStateService {
 
     return this.dataService.write('states',
       {
-        [state.name]: {
+        [state.id]: {
           ...state,
           state: bytes,
         } as StateBase,
@@ -170,6 +177,7 @@ export abstract class AbstractBaseStateService {
   async importState(stateString: string) {
     let {name, timestamp, context, version} = JSON.parse(stateString);
     await firstValueFrom(this.loadState({
+      id: Uid.new,
       name,
       timestamp,
       context,
@@ -226,10 +234,10 @@ export abstract class AbstractBaseStateService {
       }
     }
 
-    let {name, timestamp, context, version} = newestState;
+    let {id, name, timestamp, context, version} = newestState;
     let jsDate = new Date(timestamp.seconds * 1e3);
     await firstValueFrom(this.loadState({
-      name, timestamp: jsDate, context, version, state: newestState.state,
+      id, name, timestamp: jsDate, context, version, state: newestState.state,
     }));
     // todo: add snackbar queue service to stop message overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);

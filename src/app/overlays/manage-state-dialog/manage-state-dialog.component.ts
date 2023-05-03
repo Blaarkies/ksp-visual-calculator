@@ -49,6 +49,7 @@ import { WithDestroy } from '../../common/with-destroy';
 import { StateDisplayComponent } from '../../components/state-display/state-display.component';
 import { FileDropDirective } from '../../directives/file-drop.directive';
 import { AnalyticsService } from '../../services/analytics.service';
+import { AbstractBaseStateService } from '../../services/domain/base-state.abstract.service';
 import { EventLogs } from '../../services/domain/event-logs';
 import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
@@ -80,7 +81,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
 
   @Input() contextTitle: string;
   @Input() context: GameStateType;
-  @Input() stateHandler: AbstractUniverseStateService;
+  @Input() stateHandler: AbstractBaseStateService;
 
   nowState: StateRow;
   states$: Observable<StateRow[]>;
@@ -186,6 +187,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     let {name, timestamp, version, state} = selectedState;
     let jsDate = new Date(timestamp);
     this.stateHandler.loadState({
+      id: selectedState.id,
       name,
       timestamp: jsDate,
       context: this.context,

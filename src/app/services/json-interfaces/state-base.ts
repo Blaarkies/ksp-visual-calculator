@@ -1,6 +1,7 @@
 import { Bytes } from '@firebase/firestore';
 
 export interface StateBase {
+  id: string;
   name: string;
   timestamp: Date;
   context: string;

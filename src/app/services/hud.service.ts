@@ -158,13 +158,13 @@ export class HudService {
           if (!user) {
             this.analyticsService.logEvent('Call account dialog from Edit Universe', {category: EventLogs.Category.Account});
             this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
-            return Promise.resolve();
+            return;
           }
 
           if (user?.isCustomer === false) {
             this.analyticsService.logEvent('Call coffee dialog from Edit Universe', {category: EventLogs.Category.Coffee});
             this.dialog.open(BuyMeACoffeeDialogComponent);
-            return Promise.resolve();
+            return;
           }
         },
       },

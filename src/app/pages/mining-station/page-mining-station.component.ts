@@ -4,16 +4,23 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import {
+  firstValueFrom,
   merge,
   take,
   takeUntil,
 } from 'rxjs';
 import { ActionOption } from '../../common/domain/action-option';
+import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { WithDestroy } from '../../common/with-destroy';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
+import {
+  SimpleDialogComponent,
+  SimpleDialogData,
+} from '../../overlays/simple-dialog/simple-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { HudService } from '../../services/hud.service';
 import { CraftPartStatisticsComponent } from './components/craft-part-statistics/craft-part-statistics.component';
@@ -54,6 +61,8 @@ export default class PageMiningStationComponent extends WithDestroy() implements
     private miningBaseService: MiningBaseService,
     private isruStateService: IsruStateService,
     private authService: AuthService,
+    private hudService: HudService,
+    private dialog: MatDialog,
   ) {
     super();
 
@@ -68,42 +77,31 @@ export default class PageMiningStationComponent extends WithDestroy() implements
 
   private getContextPanelDetails(): ActionPanelDetails {
     let options = [
-      new ActionOption(
-        'Share Link',
-        Icons.Share,
-        {
-          action: () => {
-            console.log('Resetting all inputs');
-          },
-        },
-      ),
-      new ActionOption(
-        'Manage Savegame',
-        Icons.Save,
-        {
-          action: () => {
-            console.log('Resetting all inputs');
-          },
-        },
-      ),
-      new ActionOption(
-        'Save',
-        Icons.Save,
-        {
-          action: async () => {
-            await this.isruStateService.save();
-          },
+      this.hudService.createActionOptionManageSaveGames(ref => {
+          let component = ref.componentInstance;
+          component.context = GameStateType.Isru;
+          component.contextTitle = 'Mining Station Planner';
+          component.stateHandler = this.isruStateService;
         },
       ),
       new ActionOption(
         'Reset All',
         Icons.DeleteAll,
         {
-          action: () => {
-            console.log('Resetting all inputs');
-            this.miningBaseService.buildState()
-              .pipe(takeUntil(this.destroy$))
-              .subscribe();
+          action: async () => {
+            let dialog$ = this.dialog.open(SimpleDialogComponent, {
+              data: {
+                title: 'Reset Calculator',
+                descriptions: ['This will reset configurations and remove the selected parts'],
+                okButtonText: 'Reset',
+              } as SimpleDialogData,
+            });
+            let result = await firstValueFrom(dialog$.afterClosed());
+            if (!result) {
+              return;
+            }
+            await this.miningBaseService.buildState();
+            await this.isruStateService.save();
           },
         },
       ),

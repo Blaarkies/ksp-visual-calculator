@@ -49,9 +49,8 @@ export class EngineerSkillSelectorComponent extends BasicValueAccessor {
   @Input() set formControl(control: FormControl<number>) {
     this.setDisabledState(control?.disabled);
 
-    let keyForSelectedValue = Array.from(engineerBonusMap.entries())
-      .find(([, v]) => v === control.value)?.[0]
-    ?? engineerBonusMap.get(-1);
+    let engineerLevels = Array.from(engineerBonusMap.entries());
+    let keyForSelectedValue = engineerLevels.find(([, v]) => v === control.value)?.[0] ?? -1;
     this.userInputChange(keyForSelectedValue);
 
     this.controlSkillRating.setValue(keyForSelectedValue, {emitEvent: false});

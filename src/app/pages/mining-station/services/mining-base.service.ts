@@ -10,6 +10,7 @@ import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { Group } from '../../../common/domain/group';
 import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
+import { engineerBonusMap } from '../components/engineer-skill-selector/engineer-skill-selector.component';
 import { CraftPart } from '../domain/craft-part';
 import { StatisticsMapType } from '../domain/isru-statistics-generator';
 import { StateIsru } from '../domain/state-isru';
@@ -19,7 +20,7 @@ export class MiningBaseService {
 
   planet$ = new BehaviorSubject<CelestialBody>(null);
   oreConcentration$ = new BehaviorSubject<number>(.05);
-  engineerBonus$ = new BehaviorSubject<number>(null);
+  engineerBonus$ = new BehaviorSubject<number>(0);
   activeConverters$ = new BehaviorSubject<string[]>([]);
   craftPartTypes$ = new BehaviorSubject<Group<CraftPart>[]>([]);
   craftPartCounts$ = new BehaviorSubject<Group<CraftPart>>(null);
@@ -79,8 +80,8 @@ export class MiningBaseService {
 
   setupEmptyState() {
     this.updatePlanet(null);
-    this.updateOreConcentration(null);
-    this.updateEngineerBonus(null);
+    this.updateOreConcentration(.05);
+    this.updateEngineerBonus(engineerBonusMap.get(-1));
     this.updateActiveConverters([]);
     this.updatePartList([]);
     this.updateStatisticsMap(null);

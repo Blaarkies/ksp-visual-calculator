@@ -15,15 +15,12 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { Group } from '../../../../common/domain/group';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
 import { CelestialBody } from '../../../../services/json-interfaces/kerbol-system-characteristics';
-import { converterSortMap } from '../../domain/converter-sort-map';
-import { CraftPart } from '../../domain/craft-part';
 import { MiningBaseService } from '../../services/mining-base.service';
-import { PlanetMoonSelectorComponent } from '../planet-moon-selector/planet-moon-selector.component';
 import { EngineerSkillSelectorComponent } from '../engineer-skill-selector/engineer-skill-selector.component';
+import { PlanetMoonSelectorComponent } from '../planet-moon-selector/planet-moon-selector.component';
 import { ResourceProcessorsComponent } from '../resource-processors/resource-processors.component';
 
 @Component({

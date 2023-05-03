@@ -1,19 +1,22 @@
 import { environment } from '../../../environments/environment';
 import { StateBase } from '../../services/json-interfaces/state-base';
+import { StateEntry } from './state-entry';
 
 export class StateRow {
 
+  id: string;
   name: string;
   timestamp: string;
   version: string;
   state: string;
 
-  constructor(stateEntry: any) {
-    this.name = stateEntry.name;
+  constructor({id, name, timestamp, version, state}: Omit<StateEntry, 'context'>) {
+    this.id = id;
+    this.name = name;
     // firebase firestore uses `timestamp.seconds` object structure
-    this.timestamp = new Date(stateEntry.timestamp.seconds * 1e3).toLocaleString();
-    this.version = 'v' + stateEntry.version.join('.');
-    this.state = stateEntry.state;
+    this.timestamp = new Date(timestamp.seconds * 1e3).toLocaleString();
+    this.version = 'v' + version.join('.');
+    this.state = state as string;
   }
 
   toUpdatedStateGame(): StateBase | { state } {
