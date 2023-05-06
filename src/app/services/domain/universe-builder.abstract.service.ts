@@ -24,11 +24,7 @@ import { StateSpaceObject } from '../json-interfaces/state-space-object';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';
 import { UniverseContainerInstance } from '../universe-container-instance.service';
 import { EventLogs } from './event-logs';
-
-interface OrbitsBodies {
-  listOrbits: Orbit[];
-  celestialBodies: SpaceObject[];
-}
+import { OrbitsBodies } from './orbits-bodies';
 
 export abstract class AbstractUniverseBuilderService extends WithDestroy() {
 

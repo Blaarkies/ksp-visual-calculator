@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import {
   Inject,
   Injectable,
@@ -7,10 +6,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
 import { DataService } from '../../../services/data.service';
+import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
 import { StateCraft } from '../../../services/json-interfaces/state-craft';
-import { StateUniverse } from '../../../services/json-interfaces/state-universe';
-import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { AUTO_SAVE_INTERVAL } from '../../mining-station/domain/config';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
@@ -30,13 +28,11 @@ export class CommnetStateService extends AbstractUniverseStateService {
   }
 
   get stateContextual(): StateCommnetPlanner {
-    let universe = this.stateContextual;
+    let universe = super.stateContextual;
     let craft = this.universeBuilderService.craft$.value;
     return {
       ...universe,
       settings: {
-        // TODO: get difficulty settings
-        // ...state.settings,
         difficulty: this.universeBuilderService.difficultySetting,
       },
       craft: craft?.map(b => b.toJson()) as StateCraft[],
@@ -51,7 +47,7 @@ export class CommnetStateService extends AbstractUniverseStateService {
     return this.universeBuilderService.buildStockState();
   }
 
-  protected setStatefulDetails(parsedState: StateUniverse) {
+  protected setStatefulDetails(parsedState: StateCommnetPlanner) {
     this.universeBuilderService.updateDifficultySetting(DifficultySetting.fromObject(parsedState.settings.difficulty));
   }
 

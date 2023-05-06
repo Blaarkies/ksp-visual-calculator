@@ -8,10 +8,10 @@ import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-p
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { SubjectHandle } from '../../../common/subject-handle';
-import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
+import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
 import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
-import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
+import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { TravelService } from './travel.service';
 
@@ -41,6 +41,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
   protected async setDetails() {
     await super.setDetails();
     this.travelService.resetCheckpoints();
+    this.checkpointPreferences$.set(CheckpointPreferences.default);
   }
 
   protected async buildContextState(lastState: string) {

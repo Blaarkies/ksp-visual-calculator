@@ -4,6 +4,7 @@
   <nav class="top-nav" [class.translate-up]="!showNavbar">
     <a mat-button href="/dv-planner">Delta-v Calculator</a>
     <a mat-button href="/commnet-planner">CommNet Calculator</a>
+    <a mat-button href="/mining-station-planner">Mining Station Calculator</a>
     <i></i>
     <button mat-icon-button (click)="toggleTheme()">◐</button>
     <button id="sidebar-button" mat-icon-button (click)="showSidebar = !showSidebar">≡</button>
@@ -49,11 +50,24 @@
           helps KSP players plan and solve complex missions. Just like the game, these calculators are made to be
           interactive and visual to help new players quickly grasp the mechanics of rocket science.
         </p>
+        <p>Find solutions in the calculators below</p>
       </header>
 
       <nav class="button-calculators">
-        <a mat-stroked-button href="/dv-planner">Go to Delta-v Calculator</a>
-        <a mat-stroked-button href="/commnet-planner">Go to CommNet Calculator</a>
+        <a mat-stroked-button href="/dv-planner" [style.--size]="17">
+          <div>Dv Calculator</div>
+          <div>
+            How much delta-v does my mission need?
+          </div>
+        </a>
+        <a mat-stroked-button href="/commnet-planner" [style.--size]="20">
+          <div>CommNet Calculator</div>
+          <div>Which antenna is best for my craft?</div>
+        </a>
+        <a mat-stroked-button href="/mining-station-planner" [style.--size]="25">
+          <div>Mining Station Calculator</div>
+          <div>How many solar panels and radiators are needed for my mining station?</div>
+        </a>
       </nav>
     </article>
 
@@ -734,6 +748,7 @@
       <span>Calculators</span>
       <a mat-button href="/dv-planner">Delta-v Calculator</a>
       <a mat-button href="/commnet-planner">CommNet Calculator</a>
+      <a mat-button href="/mining-station-planner">Mining Station Calculator</a>
     </div>
 
     <div>

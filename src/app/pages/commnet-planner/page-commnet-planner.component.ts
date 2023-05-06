@@ -6,6 +6,7 @@ import {
   combineLatest,
   delayWhen,
   filter,
+  firstValueFrom,
   map,
   merge,
   Observable,
@@ -155,6 +156,12 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
           component.stateHandler = this.commnetStateService;
         },
       ),
+      this.hudService.createActionResetPage(
+        'This will reset the universe and remove all craft',
+        async () => {
+          await firstValueFrom(this.commnetUniverseBuilderService.buildStockState());
+          await this.commnetStateService.save();
+        }),
       this.hudService.createActionOptionFaq(GameStateType.CommnetPlanner),
     ];
 

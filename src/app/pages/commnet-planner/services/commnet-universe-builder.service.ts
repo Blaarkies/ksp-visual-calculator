@@ -3,7 +3,6 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
-  BehaviorSubject,
   firstValueFrom,
   take,
   takeUntil,
@@ -14,19 +13,18 @@ import { AntennaSignal } from '../../../common/domain/antenna.signal';
 import { Group } from '../../../common/domain/group';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { Craft } from '../../../common/domain/space-objects/craft';
-import { Orbit } from '../../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { Vector2 } from '../../../common/domain/vector2';
 import { SubjectHandle } from '../../../common/subject-handle';
-import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { CameraService } from '../../../services/camera.service';
 import { EventLogs } from '../../../services/domain/event-logs';
+import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
 import { StateCraft } from '../../../services/json-interfaces/state-craft';
 import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
-import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
+import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { CraftDetails } from '../components/craft-details-dialog/craft-details';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
@@ -79,6 +77,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     this.craft$.set([]);
     this.signals$.set([]);
+    this.difficultySetting = DifficultySetting.normal;
 
     // todo: hasDsn is removed. add default tracking station another way
     let needsBasicDsn = this.planets$.value

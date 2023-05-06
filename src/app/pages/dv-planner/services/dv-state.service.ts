@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import {
   Inject,
   Injectable,
@@ -7,11 +6,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { GameStateType } from '../../../common/domain/game-state-type';
-import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { DataService } from '../../../services/data.service';
+import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
 import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
-import { StateUniverse } from '../../../services/json-interfaces/state-universe';
 import { AUTO_SAVE_INTERVAL } from '../../mining-station/domain/config';
 import { DvUniverseBuilderService } from './dv-universe-builder.service';
 import { TravelService } from './travel.service';
@@ -37,8 +35,6 @@ export class DvStateService extends AbstractUniverseStateService {
     return {
       ...universe,
       settings: {
-        // TODO: get settings
-        // ...state.settings,
         preferences: this.universeBuilderService.checkpointPreferences$.value,
       },
       checkpoints: this.travelService.checkpoints$.value
@@ -46,7 +42,7 @@ export class DvStateService extends AbstractUniverseStateService {
     };
   }
 
-  protected setStatefulDetails(parsedState: StateUniverse) {
+  protected setStatefulDetails(parsedState: StateDvPlanner) {
     this.universeBuilderService.updateCheckpointPreferences(CheckpointPreferences.fromObject(parsedState.settings.preferences));
   }
 

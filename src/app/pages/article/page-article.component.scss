@@ -163,7 +163,7 @@ footer {
   z-index: 1;
 
   display: grid;
-  grid-template-columns: max-content max-content auto max-content max-content;
+  grid-template-columns: max-content max-content max-content auto max-content max-content;
   align-items: center;
   gap: 1em;
 
@@ -339,9 +339,7 @@ footer {
   justify-content: center;
 
   > a {
-    font-size: 1.4em;
-    font-weight: 500;
-    padding: 1.2em .8em;
+    padding: 1.4em .8em;
     color: currentColor;
     border: 2px solid var(--color-kerbal-green);
     text-decoration: none;
@@ -387,6 +385,17 @@ footer {
       transform-origin: left;
       transform: rotateY(-20deg);
     }
+
+    div:last-child {
+      font-size: 1rem;
+      font-weight: normal;
+      margin-top: .5em;
+    }
+
+    font-size: 1.4em;
+    font-weight: 500;
+    height: auto;
+    width: calc(var(--size) * 1ch);
   }
 }
 

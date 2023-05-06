@@ -214,4 +214,26 @@ export class HudService {
     );
   }
 
+  createActionResetPage(description: string, actionCallback: () => Promise<void>) {
+    return new ActionOption(
+      'Reset',
+      Icons.DeleteAll,
+      {
+        action: async () => {
+          let dialog$ = this.dialog.open(SimpleDialogComponent, {
+            data: {
+              title: 'Reset This Calculator',
+              descriptions: [description],
+              okButtonText: 'Reset',
+            } as SimpleDialogData,
+          });
+          let result = await firstValueFrom(dialog$.afterClosed());
+          if (!result) {
+            return;
+          }
+          await actionCallback();
+        },
+      },
+    );
+  }
 }

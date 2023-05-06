@@ -4,6 +4,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
+  firstValueFrom,
   merge,
   Observable,
   take,
@@ -97,6 +98,12 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
           component.stateHandler = this.dvStateService;
         },
       ),
+      this.hudService.createActionResetPage(
+        'This will reset the universe and remove delta-v mission checkpoints',
+        async () => {
+          await firstValueFrom(this.dvUniverseBuilderService.buildStockState());
+          await this.dvStateService.save();
+        }),
       this.hudService.createActionOptionFaq(GameStateType.DvPlanner),
     ];
 

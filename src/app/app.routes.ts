@@ -13,7 +13,7 @@ const DV_ROUTE_130 = 'calculators/dv-planner';
 export enum UsableRoutes {
   CommnetPlanner = 'commnet-planner',
   DvPlanner = 'dv-planner',
-  MiningStation = 'mining-station',
+  MiningStation = 'mining-station-planner',
   Intro = 'intro',
   Policy = 'policy',
   Feedback = 'feedback',

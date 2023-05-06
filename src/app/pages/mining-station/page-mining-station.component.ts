@@ -84,27 +84,12 @@ export default class PageMiningStationComponent extends WithDestroy() implements
           component.stateHandler = this.isruStateService;
         },
       ),
-      new ActionOption(
-        'Reset All',
-        Icons.DeleteAll,
-        {
-          action: async () => {
-            let dialog$ = this.dialog.open(SimpleDialogComponent, {
-              data: {
-                title: 'Reset Calculator',
-                descriptions: ['This will reset configurations and remove the selected parts'],
-                okButtonText: 'Reset',
-              } as SimpleDialogData,
-            });
-            let result = await firstValueFrom(dialog$.afterClosed());
-            if (!result) {
-              return;
-            }
-            await this.miningBaseService.buildState();
-            await this.isruStateService.save();
-          },
-        },
-      ),
+      this.hudService.createActionResetPage(
+        'This will reset configurations and remove the selected parts',
+        async () => {
+          await this.miningBaseService.buildState();
+          await this.isruStateService.save();
+        }),
     ];
 
     return {
