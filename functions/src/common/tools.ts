@@ -35,7 +35,7 @@ export function listNumbers(count = 3): number[] {
 }
 
 export function getUniqueDateKey(): string {
-  return new Date().toLocaleString(undefined, {
+  return new Date().toLocaleString('en-GB', {
       month: '2-digit',
       year: 'numeric',
       day: '2-digit',

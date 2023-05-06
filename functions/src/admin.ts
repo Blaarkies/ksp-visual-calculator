@@ -6,10 +6,19 @@ import { gzip } from 'pako';
 import admin from 'firebase-admin';
 import { distinct, getAllBmacSupporters, getUniqueDateKey, uid } from './common/tools';
 
+import * as corsImport from 'cors';
+
+let cors = corsImport.default({
+  origin: ['https://ksp-visual-calculator.blaarkies.com'],
+}) as unknown as (req: functions.https.Request,
+                  res: functions.Response,
+                  callback: () => void) => void;
+
 /**
  * Used by Feedback Dialog. This stores the feedback, and notify with an email that feedback has been received.
  */
-export const captureFeedback = functions.https.onRequest(async (req, res) => {
+export const captureFeedback = functions
+  .https.onRequest(async (req, res) => cors(req, res, async () => {
   // let feedbackEmail = functions.config().emailSendToAddress.id;
 
   let key = getUniqueDateKey();
@@ -21,7 +30,7 @@ export const captureFeedback = functions.https.onRequest(async (req, res) => {
 
   res.sendStatus(200);
   return;
-});
+}));
 
 /**
  * Version v1.2.6 introduces compressed savegame state. This function will compress all old savegames
