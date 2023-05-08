@@ -44,6 +44,7 @@ import {
 import { BasicAnimations } from '../../animations/basic-animations';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
+import { Uid } from '../../common/uid';
 import { CommonValidators } from '../../common/validators/common-validators';
 import { WithDestroy } from '../../common/with-destroy';
 import { StateDisplayComponent } from '../../components/state-display/state-display.component';
@@ -228,7 +229,11 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
   }
 
   exportState(selectedState: StateRow) {
-    let sJson = selectedState.state;
+    let sJson = JSON.stringify({
+      context: this.context,
+      ...selectedState,
+      id: undefined,
+    });
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
     element.setAttribute('download', `ksp-vc-savegame-${selectedState.name}.json`);
@@ -254,7 +259,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     if (files.length === 1) {
       this.buttonLoaders.import$.next(true);
       let stateString: string = await files[0].text();
-      await this.stateHandler.importState(stateString);
+      await this.importState(stateString);
 
       let state = this.stateHandler.stateBase;
       await this.stateHandler.save();
@@ -267,6 +272,23 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     this.analyticsService.logEvent('Import state', {
       category: EventLogs.Category.State,
     });
+  }
+
+  private async importState(stateString: string) {
+    let {name, timestamp, context, version, state} = JSON.parse(stateString);
+    // @fix v1.3.0: previous json files did not have a 'state' field
+    if (!state) {
+      state = stateString;
+    }
+
+    await firstValueFrom(this.stateHandler.loadState({
+      id: Uid.new,
+      name,
+      timestamp,
+      context,
+      version,
+      state,
+    }));
   }
 
   async uploadFileSelected(event: any) {

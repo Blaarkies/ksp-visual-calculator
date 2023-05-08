@@ -174,18 +174,6 @@ export abstract class AbstractBaseStateService {
     ));
   }
 
-  async importState(stateString: string) {
-    let {name, timestamp, context, version} = JSON.parse(stateString);
-    await firstValueFrom(this.loadState({
-      id: Uid.new,
-      name,
-      timestamp,
-      context,
-      version,
-      state: stateString,
-    }));
-  }
-
   async save() {
     let stateBase = this.stateBase;
     let contextual = this.stateContextual;
