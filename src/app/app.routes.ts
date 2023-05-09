@@ -70,7 +70,7 @@ if (!environment.production) {
   let blaarkiesBook: Route = {
     path: bookPath,
     title: 'Blaarkies Book',
-    loadComponent: () => import('./blaarkies-book/home/blaarkies-book-home.component').then(m => m.BlaarkiesBookHomeComponent),
+    loadComponent: () => import('./blaarkies-book/home/blaarkies-book-home.component'),
   };
   routes.splice(-1, 0, blaarkiesBook);
   routes[routes.length - 1].redirectTo = bookPath;

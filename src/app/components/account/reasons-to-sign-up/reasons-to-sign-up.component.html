@@ -1,0 +1,36 @@
+<button mat-button
+        #container
+        cdkOverlayOrigin
+        #origin="cdkOverlayOrigin"
+        (click)="toggleOverlay()">
+  Why should I sign in?
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayPositions]="position"
+  [cdkConnectedOverlayOpen]="isOverlayOpen || isWindowOpen"
+  (overlayOutsideClick)="toggleOverlay()"
+>
+  <div class="reasons-window"
+       (click)="toggleOverlay()">
+    <div
+      class="reasons-container"
+      *ngIf="isWindowOpen"
+      @slideOutVertical
+      (@slideOutVertical.done)="closeOverlay($event)"
+    >
+      <div>Signed in accounts can access more features:</div>
+      <ul>
+        <li>Continue with saved changes</li>
+        <li>Manage multiple save games</li>
+        <li>Load save games from other devices</li>
+        <li>Import / Export save games to share</li>
+      </ul>
+    </div>
+
+    <!--    shift overlay up above button, use padding to maintain click region-->
+    <div [style.padding-bottom.px]="container._elementRef.nativeElement.clientHeight"></div>
+  </div>
+</ng-template>

@@ -41,7 +41,7 @@ import {
   ThemeTypeEnum,
 } from '../../services/theme.service';
 import { ActionPanelComponent } from './action-panel/action-panel.component';
-import { UserProfileComponent } from '../user-profile/user-profile.component';
+import { UserProfileComponent } from '../account/user-profile/user-profile.component';
 import { ActionFabComponent } from './action-fab/action-fab.component';
 import { ActionGroupType } from './action-group-type';
 import { ActionPanelDetails } from './action-panel-details';

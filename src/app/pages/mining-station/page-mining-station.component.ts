@@ -4,23 +4,17 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import {
-  firstValueFrom,
   merge,
   take,
   takeUntil,
 } from 'rxjs';
-import { ActionOption } from '../../common/domain/action-option';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { WithDestroy } from '../../common/with-destroy';
+import { InputSectionedListComponent } from '../../components/controls/input-tree-list/input-sectioned-list.component';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
-import {
-  SimpleDialogComponent,
-  SimpleDialogData,
-} from '../../overlays/simple-dialog/simple-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { HudService } from '../../services/hud.service';
 import { CraftPartStatisticsComponent } from './components/craft-part-statistics/craft-part-statistics.component';
@@ -34,15 +28,16 @@ import { MiningBaseService } from './services/mining-base.service';
 @Component({
   selector: 'cp-page-mining-station',
   standalone: true,
-  imports: [
-    CommonModule,
-    HudComponent,
-    ReactiveFormsModule,
-    PartsSelectorComponent,
-    CraftPartStatisticsComponent,
-    MiningBaseControlComponent,
-    IsruWarningsComponent,
-  ],
+    imports: [
+        CommonModule,
+        HudComponent,
+        ReactiveFormsModule,
+        PartsSelectorComponent,
+        CraftPartStatisticsComponent,
+        MiningBaseControlComponent,
+        IsruWarningsComponent,
+        InputSectionedListComponent,
+    ],
   providers: [
     HudService,
     MiningBaseService,
@@ -62,7 +57,6 @@ export default class PageMiningStationComponent extends WithDestroy() implements
     private isruStateService: IsruStateService,
     private authService: AuthService,
     private hudService: HudService,
-    private dialog: MatDialog,
   ) {
     super();
 

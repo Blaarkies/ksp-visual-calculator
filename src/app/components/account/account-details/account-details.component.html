@@ -1,0 +1,68 @@
+<ng-container *ngIf="user$ | async as user; else noUser">
+  <div mat-dialog-content>
+    <div class="text dialog-title">Account Details</div>
+
+    <div class="display-details-layout">
+      <div
+        class="avatar-layout clickable stack"
+        matRipple
+        (click)="uploadImage(user)"
+      >
+        <img [src]="user.photoURL || 'assets/logos/guest-account.webp'">
+        <span class="premium-sash" @fade *ngIf="user.isCustomer">Supporter</span>
+      </div>
+
+      <div class="details-section">
+        <div class="user-details">
+          <cp-input-field class="input-field-contrast-text"
+                          [formControl]="controlName"
+                          label="Name"
+                          (keyup.enter)="editDetails(user)"></cp-input-field>
+          <div>
+            <div>Email</div>
+            <div>{{user.email}}</div>
+          </div>
+          <div>
+            <div>Account Type</div>
+            <div>{{user.isCustomer ? 'Premium' : 'Free'}}</div>
+          </div>
+        </div>
+
+        <button mat-stroked-button [matMenuTriggerFor]="menu" class="action-details">
+          <div>
+            <mat-icon [svgIcon]="icons.MenuVertical"></mat-icon>
+          </div>
+        </button>
+        <mat-menu #menu="matMenu" xPosition="before" yPosition="above">
+          <button mat-menu-item (click)="validateAccount(user)" *ngIf="!user.isCustomer">
+            <mat-icon [svgIcon]="icons.Unlock"></mat-icon>
+            <span>Validate</span>
+          </button>
+          <button mat-menu-item (click)="deleteAccount(user)">
+            <mat-icon [svgIcon]="icons.DeleteAll" color="warn"></mat-icon>
+            <span>Delete Account</span>
+          </button>
+        </mat-menu>
+      </div>
+
+    </div>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button
+            color="accent"
+            (click)="actionSignOut()">
+      Sign Out
+    </button>
+
+    <button color="primary"
+            mat-stroked-button
+            mat-dialog-close>
+      Ok
+    </button>
+  </div>
+</ng-container>
+
+<ng-template #noUser>
+  <cp-account-sign-up></cp-account-sign-up>
+</ng-template>

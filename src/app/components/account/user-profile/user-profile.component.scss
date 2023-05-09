@@ -1,5 +1,7 @@
 .profile-image {
   border-radius: 100px;
+  cursor: pointer;
+
   --size: 28px;
   width: var(--size);
   height: var(--size);

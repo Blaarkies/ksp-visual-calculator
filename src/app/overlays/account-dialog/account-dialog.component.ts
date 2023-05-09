@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {AccountDetailsComponent} from "../../components/account-details/account-details.component";
+import {AccountDetailsComponent} from "../../components/account/account-details/account-details.component";
 
 @Component({
   selector: 'cp-account-dialog',

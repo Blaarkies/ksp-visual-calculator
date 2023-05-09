@@ -14,7 +14,7 @@
                          class="advanced-placement-fields"
                          [inputFields]="advancedInputFieldsList"></cp-input-field-list>
 
-    <div [@fade]
+    <div @fade
          *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
          class="error-message">
       <mat-error>{{advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh}}</mat-error>

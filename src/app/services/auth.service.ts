@@ -30,7 +30,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { AuthErrorCode } from '../components/account-details/auth-error-code';
+import { AuthErrorCode } from '../components/account/account-details/auth-error-code';
 import {
   DataService,
   UserData,

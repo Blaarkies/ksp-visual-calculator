@@ -1,0 +1,113 @@
+.sign-in-layout {
+  display: grid;
+  gap: 16px;
+
+  .app-image {
+    height: 100px;
+    justify-self: center;
+
+    background: #fff4;
+    border-radius: 100px;
+    padding: 10px;
+  }
+
+  cp-reasons-to-sign-up {
+    margin-left: auto;
+    display: block;
+  }
+
+  .input-container {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+
+    mat-icon {
+      color: var(--color-icon-muted);
+    }
+
+    cp-input-field {
+      height: 48px;
+    }
+  }
+
+  .email-inputs-container {
+    display: grid;
+    width: max-content;
+    margin: auto;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.4em;
+  }
+
+  .link {
+    color: var(--color-text-hyperlink);
+
+    border-radius: 10px;
+    padding: 0 4px;
+    margin: 0;
+    line-height: unset;
+    font-weight: 400;
+    font-size: 0.9em;
+  }
+
+  .forgot-password {
+    justify-self: end;
+    text-decoration: none;
+  }
+
+  .policy-layout {
+    display: flex;
+    gap: .4em;
+    align-items: center;
+    padding-left: 4px;
+  }
+
+  .sign-in-button-email-container {
+    display: grid;
+    align-items: center;
+    gap: 6px;
+
+    mat-icon {
+      color: var(--color-icon-muted);
+      margin-right: 6px;
+    }
+  }
+
+  .sign-in-button-google-container {
+    display: grid;
+  }
+
+  .button-loader {
+    mat-progress-bar {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+    }
+  }
+
+  .google-g-logo {
+    margin-right: 6px;
+    height: 1.5em;
+  }
+}
+
+.separate-deferral {
+  margin-bottom: -10px;
+}
+
+.call-to-deferral {
+  display: flex;
+  align-items: center;
+  margin-inline: 20px;
+
+  .deferral-description {
+    width: 28ch;
+    padding: 16px 0;
+    margin-right: 4px;
+  }
+}
