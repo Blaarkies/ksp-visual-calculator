@@ -41,27 +41,29 @@
     <ng-container *ngTemplateOutlet="right"></ng-container>
     <ng-container *ngTemplateOutlet="top"></ng-container>
 
-    <cp-action-panel class="top-left"
-                     startTitle="KSP Visual Calculator"
+    <cp-action-panel class="top-left requires-pointer"
+                     label="KSP Visual Calculator"
+                     location="top-left"
+                     color="green"
                      [options]="navigationOptions">
       <ng-container *ngTemplateOutlet="pageIcon"></ng-container>
     </cp-action-panel>
 
-    <cp-action-panel class="top-right"
-                     startTitle="Information"
+    <cp-action-panel class="top-right requires-pointer"
+                     label="Information"
                      location="top-right"
                      color="cosmic-blue"
                      [options]="infoOptions">
       <ng-container *ngTemplateOutlet="profile"></ng-container>
     </cp-action-panel>
 
-    <cp-action-panel class="bottom-left"
+    <cp-action-panel class="bottom-left requires-pointer"
                      id="context-panel"
                      *ngIf="contextPanelDetails as details"
-                     [startTitle]="details.startTitle"
+                     [label]="details.startTitle"
                      location="bottom-left"
                      [color]="details.color || 'orange'"
-                     [startIcon]="details.startIcon || 'menu_open'"
+                     [icon]="details.startIcon || 'menu_open'"
                      [options]="details.options">
     </cp-action-panel>
 

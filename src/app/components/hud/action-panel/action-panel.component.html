@@ -1,0 +1,40 @@
+<div class="action-panel"
+     [ngClass]="[color, positionStyle]">
+  <button mat-button
+          class="button-header"
+          (click)="isOpen = true"
+          cdkOverlayOrigin
+          #origin="cdkOverlayOrigin"
+  >
+    <div class="layout-header">
+      <mat-icon [svgIcon]="icon"
+                class="icon-button-large"></mat-icon>
+
+      <span class="title-header">{{label}}</span>
+
+      <span class="notify-badge"
+            matBadgeColor="warn"
+            [matBadgeHidden]="!unreadCount"
+            [matBadge]="unreadCount"></span>
+
+      <ng-content></ng-content>
+    </div>
+  </button>
+
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayHasBackdrop]="true"
+    [cdkConnectedOverlayOrigin]="origin"
+    [cdkConnectedOverlayPositions]="positionConnection"
+    [cdkConnectedOverlayOpen]="isOpen"
+    (overlayOutsideClick)="isOpen = false"
+  >
+    <div class="action-panel"
+         [ngClass]="[color, positionStyle]"
+         [@animateGrowIn]="animationSide+isOpen"
+         (click)="isOpen = false"
+    >
+      <cp-action-list [options]="actionOptions" (action)="readNotification($event)"></cp-action-list>
+    </div>
+  </ng-template>
+</div>

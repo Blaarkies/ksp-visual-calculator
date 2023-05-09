@@ -35,24 +35,24 @@
     </mat-list-item>
 
     <mat-list-item *ngSwitchCase="actionTypes.Action"
-                   (click)="action.emit();
-                              option.actionMeta.action();
-                              updateUnreads(option)">
+                   (click)="action.emit(option);
+                            option.actionMeta.action();
+                            option.readNotification()">
       <ng-container *ngTemplateOutlet="button"></ng-container>
     </mat-list-item>
 
     <mat-list-item *ngSwitchCase="actionTypes.Route"
-                   (click)="action.emit();
-                              updateUnreads(option);
-                              logRoute(option.actionMeta.route)"
+                   (click)="action.emit(option);
+                            option.readNotification();
+                            logRoute(option.actionMeta.route)"
                    routerLink="/{{option.actionMeta.route}}">
       <ng-container *ngTemplateOutlet="button"></ng-container>
     </mat-list-item>
 
     <mat-list-item *ngSwitchCase="actionTypes.ExternalRoute"
-                   (click)="action.emit();
-                              updateUnreads(option);
-                              logExternalLink(option.actionMeta.externalRoute)">
+                   (click)="action.emit(option);
+                            option.readNotification();
+                            logExternalLink(option.actionMeta.externalRoute)">
       <a class="anchor-invisible"
          [href]="option.actionMeta.externalRoute"
          target="_blank">

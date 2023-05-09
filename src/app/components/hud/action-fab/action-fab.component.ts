@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { ActionGroupType } from '../action-group-type';
-import { ActionPanelColors } from '../../action-panel/action-panel.component';
+import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { ActionOption } from '../../../common/domain/action-option';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +16,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatIconModule,
     MatBadgeModule,
     MatTooltipModule,
+    MatButtonModule,
   ],
   templateUrl: './action-fab.component.html',
   styleUrls: ['./action-fab.component.scss'],
