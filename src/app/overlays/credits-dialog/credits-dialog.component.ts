@@ -47,6 +47,12 @@ export class CreditsDialogComponent {
       link: 'https://alexmoon.github.io/ksp/',
       product: 'Launch Window Planner',
     },
+    {
+      creator: 'Ined',
+      action: 'for data on ISRU heat mechanics',
+      link: 'https://forum.kerbalspaceprogram.com/index.php?/topic/165362-an-optimizing-guide-for-mining-bases/',
+      product: 'Optimizing Guide for Mining Bases',
+    },
   ];
 
 }

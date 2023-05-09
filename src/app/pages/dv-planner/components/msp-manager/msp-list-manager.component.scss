@@ -1,7 +1,5 @@
 .destination-controls {
-  margin-top: 3px;
-  margin-bottom: 10px;
-
+  margin-top: 4px;
   display: grid;
   grid-template-columns: auto max-content;
 
@@ -42,6 +40,12 @@
 
 .empty-state-msp {
   text-align: center;
+  margin: 0;
+}
+
+.totals-layout,
+.empty-state-msp {
+  margin-top: 4px;
 }
 
 .animate-flashing {

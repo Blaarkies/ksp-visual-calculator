@@ -1,12 +1,9 @@
 .panel-layout {
   background-color: #6662;
-  min-height: 200px;
-  min-width: 200px;
   padding: 8px;
 
   display: grid;
   grid-auto-rows: max-content;
-  gap: 4px;
 
   --border-radius: 12px;
   border-bottom-left-radius: var(--border-radius);
@@ -19,6 +16,7 @@
   }
 
   .options {
+    margin-bottom: 4px;
     display: grid;
     gap: .6em;
 

@@ -6,7 +6,7 @@
                  (editPlanet)="editPlanet($event)">
 
   <cp-mission-journey aboveOrbits
-                      class="no-mouse"
+                      class="no-pointer"
                       [scale]="universeMap.camera.scale"
                       [checkpoints]="checkpoints$ | async"
                       [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
@@ -19,11 +19,12 @@
   [contextPanelDetails]="contextPanelDetails"
 >
   <div top class="screen-border-margin">
-    <cp-zoom-indicator class="no-mouse"></cp-zoom-indicator>
+    <cp-zoom-indicator></cp-zoom-indicator>
   </div>
   <cp-focus-jump-to-panel
+    class="all-pointer"
     left
     [focusables]="planets$ | async"
   ></cp-focus-jump-to-panel>
-  <cp-maneuver-sequence-panel right></cp-maneuver-sequence-panel>
+  <cp-maneuver-sequence-panel right class="all-pointer"></cp-maneuver-sequence-panel>
 </cp-hud>

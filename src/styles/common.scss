@@ -47,8 +47,12 @@
   }
 }
 
-.no-mouse {
+.no-pointer {
   pointer-events: none;
+}
+
+.all-pointer {
+  pointer-events: auto;
 }
 
 .screen-border-margin {

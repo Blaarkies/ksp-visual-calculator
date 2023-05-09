@@ -46,9 +46,10 @@
   [contextPanelDetails]="contextPanelDetails"
 >
   <div top class="screen-border-margin">
-    <cp-zoom-indicator class="no-mouse"></cp-zoom-indicator>
+    <cp-zoom-indicator></cp-zoom-indicator>
   </div>
   <cp-focus-jump-to-panel
+    class="all-pointer"
     left
     [focusables]="focusables$ | async"
   ></cp-focus-jump-to-panel>

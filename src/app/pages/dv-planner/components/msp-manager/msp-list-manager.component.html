@@ -7,6 +7,18 @@
   (dragSuccess)="setDragMode(false)"
 ></cp-msp-list>
 
+<div class="totals-layout text-white" *ngIf="missionCheckpoints.length">
+  <div>Total delta-v</div>
+  <div>{{deltaVTotal}} m/s</div>
+</div>
+
+<pre [@height]="!missionCheckpoints.length"
+     class="text-mute empty-state-msp">
+No checkpoints selected.
+Start by adding your
+first checkpoint.
+</pre>
+
 <div class="destination-controls">
 
   <div class="inline-children">
@@ -77,15 +89,3 @@
   </mat-menu>
 
 </div>
-
-<div class="totals-layout text-white" *ngIf="missionCheckpoints.length">
-  <div>Total delta-v</div>
-  <div>{{deltaVTotal}} m/s</div>
-</div>
-
-<pre [@height]="!missionCheckpoints.length"
-     class="text-mute empty-state-msp">
-No checkpoints selected.
-Start by adding your
-first checkpoint.
-</pre>
