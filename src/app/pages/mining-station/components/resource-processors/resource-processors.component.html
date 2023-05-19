@@ -2,7 +2,7 @@
   <div class="text caption">Resource Processors</div>
 
   <cp-input-toggle
-    *ngFor="let entity of controlEntities; trackBy: getLabel"
+    *ngFor="let entity of controlEntities; trackBy: trackByLabel"
     [label]="entity.label"
     [formControl]="entity.control"
     type="switch"

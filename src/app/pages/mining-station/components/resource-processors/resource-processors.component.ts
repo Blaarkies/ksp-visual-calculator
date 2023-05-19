@@ -14,9 +14,11 @@ import {
   map,
   merge,
   mergeAll,
+  pipe,
   skip,
   Subject,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { Group } from '../../../../common/domain/group';
 import { WithDestroy } from '../../../../common/with-destroy';
@@ -46,20 +48,7 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
 
   constructor(private miningBaseService: MiningBaseService) {
     super();
-
-    combineLatest([
-      miningBaseService.craftPartTypes$.pipe(skip(1)),
-      miningBaseService.activeConverters$.pipe(skip(1)),
-    ]).pipe(
-      filter(([, activeConverters]) => this.latestActiveConverters.compare(activeConverters)),
-      distinctUntilChanged((a, b) => a[0].compare(b[0]) && a[1].compare(b[1])),
-      map(([parts, activeConverters]) => ({
-        options: this.getConverterOptions(parts) ?? [],
-        activeConverters,
-      })),
-      takeUntil(this.destroy$))
-      .subscribe(({options, activeConverters}) =>
-        this.setupControls(options, activeConverters));
+    this.listenPartsAndSelectionChanges();
   }
 
   ngOnDestroy() {
@@ -68,14 +57,42 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
     this.stopControls$.complete();
   }
 
+  trackByLabel(index: number, item: ControlItem<string, boolean>): string {
+    return item.label;
+  }
+
+  private listenPartsAndSelectionChanges() {
+    combineLatest([
+      this.miningBaseService.craftPartTypes$.pipe(skip(1)),
+      this.miningBaseService.activeConverters$.pipe(skip(1)),
+    ]).pipe(
+      map(([parts, selected]) => ({
+        converters: this.getConverterNames(parts),
+        selected,
+        parts,
+      })),
+      distinctUntilChanged(({converters: c1, selected: s1}, {converters: c2, selected: s2}) =>
+        c1.equal(c2) && s1.equal(s2)),
+      map(({parts, selected}) => ({
+        options: this.getConverterOptions(parts) ?? [],
+        selected,
+      })),
+      takeUntil(this.destroy$))
+      .subscribe(({options, selected}) => this.setupControls(options, selected));
+  }
+
+  private getConverterNames(groups: Group<CraftPart>[]): string[] {
+    return groups
+      .map(p => p.item.converters ?? [])
+      .flatMap()
+      .map(a => a.converterName);
+  }
+
   private getConverterOptions(groups: Group<CraftPart>[]): string[] {
     if (!groups) {
       return [];
     }
-    return groups
-      .map(g => g.item.converters ?? [])
-      .flatMap()
-      .map(c => c.converterName)
+    return this.getConverterNames(groups)
       .distinct()
       .sort((a, b) => converterSortMap.get(a) - converterSortMap.get(b));
   }
@@ -121,10 +138,6 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
   private getExistingMatches(options: string[]) {
     return this.controlEntities
       ?.filter(ce => options.some(name => ce.label === name));
-  }
-
-  getLabel(index: number, item: ControlItem<string, boolean>): string {
-    return item.label;
   }
 
   private eventUpdate() {

@@ -22,10 +22,8 @@ import {
   shareReplay,
   Subject,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
-import { ConfigurableAnimations } from '../../../../animations/configurable-animations';
 import { Group } from '../../../../common/domain/group';
 import { Icons } from '../../../../common/domain/icons';
 import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';

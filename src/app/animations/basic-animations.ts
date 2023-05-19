@@ -70,16 +70,16 @@ export class BasicAnimations {
 
   static flipVertical = trigger('flipVertical', [
     state('void, false', style({transform: 'scale(1, 1)'})),
-    state('null, true', style({transform: 'scale(1, -1)'})),
+    state('true', style({transform: 'scale(1, -1)'})),
 
-    transition(':enter, * => true', [
+    transition('* => true', [
       sequence([
         animate('.1s ease-in', style({transform: 'scale(0, 1)'})),
         style({transform: 'scale(0, -1)'}),
         animate('.1s ease-in', style({transform: 'scale(1, -1)'})),
       ]),
     ]),
-    transition(':leave, * => false', [
+    transition('* => false', [
       sequence([
         animate('.1s ease-in', style({transform: 'scale(0, -1)'})),
         style({transform: 'scale(0, 1)'}),

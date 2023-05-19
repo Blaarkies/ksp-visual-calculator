@@ -68,9 +68,9 @@ declare global {
 
     random(this: Array<T>): T;
 
-    compare(this: Array<T>, other: Array<T>): boolean;
+    equal(this: Array<T>, other: Array<T>): boolean;
 
-    sum(this: Array<number>): number;
+    sum(this: Array<number | any>, selector?: (item: any) => number): number;
 
     add(this: Array<T>, fresh: T): Array<T>;
 
@@ -79,7 +79,7 @@ declare global {
     /** Removes stale item from array, in-place */
     remove(this: Array<T>, stale: T): Array<T>;
 
-    flatMap(this: Array<T>, selectorCallback?: (item: T) => T): Array<any>;
+    flatMap<U = T>(this: Array<T>, selectorCallback?: (item: T) => U): U;
 
     distinct(this: Array<T>, indexCallback?: (parentItem: T, list: Array<T>) => number): Array<T>;
 

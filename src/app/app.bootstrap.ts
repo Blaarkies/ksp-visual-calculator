@@ -1,3 +1,7 @@
+import {
+  FullscreenOverlayContainer,
+  OverlayContainer,
+} from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import {
@@ -50,5 +54,6 @@ export const appOptions: ApplicationConfig = {
         showDelay: 700,
       },
     },
+    {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
   ],
 };

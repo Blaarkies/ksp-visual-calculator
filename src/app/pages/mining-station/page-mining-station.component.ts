@@ -12,7 +12,7 @@ import {
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { WithDestroy } from '../../common/with-destroy';
-import { InputSectionedListComponent } from '../../components/controls/input-tree-list/input-sectioned-list.component';
+import { InputSectionSelectionListComponent } from '../../components/controls/input-section-selection-list/input-section-selection-list.component';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
 import { AuthService } from '../../services/auth.service';
@@ -36,7 +36,7 @@ import { MiningBaseService } from './services/mining-base.service';
         CraftPartStatisticsComponent,
         MiningBaseControlComponent,
         IsruWarningsComponent,
-        InputSectionedListComponent,
+        InputSectionSelectionListComponent,
     ],
   providers: [
     HudService,

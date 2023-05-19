@@ -1,0 +1,73 @@
+<div cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <ng-container *ngTemplateOutlet="inputTemplate"></ng-container>
+</div>
+
+<ng-template #inputTemplate>
+  <mat-form-field appearance="outline">
+    <mat-label *ngIf="label">{{label}}</mat-label>
+    <input
+      matInput
+      #input
+      type="text"
+      [formControl]="controlSearch"
+    />
+    <button
+      *ngIf="clearable || isOpenHandsetOverlay"
+      @fade
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="controlSearch.setValue('')">
+      <mat-icon [svgIcon]="icons.Backspace"></mat-icon>
+    </button>
+    <mat-hint
+      *ngIf="!isOpenHandsetOverlay && hint && controlSearch.value?.length < 3"
+      align="start"
+      class="text mute"
+    >
+      {{hint}}
+    </mat-hint>
+  </mat-form-field>
+</ng-template>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayPositions]="positionLeftCenter"
+  [cdkConnectedOverlayOpen]="isOpenOverlay"
+  (overlayOutsideClick)="close($event)"
+>
+  <div class="desktop-layout"
+       [@height]="isOpenDesktop"
+       (@height.done)="closeOverlay($event)">
+    <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #handset>
+  <div
+    class="handset-layout"
+    [@height]="isOpenHandsetOverlay"
+    (@height.done)="handsetAnimationDone$.next()"
+  >
+    <div class="search-header-container">
+      <button mat-icon-button (click)="disposeOverlay()">
+        <mat-icon [svgIcon]="icons.NavigateBack"></mat-icon>
+      </button>
+      <ng-container *ngTemplateOutlet="inputTemplate"></ng-container>
+    </div>
+
+    <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #listTemplate>
+  <cp-selection-list
+    (selectItem)="userInputChange($event)"
+    [minWidthPx]="minWidthPx"
+    [filtered]="filtered$ | async"
+    [sections]="sections"
+  ></cp-selection-list>
+</ng-template>
+
+

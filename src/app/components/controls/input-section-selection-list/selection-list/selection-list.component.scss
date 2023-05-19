@@ -1,0 +1,14 @@
+@use '../../../../../styles/variables' as queries;
+
+.list-menu {
+  background-color: var(--color-background-card);
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 4px;
+
+  @media screen and (max-width: queries.$query-mobile-width) {
+    max-height: unset;
+    border-radius: unset;
+  }
+}

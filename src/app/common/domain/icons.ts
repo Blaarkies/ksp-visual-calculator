@@ -16,6 +16,7 @@ export class Icons {
   static Add = 'plus';
   static Share = 'share-variant';
   static AddMapMarker = 'map-marker-plus';
+  static NavigateBack = 'arrow-left';
   static ChevronLeft = 'chevron-left';
   static ChevronDown = 'chevron-down';
   static ChevronUp = 'chevron-up';

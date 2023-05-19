@@ -213,7 +213,7 @@ export abstract class AbstractBaseStateService {
 
     if (this.hasPendingChanges) {
       let snackbarResult$ = this.snackBar
-        .open(`Latest savegame found, discard current changes and load "${newestState?.name}"?`,
+        .open(`Latest save games found, discard current changes and load "${newestState?.name}"?`,
           'Discard Changes', {duration: 15e3})
         .afterDismissed();
       let {dismissedByAction} = await firstValueFrom(snackbarResult$);
