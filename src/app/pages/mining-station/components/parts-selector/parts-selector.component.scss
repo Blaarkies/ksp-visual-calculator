@@ -1,8 +1,7 @@
-@use "src/styles/variables";
 @use 'src/styles/common';
 
 :host {
-  @extend .widget-details;
+  @extend .titled-form;
 }
 
 .parts-listed {
@@ -12,7 +11,7 @@
   align-items: center;
   margin-bottom: 16px;
 
-  cp-input-select {
+  >:first-child {
     grid-column: 1/-1;
   }
 

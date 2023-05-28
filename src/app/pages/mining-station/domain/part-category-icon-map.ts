@@ -1,7 +1,7 @@
 import { Icons } from '../../../common/domain/icons';
 import { PartCategory } from './part-category';
 
-export let categoryIconMap = new Map<PartCategory, string>([
+export let categoryIconMap = new Map<string, string>([
   ['isru', Icons.Converter],
   ['drill', Icons.Harvester],
   ['radiator', Icons.Radiator],

@@ -82,9 +82,8 @@
   }
 }
 
-.widget-details {
-  display: grid;
-  justify-content: start;
+.titled-form {
+  display: flex;
+  flex-direction: column;
   gap: 1em;
-  align-content: start;
 }

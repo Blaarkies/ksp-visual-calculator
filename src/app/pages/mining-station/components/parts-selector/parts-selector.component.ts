@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 import {
   BehaviorSubject,
   combineLatest,
-  combineLatestWith,
   distinctUntilChanged,
   map,
   mergeAll,
@@ -22,14 +21,17 @@ import {
   shareReplay,
   Subject,
   takeUntil,
+  tap,
+  withLatestFrom,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
 import { Group } from '../../../../common/domain/group';
 import { Icons } from '../../../../common/domain/icons';
 import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
-import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
+import { Option } from '../../../../components/controls/input-section-selection-list/domain/option';
+import { InputSectionSelectionListComponent } from '../../../../components/controls/input-section-selection-list/input-section-selection-list.component';
 import { InputSelectComponent } from '../../../../components/controls/input-select/input-select.component';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
 import { ControlItem } from '../../domain/control-item';
@@ -42,11 +44,12 @@ import { MiningBaseService } from '../../services/mining-base.service';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    InputSelectComponent,
-    InputNumberComponent,
     MatIconModule,
     MatButtonModule,
+    ReactiveFormsModule,
+
+    InputSectionSelectionListComponent,
+    InputNumberComponent,
   ],
   templateUrl: './parts-selector.component.html',
   styleUrls: ['./parts-selector.component.scss'],
@@ -57,13 +60,12 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
   @Input() title = 'Parts';
 
   controlEntities$ = new BehaviorSubject<ControlItem<CraftPart, number>[]>([]);
-
-  filteredPartOptions$: Observable<LabeledOption<CraftPart>[]>;
-  partIcons$: Observable<Map<CraftPart, string>>;
-
-  controlAddPart: FormControl<CraftPart>;
   defaultControlMeta = new ControlMetaNumber(0.499, 100, 3, 'x');
   icons = Icons;
+
+  parts$: Observable<Option<CraftPart>[]>;
+  sectionIcons$: Observable<Map<string, string>>;
+  controlSelectedParts = new FormControl([], {});
 
   private stopControls$ = new Subject<void>();
 
@@ -72,52 +74,58 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
     super();
 
     let miningParts$ = this.cacheService.miningParts$;
-    let allPartOptions$ = miningParts$.pipe(
-      map(parts => parts.map(p => new LabeledOption<CraftPart>(p.label, p))),
+    let partsOptions$: Observable<Option<CraftPart>[]> = miningParts$.pipe(
+      map(parts => parts.map(p => ({
+        label: p.label,
+        value: p,
+        searches: [p.category],
+        section: p.category,
+      }))),
       shareReplay(1));
 
-    this.filteredPartOptions$ = allPartOptions$.pipe(
-      combineLatestWith(this.controlEntities$),
-      map(([parts, controlEntities]) => {
-        let selectedList = controlEntities.map(cp => cp.value);
-        return controlEntities.length
-          ? parts.filter(p => !selectedList.includes(p.value))
-          : parts;
-      }),
-      distinctUntilChanged((a, b) => a.some((value, i) => value === b[i])));
+    this.parts$ = partsOptions$;
+    this.sectionIcons$ = partsOptions$.pipe(
+      map(parts => new Map<string, string>(
+        parts.map(p => [p.section, categoryIconMap.get(p.section)]),
+      )));
 
-    this.partIcons$ = miningParts$.pipe(
-      map(parts => new Map<CraftPart, string>(
-        parts.map(p => [p, categoryIconMap.get(p.category)]))),
-      shareReplay(1));
-
-    this.controlAddPart = new FormControl<CraftPart>(null);
-    this.controlAddPart.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(part => {
-        this.createPartControlEntries([new Group(part, 1)]);
-        this.controlAddPart.reset(null, {emitEvent: false});
-      });
+    let serverUpdatesControl$ = this.miningBaseService.craftPartTypes$
+      .pipe(
+        distinctUntilChanged((a, b) => a.equal(b)),
+        withLatestFrom(partsOptions$),
+        distinctUntilChanged(([, a], [, b]) => a.equal(b)),
+        tap(([groups, option]) => {
+          let selection = groups.map(g => g.item);
+          let options = selection.map(s => option.find(o => o.value === s));
+          if (options.equal(this.controlSelectedParts.value)) {
+            return;
+          }
+          this.controlSelectedParts.setValue(options);
+        }),
+        map(([groups]) => groups),
+      );
 
     combineLatest([
-      this.filteredPartOptions$,
-      this.miningBaseService.craftPartTypes$,
+      this.controlSelectedParts.valueChanges,
+      serverUpdatesControl$,
     ]).pipe(
-      map(([options, selected]) => this.getPartsMatches(selected, options)),
+      distinctUntilChanged(([a1, b1], [a2, b2]) => a1.equal(a2) && b1.equal(b2)),
+      map(([inputSelection, selectedGroups]) =>
+        this.getPartsMatches(inputSelection, selectedGroups)),
       takeUntil(this.destroy$))
       .subscribe(partGroups => {
         this.clearControlListeners();
-        this.createPartControlEntries(partGroups, {emit: false});
+        this.createPartControlEntries(partGroups, {emit: true});
       });
   }
 
-  private getPartsMatches(selected, options): Group<CraftPart>[] {
-    return selected
-      .map(s => {
-        let matchItem = options.find(o => o.value.label === s.item.label)?.value;
-        return new Group(matchItem, s.count);
-      })
-      .filter(g => g.item);
+  private getPartsMatches(inputSelection: Option<CraftPart>[], selectedGroups: Group<CraftPart>[])
+    : Group<CraftPart>[] {
+    let groups = inputSelection.map(s => {
+      let match = selectedGroups.find(g => g.item === s.value);
+      return match ?? new Group(s.value, 1);
+    });
+    return groups;
   }
 
   private createPartControlEntries(list: Group<CraftPart>[], {emit} = {emit: true}) {

@@ -1,12 +1,12 @@
 <div class="text subtitle">{{title}}</div>
 
 <div class="parts-listed">
-  <cp-input-select
+  <cp-input-section-selection-list
     label="Add Part"
-    [formControl]="controlAddPart"
-    [mapIcons]="partIcons$ | async"
-    [options]="filteredPartOptions$ | async"
-  ></cp-input-select>
+    [formControl]="controlSelectedParts"
+    [options]="parts$ | async"
+    [sectionIcons]="sectionIcons$ | async"
+    ></cp-input-section-selection-list>
 
   <ng-container *ngIf="controlEntities$ | async as controlItems">
 

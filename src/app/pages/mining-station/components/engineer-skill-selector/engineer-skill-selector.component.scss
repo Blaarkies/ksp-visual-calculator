@@ -1,7 +1,7 @@
 @use 'src/styles/common';
 
 :host {
-  @extend .widget-details;
+  @extend .titled-form;
 }
 
 .skill-selector-layout {
