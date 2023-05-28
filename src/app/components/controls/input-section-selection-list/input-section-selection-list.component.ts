@@ -70,7 +70,13 @@ import { SelectionListComponent } from './selection-list/selection-list.componen
   ],
   templateUrl: './input-section-selection-list.component.html',
   styleUrls: ['./input-section-selection-list.component.scss'],
-  animations: [BasicAnimations.height, BasicAnimations.flipVertical, BasicAnimations.fade],
+  animations: [
+    BasicAnimations.width,
+    BasicAnimations.height,
+    BasicAnimations.flipVertical,
+    BasicAnimations.fade,
+    BasicAnimations.scaleY,
+  ],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputSectionSelectionListComponent),
@@ -179,10 +185,12 @@ export class InputSectionSelectionListComponent
   }
 
   private checkSelectedItems() {
-    let valueList = this.value?.map(o => o.value);
+    let selectionList = this.value?.map(o => o.value);
     this.itemsList
-      ?.filter(item => valueList?.includes(item.value))
-      ?.forEach(item => item.checked = true);
+      ?.forEach(item => {
+        let isSelectedItem = selectionList?.includes(item.value);
+        item.checked = isSelectedItem;
+      });
   }
 
   registerOnChange(fn: (value: Option[]) => Option[]) {

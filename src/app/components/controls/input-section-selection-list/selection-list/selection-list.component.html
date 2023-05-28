@@ -1,8 +1,10 @@
-<mat-list class="list-menu" [style.min-width.px]="minWidthPx">
+<mat-list class="list-menu mat-elevation-z12" [style.min-width.px]="minWidthPx">
+
   <cp-list-options-or-empty
     [list]="filtered"
     (selectItem)="selectItem.emit($event)"
   ></cp-list-options-or-empty>
+
   <cp-sectioned-list
     [visible]="filtered === null"
     [sections]="sections"

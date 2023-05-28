@@ -6,7 +6,9 @@
 }
 
 .isru-layout {
-  margin-top: 1em;
+  background-color: var(--color-background-card);
+  color: var(--color-text);
+  padding: 1em 2em;
 
   display: grid;
   gap: 1em;

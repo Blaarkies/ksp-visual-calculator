@@ -20,6 +20,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   BehaviorSubject,
   debounceTime,
+  distinctUntilChanged,
   filter,
   finalize,
   firstValueFrom,
@@ -32,6 +33,8 @@ import { BasicAnimations } from '../../../animations/basic-animations';
 import { Icons } from '../../../common/domain/icons';
 import { GlobalStyleClass } from '../../../common/global-style-class';
 import { WithDestroy } from '../../../common/with-destroy';
+import { AnalyticsDialogComponent } from '../../../overlays/analytics-dialog/analytics-dialog.component';
+import { BuyMeACoffeeDialogComponent } from '../../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import {
   UploadImageDialogComponent,
   UploadImageDialogData,
@@ -40,7 +43,12 @@ import { AnalyticsService } from '../../../services/analytics.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserData } from '../../../services/data.service';
 import { EventLogs } from '../../../services/domain/event-logs';
+import {
+  ThemeService,
+  ThemeTypeEnum,
+} from '../../../services/theme.service';
 import { InputFieldComponent } from '../../controls/input-field/input-field.component';
+import { InputToggleComponent } from '../../controls/input-toggle/input-toggle.component';
 import { AccountSignUpComponent } from '../sign-up/account-sign-up.component';
 
 @Component({
@@ -54,7 +62,9 @@ import { AccountSignUpComponent } from '../sign-up/account-sign-up.component';
     MatRippleModule,
     MatMenuModule,
     ReactiveFormsModule,
+
     InputFieldComponent,
+    InputToggleComponent,
     AccountSignUpComponent,
   ],
   templateUrl: './account-details.component.html',
@@ -70,11 +80,30 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   user$ = this.authService.user$;
   icons = Icons;
 
+  controlTheme = new FormControl(this.themeService.theme === ThemeTypeEnum.Light, {});
+  controlAnalytics = new FormControl(this.analyticsService.isTracking, {});
+
   constructor(private snackBar: MatSnackBar,
               private authService: AuthService,
               private analyticsService: AnalyticsService,
+              private themeService: ThemeService,
               private dialog: MatDialog) {
     super();
+
+    themeService.isLightTheme$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(v => this.controlTheme.setValue(v, {emitEvent: false}));
+    this.controlTheme.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.destroy$))
+      .subscribe(() => this.themeService.toggleTheme());
+
+    this.controlAnalytics.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.destroy$))
+      .subscribe(track => this.analyticsService.setActive(track));
 
     this.user$
       .pipe(takeUntil(this.destroy$))
@@ -92,6 +121,16 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
         }),
         takeUntil(this.destroy$))
       .subscribe();
+  }
+
+  openBmacDialog() {
+    this.dialog.closeAll();
+    this.dialog.open(BuyMeACoffeeDialogComponent);
+  }
+
+  openAnalyticsDialog() {
+    this.dialog.closeAll();
+    this.dialog.open(AnalyticsDialogComponent);
   }
 
   async actionSignOut() {

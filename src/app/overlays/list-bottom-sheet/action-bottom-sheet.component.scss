@@ -1,12 +1,14 @@
+@use '../../../styles/text';
+
 .bottom-sheet-title {
-  margin: 12px 12px 0;
-  font-size: 1.2em;
+  @extend .text;
+  @extend .subtitle;
+  margin-top: 12px;
+  margin-left: 12px;
   font-weight: 500;
 }
 
 .bottom-sheet-panel {
-  padding: 0;
-
   &.green {
     --background-color: var(--color-background-panel-green);
   }
@@ -22,5 +24,11 @@
   mat-bottom-sheet-container {
     background: var(--background-color) !important;
     color: white !important;
+
+    @media screen and (orientation: landscape) {
+      min-width: 400px;
+    }
   }
+
+  // TODO: Only 4 items are displayed in landscape orientation. Touch devices cannot scroll this list.
 }

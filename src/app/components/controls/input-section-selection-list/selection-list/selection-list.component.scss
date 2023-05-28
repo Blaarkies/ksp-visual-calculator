@@ -1,6 +1,7 @@
 @use '../../../../../styles/variables' as queries;
 
 .list-menu {
+  border: 1px solid rgb(var(--color-rgb-border-simple), .5);
   background-color: var(--color-background-card);
   padding: 0;
   max-height: 400px;

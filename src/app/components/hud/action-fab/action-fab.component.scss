@@ -1,30 +1,8 @@
 .animate-badge {
-  z-index: -1;
-  animation: kf-animate-opacity-wobble 4s linear infinite forwards;
-}
-
-@keyframes kf-animate-opacity-wobble {
-  0% {
-    opacity: 0
-  }
-  25% {
-    opacity: 1
-  }
-  45% {
-    opacity: 1
-  }
-  50% {
-    opacity: .5
-  }
-  60% {
-    opacity: 1
-  }
-  90% {
-    opacity: 1
-  }
-  100% {
-    opacity: 0
-  }
+  --animate-opacity-wobble-0: .2;
+  --animate-opacity-wobble-1: 1;
+  animation: kf-animate-opacity-wobble 2s infinite alternate forwards;
+  animation-timing-function: var(--timing-function-cubic-out);
 }
 
 button {
@@ -43,4 +21,12 @@ button {
 
 .orange {
   background-color: var(--color-background-panel-orange) !important;
+}
+
+.unread-item {
+  z-index: -1;
+
+  > span {
+    margin: 12px 2px 0 0;
+  }
 }

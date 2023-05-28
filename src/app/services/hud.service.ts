@@ -83,18 +83,6 @@ export class HudService {
   ];
 
   infoOptions: ActionOption[] = [
-    new ActionOption('Analytics', Icons.Analytics, {
-        action: () => {
-          this.analyticsService.logEvent('Call analytics dialog', {
-            category: EventLogs.Category.Privacy,
-          });
-
-          this.dialog.open(AnalyticsDialogComponent);
-        },
-      },
-      undefined,
-      !localStorage.getItem(storageKeys.analyticsViewed),
-      () => localStorage.setItem(storageKeys.analyticsViewed, true.toString())),
     new ActionOption('Credits', Icons.Credits, {
       action: () => {
         this.analyticsService.logEvent('Call Credits dialog', {

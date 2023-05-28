@@ -1,15 +1,29 @@
-<div class="panel-layout frosted-glass">
+<div class="panel-layout frosted-glass" [@openCloseX]="isOpen" [@openCloseY]="isOpen">
   <div class="panel-header">
-    <div class="text-white">Mission Checkpoints</div>
-    <button mat-icon-button
+    <button class="button-with-icon" mat-button (click)="isOpen =! isOpen">
+      <div>
+        <mat-icon
+          [svgIcon]="icons.CollapseRight"
+          color="muted"
+          [@flipHorizontal]="!isOpen"
+        ></mat-icon>
+      </div>
+    </button>
+
+    <div class="text-white">Mission</div>
+
+    <button mat-button
+            class="button-with-icon"
             [matTooltip]="'Preferences'"
             matTooltipPosition="left"
             (click)="toggleOptions()">
-      <mat-icon [svgIcon]="icons.Configure"></mat-icon>
+      <div>
+        <mat-icon color="muted" [svgIcon]="icons.Configure"></mat-icon>
+      </div>
     </button>
   </div>
 
-  <div [@expandY]="isOptionsOpen" class="options text-white">
+  <div [@expandY]="isOptionsOpen && isOpen" class="options text-white">
     <div class="text-white">Preferences</div>
 
     <div class="error-margin-control">
@@ -85,13 +99,13 @@
   </div>
 
   <cp-msp-list-manager #list
-               [checkpoints]="checkpoints$ | async"
-               [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
-               (add)="addCheckpoint(list.isAddingCheckpoint)"
-               (checkpointMode)="setCheckpointMode($event)"
-               (resetAll)="resetMission()"
-               (removeNode)="removeCheckpoint($event)"
-               (updateNode)="updateCheckpoint($event)"
-               (updateAll)="updateMission($event)">
+                       [checkpoints]="checkpoints$ | async"
+                       [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
+                       (add)="addCheckpoint(list.isAddingCheckpoint)"
+                       (checkpointMode)="setCheckpointMode($event)"
+                       (resetAll)="resetMission()"
+                       (removeNode)="removeCheckpoint($event)"
+                       (updateNode)="updateCheckpoint($event)"
+                       (updateAll)="updateMission($event)">
   </cp-msp-list-manager>
 </div>

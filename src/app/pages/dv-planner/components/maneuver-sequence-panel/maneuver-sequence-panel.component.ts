@@ -19,6 +19,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
+import { ConfigurableAnimations } from '../../../../animations/configurable-animations';
 import { CheckpointPreferences } from '../../../../common/domain/checkpoint-preferences';
 import { Icons } from '../../../../common/domain/icons';
 import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
@@ -51,12 +52,18 @@ import { MspListManagerComponent } from '../msp-manager/msp-list-manager.compone
   ],
   templateUrl: './maneuver-sequence-panel.component.html',
   styleUrls: ['./maneuver-sequence-panel.component.scss'],
-  animations: [BasicAnimations.expandY],
+  animations: [
+    BasicAnimations.expandY,
+    ConfigurableAnimations.openCloseX(28),
+    ConfigurableAnimations.openCloseY(28),
+    BasicAnimations.flipHorizontal,
+  ],
 })
 export class ManeuverSequencePanelComponent extends WithDestroy() {
 
   checkpoints$ = this.travelService.checkpoints$.stream$;
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
+  isOpen = true;
   isOptionsOpen = false;
   icons = Icons;
   conditionReadableMap = PathDetailsReader.conditionMap;

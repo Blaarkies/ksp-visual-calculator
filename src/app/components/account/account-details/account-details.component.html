@@ -22,9 +22,42 @@
             <div>Email</div>
             <div>{{user.email}}</div>
           </div>
+
           <div>
             <div>Account Type</div>
-            <div>{{user.isCustomer ? 'Premium' : 'Free'}}</div>
+            <div>
+              <span>{{user.isCustomer ? 'Premium' : 'Free'}}</span>
+              <button
+                *ngIf="!user.isCustomer"
+                class="bmac-button"
+                mat-button
+                (click)="openBmacDialog()"
+              >
+                <div class="text-button">
+                  <div class="text primary">Go Premium</div>
+                  <div>
+                    <mat-icon color="primary" [svgIcon]="icons.External"></mat-icon>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="space-for-toggle">Light Theme</div>
+            <cp-input-toggle [formControl]="controlTheme" type="switch"></cp-input-toggle>
+          </div>
+
+          <div>
+            <div class="space-for-toggle">Analytics</div>
+            <div class="analytics-info-section">
+              <cp-input-toggle [formControl]="controlAnalytics" type="switch"></cp-input-toggle>
+              <button mat-button (click)="openAnalyticsDialog()">
+                <div>
+                  <mat-icon color="muted" [svgIcon]="icons.Info"></mat-icon>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 

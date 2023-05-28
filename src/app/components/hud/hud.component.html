@@ -1,14 +1,14 @@
-<div *ngIf="isHandset$ | async; else desktopScreen"
-     class="handset-layout">
+<div *ngIf="isHandset$ | async; else desktop" class="handset-layout">
 
-  <ng-container *ngTemplateOutlet="pageIcon"></ng-container>
-  <ng-container *ngTemplateOutlet="pageContext"></ng-container>
-  <ng-container *ngTemplateOutlet="profile"></ng-container>
+  <div class="page-profile-section">
+    <ng-container *ngTemplateOutlet="pageIcon"></ng-container>
+    <ng-container *ngTemplateOutlet="profile"></ng-container>
+  </div>
   <ng-container *ngTemplateOutlet="top"></ng-container>
   <ng-container *ngTemplateOutlet="left"></ng-container>
   <ng-container *ngTemplateOutlet="right"></ng-container>
 
-  <div class="fab-buttons">
+  <div class="fab-buttons requires-pointer">
     <cp-action-fab color="green"
                    tooltip="General"
                    [icon]="icons.Home"
@@ -35,8 +35,8 @@
   </div>
 </div>
 
-<ng-template #desktopScreen>
-  <div class="hud-layout">
+<ng-template #desktop>
+  <div class="desktop-layout">
     <ng-container *ngTemplateOutlet="left"></ng-container>
     <ng-container *ngTemplateOutlet="right"></ng-container>
     <ng-container *ngTemplateOutlet="top"></ng-container>
@@ -50,7 +50,7 @@
     </cp-action-panel>
 
     <cp-action-panel class="top-right requires-pointer"
-                     label="Information"
+                     label="Account"
                      location="top-right"
                      color="cosmic-blue"
                      [options]="infoOptions">
@@ -71,38 +71,14 @@
 </ng-template>
 
 <ng-template #profile>
-  <cp-user-profile class="profile"></cp-user-profile>
+  <cp-user-profile></cp-user-profile>
 </ng-template>
 
 <ng-template #pageIcon>
-  <div class="page-icon">
-    <mat-icon [matTooltip]="tooltip"
-              color="mute"
-              [svgIcon]="icon"></mat-icon>
-  </div>
+  <mat-icon [matTooltip]="tooltip"
+            color="white"
+            [svgIcon]="icon"></mat-icon>
 </ng-template>
-
-<ng-template #pageContext>
-  <div class="page-context">
-    <button class="theme-icon"
-            mat-icon-button
-            [matTooltip]="'Toggle theme'"
-            (click)="toggleTheme()">
-      <mat-icon [svgIcon]="themeIconMap[lastTheme]"></mat-icon>
-    </button>
-
-    <button *ngIf="hasBoughtCoffee$ | async | not"
-            [@fade]
-            class="buy-me-a-coffee"
-            mat-icon-button
-            [matTooltip]="'Support the developer'"
-            (click)="openBuyMeACoffee()">
-      <mat-icon [svgIcon]="icons.Gift"></mat-icon>
-      <span matBadge="!" matBadgeColor="warn"></span>
-    </button>
-  </div>
-</ng-template>
-
 
 <ng-template #top>
   <div class="top">

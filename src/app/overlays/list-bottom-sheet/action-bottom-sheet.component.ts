@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Inject,
@@ -19,7 +20,7 @@ export class ActionBottomSheetData {
 @Component({
   selector: 'cp-action-bottom-sheet',
   standalone: true,
-  imports: [ActionListComponent],
+  imports: [CommonModule, ActionListComponent],
   templateUrl: './action-bottom-sheet.component.html',
   styleUrls: ['./action-bottom-sheet.component.scss'],
   encapsulation: ViewEncapsulation.None,

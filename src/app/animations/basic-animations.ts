@@ -51,15 +51,15 @@ export class BasicAnimations {
 
   static flipHorizontal = trigger('flipHorizontal', [
     state('void, false', style({transform: 'scale(1, 1)'})),
-    state('null, true', style({transform: 'scale(-1, 1)'})),
-    transition(':enter, * => true', [
+    state('true', style({transform: 'scale(-1, 1)'})),
+    transition('* => true', [
       sequence([
         animate('.1s ease-in', style({transform: 'scale(1, 0)'})),
         style({transform: 'scale(-1, 0)'}),
         animate('.1s ease-in', style({transform: 'scale(-1, 1)'})),
       ]),
     ]),
-    transition(':leave, * => false', [
+    transition('* => false', [
       sequence([
         animate('.1s ease-in', style({transform: 'scale(-1, 0)'})),
         style({transform: 'scale(1, 0)'}),

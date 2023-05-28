@@ -1,3 +1,16 @@
+.button-with-icon {
+  min-width: auto;
+  min-height: auto;
+  height: max-content;
+  padding: 4px;
+  border-radius: 50px;
+
+  div {
+    align-items: center;
+    display: flex;
+  }
+}
+
 .panel-layout {
   background-color: #6662;
   padding: 8px;
@@ -11,8 +24,12 @@
 
   .panel-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
+
+    >:last-child {
+     margin-left: auto;
+    }
   }
 
   .options {

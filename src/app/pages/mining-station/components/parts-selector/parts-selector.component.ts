@@ -14,6 +14,7 @@ import {
   BehaviorSubject,
   combineLatest,
   distinctUntilChanged,
+  filter,
   map,
   mergeAll,
   mergeMap,
@@ -91,9 +92,13 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
 
     let serverUpdatesControl$ = this.miningBaseService.craftPartTypes$
       .pipe(
-        distinctUntilChanged((a, b) => a.equal(b)),
+        filter(groups => {
+          let selectedIds = this.controlSelectedParts.value.map(p => p.label);
+          let serverIds = groups.map(g => g.item.label);
+          let isUnchanged = selectedIds.equal(serverIds);
+          return !isUnchanged;
+        }),
         withLatestFrom(partsOptions$),
-        distinctUntilChanged(([, a], [, b]) => a.equal(b)),
         tap(([groups, option]) => {
           let selection = groups.map(g => g.item);
           let options = selection.map(s => option.find(o => o.value === s));
@@ -181,7 +186,8 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
   }
 
   private eventUpdate() {
-    let newGroupList = this.controlEntities$.value
+    let newGroupList = this.controlEntities$
+      .value
       .map(ce => new Group(ce.value, ce.control.value));
     this.miningBaseService.updatePartList(newGroupList);
   }

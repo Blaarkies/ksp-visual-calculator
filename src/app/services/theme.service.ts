@@ -1,19 +1,18 @@
-import { Injectable } from '@angular/core';
-import { EventLogs } from './domain/event-logs';
-import { AnalyticsService } from './analytics.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  BehaviorSubject,
+  map,
+  Observable,
+  Subject,
+} from 'rxjs';
+import { AnalyticsService } from './analytics.service';
+import { EventLogs } from './domain/event-logs';
 
 export enum ThemeTypeEnum {
   Light = 'light-theme',
   Dark = 'dark-theme',
-}
-
-let userThemePreferenceKey = 'ksp-visual-calculator-user-theme-preference';
-
-let themeToggleMap = {
-  [ThemeTypeEnum.Light]: ThemeTypeEnum.Dark,
-  [ThemeTypeEnum.Dark]: ThemeTypeEnum.Light,
 }
 
 enum ThemeOrigin {
@@ -21,19 +20,41 @@ enum ThemeOrigin {
   BrowserPreference,
 }
 
-const themes: string[] = Object.values(ThemeTypeEnum);
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
 
-  private theme: ThemeTypeEnum;
+  get theme(): ThemeTypeEnum {
+    return this._selectedTheme;
+  }
+
+  private set theme(value: ThemeTypeEnum) {
+    this._selectedTheme = value;
+    this.theme$.next(value);
+  }
+
+  themeLabel$: Observable<string>;
+  theme$ = new BehaviorSubject<ThemeTypeEnum>(this.theme);
+  isLightTheme$ = this.theme$.pipe(map(t => t === ThemeTypeEnum.Light));
+
+  private _selectedTheme: ThemeTypeEnum;
   private readonly themeOriginMessage: string;
 
-  get currentTheme(): ThemeTypeEnum {
-    return this.theme;
-  }
+  private userThemePreferenceKey = 'ksp-visual-calculator-user-theme-preference';
+
+  private themeToggleMap = {
+    [ThemeTypeEnum.Light]: ThemeTypeEnum.Dark,
+    [ThemeTypeEnum.Dark]: ThemeTypeEnum.Light,
+  };
+
+  private themeLabelMap = {
+    [ThemeTypeEnum.Light]: 'Light',
+    [ThemeTypeEnum.Dark]: 'Dark',
+  };
+
+  private themes: string[] = Object.values(ThemeTypeEnum);
+
 
   constructor(private analyticsService: AnalyticsService,
               private overlayContainer: OverlayContainer,
@@ -52,11 +73,13 @@ export class ThemeService {
       default:
         this.themeOriginMessage = `Applied theme selection [${theme}] found from unknown source.`;
     }
+
+    this.themeLabel$ = this.theme$.pipe(map(t => this.themeLabelMap[t]));
   }
 
   private detectThemePreference() {
-    let localPreference = localStorage.getItem(userThemePreferenceKey);
-    if (localPreference && themes.includes(localPreference)) {
+    let localPreference = localStorage.getItem(this.userThemePreferenceKey);
+    if (localPreference && this.themes.includes(localPreference)) {
       this.theme = localPreference as ThemeTypeEnum;
       return {theme: this.theme, origin: ThemeOrigin.LocalStorage};
     }
@@ -79,7 +102,7 @@ export class ThemeService {
     this.setThemeOnElement(document.body, theme);
     this.setThemeOnElement(this.overlayContainer.getContainerElement(), theme);
 
-    localStorage.setItem(userThemePreferenceKey, theme);
+    localStorage.setItem(this.userThemePreferenceKey, theme);
     this.theme = theme;
   }
 
@@ -87,14 +110,14 @@ export class ThemeService {
     let classList = element.classList;
 
     Array.from(classList)
-      .filter(c => themes.includes(c))
+      .filter(c => this.themes.includes(c))
       .forEach(c => classList.remove(c));
 
     classList.add(theme);
   }
 
   toggleTheme(): ThemeTypeEnum {
-    let newTheme = themeToggleMap[this.theme];
+    let newTheme = this.themeToggleMap[this.theme];
     this.setNewTheme(newTheme);
     this.snackBar.open(`${newTheme === ThemeTypeEnum.Dark ? 'Dark theme' : 'Light theme'} is now selected`,
       null, {duration: 5e3});

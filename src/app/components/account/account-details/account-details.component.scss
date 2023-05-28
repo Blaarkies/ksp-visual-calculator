@@ -33,9 +33,9 @@
     .premium-sash {
       background-color: var(--color-background-panel-green-opaque);
       box-shadow: 0 0 1px 1px white;
-      height: 20px;
+      height: 16px;
       width: max-content;
-      padding: 0 40px;
+      padding: 2px 40px 0 40px;
       color: white;
 
       transform: translate(-30%, 100%) rotate(-45deg);
@@ -62,11 +62,42 @@
           margin-left: auto;
         }
       }
+
+      .bmac-button {
+        margin-left: 1ch;
+
+        .text-button {
+          display: flex;
+          align-items: center;
+        }
+
+        mat-icon {
+          height: 20px;
+        }
+      }
+
+      .analytics-info-section {
+        display: flex;
+        align-items: center;
+        gap: 1ch;
+
+        button {
+          border-radius: 50px;
+          min-height: unset;
+          min-width: unset;
+          padding: 4px;
+        }
+      }
+
+      .space-for-toggle {
+        margin-bottom: 2px;
+      }
     }
 
     .action-details {
       min-width: max-content;
       margin-top: 10px;
+      margin-left: auto;
       border-radius: 50px;
       padding: revert;
       padding-top: 4px;

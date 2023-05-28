@@ -11,15 +11,22 @@
       type="text"
       [formControl]="controlSearch"
     />
-    <button
-      *ngIf="clearable || isOpenHandsetOverlay"
-      @fade
-      matSuffix
-      mat-icon-button
-      aria-label="Clear"
-      (click)="controlSearch.setValue('')">
-      <mat-icon [svgIcon]="icons.Backspace"></mat-icon>
-    </button>
+    <div matSuffix class="input-suffix stack">
+      <button
+        *ngIf="clearable || isOpenHandsetOverlay"
+        @width
+        mat-icon-button
+        aria-label="Clear"
+        (click)="controlSearch.setValue('')">
+        <mat-icon [svgIcon]="icons.Backspace" color="muted"></mat-icon>
+      </button>
+      <mat-icon
+        [svgIcon]="icons.ChevronDown"
+        color="muted"
+        class="pointer-clickable padding-right"
+        [@scaleY]="!isOpenDesktop && !isOpenHandsetOverlay"
+      ></mat-icon>
+    </div>
     <mat-hint
       *ngIf="!isOpenHandsetOverlay && hint && controlSearch.value?.length < 3"
       align="start"
