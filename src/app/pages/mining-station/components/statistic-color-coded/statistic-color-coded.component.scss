@@ -20,24 +20,54 @@
     background-color: var(--color-warn);
   }
 
-  .excess-bar {
+  .base-text {
     padding-inline: 1ch;
-    display: flex;
-    justify-content: space-between;
+  }
+}
+
+.table-container {
+  border-radius: 4px;
+  cursor: default;
+
+  table {
+    padding: 4px 8px;
+    color: var(--color-text-white);
+  }
+
+  &.good {
+    background-color: var(--color-primary);
+  }
+
+  &.bad {
+    background-color: var(--color-warn);
+  }
+
+  .tr, td {
+    padding-inline: 4px;
+    text-align: center;
+  }
+
+  .title-label {
+    opacity: .7;
+    justify-self: center;
+  }
+
+  .close-button {
+    @media (hover: hover) {
+      display: none;
+    }
+
+    justify-self: end;
+    min-width: unset;
+    height: auto;
+    padding: unset;
 
     > div {
-      z-index: 1;
+      height: 24px;
     }
+  }
 
-    --padding: 1ch;
-    .details-left {
-      padding-right: var(--padding);
-      opacity: .7;
-    }
-
-    .details-right {
-      padding-left: var(--padding);
-      opacity: .7;
-    }
+  .headers {
+    font-size: 12px;
   }
 }

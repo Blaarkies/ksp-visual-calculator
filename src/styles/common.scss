@@ -71,6 +71,14 @@
 
 .inline-children {
   display: flex;
+
+  &.align-center {
+    align-items: center;
+  }
+
+  &.gap-1 {
+    gap: 1em;
+  }
 }
 
 .dim-until-hover {

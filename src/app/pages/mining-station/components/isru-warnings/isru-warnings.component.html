@@ -1,4 +1,4 @@
-<div  *ngIf="(warnings$ | async) as warnings">
+<div *ngIf="(warnings$ | async) as warnings">
   <div
     @expandY
     *ngFor="let warning of warnings; trackBy: trackLabel"

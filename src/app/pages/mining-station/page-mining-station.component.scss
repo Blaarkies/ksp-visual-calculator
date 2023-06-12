@@ -5,15 +5,27 @@
   @extend .full-page;
 }
 
-.isru-layout {
+.padding-container {
   background-color: var(--color-background-card);
   color: var(--color-text);
-  padding: 1em 2em;
 
+  overflow-y: scroll;
+  > .isru-layout {
+    padding: 60px 16px;
+
+    // mobile
+    @media screen and (max-width: variables.$query-mobile-width) {
+      padding-top: 8px;
+      padding-bottom: 120px;
+    }
+  }
+}
+
+.isru-layout {
   display: grid;
   gap: 1em;
 
-  @media screen and (min-width: variables.$query-mobile-width) {
+  // desktop
     grid-template-columns: auto auto auto;
     grid-template-rows: max-content auto;
     justify-content: center;
@@ -21,6 +33,15 @@
     > div.text {
       grid-column: 1/-1;
     }
+  // tablet
+  @media screen and (max-width: variables.$query-tablet-width) {
+    grid-template-columns: auto auto;
+  }
+
+  // mobile
+  @media screen and (max-width: variables.$query-mobile-width) {
+    grid-template-columns: unset;
+    grid-template-rows: unset;
   }
 
   .statistics-messages {

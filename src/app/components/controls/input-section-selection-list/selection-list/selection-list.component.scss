@@ -11,5 +11,7 @@
   @media screen and (max-width: queries.$query-mobile-width) {
     max-height: unset;
     border-radius: unset;
+    // Turns element 'fullscreen' to avoid clicking the backdrop
+    min-height: 100vh;
   }
 }

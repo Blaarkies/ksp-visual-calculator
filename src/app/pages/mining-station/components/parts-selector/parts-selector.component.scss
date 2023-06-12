@@ -5,18 +5,15 @@
 }
 
 .parts-listed {
-  display: grid;
-  grid-template-columns: max-content auto max-content;
-  gap: 0 2ch;
-  align-items: center;
-  margin-bottom: 16px;
-
-  >:first-child {
-    grid-column: 1/-1;
-  }
-
   cp-input-number {
     height: 50px;
+  }
+
+  .part-row {
+    display: grid;
+    grid-template-columns: max-content auto max-content;
+    gap: 8px;
+    align-items: center;
   }
 }
 

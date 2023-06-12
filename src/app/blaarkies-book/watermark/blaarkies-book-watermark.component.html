@@ -1,16 +1,16 @@
 <div class="text title" style="
-                          opacity: .2;
+                          color: white;
                           position: absolute;
                           left:50px;
                           bottom: 50px;
                           font-size: 3em;
                           pointer-events: none;">
-  Blaarkies Book
+  <span style="opacity: .2;">Blaarkies Book</span>
   <button mat-button
-          style="pointer-events: all;"
+          style="pointer-events: all; opacity: .4;"
           [matMenuTriggerFor]="menu">
     <div>
-      <mat-icon [svgIcon]="icons.MenuVertical"></mat-icon>
+      <mat-icon [svgIcon]="icons.MenuVertical" color="white"></mat-icon>
     </div>
   </button>
   <mat-menu #menu="matMenu">

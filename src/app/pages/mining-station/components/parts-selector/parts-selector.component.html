@@ -14,25 +14,25 @@
       <ng-container *ngFor="let entry of controlItems;
                    let i = index;
                    trackBy: getEntryLabel">
-        <cp-input-number
-          @expandY
-          class="small-number-width"
-          [label]="null"
-          [formControl]="entry.control"
-          [controlMeta]="defaultControlMeta"
-        ></cp-input-number>
+        <div @expandY class="part-row">
+          <cp-input-number
+            class="small-number-width"
+            [label]="null"
+            [formControl]="entry.control"
+            [controlMeta]="defaultControlMeta"
+          ></cp-input-number>
 
-        <div @expandY>{{entry.value.label}}</div>
+          <div>{{entry.value.label}}</div>
 
-        <button
-          @expandY
-          class="dim-until-hover"
-          mat-icon-button
-          color="warn"
-          (click)="removeControl(entry, i)"
-        >
-          <mat-icon [svgIcon]="icons.Delete"></mat-icon>
-        </button>
+          <button
+            class="dim-until-hover"
+            mat-icon-button
+            color="warn"
+            (click)="removeControl(entry, i)"
+          >
+            <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+          </button>
+        </div>
       </ng-container>
     </ng-container>
 

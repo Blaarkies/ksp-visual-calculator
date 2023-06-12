@@ -1,31 +1,33 @@
-  <div class="list-styling" [@height]="visible">
-    <ng-container *ngFor="let section of sections">
-      <mat-list-item class="header-list-option"
-                     matRipple
-                     (click)="section.toggle()">
-        <div class="section-header">
-          <mat-icon
-            [svgIcon]="icons.ChevronDown"
-            [@flipVertical]="section.expanded"
-          ></mat-icon>
-          <mat-icon
-            *ngIf="section.icon"
-            [svgIcon]="section.icon"
-            color="muted"
-          ></mat-icon>
-          <span>{{section.label.toTitleCase()}}</span>
-          <span class="text caption">{{section.countAvailable}}</span>
-        </div>
-      </mat-list-item>
-
-      <div *ngIf="section.expanded" @height>
-        <cp-selectable-list-item
-          *ngFor="let item of section.options; trackBy: trackByValue"
-          [item]="item"
-          (click)="selectItem.emit(item)"
-        ></cp-selectable-list-item>
+<div class="list-styling" [@height]="visible">
+  <ng-container *ngFor="let section of sections">
+    <mat-list-item
+      class="header-list-option"
+      matRipple
+      (click)="section.toggle()"
+    >
+      <div class="section-header">
+        <mat-icon
+          [svgIcon]="icons.ChevronDown"
+          [@flipVertical]="section.expanded"
+        ></mat-icon>
+        <mat-icon
+          *ngIf="section.icon"
+          [svgIcon]="section.icon"
+          color="muted"
+        ></mat-icon>
+        <span>{{section.label.toTitleCase()}}</span>
+        <span class="text caption">{{section.countAvailable}}</span>
       </div>
-    </ng-container>
+    </mat-list-item>
 
-    <div class="mobile-padding-holder"></div>
-  </div>
+    <div *ngIf="section.expanded" @height>
+      <cp-selectable-list-item
+        *ngFor="let item of section.options; trackBy: trackByValue"
+        [item]="item"
+        (click)="selectItem.emit(item)"
+      ></cp-selectable-list-item>
+    </div>
+  </ng-container>
+
+  <div class="mobile-padding-holder"></div>
+</div>
