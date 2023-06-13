@@ -1,16 +1,5 @@
 @use '../../../../../styles/variables' as queries;
 
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 1ch;
-  width: auto;
-
-  > :last-child {
-    margin-left: auto;
-  }
-}
-
 .list-styling {
   --list-divider-color: #8883;
 
@@ -20,6 +9,17 @@
 
     &:nth-child(n + 2) {
       border-top: 1px solid var(--list-divider-color);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1ch;
+      width: auto;
+
+      > :last-child {
+        margin-left: auto;
+      }
     }
   }
 

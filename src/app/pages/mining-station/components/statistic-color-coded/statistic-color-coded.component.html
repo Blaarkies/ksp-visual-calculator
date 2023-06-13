@@ -18,41 +18,44 @@
   (backdropClick)="clickedToClose()"
   (overlayOutsideClick)="clickedToClose()"
 >
-  <div class="table-container mat-elevation-z12"
-       [ngClass]="isGood ? 'good' : 'bad'"
-       (click)="clickedToClose()"
-       [@width]="isOverlayOpen"
-       (@width.done)="isAnimating = false"
-       [cpMouseHover]="300"
-       (hoverChange)="updateHoverOverlay($event)"
-  >
-    <table>
-      <thead>
-      <tr>
-        <td colspan="3">
-          <div class="stack">
-            <div class="title-label">{{label}}</div>
-            <button mat-button class="close-button" (click)="clickedToClose()">
-              <div>
-                <mat-icon [svgIcon]="icons.Clear" color="white"></mat-icon>
-              </div>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr class="headers">
-        <td>Consumption</td>
-        <td>Excess</td>
-        <td>Production</td>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>{{low}}</td>
-        <td>{{excess}}</td>
-        <td>{{high}}</td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="mat-elevation-z12">
+    <div
+      class="table-container"
+      [ngClass]="isGood ? 'good' : 'bad'"
+      (click)="clickedToClose()"
+      [@width]="isOverlayOpen"
+      (@width.done)="isAnimating = false"
+      [cpMouseHover]="300"
+      (hoverChange)="updateHoverOverlay($event)"
+    >
+      <table>
+        <thead>
+        <tr>
+          <td colspan="3">
+            <div class="stack">
+              <div class="title-label">{{label}}</div>
+              <button mat-button class="close-button" (click)="clickedToClose()">
+                <div>
+                  <mat-icon [svgIcon]="icons.Clear" color="white"></mat-icon>
+                </div>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr class="headers">
+          <td>Consumption</td>
+          <td>Excess</td>
+          <td>Production</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{low}}</td>
+          <td>{{excess}}</td>
+          <td>{{high}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </ng-template>

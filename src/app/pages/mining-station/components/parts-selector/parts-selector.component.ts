@@ -12,18 +12,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {
   BehaviorSubject,
-  combineLatest,
   distinctUntilChanged,
-  filter,
   map,
   mergeAll,
   mergeMap,
   Observable,
   shareReplay,
   Subject,
+  take,
   takeUntil,
-  tap,
-  withLatestFrom,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
 import { Group } from '../../../../common/domain/group';
@@ -33,7 +30,6 @@ import { WithDestroy } from '../../../../common/with-destroy';
 import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
 import { Option } from '../../../../components/controls/input-section-selection-list/domain/option';
 import { InputSectionSelectionListComponent } from '../../../../components/controls/input-section-selection-list/input-section-selection-list.component';
-import { InputSelectComponent } from '../../../../components/controls/input-select/input-select.component';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
 import { ControlItem } from '../../domain/control-item';
 import { CraftPart } from '../../domain/craft-part';
@@ -68,13 +64,15 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
   sectionIcons$: Observable<Map<string, string>>;
   controlSelectedParts = new FormControl([], {});
 
+  private selectedGroups: Group<CraftPart>[];
   private stopControls$ = new Subject<void>();
+  private stopSetupValues$ = new Subject<void>();
 
   constructor(private cacheService: StockEntitiesCacheService,
               private miningBaseService: MiningBaseService) {
     super();
 
-    let miningParts$ = this.cacheService.miningParts$;
+    let miningParts$ = cacheService.miningParts$;
     let partsOptions$: Observable<Option<CraftPart>[]> = miningParts$.pipe(
       map(parts => parts.map(p => ({
         label: p.label,
@@ -90,37 +88,35 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
         parts.map(p => [p.section, categoryIconMap.get(p.section)]),
       )));
 
-    let serverUpdatesControl$ = this.miningBaseService.craftPartTypes$
-      .pipe(
-        filter(groups => {
-          let selectedIds = this.controlSelectedParts.value.map(p => p.label);
-          let serverIds = groups.map(g => g.item.label);
-          let isUnchanged = selectedIds.equal(serverIds);
-          return !isUnchanged;
-        }),
-        withLatestFrom(partsOptions$),
-        tap(([groups, option]) => {
-          let selection = groups.map(g => g.item);
-          let options = selection.map(s => option.find(o => o.value === s));
-          if (options.equal(this.controlSelectedParts.value)) {
-            return;
-          }
-          this.controlSelectedParts.setValue(options);
-        }),
-        map(([groups]) => groups),
-      );
+    miningBaseService.loadState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.setupValues());
 
-    combineLatest([
-      this.controlSelectedParts.valueChanges,
-      serverUpdatesControl$,
-    ]).pipe(
-      distinctUntilChanged(([a1, b1], [a2, b2]) => a1.equal(a2) && b1.equal(b2)),
-      map(([inputSelection, selectedGroups]) =>
-        this.getPartsMatches(inputSelection, selectedGroups)),
-      takeUntil(this.destroy$))
-      .subscribe(partGroups => {
+    this.controlSelectedParts
+      .valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(value => {
+        let partGroups = this.getPartsMatches(value, this.selectedGroups);
         this.clearControlListeners();
         this.createPartControlEntries(partGroups, {emit: true});
+      });
+  }
+
+  private setupValues() {
+    let groups = this.miningBaseService.partSelection;
+    this.selectedGroups = groups;
+
+    this.parts$
+      .pipe(
+        take(1),
+        takeUntil(this.stopSetupValues$))
+      .subscribe(options => {
+        let selection = groups.map(g => g.item);
+        let selectedOptions = selection.map(s => options.find(o => o.value === s));
+        if (selectedOptions.equal(this.controlSelectedParts.value)) {
+          return;
+        }
+        this.controlSelectedParts.setValue(selectedOptions);
       });
   }
 
@@ -153,6 +149,8 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
     super.ngOnDestroy();
     this.stopControls$.next();
     this.stopControls$.complete();
+    this.stopSetupValues$.next();
+    this.stopSetupValues$.complete();
   }
 
   private clearControlListeners() {
@@ -190,6 +188,7 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
       .value
       .map(ce => new Group(ce.value, ce.control.value));
     this.miningBaseService.updatePartList(newGroupList);
+    this.selectedGroups = newGroupList;
   }
 
   private eventDeltaUpdate(value: number, entity: CraftPart) {

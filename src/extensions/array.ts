@@ -138,9 +138,16 @@ Array.prototype.random = function (this: Array<any>): any {
 /**
  * Checks whether elements are equal in both arrays
  * @param other
+ * @param predicate
  */
-Array.prototype.equal = function (this: Array<any>, other: Array<any>): boolean {
-  return this.length !== other.length
-    ? false
-    : this.every((e, i) => e === other[i]);
+Array.prototype.equal = function (this: Array<any>,
+                                  other: Array<any>,
+                                  predicate?: (a, b) => boolean): boolean {
+  if (this.length !== other.length) {
+    return false;
+  }
+
+  return this.every((e, i) => predicate
+    ? predicate(e, other[i])
+    : e === other[i]);
 };

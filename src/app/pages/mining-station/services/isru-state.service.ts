@@ -31,11 +31,11 @@ export class IsruStateService extends AbstractBaseStateService {
     return {
       landed: true,
       distanceFromStar: null,
-      planet: this.miningBaseService.planet$.value?.id,
-      oreConcentration: this.miningBaseService.oreConcentration$.value?.round(2),
-      engineerBonus: this.miningBaseService.engineerBonus$.value,
-      activeConverters: this.miningBaseService.activeConverters$.value,
-      craftPartGroups: this.miningBaseService.craftParts
+      planet: this.miningBaseService.planet.id,
+      oreConcentration: this.miningBaseService.oreConcentration.round(2),
+      engineerBonus: this.miningBaseService.engineerBonus,
+      activeConverters: this.miningBaseService.activeConverters,
+      craftPartGroups: this.miningBaseService.partSelection
         ?.map(({item, count}) => ({id: item.label, count})),
     };
   }

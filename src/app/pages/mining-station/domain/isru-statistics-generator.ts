@@ -310,16 +310,14 @@ export class IsruStatisticsGenerator {
     this.results = Array.from(this.statisticsMap.values())
       .filter(m => m.lastValue
         && !usedStats.some(s => s.label === m.label))
-      .map(m => {
-        return {
+      .map(m => ({
           label: m.label,
           type: 'display-only',
           valueDisplay: m.lastValue,
           icon: m.icon.toString(),
           measure: m.measure,
           order: m.order,
-        } as (Statistic & { order });
-      })
+        } as (Statistic & { order })))
       .concat(combinedStats)
       .sort((a, b) => a.order - b.order) as Statistic[];
 

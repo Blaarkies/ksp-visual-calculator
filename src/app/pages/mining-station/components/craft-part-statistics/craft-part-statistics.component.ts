@@ -6,6 +6,11 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import {
   combineLatest,
+  firstValueFrom,
+  map,
+  mergeWith,
+  Observable,
+  sampleTime,
   scan,
   takeUntil,
 } from 'rxjs';
@@ -56,41 +61,54 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
 
   statistics: IsruStatisticsGenerator;
 
-  private planetMap: Map<string, CelestialBody>;
+  private readonly planetMap$: Observable<Map<string, CelestialBody>>;
 
   constructor(private miningBaseService: MiningBaseService,
               cacheService: StockEntitiesCacheService) {
     super();
 
-    cacheService.planets$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(characteristics =>
-        this.planetMap = new Map<string, CelestialBody>(
-          characteristics.bodies.map(p => [p.id, p])));
+    this.planetMap$ = cacheService.planets$
+      .pipe(
+        map(characteristics => new Map<string, CelestialBody>(
+          characteristics.bodies.map(p => [p.id, p]),
+        )),
+        takeUntil(this.destroy$));
 
-    combineLatest([
-      this.miningBaseService.planet$,
-      this.miningBaseService.oreConcentration$,
-      this.miningBaseService.engineerBonus$,
-      this.miningBaseService.activeConverters$,
-      this.miningBaseService.craftPartTypes$,
-      cacheService.planets$,
-    ]).pipe(
-      scan(([acc = []], newValue) => {
-        let changesList = newValue.map((v, i) => v === acc[i] ? undefined : v);
-        return [newValue, changesList];
-      }, []),
-      takeUntil(this.destroy$))
-      .subscribe(([values, changes]) => {
-        this.setup(new CraftSettings(values), new CraftSettings(changes));
-      });
+    let mb = miningBaseService;
+    combineLatest([mb.loadState$, this.planetMap$])
+      .pipe(
+        mergeWith(
+          mb.planetUpdated$,
+          mb.oreConcentrationUpdated$,
+          mb.engineerBonusUpdated$,
+          mb.activeConvertersUpdated$,
+          mb.partSelectionUpdated$,
+          mb.partCountUpdated$,
+        ),
+        sampleTime(50),
+        map(() => [
+          mb.planet,
+          mb.oreConcentration,
+          mb.engineerBonus,
+          mb.activeConverters,
+          mb.partSelection,
+        ]),
+        scan(([acc = []], newValue) => {
+          let changesList = newValue.map((v, i) => v === acc[i] ? undefined : v);
+          return [newValue, changesList];
+        }, []),
+        takeUntil(this.destroy$))
+      .subscribe(([values, changes]) =>
+        this.setup(new CraftSettings(values), new CraftSettings(changes)));
 
-    this.miningBaseService.craftPartCounts$
+    mb.partCountUpdated$
       .pipe(takeUntil(this.destroy$))
       .subscribe(g => this.statistics?.updatePartCount(g));
   }
 
-  private setup(values: CraftSettings, changes: CraftSettings) {
+  private async setup(values: CraftSettings, changes: CraftSettings) {
+    let planetMap = await firstValueFrom(this.planetMap$);
+
     if (changes.craftPartGroups) {
       this.statistics = new IsruStatisticsGenerator(
         values.craftPartGroups,
@@ -98,7 +116,7 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
       this.statistics.updateConverters(values.activeConverters);
       this.statistics.updateBonus(values.engineerBonus);
       this.statistics.updateOreConcentration(values.oreConcentration);
-      this.statistics.updatePlanet(values.planet, this.planetMap);
+      this.statistics.updatePlanet(values.planet, planetMap);
     }
 
     if (!this.statistics) {
@@ -118,7 +136,7 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
     }
 
     if (changes.planet) {
-      this.statistics.updatePlanet(values.planet, this.planetMap);
+      this.statistics.updatePlanet(values.planet, planetMap);
     }
   }
 

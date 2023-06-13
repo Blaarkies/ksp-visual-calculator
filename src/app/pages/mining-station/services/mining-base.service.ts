@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
-  BehaviorSubject,
-  filter,
   firstValueFrom,
   Observable,
-  of,
+  Subject,
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { Group } from '../../../common/domain/group';
@@ -18,73 +16,90 @@ import { StateIsru } from '../domain/state-isru';
 @Injectable()
 export class MiningBaseService {
 
-  planet$ = new BehaviorSubject<CelestialBody>(null);
-  oreConcentration$ = new BehaviorSubject<number>(.05);
-  engineerBonus$ = new BehaviorSubject<number>(0);
-  activeConverters$ = new BehaviorSubject<string[]>([]);
-  craftPartTypes$ = new BehaviorSubject<Group<CraftPart>[]>([]);
-  craftPartCounts$ = new BehaviorSubject<Group<CraftPart>>(null);
-  statisticsMap$ = new BehaviorSubject<StatisticsMapType>(null);
+  planet: CelestialBody;
+  oreConcentration: number = .05;
+  engineerBonus: number = 0;
+  activeConverters: string[] = [];
+  partSelection: Group<CraftPart>[] = [];
+  statisticsMap: StatisticsMapType;
 
-  craftParts: Group<CraftPart>[];
+  loadState$ = new Subject<void>();
+
+  planetUpdated$ = new Subject<void>();
+  oreConcentrationUpdated$ = new Subject<void>();
+  engineerBonusUpdated$ = new Subject<void>();
+  activeConvertersUpdated$ = new Subject<void>();
+  partSelectionUpdated$ = new Subject<void>();
+  partCountUpdated$ = new Subject<Group<CraftPart>>();
+  statisticsMapUpdated$ = new Subject<void>();
 
   constructor(private cacheService: StockEntitiesCacheService) {
-    this.craftPartTypes$.subscribe(types => this.craftParts = types);
-    this.craftPartCounts$
-      .pipe(filter(updated => !!updated))
-      .subscribe(updated => {
-        let match = this.craftParts.find(stale => stale.item === updated.item);
-        if (match) {
-          match.count = updated.count;
-        }
-      });
   }
 
   destroy() {
-    this.planet$.complete();
-    this.oreConcentration$.complete();
-    this.engineerBonus$.complete();
-    this.activeConverters$.complete();
-    this.craftPartTypes$.complete();
-    this.craftPartCounts$.complete();
-    this.statisticsMap$.complete();
+    this.loadState$.complete();
+    this.planetUpdated$.complete();
+    this.oreConcentrationUpdated$.complete();
+    this.engineerBonusUpdated$.complete();
+    this.activeConvertersUpdated$.complete();
+    this.partSelectionUpdated$.complete();
+    this.partCountUpdated$.complete();
+    this.statisticsMapUpdated$.complete();
   }
 
   updatePlanet(value: CelestialBody) {
-    this.planet$.next(value);
+    this.planet = value;
+    this.planetUpdated$.next();
   }
 
   updateOreConcentration(value: number) {
-    this.oreConcentration$.next(value);
+    this.oreConcentration = value;
+    this.oreConcentrationUpdated$.next();
   }
 
   updateEngineerBonus(value: number) {
-    this.engineerBonus$.next(value);
+    this.engineerBonus = value;
+    this.engineerBonusUpdated$.next();
   }
 
   updateActiveConverters(list: string[]) {
-    this.activeConverters$.next(list);
+    this.activeConverters = list;
+    this.activeConvertersUpdated$.next();
   }
 
   updatePartList(list: Group<CraftPart>[]) {
-    this.craftPartTypes$.next(list);
+    this.partSelection = list;
+    this.partSelectionUpdated$.next();
   }
 
-  updatePartCount(value: number, part: CraftPart) {
-    this.craftPartCounts$.next(new Group(part, value));
+  updatePartCount(count: number, part: CraftPart) {
+    let match = this.partSelection.find(stale => stale.item === part);
+    if (match) {
+      match.count = count;
+      this.partCountUpdated$.next(match);
+
+      return;
+    }
+
+    console.error('Part not found', part, this.partSelection);
   }
 
   updateStatisticsMap(value: StatisticsMapType) {
-    this.statisticsMap$.next(value);
+    this.statisticsMap = value;
+    this.statisticsMapUpdated$.next();
   }
 
-  setupEmptyState() {
-    this.updatePlanet(null);
+  async setupEmptyState() {
+    let planets = await firstValueFrom(this.cacheService.planets$);
+    let kerbin = planets.bodies.find(b => b.id === 'kerbin') || planets.bodies[4];
+    this.updatePlanet(kerbin);
     this.updateOreConcentration(.05);
     this.updateEngineerBonus(engineerBonusMap.get(-1));
     this.updateActiveConverters([]);
     this.updatePartList([]);
     this.updateStatisticsMap(null);
+
+    this.loadState$.next();
   }
 
   async setupFullState(state: StateIsru): Promise<boolean> {
@@ -102,6 +117,9 @@ export class MiningBaseService {
     });
     this.updatePartList(partList);
     this.updateStatisticsMap(null);
+
+    this.loadState$.next();
+
     return true;
   }
 
@@ -109,10 +127,8 @@ export class MiningBaseService {
     if (state) {
       return fromPromise(this.setupFullState(state));
     } else {
-      this.setupEmptyState();
+      return fromPromise(this.setupEmptyState());
     }
-
-    return of(null);
   }
 
 }

@@ -25,9 +25,7 @@ import { MouseHoverDirective } from '../../../../directives/mouse-hover.directiv
   ],
   templateUrl: './statistic-color-coded.component.html',
   styleUrls: ['./statistic-color-coded.component.scss'],
-  animations: [
-    BasicAnimations.width,
-  ],
+  animations: [BasicAnimations.width],
 })
 export class StatisticColorCodedComponent implements OnChanges {
 

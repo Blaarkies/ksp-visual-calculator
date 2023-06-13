@@ -9,10 +9,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {
-  distinctUntilChanged,
-  filter,
-  map,
-  switchMap,
+  Subject,
   takeUntil,
 } from 'rxjs';
 import { WithDestroy } from '../../../../common/with-destroy';
@@ -41,40 +38,56 @@ export class MiningBaseControlComponent extends WithDestroy() implements OnDestr
 
   @Input() title = 'Environment';
 
-  selectedPlanet = this.miningBaseService.planet$;
+  selectedPlanet: CelestialBody;
   controlOreConcentration: FormControl<number>;
   controlEngineerBonus: FormControl<number>;
 
+  private stopControls$ = new Subject<void>();
+
   constructor(private miningBaseService: MiningBaseService) {
     super();
+    this.setupValues();
 
-    miningBaseService.oreConcentration$
-      .pipe(
-        distinctUntilChanged(),
-        map(value => (value * 100).round(2)),
-        filter(scaledValue => scaledValue !== this.controlOreConcentration?.value),
-        switchMap(scaledValue => {
-          this.controlOreConcentration = new FormControl<number>(scaledValue);
-          return this.controlOreConcentration.valueChanges;
-        }),
-        takeUntil(this.destroy$))
-      .subscribe(valueChange =>
-        this.miningBaseService.updateOreConcentration(valueChange * .01));
-
-    miningBaseService.engineerBonus$
-      .pipe(
-        distinctUntilChanged(),
-        switchMap(value => {
-          this.controlEngineerBonus = new FormControl<number>(value);
-          return this.controlEngineerBonus.valueChanges;
-        }),
-        takeUntil(this.destroy$))
-      .subscribe(valueChange =>
-        this.miningBaseService.updateEngineerBonus(valueChange));
+    miningBaseService
+      .loadState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.setupValues());
   }
 
-  updatePlanet(body: CelestialBody) {
-    this.miningBaseService.updatePlanet(body);
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.stopControls$.next();
+    this.stopControls$.complete();
   }
 
+  private setupValues() {
+    this.selectedPlanet = this.miningBaseService.planet;
+
+    let ore = this.miningBaseService.oreConcentration;
+    let scaledValue = (ore * 100).round(2);
+    this.controlOreConcentration = new FormControl<number>(scaledValue);
+    this.controlOreConcentration
+      .valueChanges
+      .pipe(takeUntil(this.stopControls$))
+      .subscribe(value => this.updateOreConcentration(value));
+
+    let bonus = this.miningBaseService.engineerBonus;
+    this.controlEngineerBonus = new FormControl<number>(bonus);
+    this.controlEngineerBonus
+      .valueChanges
+      .pipe(takeUntil(this.stopControls$))
+      .subscribe(value => this.updateEngineerBonus(value));
+  }
+
+  updatePlanet(value: CelestialBody) {
+    this.miningBaseService.updatePlanet(value);
+  }
+
+  updateOreConcentration(value: number) {
+    this.miningBaseService.updateOreConcentration(value * .01);
+  }
+
+  updateEngineerBonus(value: number) {
+    this.miningBaseService.updateEngineerBonus(value);
+  }
 }

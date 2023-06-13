@@ -8,17 +8,11 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import {
-  combineLatest,
-  distinctUntilChanged,
-  filter,
-  map,
   merge,
   mergeAll,
-  pipe,
-  skip,
+  mergeWith,
   Subject,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { Group } from '../../../../common/domain/group';
 import { WithDestroy } from '../../../../common/with-destroy';
@@ -48,7 +42,13 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
 
   constructor(private miningBaseService: MiningBaseService) {
     super();
-    this.listenPartsAndSelectionChanges();
+
+    let mb = miningBaseService;
+    mb.partSelectionUpdated$
+      .pipe(
+        mergeWith(mb.loadState$),
+        takeUntil(this.destroy$))
+      .subscribe(() => this.setupValues(mb.partSelection, mb.activeConverters));
   }
 
   ngOnDestroy() {
@@ -61,24 +61,10 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
     return item.label;
   }
 
-  private listenPartsAndSelectionChanges() {
-    combineLatest([
-      this.miningBaseService.craftPartTypes$.pipe(skip(1)),
-      this.miningBaseService.activeConverters$.pipe(skip(1)),
-    ]).pipe(
-      map(([parts, selected]) => ({
-        converters: this.getConverterNames(parts),
-        selected,
-        parts,
-      })),
-      distinctUntilChanged(({converters: c1, selected: s1}, {converters: c2, selected: s2}) =>
-        c1.equal(c2) && s1.equal(s2)),
-      map(({parts, selected}) => ({
-        options: this.getConverterOptions(parts) ?? [],
-        selected,
-      })),
-      takeUntil(this.destroy$))
-      .subscribe(({options, selected}) => this.setupControls(options, selected));
+  private setupValues(parts: Group<CraftPart>[], converters: string[]) {
+    let options = this.getConverterOptions(parts) ?? [];
+
+    this.setupControls(options, converters);
   }
 
   private getConverterNames(groups: Group<CraftPart>[]): string[] {

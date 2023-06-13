@@ -1,13 +1,22 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import {
+  map,
+  merge,
+  Observable,
+  sampleTime,
+  takeUntil,
+} from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
-import { StatisticsMapType, StatisticType } from '../../domain/isru-statistics-generator';
-import { combineLatest, map, Observable, takeUntil } from 'rxjs';
-import { WithDestroy } from '../../../../common/with-destroy';
-import { CraftPart } from '../../domain/craft-part';
 import { Group } from '../../../../common/domain/group';
-import { MiningBaseService } from '../../services/mining-base.service';
+import { WithDestroy } from '../../../../common/with-destroy';
 import { CpColors } from '../../../../components/controls/input-field/input-field.component';
+import { CraftPart } from '../../domain/craft-part';
+import {
+  StatisticsMapType,
+  StatisticType,
+} from '../../domain/isru-statistics-generator';
+import { MiningBaseService } from '../../services/mining-base.service';
 
 interface WarningMessage {
   message: string;
@@ -40,16 +49,25 @@ export class IsruWarningsComponent extends WithDestroy() {
 
   warnings$: Observable<WarningMessage[]>;
 
-  constructor(isruService: MiningBaseService) {
+  constructor(miningBaseService: MiningBaseService) {
     super();
 
-    this.warnings$ = combineLatest([
-      isruService.statisticsMap$,
-      isruService.craftPartTypes$,
-      isruService.oreConcentration$,
-      isruService.activeConverters$,
-    ]).pipe(
-      map(([stats, parts, ore, converters]) => {
+    let mb = miningBaseService;
+    this.warnings$ = merge(
+      mb.oreConcentrationUpdated$,
+      mb.activeConvertersUpdated$,
+      mb.partSelectionUpdated$,
+      mb.partCountUpdated$,
+      mb.statisticsMapUpdated$,
+    ).pipe(
+      sampleTime(50),
+      map(() => ({
+        stats: mb.statisticsMap,
+        parts: mb.partSelection,
+        ore: mb.oreConcentration,
+        converters: mb.activeConverters,
+      })),
+      map(({stats, parts, ore, converters}) => {
         if (stats && parts && ore && converters) {
           return this.getWarnings({stats, parts, ore, converters});
         }
@@ -128,11 +146,11 @@ export class IsruWarningsComponent extends WithDestroy() {
   private getConverterWarnings(infoPack: InfoPack) {
     let {
       hasActiveConverter: hasActiveJuniorConverter,
-      warnings: juniorLimitIssues
+      warnings: juniorLimitIssues,
     } = this.getConverter125Issues(infoPack);
     let {
       activeConverters: activeSeniorConverters,
-      warnings: seniorLimitIssues
+      warnings: seniorLimitIssues,
     } = this.getConverter250Issues(infoPack);
 
     let oreStorageIssues = this.getOreStorageIssues(

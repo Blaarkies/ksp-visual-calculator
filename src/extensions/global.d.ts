@@ -68,7 +68,7 @@ declare global {
 
     random(this: Array<T>): T;
 
-    equal(this: Array<T>, other: Array<T>): boolean;
+    equal(this: Array<T>, other: Array<T>, predicate?: (a: T, b: T) => boolean): boolean;
 
     sum(this: Array<number | any>, selector?: (item: any) => number): number;
 
