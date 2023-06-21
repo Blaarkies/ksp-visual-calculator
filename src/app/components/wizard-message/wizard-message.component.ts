@@ -42,9 +42,9 @@ export class WizardMessageComponent implements WizardMessage {
   @Input() icon: string;
 
   @Input() set location(value: Vector2) {
-    let hostStyle = this.self.nativeElement.style;
-    hostStyle.left = `${value.x}px`;
-    hostStyle.top = `${value.y}px`;
+    // let hostStyle = this.self.nativeElement.style;
+    // hostStyle.left = `${value.x}px`;
+    // hostStyle.top = `${value.y}px`;
   }
 
   @Input() stopTutorial$: Subject<boolean>;

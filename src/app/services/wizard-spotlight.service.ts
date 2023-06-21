@@ -1,25 +1,44 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import {
   ApplicationRef,
   ComponentFactoryResolver,
   ComponentRef,
   EmbeddedViewRef,
   Injectable,
-  Injector
+  Injector,
 } from '@angular/core';
+import {
+  concat,
+  concatMap,
+  delay,
+  finalize,
+  from,
+  Observable,
+  of,
+  reduce,
+  Subject,
+  takeUntil,
+  tap,
+  timer,
+} from 'rxjs';
 import { Vector2 } from '../common/domain/vector2';
-import { WizardMessage, WizardMessageComponent } from '../components/wizard-message/wizard-message.component';
-import { WizardMarker, WizardMarkerComponent } from '../components/wizard-marker/wizard-marker.component';
-import { concat, concatMap, delay, finalize, from, Observable, of, reduce, Subject, takeUntil, tap, timer } from 'rxjs';
-import { OverlayContainer } from '@angular/cdk/overlay';
+import {
+  WizardMarker,
+  WizardMarkerComponent,
+} from '../components/wizard-marker/wizard-marker.component';
+import {
+  WizardMessage,
+  WizardMessageComponent,
+} from '../components/wizard-message/wizard-message.component';
 
 export type StepType = 'waitForNext' | 'end';
-export type Positions = 'left' | 'right' | 'top' | 'bottom' | 'center';
+export type Position = 'left' | 'right' | 'top' | 'bottom' | 'center';
 
 export class StepDetails {
   stepType?: StepType;
   nextButton$?: Subject<void>;
 
-  dialogPosition?: Positions;
+  dialogPosition?: Position;
   dialogTargetCallback: () => HTMLElement | any;
   dialogTitle?: string;
   dialogMessages: string[];
@@ -35,9 +54,7 @@ export class StepDetails {
   markerType?: 'ring' | 'pane';
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class WizardSpotlightService {
 
   stopTutorial$ = new Subject<boolean>();
@@ -45,7 +62,8 @@ export class WizardSpotlightService {
   constructor(private componentFactoryResolver: ComponentFactoryResolver,
               private applicationRef: ApplicationRef,
               private injector: Injector,
-              private overlayContainer: OverlayContainer) {
+              private overlayContainer: OverlayContainer,
+              private window: Window) {
   }
 
   createPopup<T>(componentClass: any, target: HTMLElement, inputs?: any): ComponentRef<T> {
@@ -111,9 +129,11 @@ export class WizardSpotlightService {
     let targetDimensions: DOMRect = dialogTarget.getBoundingClientRect();
 
     let container = this.overlayContainer.getContainerElement();
-    let wizardMarker = stepDetails.markerTargetCallback
-      && this.createPopup(WizardMarkerComponent, container,
+    let wizardMarker;
+    if (stepDetails.markerTargetCallback) {
+      wizardMarker = this.createPopup(WizardMarkerComponent, container,
         {type: stepDetails.markerType, target: markerTarget} as WizardMarker);
+    }
 
     let wizardMessage: ComponentRef<WizardMessageComponent> = this.createPopup(
       WizardMessageComponent,
@@ -128,14 +148,7 @@ export class WizardSpotlightService {
         stepType: stepDetails.stepType,
       } as WizardMessage);
 
-    timer(0)
-      .pipe(
-        // dialogs on screen edge have compressed text
-        tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)),
-        delay(0),
-        // dialog size changed by now, re-check positioning
-        tap(() => this.placeDialogInScreen(wizardMessage, targetDimensions, stepDetails.dialogPosition)))
-      .subscribe();
+    timer(0).subscribe(() => wizardMessage.instance.location = new Vector2(8));
 
     return [wizardMarker, wizardMessage].filter(comp => comp);
   }
@@ -145,56 +158,4 @@ export class WizardSpotlightService {
       .pipe(takeUntil(this.stopTutorial$));
   }
 
-  private placeDialogInScreen(dialog: ComponentRef<WizardMessageComponent>,
-                              target: DOMRect,
-                              dialogPosition: Positions = 'top') {
-    let dims: DOMRect = dialog.instance.self.nativeElement.getBoundingClientRect();
-    let padding = 8;
-
-    let dialogSize = new Vector2(dims.width, dims.height).add(padding * 2);
-
-    let targetSize = new Vector2(target.width, target.height);
-    let targetCenter = new Vector2(target.left, target.top).addVector2(
-      targetSize.clone().multiply(.5));
-
-    let newLocation: Vector2;
-    switch (dialogPosition) {
-      case 'left':
-        newLocation = new Vector2(target.left, targetCenter.y)
-          .add(-dialogSize.x, -dialogSize.y * .5);
-        break;
-      case 'right':
-        newLocation = new Vector2(target.right, targetCenter.y)
-          .add(targetSize.x * .5, -dialogSize.y * .5);
-        break;
-      case 'top':
-        newLocation = new Vector2(targetCenter.x, target.top)
-          .add(-dialogSize.x, -dialogSize.y);
-        break;
-      case 'bottom':
-        newLocation = new Vector2(targetCenter.x, target.bottom)
-          .add(-dialogSize.x, targetSize.y * .5);
-        break;
-      case 'center':
-        newLocation = new Vector2(window.innerWidth * .5, window.innerHeight * .5)
-          .addVector2(dialogSize.clone().multiply(-.5));
-        break;
-      default:
-        throw new Error(`DialogPosition "${dialogPosition}" does not exist`);
-    }
-
-    if (newLocation.x < 0) {
-      newLocation.x = 0;
-    } else if (newLocation.x + dialogSize.x >= window.innerWidth) {
-      newLocation.x = window.innerWidth - dialogSize.x;
-    } else if (newLocation.y < 0) {
-      newLocation.y = 0;
-    } else if (newLocation.y + dialogSize.y >= window.innerHeight) {
-      newLocation.y = window.innerHeight - dialogSize.y;
-    }
-
-    dialog.instance.location = newLocation.add(padding);
-  }
-
 }
-

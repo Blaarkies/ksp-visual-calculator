@@ -55,5 +55,7 @@ export const appOptions: ApplicationConfig = {
       },
     },
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
+    {provide: Document, useValue: document},
+    {provide: Window, useValue: window},
   ],
 };

@@ -7,7 +7,7 @@
 }
 
 .handset-layout {
-  height: 100vh;
+  height: 100%;
   display: grid;
 
   grid-template-columns: repeat(3, 1fr);
@@ -31,9 +31,8 @@
   }
 
   > .fab-buttons {
-    // mobile browser header+footer swipe does not reduce the screen height,
-    // leads to elements hidden behind browser ui
-    margin-bottom: 60px;
+    margin-bottom: 10px;
+    margin-right: 4px;
 
     grid-column: 3/4;
     grid-row: 3/4;

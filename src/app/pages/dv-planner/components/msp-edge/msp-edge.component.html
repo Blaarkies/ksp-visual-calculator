@@ -31,7 +31,7 @@
     [cdkConnectedOverlayOrigin]="origin"
     [cdkConnectedOverlayPositions]="positionLeftCenter"
     (backdropClick)="isPanelOpen = false">
-    <div class="popout-details frosted-glass" [@animateSlidePanel]>
+    <div class="popout-details frosted-glass" @animateSlidePanel data-tutorial-dv-trip-details>
       <div class="step-layout">
         <ng-container *ngFor="let step of path">
           <div>{{step.cost}} m/s</div>

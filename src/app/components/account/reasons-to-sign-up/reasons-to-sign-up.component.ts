@@ -15,6 +15,7 @@ import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BasicAnimations } from '../../../animations/basic-animations';
+import { Common } from '../../../common/common';
 import { Icons } from '../../../common/domain/icons';
 
 @Component({
@@ -25,7 +26,6 @@ import { Icons } from '../../../common/domain/icons';
     MatButtonModule,
     OverlayModule,
     MatIconModule,
-
   ],
   templateUrl: './reasons-to-sign-up.component.html',
   styleUrls: ['./reasons-to-sign-up.component.scss'],
@@ -43,10 +43,11 @@ export class ReasonsToSignUpComponent {
   isOverlayOpen = false;
   isWindowOpen = false;
   icons = Icons;
-  position = [new ConnectionPositionPair(
-    {originX: 'end', originY: 'bottom'},
-    {overlayX: 'end', overlayY: 'bottom'},
-  )];
+
+  // Overlay is shifted upwards by button's height to maintain click region
+  // Position strategies are set to function on this new offset origin
+  position = [Common.createConnectionPair('↘')[0],
+    Common.createConnectionPair('↘', '↗')[0]];
 
   closeOverlay(event: AnimationEvent) {
     if (event.fromState !== null) {

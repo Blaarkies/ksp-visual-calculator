@@ -1,6 +1,7 @@
 .sign-in-layout {
   display: grid;
   gap: 16px;
+  max-height: unset;
 
   .app-image {
     height: 100px;

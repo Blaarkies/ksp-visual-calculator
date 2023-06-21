@@ -66,7 +66,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   ngOnInit() {
     this.cameraService.cdr = this.cdr;
     this.cameraService.cameraController = this.cameraController;
-    this.cameraService.getSoiParent = this.universeBuilderService.getSoiParent;
+    this.cameraService.getSoiParent =
+      (location: Vector2) => this.universeBuilderService.getSoiParent(location);
   }
 
   updateScale(event: WheelEvent) {

@@ -7,7 +7,7 @@
   (dragSuccess)="setDragMode(false)"
 ></cp-msp-list>
 
-<div class="totals-layout text-white" *ngIf="missionCheckpoints.length">
+<div class="totals-layout text-white" *ngIf="missionCheckpoints.length" data-tutorial-dv-total>
   <div>Total delta-v</div>
   <div>{{deltaVTotal}} m/s</div>
 </div>
@@ -33,7 +33,7 @@ first checkpoint.
 
     <button class="button-single-checkpoint"
             mat-flat-button
-            id="add-dv-mission-checkpoint-button"
+            data-tutorial-checkpoint-add
             [matTooltip]="isAddingCheckpoint ? 'Now tap a planet' : 'Add new checkpoint'"
             (click)="addCheckpoint()">
       <ng-container *ngIf="isAddingCheckpoint; then isBusy else idleIcon"></ng-container>
@@ -75,13 +75,14 @@ first checkpoint.
       </div>
     </button>
 
-    <button mat-button
-            id="clear-dv-mission-button"
-            class="fix-disabled-color"
-            color="warn"
-            [matTooltip]="'Clear entire mission'"
-            [disabled]="!missionCheckpoints.length"
-            (click)="resetMission()">
+    <button
+      mat-button
+      class="fix-disabled-color"
+      color="warn"
+      [matTooltip]="'Clear entire mission'"
+      [disabled]="!missionCheckpoints.length"
+      (click)="resetMission()"
+    >
       <div>
         <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
       </div>
@@ -89,3 +90,5 @@ first checkpoint.
   </mat-menu>
 
 </div>
+
+<div data-tutorial-clear-dv class="for-tutorial-service" (click)="resetMission()"></div>

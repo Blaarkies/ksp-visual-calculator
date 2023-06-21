@@ -24,6 +24,7 @@ import { Uid } from '../../common/uid';
 import { StateEntry } from '../../overlays/manage-state-dialog/state-entry';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import {
+  CpError,
   DataService,
   UserData,
 } from '../data.service';
@@ -134,7 +135,14 @@ export abstract class AbstractBaseStateService {
           state: bytes,
         } as StateBase,
       },
-      {merge: true});
+      {merge: true})
+      .catch((e: CpError) => {
+        if (e.reason === 'no-user') {
+          console.error('No user is logged in for capturing this savegame');
+          return;
+        }
+        throw e;
+      });
   }
 
   async removeStateFromStore(name: string) {

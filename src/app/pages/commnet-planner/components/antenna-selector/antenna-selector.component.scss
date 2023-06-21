@@ -12,7 +12,14 @@ mat-tab-header {
 
   .selected-antenna {
     display: flex;
-    gap: var(--input-gap);
+
+    >:first-child {
+      margin-right: var(--input-gap);
+    }
+
+    cp-input-number mat-form-field {
+      width: 60px;
+    }
   }
 
 }

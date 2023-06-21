@@ -249,13 +249,6 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     });
   }
 
-  getSoiParent(location: Vector2): SpaceObject {
-    return this.planets$.value
-      .filter(cb => !cb.sphereOfInfluence || location.distance(cb.location) <= cb.sphereOfInfluence)
-      .sort((a, b) => a.location.distance(location) - b.location.distance(location))
-      .first();
-  }
-
   getAntenna(search: string): Antenna {
     return this.antennaeLabelMap.get(search);
   }

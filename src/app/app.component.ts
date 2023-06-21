@@ -30,6 +30,7 @@ import { ThemeService } from './services/theme.service';
 export class AppComponent extends WithDestroy() implements OnDestroy {
 
   showHolidayTheme = false;
+
   private unsubscribeHoliday$ = new Subject<void>();
 
   constructor(

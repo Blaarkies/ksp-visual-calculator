@@ -1,3 +1,5 @@
+@use '../../../../../styles/variables' as queries;
+
 .craft-details-form {
   --grid-gap: 20px;
 
@@ -45,7 +47,7 @@
   align-items: center;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: queries.$query-mobile-width) {
   .craft-details-form {
     gap: unset;
     grid-template-areas:
@@ -55,11 +57,11 @@
 
     .left-column {
       > cp-input-field-list {
-        grid-template-columns: max-content max-content;
+        grid-template-columns: max-content;
       }
 
       .mat-expansion-panel-content cp-input-field-list {
-        grid-template-columns: max-content max-content;
+        grid-template-columns: max-content;
       }
     }
 
@@ -70,7 +72,7 @@
 }
 
 // landscape mobile cuts off the dialog action buttons
-@media screen and (max-height: 500px) {
+@media screen and (max-height: queries.$query-mobile-height-landscape) {
   .craft-details-form {
     box-shadow: inset 0 0 6px 2px #0002;
     overflow-y: auto;

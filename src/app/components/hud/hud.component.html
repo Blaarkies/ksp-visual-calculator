@@ -25,7 +25,7 @@
                    (activate)="openBottomSheet($event.group, $event.callback)"></cp-action-fab>
 
     <cp-action-fab *ngIf="contextPanelDetails as details"
-                   id="context-fab"
+                   data-tutorial-commnet-menu
                    color="orange"
                    [tooltip]="details.startTitle"
                    [icon]="icons.Edit"
@@ -58,7 +58,7 @@
     </cp-action-panel>
 
     <cp-action-panel class="bottom-left requires-pointer"
-                     id="context-panel"
+                     data-tutorial-commnet-menu
                      *ngIf="contextPanelDetails as details"
                      [label]="details.startTitle"
                      location="bottom-left"
@@ -75,7 +75,8 @@
 </ng-template>
 
 <ng-template #pageIcon>
-  <mat-icon [matTooltip]="tooltip"
+  <mat-icon data-tutorial-page-icon
+            [matTooltip]="tooltip"
             color="white"
             [svgIcon]="icon"></mat-icon>
 </ng-template>

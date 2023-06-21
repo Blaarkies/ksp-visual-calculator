@@ -1,7 +1,12 @@
 <div class="node-layout stack" [class.is-draggable]="dragModeActive">
   <div class="destination-layout">
-    <div class="destination">{{details.name}}</div>
+
+    <div class="destination" [attr.data-tutorial-dv-node-id]="details.body.label">
+      {{details.name}}
+    </div>
+
     <button mat-button
+            [attr.data-tutorial-dv-condition]="details.condition"
             class="condition"
             [disabled]="dragModeActive"
             (click)="matSelect.open()">

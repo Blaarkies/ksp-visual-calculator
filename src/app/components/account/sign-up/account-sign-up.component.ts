@@ -1,10 +1,3 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
@@ -23,11 +16,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   BehaviorSubject,
   catchError,
-  delay,
   EMPTY,
   finalize,
   from,
-  fromEvent,
   mapTo,
   mergeAll,
   Observable,
@@ -35,7 +26,6 @@ import {
   startWith,
   take,
   takeUntil,
-  takeWhile,
   timeout,
 } from 'rxjs';
 import { BasicAnimations } from '../../../animations/basic-animations';
@@ -55,16 +45,16 @@ import { ReasonsToSignUpComponent } from '../reasons-to-sign-up/reasons-to-sign-
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    InputFieldComponent,
     MatTooltipModule,
-    ReactiveFormsModule,
     MatProgressBarModule,
     MatFormFieldModule,
     MatDividerModule,
+    ReactiveFormsModule,
+
+    InputFieldComponent,
     InputToggleComponent,
     ReasonsToSignUpComponent,
   ],
-  providers: [{provide: Window, useValue: window}],
   templateUrl: './account-sign-up.component.html',
   styleUrls: ['./account-sign-up.component.scss'],
   animations: [
@@ -74,8 +64,6 @@ import { ReasonsToSignUpComponent } from '../reasons-to-sign-up/reasons-to-sign-
 export class AccountSignUpComponent extends WithDestroy() {
 
   icons = Icons;
-  isPromoteOpen = false;
-
   controlEmail = new FormControl(null, [Validators.required, Validators.email]);
   controlPassword = new FormControl(null, [Validators.required, Validators.minLength(6)]);
   passwordVisible = false;
@@ -85,8 +73,7 @@ export class AccountSignUpComponent extends WithDestroy() {
   controlPolicy = new FormControl(false, [Validators.requiredTrue]);
 
   constructor(private snackBar: MatSnackBar,
-              private authService: AuthService,
-              private window: Window) {
+              private authService: AuthService) {
     super();
   }
 
@@ -171,17 +158,6 @@ export class AccountSignUpComponent extends WithDestroy() {
       .subscribe(() => this.snackBar.open(`Sent password reset email to "${email}"`));
   }
 
-  openReasons(event: MouseEvent) {
-    event.stopPropagation();
-    let wasOpen = this.isPromoteOpen;
-    this.isPromoteOpen = !this.isPromoteOpen;
-
-    if (!wasOpen) {
-      this.listenClickAway(() => this.isPromoteOpen = false);
-    }
-  }
-
-
   private setErrorMessageUntilInput(message: string) {
     this.emailSignInError$ = of(this.controlEmail.valueChanges, this.controlPassword.valueChanges)
       .pipe(
@@ -193,16 +169,5 @@ export class AccountSignUpComponent extends WithDestroy() {
         catchError(() => of('')), // timeout throws error
         takeUntil(this.destroy$));
   }
-
-  private listenClickAway(callback: () => void) {
-    fromEvent(this.window, 'pointerup')
-      .pipe(
-        delay(0),
-        take(1),
-        takeWhile(() => this.isPromoteOpen),
-        takeUntil(this.destroy$))
-      .subscribe(callback);
-  }
-
 
 }

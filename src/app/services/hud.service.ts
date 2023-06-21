@@ -159,7 +159,8 @@ export class HudService {
     );
   }
 
-  createActionOptionTutorial(gameStateType: GameStateType): ActionOption {
+  createActionOptionTutorial(gameStateType: GameStateType,
+                             onBeforeCallback?: () => Promise<unknown>): ActionOption {
     return new ActionOption('Tutorial', Icons.Help, {
         action: () => {
           this.analyticsService.logEvent('Call tutorial dialog', {
@@ -178,7 +179,9 @@ export class HudService {
           })
             .afterClosed()
             .pipe(filter(ok => ok))
-            .subscribe(() => this.tutorialService.startFullTutorial(gameStateType));
+            .subscribe(() => this.tutorialService.startFullTutorial(
+              gameStateType,
+              onBeforeCallback ?? (() => Promise.resolve())));
         },
       },
       undefined,

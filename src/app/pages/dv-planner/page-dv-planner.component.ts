@@ -90,7 +90,8 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
 
   private getContextPanelDetails(): ActionPanelDetails {
     let options = [
-      this.hudService.createActionOptionTutorial(GameStateType.DvPlanner),
+      this.hudService.createActionOptionTutorial(GameStateType.DvPlanner,
+        () => firstValueFrom(this.dvUniverseBuilderService.buildStockState())),
       this.hudService.createActionOptionManageSaveGames(ref => {
           let component = ref.componentInstance;
           component.context = GameStateType.DvPlanner;
