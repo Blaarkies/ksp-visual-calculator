@@ -3,23 +3,13 @@ mat-tab-header {
 }
 
 .antenna-selector-layout {
+  margin-top: 8px;
   overflow: hidden;
-
   display: grid;
-  gap: 16px;
-
-  --input-gap: 10px;
 
   .selected-antenna {
     display: flex;
-
-    >:first-child {
-      margin-right: var(--input-gap);
-    }
-
-    cp-input-number mat-form-field {
-      width: 60px;
-    }
+    gap: 16px;
   }
 
 }

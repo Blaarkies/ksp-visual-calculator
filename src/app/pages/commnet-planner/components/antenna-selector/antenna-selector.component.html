@@ -2,7 +2,7 @@
   <mat-tab label="Antennae">
 
     <div class="antenna-selector-layout">
-      <div [@height]
+      <div @height
            *ngFor="let antennaInput of antennaInputs"
            [id]="antennaInput.selectedAntenna.label"
            class="selected-antenna">
@@ -15,6 +15,7 @@
                          [matTooltip]="'Defines how many of these antennae are on the craft'"
                          [formControl]="antennaInput.countControl"
                          [errors]="antennaInput.countControl.touched && antennaInput.countControl.errors"
+                         widthClass="small"
                          (output)="userInputChange()"></cp-input-number>
 
         <button mat-icon-button

@@ -1,27 +1,3 @@
-.layout {
+.input-number-layout {
   display: grid;
-}
-
-.no-spinner-arrows {
-  input {
-    /* Chrome, Safari, Edge, Opera */
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    /* Firefox */
-    &[type=number] {
-      -moz-appearance: textfield;
-    }
-  }
-}
-
-.slider-popup {
-  border-radius: 26px !important;
-
-  .slider-control {
-    margin-inline: 28px;
-  }
 }

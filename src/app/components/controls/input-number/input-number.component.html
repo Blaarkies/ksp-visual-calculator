@@ -1,4 +1,4 @@
-<div class="layout">
+<div class="input-number-layout">
 
   <mat-menu classList="slider-popup"
             #popup="matMenu"
@@ -10,17 +10,20 @@
     </mat-slider>
   </mat-menu>
 
-  <cp-input-field #input
-                  [matMenuTriggerFor]="popup"
-                  #menuTrigger="matMenuTrigger"
-                  class="no-spinner-arrows"
-                  type="number"
-                  [label]="label"
-                  [hint]="hint"
-                  [suffix]="suffix"
-                  [errors]="errors"
-                  (output)="inputChange($event)"
-                  (formTouch)="onTouched && onTouched(true)">
+  <cp-input-field
+    #input
+    [matMenuTriggerFor]="popup"
+    #menuTrigger="matMenuTrigger"
+    class="no-spinner-arrows"
+    [widthClass]="widthClass"
+    type="number"
+    [label]="label"
+    [hint]="hint"
+    [suffix]="suffix"
+    [errors]="errors"
+    (output)="inputChange($event)"
+    (formTouch)="onTouched && onTouched(true)"
+  >
   </cp-input-field>
 
 </div>

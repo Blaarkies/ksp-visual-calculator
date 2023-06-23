@@ -40,18 +40,18 @@ import { InputSelectComponent } from '../../../../components/controls/input-sele
   imports: [
     CommonModule,
     MatTabsModule,
-    InputFieldComponent,
-    InputNumberComponent,
     ReactiveFormsModule,
     MatTooltipModule,
     MatIconModule,
     MatButtonModule,
+
+    InputFieldComponent,
+    InputNumberComponent,
     InputSelectComponent,
     AntennaStatsComponent,
   ],
   templateUrl: './antenna-selector.component.html',
   styleUrls: ['./antenna-selector.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => AntennaSelectorComponent),

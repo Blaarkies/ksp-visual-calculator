@@ -58,6 +58,14 @@
   margin-bottom: 25px !important;;
 }
 
+.slider-popup {
+  border-radius: 26px !important;
+
+  .slider-control {
+    margin-inline: 28px;
+  }
+}
+
 .dark-theme {
   .mat-mdc-snack-bar-container {
     --mat-mdc-snack-bar-button-color: currentColor ;

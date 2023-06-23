@@ -21,6 +21,7 @@ import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { WidthClass } from '../input-number/input-number.component';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -40,7 +41,6 @@ export type CpColors = 'primary' | 'accent' | 'warn';
   ],
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   animations: [BasicAnimations.fade],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
@@ -62,6 +62,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   @Input() suffix: string;
   @Input() allowClear: boolean;
   @Input() errors: FormControlError;
+  @Input() widthClass: WidthClass = 'normal';
 
   @Input() set formControl(value: UntypedFormControl) {
     this.setDisabledState(value?.disabled);

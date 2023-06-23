@@ -7,7 +7,7 @@
     <button mat-button
             class="advanced-placement-button"
             (click)="advancedIsOpen = !advancedIsOpen">
-      <mat-icon [@flipVertical]="advancedIsOpen" [svgIcon]="Icons.ChevronDown"></mat-icon>
+      <mat-icon [@flipVertical]="advancedIsOpen" [svgIcon]="icons.ChevronDown"></mat-icon>
       Advanced Placement
     </button>
     <cp-input-field-list [@height]="advancedIsOpen"
@@ -23,14 +23,19 @@
               color="warn"
               (click)="advancedForm.reset()"
               [matTooltip]="'Reset values'">
-        <mat-icon [svgIcon]="Icons.DeleteAll"></mat-icon>
+        <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
       </button>
     </div>
   </div>
 
   <mat-divider class="middle-column" vertical></mat-divider>
 
-  <cp-input-field-list class="right-column" [inputFields]="inputListAntenna"></cp-input-field-list>
+  <div class="right-column">
+    <cp-antenna-selector *ngFor="let antenna of inputListAntenna"
+                         [options]="antennaOptions"
+                         [label]="antenna.label"
+                         [formControl]="antenna.control"></cp-antenna-selector>
+  </div>
 
 </div>
 

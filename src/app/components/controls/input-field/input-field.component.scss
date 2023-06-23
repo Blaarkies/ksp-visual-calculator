@@ -1,7 +1,20 @@
 .input-field-component {
-
   max-width: 210px;
   padding-top: 6px;
+
+  .no-spinner-arrows {
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
 
   span {
     color: var(--color-text-muted);
@@ -20,9 +33,9 @@
 
   &.transition {
     transition: opacity .3s ease-out,
-                color .2s ease-in,
-                caret-color .2s ease-in,
-                background-color .2s ease-in;
+    color .2s ease-in,
+    caret-color .2s ease-in,
+    background-color .2s ease-in;
   }
 
   input {
@@ -45,4 +58,11 @@
     }
   }
 
+}
+
+.small {
+  width: 60px;
+}
+
+.normal {
 }

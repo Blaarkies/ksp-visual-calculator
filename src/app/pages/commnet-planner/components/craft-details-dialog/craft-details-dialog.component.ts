@@ -9,6 +9,7 @@ import {
   FormArray,
   FormControl,
   FormGroup,
+  ReactiveFormsModule,
   ValidationErrors,
   ValidatorFn,
   Validators,
@@ -44,6 +45,7 @@ import { CommonValidators } from '../../../../common/validators/common-validator
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
 import { CommnetUniverseBuilderService } from '../../services/commnet-universe-builder.service';
+import { AntennaSelectorComponent } from '../antenna-selector/antenna-selector.component';
 import { AdvancedPlacement } from './advanced-placement';
 import { CraftDetails } from './craft-details';
 
@@ -65,6 +67,8 @@ export class CraftDetailsDialogData {
     MatFormFieldModule,
     MatTooltipModule,
     MatDividerModule,
+    AntennaSelectorComponent,
+    ReactiveFormsModule,
   ],
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
@@ -79,7 +83,8 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   form: FormArray;
   inputListCraft: InputField[];
   inputListAntenna: InputField[];
-  Icons = Icons;
+  antennaOptions = this.data.universeBuilderHandler.antennaList;
+  icons = Icons;
 
   private inputFields: InputFields;
   private inputFieldsList: InputField[];

@@ -23,6 +23,7 @@ import {
   distinctUntilChanged,
   firstValueFrom,
   map,
+  mergeWith,
   Observable,
   of,
   shareReplay,
@@ -42,6 +43,7 @@ export class AuthService {
   user$: Observable<UserData>;
   signIn$ = new Subject<UserData>();
   signOut$ = new Subject<void>();
+  updateUserDetails$ = new Subject<string>();
 
   constructor(private auth: Auth,
               private dataService: DataService,
@@ -52,6 +54,7 @@ export class AuthService {
         map(user => user?.uid),
         distinctUntilChanged(),
         tap(uid => this.dataService.updateUserId(uid)),
+        mergeWith(this.updateUserDetails$),
         switchMap(uid => (uid
           ? this.dataService.getUser(uid)
           : of(null)) as Observable<UserData>),
@@ -80,7 +83,6 @@ export class AuthService {
     await this.updateDataService(credential);
 
     await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
-    // todo: check that current "tutorial" game is saved
     return credential;
   }
 
@@ -102,6 +104,7 @@ export class AuthService {
     };
 
     await this.dataService.write('users', data);
+    this.updateUserDetails$.next(user.uid);
 
     return data;
   }
@@ -113,6 +116,7 @@ export class AuthService {
     };
 
     await this.dataService.write('users', data, {merge: true});
+    this.updateUserDetails$.next(user.uid);
 
     return user as UserData;
   }

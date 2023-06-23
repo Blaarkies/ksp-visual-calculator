@@ -148,7 +148,8 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
               this.commnetUniverseBuilderService.updateDifficultySetting(details));
         },
       }),
-      this.hudService.createActionOptionTutorial(GameStateType.CommnetPlanner),
+      this.hudService.createActionOptionTutorial(GameStateType.CommnetPlanner,
+        () => firstValueFrom(this.commnetUniverseBuilderService.buildStockState())),
       this.hudService.createActionOptionManageSaveGames(ref => {
           let component = ref.componentInstance;
           component.context = GameStateType.CommnetPlanner;

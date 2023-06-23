@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -20,17 +21,19 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { filter, fromEvent, map, Subject, takeUntil } from 'rxjs';
 import { ControlMetaNumber } from '../../../common/domain/input-fields/control-meta-number';
 
+export type WidthClass = 'small' | 'normal';
+
 @Component({
   selector: 'cp-input-number',
   standalone: true,
   imports: [
+    CommonModule,
     MatMenuModule,
     MatSliderModule,
     InputFieldComponent,
   ],
   templateUrl: './input-number.component.html',
   styleUrls: ['./input-number.component.scss'],
-  encapsulation: ViewEncapsulation.None,
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => InputNumberComponent),
@@ -47,6 +50,7 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
   @Input() min = 0;
   @Input() max = 100;
   @Input() factor = 2;
+  @Input() widthClass: WidthClass = 'normal';
 
   @Input() set controlMeta(value: ControlMetaNumber) {
     Object.entries(value).forEach(([k, v]) => this[k] = v);
