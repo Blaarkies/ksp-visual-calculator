@@ -1,23 +1,13 @@
 import * as fsp from 'fs/promises';
 import * as glob from 'glob';
-import { createInterface } from 'readline';
-
-let readline = createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
 
 export async function readFile(path: string): Promise<any> {
   return fsp.readFile(
     path,
     {encoding: 'utf8'})
+    // remove zero-width-no-break-space at start of text
+    .then(text => text.replace(/[\u200B-\u200D\uFEFF]/g, ''))
     .catch(e => console.error(e));
-}
-
-export async function promptUser(question: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    readline.question(question, answer => resolve(answer));
-  });
 }
 
 export async function writeToFile(fileName: string, payload: string): Promise<void> {
