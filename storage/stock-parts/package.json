@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "run": "npx ts-node src/mining-station/create-parts-for-isru-widget.ts"
+    "create-parts-for-isru-widget": "npx ts-node src/mining-station/create-parts-for-isru-widget.ts"
   },
   "dependencies": {
     "glob": "^8.0.3",

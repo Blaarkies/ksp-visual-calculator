@@ -1,12 +1,8 @@
 import {
-  config,
-  reduce,
-} from 'rxjs';
-import { withoutTranslationPart } from '../domain/common';
-import {
   Configurator,
   ConfiguratorEvents,
 } from '../configurator';
+import { withoutTranslationPart } from '../domain/common';
 import {
   ExtractorConfig,
   SfsPartStructure,
@@ -182,11 +178,6 @@ let configIsruPartsOnly: ExtractorConfig = {
       ],
     },
     blacklist: {
-      folders: [
-        // 'adapterTanks',
-        // 'Aero',
-        // 'Structural',
-      ],
       files: ['Mk3-ShuttleAdapter.cfg'],
       tags: [
         'remove',

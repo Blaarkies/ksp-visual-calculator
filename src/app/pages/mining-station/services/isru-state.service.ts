@@ -36,7 +36,7 @@ export class IsruStateService extends AbstractBaseStateService {
       engineerBonus: this.miningBaseService.engineerBonus,
       activeConverters: this.miningBaseService.activeConverters,
       craftPartGroups: this.miningBaseService.partSelection
-        ?.map(({item, count}) => ({id: item.label, count})),
+        ?.map(({item, count}) => ({id: item.id, count})),
     };
   }
 

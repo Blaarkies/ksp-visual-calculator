@@ -61,4 +61,4 @@ interface FilterDomains {
 
 export type CustomFn = (fileText: string, parsed: unknown, path: string) => boolean;
 
-export type TransformationFunction = (cfgStructure: SfsPartStructure, path: string) => {};
+export type TransformationFunction = (parsed: SfsPartStructure, path: string) => unknown;

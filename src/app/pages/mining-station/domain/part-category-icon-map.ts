@@ -10,4 +10,6 @@ export let categoryIconMap = new Map<string, string>([
   ['fuel-cell', Icons.FuelCell],
   ['battery', Icons.Battery],
   ['resource-tank', Icons.Fuel],
+  ['resource-tank-ore', Icons.Ore],
+  ['resource-tank-fuel', Icons.Fuel],
 ]);

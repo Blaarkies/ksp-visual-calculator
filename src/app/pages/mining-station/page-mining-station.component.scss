@@ -35,7 +35,8 @@
     }
   // tablet
   @media screen and (max-width: variables.$query-tablet-width) {
-    grid-template-columns: auto auto;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
   }
 
   // mobile

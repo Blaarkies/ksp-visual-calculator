@@ -175,8 +175,6 @@ export class Configurator {
     }
   }
 
-  private calls = 0;
-
   emitEvent = new EventEmitter();
 
   constructor(config: ExtractorConfig = {outputMode: 'one-file', filter: {}}) {
@@ -187,11 +185,6 @@ export class Configurator {
   private async callMenu(questions: QuestionCollection,
                    initialAnswers: ExtractorConfig,
                    overrideAction?: MenuAction) {
-    if (this.calls++ > 100) {
-      console.error('loop 100 times');
-      return;
-    }
-
     let action = overrideAction ?? this.questionActionMap.get(questions);
     let answers = await inquirer.prompt(questions, initialAnswers);
     action(answers);

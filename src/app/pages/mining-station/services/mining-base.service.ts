@@ -111,10 +111,8 @@ export class MiningBaseService {
     this.updateActiveConverters(state.activeConverters ?? []);
 
     let parts = await firstValueFrom(this.cacheService.miningParts$);
-    let partList = state.craftPartGroups.map(g => {
-      let matchPart = parts.find(p => p.label === g.id);
-      return new Group(matchPart, g.count);
-    });
+    let partsMap = new Map<string, CraftPart>(parts.map(p => [p.id, p]));
+    let partList = state.craftPartGroups.map(g => new Group(partsMap.get(g.id), g.count));
     this.updatePartList(partList);
     this.updateStatisticsMap(null);
 

@@ -31,10 +31,12 @@ interface JsonPartProperties {
 }
 
 interface CommonProperties {
+  id: string;
   label: string;
   category: PartCategory;
   cost: number;
   mass: number;
+  tags: string[];
 }
 
 export interface ResourceProperties {

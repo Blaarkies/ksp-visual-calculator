@@ -1,11 +1,13 @@
 import { AnimationEvent } from '@angular/animations';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import {
+  FlexibleConnectedPositionStrategy,
   Overlay,
   OverlayConfig,
   OverlayContainer,
   OverlayModule,
   OverlayRef,
+  ViewportRuler,
 } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
@@ -101,6 +103,15 @@ export class InputSectionSelectionListComponent
     this.sections.forEach(s => s.icon = value.get(s.label));
   }
 
+  @Input() set sectionLabels(value: Map<string, string>) {
+    if (!value) {
+      this.sectionLabelsMap = null;
+      return;
+    }
+    this.sectionLabelsMap = value;
+    this.sections.forEach(s => s.label = value.get(s.label));
+  }
+
   @Input() set options(value: Option[]) {
     this.itemsList = value;
     this.checkSelectedItems();
@@ -114,12 +125,18 @@ export class InputSectionSelectionListComponent
   @ViewChild('input') input: ElementRef<HTMLInputElement>;
   @ViewChild('handset', {static: true}) handset: TemplateRef<any>;
 
+  @ViewChild('origin', {static: true}) origin: TemplateRef<any>;
+
   textFieldContainer: HTMLElement;
   minWidthPx: number;
   controlSearch = new FormControl('', {});
   sections: ExpandList[] = [];
   filtered$: Observable<Option[]>;
-  positionLeftCenter = Common.createConnectionPair('↙', '↖');
+  position = [
+    Common.createConnectionPair('↙', '↖')[0],
+    Common.createConnectionPair('↖', '↙')[0],
+    Common.createConnectionPair('←', '←')[0],
+  ];
   isOpenOverlay = false;
   isOpenDesktop = false;
   isOpenHandsetOverlay = false;
@@ -135,6 +152,7 @@ export class InputSectionSelectionListComponent
 
   private itemsList: Option[] = null;
   private iconsMap: Map<string, string>;
+  private sectionLabelsMap: Map<string, string>;
   private destroy$ = new Subject<void>();
   private unsubscribeClickTextField: () => void;
 
@@ -161,10 +179,20 @@ export class InputSectionSelectionListComponent
     this.filtered$ = searchQuery$
       .pipe(
         distinctUntilChanged(),
-        map(query => !query
-          ? null
-          : this.itemsList.sortByRelevance(item =>
-            item.label.relevanceScore(query), 1)));
+        map(query => {
+          if (!query) {
+            return null;
+          }
+          let scoredList = this.itemsList.map(item => {
+            let score = 4 * item.label.relevanceScore(query)
+              + 2 * item.section.relevanceScore(query)
+              + item.searches.sum(tag => tag.relevanceScore(query)).coerceAtMost(10);
+            return {item, score};
+          });
+
+          return scoredList.sortByRelevance(({score}) => score, 1)
+            .map(({item}) => item);
+        }));
   }
 
   ngAfterViewInit() {
@@ -186,11 +214,10 @@ export class InputSectionSelectionListComponent
 
   private checkSelectedItems() {
     let selectionList = this.value?.map(o => o.value);
-    this.itemsList
-      ?.forEach(item => {
-        let isSelectedItem = selectionList?.includes(item.value);
-        item.checked = isSelectedItem;
-      });
+    this.itemsList?.forEach(item => {
+      let isSelectedItem = selectionList?.includes(item.value);
+      item.checked = isSelectedItem;
+    });
   }
 
   registerOnChange(fn: (value: Option[]) => Option[]) {
@@ -224,6 +251,7 @@ export class InputSectionSelectionListComponent
       return;
     }
     this.isOpenDesktop = false;
+    this.controlSearch.reset();
   }
 
   closeOverlay(event: AnimationEvent) {
@@ -324,7 +352,7 @@ export class InputSectionSelectionListComponent
       .entries();
     return Array.from(entries)
       .map(([k, v]) => new ExpandList(
-        k,
+        this.sectionLabelsMap?.get?.(k) ?? k,
         v,
         v.length <= this.preOpenSectionThreshold,
         this.iconsMap?.get(k)));

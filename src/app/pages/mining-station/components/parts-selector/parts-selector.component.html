@@ -6,6 +6,7 @@
     [formControl]="controlSelectedParts"
     [options]="parts$ | async"
     [sectionIcons]="sectionIcons$ | async"
+    [sectionLabels]="sectionLabels"
     ></cp-input-section-selection-list>
 
   <ng-container *ngIf="controlEntities$ | async as controlItems">

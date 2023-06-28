@@ -40,8 +40,9 @@
 <ng-template
   cdkConnectedOverlay
   [cdkConnectedOverlayOrigin]="origin"
-  [cdkConnectedOverlayPositions]="positionLeftCenter"
+  [cdkConnectedOverlayPositions]="position"
   [cdkConnectedOverlayOpen]="isOpenOverlay"
+  [cdkConnectedOverlayMinHeight]="360"
   (overlayOutsideClick)="close($event)"
 >
   <div class="desktop-layout"

@@ -102,13 +102,21 @@ function getPosition(direction: DirectionString): OverlayPositions[] {
       return ['start', 'bottom'];
     case '↘':
       return ['end', 'bottom'];
+    case '←':
+      return ['start', 'center'];
+    case '→':
+      return ['end', 'center'];
+    case '↑':
+      return ['center', 'start'];
+    case '↓':
+      return ['center', 'bottom'];
     default:
       return getPosition('↖');
   }
 }
 
 /** Visual interface to easily setup directional properties */
-type DirectionString = '↖' | '↙' | '↘' | '↗';
+type DirectionString = '↖' | '↙' | '↘' | '↗' | '←' | '→' | '↑' | '↓';
 type OverlayPositions = OriginConnectionPosition['originX']
   | OriginConnectionPosition['originY']
   | OverlayConnectionPosition['overlayX']

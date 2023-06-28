@@ -34,6 +34,7 @@ import { StockEntitiesCacheService } from '../../../../services/stock-entities-c
 import { ControlItem } from '../../domain/control-item';
 import { CraftPart } from '../../domain/craft-part';
 import { categoryIconMap } from '../../domain/part-category-icon-map';
+import { categoryLabelMap } from '../../domain/part-category-label-map';
 import { MiningBaseService } from '../../services/mining-base.service';
 
 @Component({
@@ -62,7 +63,8 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
 
   parts$: Observable<Option<CraftPart>[]>;
   sectionIcons$: Observable<Map<string, string>>;
-  controlSelectedParts = new FormControl([], {});
+  sectionLabels = categoryLabelMap;
+  controlSelectedParts = new FormControl<Option<CraftPart>[]>([], {});
 
   private selectedGroups: Group<CraftPart>[];
   private stopControls$ = new Subject<void>();
@@ -75,11 +77,13 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
     let miningParts$ = cacheService.miningParts$;
     let partsOptions$: Observable<Option<CraftPart>[]> = miningParts$.pipe(
       map(parts => parts.map(p => ({
+        id: p.id,
         label: p.label,
         value: p,
-        searches: [p.category],
+        searches: p.tags,
         section: p.category,
-      }))),
+      }))
+        .sort((a, b) => a.section.localeCompare(b.section))),
       shareReplay(1));
 
     this.parts$ = partsOptions$;
@@ -179,6 +183,9 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
     let controlEntities = this.controlEntities$.value;
     controlEntities.splice(index, 1);
     this.controlEntities$.next(controlEntities);
+    this.controlSelectedParts.setValue(
+      this.controlSelectedParts.value.filter(option => option.value !== entry.value),
+      {emitEvent: false});
 
     this.eventUpdate();
   }

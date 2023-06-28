@@ -66,7 +66,7 @@ export class HudService {
       'Calculates CommNet ranges'),
     new ActionOption(
       'ISRU Mining Station',
-      Icons.Harvester,
+      Icons.Ore,
       {route: UsableRoutes.MiningStation},
       'Solves and balances the requirements of a mining base'),
 
