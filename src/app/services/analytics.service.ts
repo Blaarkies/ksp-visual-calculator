@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
+import {
+  Analytics,
+  logEvent,
+  setAnalyticsCollectionEnabled,
+} from '@angular/fire/analytics';
 import { environment } from '../../environments/environment';
 import {
   AnalyticsEventName,
   EventLogs,
 } from './domain/event-logs';
 import { ThrottledEvents } from './domain/throttled-events';
-
-let localStorageKeys = {
-  doNotTrack: 'ksp-visual-calculator-user-opted-out-of-tracking',
-};
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({providedIn: 'root'})
 export class AnalyticsService {
@@ -16,30 +18,28 @@ export class AnalyticsService {
   isTracking: boolean;
   private throttledEvents = new ThrottledEvents(this);
 
-  constructor() {
-    let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
-    if (optedOut?.toBoolean()) {
+  constructor(private localStorageService: LocalStorageService,
+              private analytics: Analytics) {
+    let optedOut = localStorageService.hasDoNotTrack();
+    if (optedOut) {
       this.isTracking = false;
       return;
     }
 
-    this.setupAnalytics();
-  }
-
-  private setupAnalytics() {
     this.isTracking = true;
   }
 
   setActive(isTracking: boolean) {
     if (this.isTracking === false) {
-      this.setupAnalytics();
+      this.isTracking = true;
     }
 
     this.logEvent(`Set tracking ${isTracking.toString('on')}`, {category: EventLogs.Category.Privacy});
     setTimeout(() => {
       // Wait for previous event to finish sending before turning off
+      setAnalyticsCollectionEnabled(this.analytics, isTracking);
       this.isTracking = isTracking;
-      localStorage.setItem(localStorageKeys.doNotTrack, (!isTracking).toString());
+      this.localStorageService.setDoNotTrack(!isTracking);
     });
   }
 
@@ -49,7 +49,7 @@ export class AnalyticsService {
       environment: environment.production ? 'prod' : 'dev',
     };
     newDetails.environment === 'prod'
-      ? undefined
+      ? logEvent(this.analytics, name, newDetails)
       // tslint:disable-next-line:no-console
       : console.info('%c analytics.logEvent()', 'color: #9ff',
         name, newDetails);

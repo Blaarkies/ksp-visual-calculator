@@ -13,7 +13,6 @@ import { Icons } from '../common/domain/icons';
 import { HookIO } from '../common/domain/mat-dialog-handler/hook-io';
 import { GlobalStyleClass } from '../common/global-style-class';
 import { AccountDialogComponent } from '../overlays/account-dialog/account-dialog.component';
-import { AnalyticsDialogComponent } from '../overlays/analytics-dialog/analytics-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import { CreditsDialogComponent } from '../overlays/credits-dialog/credits-dialog.component';
 import {
@@ -30,14 +29,8 @@ import {
 import { AnalyticsService } from './analytics.service';
 import { AuthService } from './auth.service';
 import { EventLogs } from './domain/event-logs';
+import { LocalStorageService } from './local-storage.service';
 import { TutorialService } from './tutorial.service';
-
-let storageKeys = {
-  firstVisitDeprecated: 'ksp-visual-calculator-first-visit',
-  tutorialViewed: 'ksp-visual-calculator-tutorial-viewed',
-  analyticsViewed: 'ksp-visual-calculator-analytics-viewed',
-  privacyPolicyViewed: 'ksp-visual-calculator-privacy-policy-viewed',
-};
 
 @Injectable()
 export class HudService {
@@ -45,7 +38,8 @@ export class HudService {
   constructor(private dialog: MatDialog,
               private tutorialService: TutorialService,
               private analyticsService: AnalyticsService,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private localStorageService: LocalStorageService) {
   }
 
   navigationOptions: ActionOption[] = [
@@ -121,8 +115,8 @@ export class HudService {
         },
       },
       undefined,
-      !localStorage.getItem(storageKeys.privacyPolicyViewed),
-      () => localStorage.setItem(storageKeys.privacyPolicyViewed, true.toString())),
+      !this.localStorageService.hasViewedPrivacyPolicy(),
+      () => this.localStorageService.setPrivacyPolicyViewed()),
   ];
 
   createActionOptionManageSaveGames(hookIO: HookIO<ManageStateDialogComponent>): ActionOption {
@@ -185,8 +179,8 @@ export class HudService {
         },
       },
       undefined,
-      !localStorage.getItem(storageKeys.tutorialViewed),
-      () => localStorage.setItem(storageKeys.tutorialViewed, true.toString()));
+      !this.localStorageService.hasViewedTutorial(),
+      () => this.localStorageService.setTutorialViewed());
   }
 
   createActionOptionFaq(context: GameStateType) {

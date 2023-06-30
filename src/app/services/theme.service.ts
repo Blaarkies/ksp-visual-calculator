@@ -5,10 +5,10 @@ import {
   BehaviorSubject,
   map,
   Observable,
-  Subject,
 } from 'rxjs';
 import { AnalyticsService } from './analytics.service';
 import { EventLogs } from './domain/event-logs';
+import { LocalStorageService } from './local-storage.service';
 
 export enum ThemeTypeEnum {
   Light = 'light-theme',
@@ -20,9 +20,7 @@ enum ThemeOrigin {
   BrowserPreference,
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class ThemeService {
 
   get theme(): ThemeTypeEnum {
@@ -41,8 +39,6 @@ export class ThemeService {
   private _selectedTheme: ThemeTypeEnum;
   private readonly themeOriginMessage: string;
 
-  private userThemePreferenceKey = 'ksp-visual-calculator-user-theme-preference';
-
   private themeToggleMap = {
     [ThemeTypeEnum.Light]: ThemeTypeEnum.Dark,
     [ThemeTypeEnum.Dark]: ThemeTypeEnum.Light,
@@ -58,7 +54,8 @@ export class ThemeService {
 
   constructor(private analyticsService: AnalyticsService,
               private overlayContainer: OverlayContainer,
-              private snackBar: MatSnackBar) {
+              private snackBar: MatSnackBar,
+              private localStorageService: LocalStorageService) {
     let {theme, origin} = this.detectThemePreference();
 
     this.setNewTheme(theme);
@@ -78,7 +75,7 @@ export class ThemeService {
   }
 
   private detectThemePreference() {
-    let localPreference = localStorage.getItem(this.userThemePreferenceKey);
+    let localPreference = this.localStorageService.getTheme();
     if (localPreference && this.themes.includes(localPreference)) {
       this.theme = localPreference as ThemeTypeEnum;
       return {theme: this.theme, origin: ThemeOrigin.LocalStorage};
@@ -102,7 +99,7 @@ export class ThemeService {
     this.setThemeOnElement(document.body, theme);
     this.setThemeOnElement(this.overlayContainer.getContainerElement(), theme);
 
-    localStorage.setItem(this.userThemePreferenceKey, theme);
+    this.localStorageService.setTheme(theme);
     this.theme = theme;
   }
 
