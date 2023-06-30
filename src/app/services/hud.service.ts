@@ -181,7 +181,7 @@ export class HudService {
             .pipe(filter(ok => ok))
             .subscribe(() => this.tutorialService.startFullTutorial(
               gameStateType,
-              onBeforeCallback ?? (() => Promise.resolve())));
+              onBeforeCallback));
         },
       },
       undefined,

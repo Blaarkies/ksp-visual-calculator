@@ -33,9 +33,10 @@ import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-ind
 import { AnalyticsService } from '../../services/analytics.service';
 import { AuthService } from '../../services/auth.service';
 import { EventLogs } from '../../services/domain/event-logs';
-import { HudService } from '../../services/hud.service';
-import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
 import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
+import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
+import { GuidanceService } from '../../services/guidance.service';
+import { HudService } from '../../services/hud.service';
 import { AntennaSignalComponent } from './components/antenna-signal/antenna-signal.component';
 import {
   CraftDetailsDialogComponent,
@@ -85,7 +86,9 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
     private analyticsService: AnalyticsService,
     private hudService: HudService,
     private commnetStateService: CommnetStateService,
-    private commnetUniverseBuilderService: CommnetUniverseBuilderService) {
+    private commnetUniverseBuilderService: CommnetUniverseBuilderService,
+    guidanceService: GuidanceService,
+    ) {
     super();
 
     this.contextPanelDetails = this.getContextPanelDetails();
@@ -106,6 +109,10 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
       this.authService.signIn$)
       .pipe(takeUntil(this.destroy$))
       .subscribe(u => this.commnetStateService.handleUserSingIn(u));
+
+    guidanceService.openTutorialDialog(GameStateType.CommnetPlanner);
+    guidanceService.setSupportDeveloperSnackbar();
+    guidanceService.setSignUpDialog();
   }
 
   private getContextPanelDetails(): ActionPanelDetails {
@@ -205,6 +212,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
 
   editPlanet({body, details}) {
     this.commnetUniverseBuilderService.editCelestialBody(body, details);
+    this.commnetUniverseBuilderService.updateTransmissionLines();
   }
 
   trackSignal(index: number, item: AntennaSignal): string {

@@ -6,10 +6,10 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
+import { AUTO_SAVE_INTERVAL } from '../../../common/token';
 import { DataService } from '../../../services/data.service';
 import { AbstractBaseStateService } from '../../../services/domain/base-state.abstract.service';
 import { StateBase } from '../../../services/json-interfaces/state-base';
-import { AUTO_SAVE_INTERVAL } from '../domain/config';
 import { MiningBaseService } from './mining-base.service';
 import { StateIsru } from '../domain/state-isru';
 

@@ -1,6 +1,6 @@
 #### KSP Visual Calculator
 
-[Online tool](https://ksp-visual-calculator.blaarkies.com)
+[Website](https://ksp-visual-calculator.blaarkies.com)
 
 <a href="https://ksp-visual-calculator.blaarkies.com">
   <p align="center">
@@ -10,14 +10,15 @@
   </p>
 </a>
 
-## A tool for Kerbal Space Program
+## A calculator for Kerbal Space Program
 
 Helping players visualize and plan out missions in Kerbal Space Program.
-- [Delta-v Planner](#Delta-v-Planner), calculates how much delta-v is required to complete a mission with specific checkpoints
-- [CommNet Planner](#CommNet-Planner), solves the layouts used to build efficient communication networks
+- [Delta-v Planner](#Delta-v-Planner), calculates how much delta-v is required to complete a mission with your specified checkpoints
+- [CommNet Planner](#CommNet-Planner), simulates KerbNet signals with multiple craft to build efficient communication networks
+- [ISRU Mining Station Planner](#ISRU-Mining-Station-Planner), highlights potential issues in the design of a surface mining base
 
-KSP Visual Calculator is designed for use on desktop, tablet, and mobile. This allows playing Kerbal Space Program while also having your 
-mobile device guide you towards better mission designs.
+KSP Visual Calculator is designed for use on desktop, tablet, and mobile. This allows playing Kerbal Space Program while also using a 
+mobile device guide you towards great mission designs.
 
 ### Delta-v Planner
 
@@ -37,7 +38,7 @@ Each checkpoint can be configured with specific requirements:
 
 ### CommNet Planner
 
-This page imitates the map view from Kerbal Space Program, showing all planets, moons, and spacecraft.
+Simulates the map view from Kerbal Space Program, showing all planets, moons, and spacecraft.
 
 From here the user can drag planets/moons along their orbits, and spacecraft can be dragged to be anywhere on the map.
 
@@ -71,23 +72,12 @@ A red color line shows that the connection is very weak.
 
 ![Bad signal](./storage/red-line.jpg?raw=true "Bad signal")
 
+### ISRU Mining Station Planner
+
+Provides a sandbox environment where you can dream up any moon base design, and validate its resource production capabilities.
+
+Add all the parts that you plan on using, set the environment controls to match your intended location, and get immediate results.
+
+The error messages will guide you on fixing the issues your craft might encounter in real operation.
+
 #
-
-___
-
-## *Developer info*
-
-#### Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change
-any of the source files.
-
-#### Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag
-for a production build.
-
-#### Further help
-
-To get more help on the Angular CLI use `ng help` or go check out
-the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.

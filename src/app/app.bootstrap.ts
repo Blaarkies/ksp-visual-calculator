@@ -1,6 +1,7 @@
 import {
   FullscreenOverlayContainer,
   OverlayContainer,
+  OverlayRef,
 } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
@@ -28,6 +29,10 @@ import { provideRouter } from '@angular/router';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
+import {
+  AUTO_SAVE_INTERVAL,
+  USER_IDLE_TIME,
+} from './common/token';
 
 export const appRoot = AppComponent;
 export const appOptions: ApplicationConfig = {
@@ -57,5 +62,8 @@ export const appOptions: ApplicationConfig = {
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
     {provide: Document, useValue: document},
     {provide: Window, useValue: window},
+    {provide: Storage, useValue: localStorage},
+    {provide: AUTO_SAVE_INTERVAL, useValue: 10e3},
+    {provide: USER_IDLE_TIME, useValue: 30e3}
   ],
 };

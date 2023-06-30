@@ -21,6 +21,7 @@ import { HudComponent } from '../../components/hud/hud.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
 import { AuthService } from '../../services/auth.service';
+import { GuidanceService } from '../../services/guidance.service';
 import { HudService } from '../../services/hud.service';
 import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
 import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
@@ -67,6 +68,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
     private dvStateService: DvStateService,
     private dvUniverseBuilderService: DvUniverseBuilderService,
     private travelService: TravelService,
+    guidanceService: GuidanceService,
   ) {
     super();
 
@@ -81,6 +83,10 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
       this.authService.signIn$)
       .pipe(takeUntil(this.destroy$))
       .subscribe(u => this.dvStateService.handleUserSingIn(u));
+
+    guidanceService.openTutorialDialog(GameStateType.DvPlanner);
+    guidanceService.setSupportDeveloperSnackbar();
+    guidanceService.setSignUpDialog();
   }
 
   ngOnDestroy() {

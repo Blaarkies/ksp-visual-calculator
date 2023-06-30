@@ -11,17 +11,19 @@ import {
 } from 'rxjs';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
+import { AUTO_SAVE_INTERVAL } from '../../common/token';
 import { WithDestroy } from '../../common/with-destroy';
 import { InputSectionSelectionListComponent } from '../../components/controls/input-section-selection-list/input-section-selection-list.component';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
 import { AuthService } from '../../services/auth.service';
+import { EventService } from '../../services/event.service';
+import { GuidanceService } from '../../services/guidance.service';
 import { HudService } from '../../services/hud.service';
 import { CraftPartStatisticsComponent } from './components/craft-part-statistics/craft-part-statistics.component';
 import { IsruWarningsComponent } from './components/isru-warnings/isru-warnings.component';
 import { MiningBaseControlComponent } from './components/mining-base-control/mining-base-control.component';
 import { PartsSelectorComponent } from './components/parts-selector/parts-selector.component';
-import { AUTO_SAVE_INTERVAL } from './domain/config';
 import { IsruStateService } from './services/isru-state.service';
 import { MiningBaseService } from './services/mining-base.service';
 
@@ -42,7 +44,6 @@ import { MiningBaseService } from './services/mining-base.service';
     HudService,
     MiningBaseService,
     IsruStateService,
-    {provide: AUTO_SAVE_INTERVAL, useValue: 10e3},
   ],
   templateUrl: './page-mining-station.component.html',
   styleUrls: ['./page-mining-station.component.scss'],
@@ -57,6 +58,7 @@ export default class PageMiningStationComponent extends WithDestroy() implements
     private isruStateService: IsruStateService,
     private authService: AuthService,
     private hudService: HudService,
+    guidanceService: GuidanceService,
   ) {
     super();
 
@@ -67,6 +69,9 @@ export default class PageMiningStationComponent extends WithDestroy() implements
       this.authService.signIn$)
       .pipe(takeUntil(this.destroy$))
       .subscribe(u => this.isruStateService.handleUserSingIn(u));
+
+    guidanceService.setSupportDeveloperSnackbar();
+    guidanceService.setSignUpDialog();
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

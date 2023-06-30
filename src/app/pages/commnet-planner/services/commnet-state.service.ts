@@ -5,11 +5,11 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
+import { AUTO_SAVE_INTERVAL } from '../../../common/token';
 import { DataService } from '../../../services/data.service';
 import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
 import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
 import { StateCraft } from '../../../services/json-interfaces/state-craft';
-import { AUTO_SAVE_INTERVAL } from '../../mining-station/domain/config';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 

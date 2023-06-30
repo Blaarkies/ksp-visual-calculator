@@ -36,7 +36,9 @@ export class TutorialService {
               private document: Document) {
   }
 
-  async startFullTutorial(gameStateType: GameStateType, onBeforeCallback: () => Promise<unknown>) {
+  async startFullTutorial(gameStateType: GameStateType,
+                          onBeforeCallback: () => Promise<unknown>
+                            = () => Promise.resolve()) {
     this.analyticsService.logEvent('Start tutorial', {
       category: EventLogs.Category.Tutorial,
       context: gameStateType,

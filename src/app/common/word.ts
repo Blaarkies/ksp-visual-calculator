@@ -1,5 +1,5 @@
 // TODO: build from compressed asset
-export class Words {
+export class Word {
 
   static adjectives = [
     'adorable',
