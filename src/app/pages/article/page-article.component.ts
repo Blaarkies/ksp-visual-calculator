@@ -1,12 +1,29 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { filter, sampleTime, scan, skip, Subject, takeUntil, tap } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
-import { Router, RouterModule, Scroll } from '@angular/router';
-import { ThemeService } from '../../services/theme.service';
 import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import {
+  Router,
+  RouterModule,
+  Scroll,
+} from '@angular/router';
+import {
+  filter,
+  sampleTime,
+  scan,
+  skip,
+  Subject,
+  takeUntil,
+  tap,
+} from 'rxjs';
+import { WithDestroy } from '../../common/with-destroy';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'cp-page-intro',
@@ -21,7 +38,7 @@ import { MatInputModule } from '@angular/material/input';
   templateUrl: './page-article.component.html',
   styleUrls: ['./page-article.component.scss']
 })
-export class PageArticleComponent extends WithDestroy() implements OnInit, OnDestroy {
+export class PageArticleComponent extends WithDestroy() implements OnDestroy {
 
   calcDv = {
     result: 0,
@@ -35,7 +52,7 @@ export class PageArticleComponent extends WithDestroy() implements OnInit, OnDes
   };
   showSidebar = false;
   showNavbar = true;
-  scrollEvent$ = new Subject<number>()
+  scrollEvent$ = new Subject<number>();
 
   constructor(router: Router,
               private self: ElementRef,
@@ -73,15 +90,6 @@ export class PageArticleComponent extends WithDestroy() implements OnInit, OnDes
       .subscribe();
   }
 
-  ngOnInit() {
-    (Array.from(this.self.nativeElement.querySelectorAll(`section[id]`)) as HTMLElement[])
-      .map(e => e.querySelector('h1, h2, h3, h4, h5, h6').querySelector('a'))
-      .forEach((e: any) => {
-        let cssEncapsulationId = (Array.from(e.attributes) as any).find((a: any) => a.name.includes('_ngcontent-')).name;
-        e.innerHTML = createLinkSvgIcon(cssEncapsulationId);
-      });
-  }
-
   ngOnDestroy() {
     super.ngOnDestroy();
     this.scrollEvent$.complete();
@@ -101,15 +109,10 @@ export class PageArticleComponent extends WithDestroy() implements OnInit, OnDes
     if (!this.showSidebar) {
       return;
     }
-    let clickedOnSidebar = typedEvent.path.some(e => e.id === 'sidebar'
-      || e.id === 'sidebar-button');
+    let clickedOnSidebar = (<HTMLElement>typedEvent.target).closest('#sidebar,#sidebar-button');
     if (!clickedOnSidebar) {
       this.showSidebar = false;
     }
   }
 
-}
-
-function createLinkSvgIcon(cssEncapsulationId) {
-  return `<svg ${cssEncapsulationId} viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>`;
 }

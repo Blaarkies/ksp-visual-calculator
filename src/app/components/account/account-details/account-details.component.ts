@@ -216,7 +216,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       'Delete', {duration: 10e3, panelClass: GlobalStyleClass.SnackbarWarn})
       .onAction()
       .pipe(
-        switchMap(() => this.authService.deleteAccount(user)),
+        switchMap(() => this.authService.deleteAccount()),
         finalize(() => this.deletingAccount$.next(false)),
         takeUntil(this.destroy$))
       .subscribe(() => {

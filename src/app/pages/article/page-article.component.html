@@ -1,5 +1,4 @@
-<main (scroll)="updateNavbar($event)"
-      (pointerdown)="updateSidebar($event)">
+<main (scroll)="updateNavbar($event)" (pointerdown)="updateSidebar($event)">
 
   <nav class="top-nav" [class.translate-up]="!showNavbar">
     <a mat-button href="/dv-planner">Delta-v Calculator</a>
@@ -7,38 +6,6 @@
     <a mat-button href="/mining-station-planner">Mining Station Calculator</a>
     <i></i>
     <button mat-icon-button (click)="toggleTheme()">◐</button>
-    <button id="sidebar-button" mat-icon-button (click)="showSidebar = !showSidebar">≡</button>
-  </nav>
-
-  <nav id="sidebar"
-       class="sidebar-nav"
-       [class.translate-left]="showNavbar && showSidebar">
-    <div>
-      <span>Delta-v</span>
-      <a mat-button routerLink fragment="importance-of-dv">Why is delta-v an important measure?</a>
-      <a mat-button routerLink fragment="determine-total-dv-for-mission">Determining the total delta-v required for a
-        mission</a>
-      <a mat-button routerLink fragment="calculate-craft-dv">Calculating a craft's delta-v capability</a>
-      <a mat-button routerLink fragment="using-dv-efficiently">Using delta-v efficiently</a>
-      <a mat-button routerLink fragment="launch-from-kerbin">Launching into orbit from Kerbin</a>
-      <a mat-button routerLink fragment="launch-from-mun">Launching into orbit from Mun</a>
-      <a mat-button routerLink fragment="landing-mun">Landing on Mun</a>
-      <a mat-button routerLink fragment="orbital-maneuvers">Orbital Maneuvers</a>
-      <a mat-button routerLink fragment="interplanetary-transfers">Interplanetary Transfers</a>
-      <a mat-button routerLink fragment="gravity-assists-slingshots">Gravity Assist - Slingshot</a>
-      <a mat-button routerLink fragment="refueling-docking-infrastructure">Refueling by Docking to Infrastructure</a>
-    </div>
-
-    <div>
-      <span>CommNet</span>
-      <a mat-button routerLink fragment="communication-satellite-constellations">Communication satellite
-        constellations</a>
-      <a mat-button routerLink fragment="ground-based-relays">Ground based relays</a>
-      <a mat-button routerLink fragment="low-orbit-constellations">Low orbit constellations</a>
-      <a mat-button routerLink fragment="high-orbit-constellations">High orbit constellations</a>
-      <a mat-button routerLink fragment="primary-planetary-relays">Primary planetary relays</a>
-      <a mat-button routerLink fragment="remote-control-stations">Remote control stations</a>
-    </div>
   </nav>
 
   <div class="article-body">
@@ -101,9 +68,8 @@
         </section>
       </section>
 
-      <section id="importance-of-dv">
-        <h3>Why is delta-v an important measure?
-          <a class="link" routerLink fragment="importance-of-dv"></a></h3>
+      <section>
+        <h3>Why is delta-v an important measure?</h3>
         <p>
           Generally, spacecraft use their fuel to speed up to reach higher orbits, and also use fuel to slow down when
           moving to a lower orbit. Both of these maneuvers primarily change the craft's velocity, and knowing how much
@@ -151,10 +117,9 @@
         </section>
       </section>
 
-      <section class="column-dual" id="determine-total-dv-for-mission">
+      <section class="column-dual">
         <section>
-          <h3>Determining the total delta-v required for a mission
-            <a class="link" routerLink fragment="determine-total-dv-for-mission"></a></h3>
+          <h3>Determining the total delta-v required for a mission</h3>
           <p>
             Moving around in space while taking advantage of orbital mechanics lends itself to a systematic set of
             steps
@@ -214,10 +179,9 @@
         </aside>
       </section>
 
-      <section class="column-dual" id="calculate-craft-dv">
+      <section class="column-dual">
         <section>
-          <h3>Calculating a craft's delta-v capability
-            <a class="link" routerLink fragment="calculate-craft-dv"></a></h3>
+          <h3>Calculating a craft's delta-v capability</h3>
           <p>
             A rocket is a vehicle that uses fuel to propel itself in order to deliver a payload to some destination.
             This
@@ -315,9 +279,8 @@
         </aside>
       </section>
 
-      <section id="using-dv-efficiently">
-        <h3>Using delta-v efficiently
-          <a class="link" routerLink fragment="using-dv-efficiently"></a></h3>
+      <section>
+        <h3>Using delta-v efficiently</h3>
         <p>
           A craft's delta-v capability may be improved by adding more boosters, or by reducing the payload.
           Alternatively,
@@ -326,10 +289,9 @@
           in space flight where the more efficient methods seem counter-intuitive.
         </p>
 
-        <section class="column-dual" id="launch-from-kerbin">
+        <section class="column-dual">
           <section>
-            <h4>Launching into orbit from Kerbin
-              <a class="link" routerLink fragment="launch-from-kerbin"></a></h4>
+            <h4>Launching into orbit from Kerbin</h4>
             <span>A craft on the launch pad requires 2 conditions to reach a stable Kerbin orbit:</span>
             <ul>
               <li>An altitude above the atmosphere (70 km for Kerbin)</li>
@@ -366,9 +328,8 @@
           </aside>
         </section>
 
-        <section id="launch-from-mun">
-          <h4>Launching into orbit from Mun
-            <a class="link" routerLink fragment="launch-from-mun"></a></h4>
+        <section>
+          <h4>Launching into orbit from Mun</h4>
           <p>
             Launching into orbit from a planet/moon without an atmosphere does not require a gravity turn. The most
             efficient trajectory is to maximise horizontal velocity, while maintaining a minimum altitude as to avoid
@@ -378,10 +339,9 @@
           </p>
         </section>
 
-        <section class="column-dual" id="landing-mun">
+        <section class="column-dual">
           <section>
-            <h4>Landing on Mun
-              <a class="link" routerLink fragment="landing-mun"></a></h4>
+            <h4>Landing on Mun</h4>
             <p>
               Landing on any planet/moon without at atmosphere follows the same rules as launching from them, but in
               reverse. To efficiently land, first move the craft into a very low orbit, then reduce speed until the
@@ -411,10 +371,9 @@
           </aside>
         </section>
 
-        <section class="column-dual" id="orbital-maneuvers">
+        <section class="column-dual">
           <section>
-            <h4>Orbital maneuvers
-              <a class="link" routerLink fragment="orbital-maneuvers"></a></h4>
+            <h4>Orbital maneuvers</h4>
             <p>
               Maneuvers in orbit are generally less expensive where the velocity is slowest. Massive changes in
               orbital
@@ -441,10 +400,9 @@
           </aside>
         </section>
 
-        <section class="column-dual" id="interplanetary-transfers">
+        <section class="column-dual">
           <section>
-            <h4>Interplanetary transfers
-              <a class="link" routerLink fragment="interplanetary-transfers"></a></h4>
+            <h4>Interplanetary transfers</h4>
             <p>
               Players sending their first craft to Duna (or any other planet) are putting most of their skills and
               knowledge to the test. In addition, this is a great situation to learn more about delta-v efficiency. A
@@ -483,10 +441,9 @@
           </aside>
         </section>
 
-        <section class="column-dual" id="gravity-assists-slingshots">
+        <section class="column-dual">
           <section>
-            <h4>Gravity assists and slingshots
-              <a class="link" routerLink fragment="gravity-assists-slingshots"></a></h4>
+            <h4>Gravity assists and slingshots</h4>
             <p>
               When approaching a planet, a craft's speed measured relative to the planet, will be consistent between
               its
@@ -541,9 +498,8 @@
           </aside>
         </section>
 
-        <section id="refueling-docking-infrastructure">
-          <h4>Refueling by docking to infrastructure
-            <a class="link" routerLink fragment="refueling-docking-infrastructure"></a></h4>
+        <section>
+          <h4>Refueling by docking to infrastructure</h4>
           <p>
             While not directly influencing the delta-v capability of a craft, refueling can have an tremendous effect
             on the total delta-v available on the mission. This does require some form of "infrastructure" along the
@@ -625,9 +581,8 @@
         </p>
       </section>
 
-      <section id="communication-satellite-constellations">
-        <h3>Communication satellite constellations
-          <a class="link" routerLink fragment="communication-satellite-constellations"></a></h3>
+      <section>
+        <h3>Communication satellite constellations</h3>
         <p>
           Placing a formation of relay satellites in the correct orbits can maximize the potential range of a signal
           back
@@ -637,9 +592,8 @@
         </p>
       </section>
 
-      <section id="ground-based-relays">
-        <h4>Ground based relays
-          <a class="link" routerLink fragment="ground-based-relays"></a></h4>
+      <section>
+        <h4>Ground based relays</h4>
         <p>
           Early Kerbin launches can potentially run into signal issues as they launch eastward and lose line-of-sight
           to
@@ -651,10 +605,9 @@
         </p>
       </section>
 
-      <section class="column-dual" id="low-orbit-constellations">
+      <section class="column-dual">
         <section>
-          <h4>Low orbit constellations
-            <a class="link" routerLink fragment="low-orbit-constellations"></a></h4>
+          <h4>Low orbit constellations</h4>
           <p>
             It is beneficial to have chain of relays close to Kerbin. These provide an important link to maintaining
             permanent communication with ground based vehicles, planes, other craft in low orbit, and especially craft
@@ -667,9 +620,8 @@
         </aside>
       </section>
 
-      <section id="high-orbit-constellations">
-        <h4>High orbit constellations
-          <a class="link" routerLink fragment="high-orbit-constellations"></a></h4>
+      <section>
+        <h4>High orbit constellations</h4>
         <p>
           Placing 4 powerful relays in orbits beyond Mun can maintain a direct line-of-sight to its far side. This
           can help rovers stay in control before losing signal near a dangerous cliff. It is important that these
@@ -679,10 +631,9 @@
         <br>
       </section>
 
-      <section class="column-dual" id="primary-planetary-relays">
+      <section class="column-dual">
         <section>
-          <h4>Primary planetary relays
-            <a class="link" routerLink fragment="primary-planetary-relays"></a></h4>
+          <h4>Primary planetary relays</h4>
           <p>
             A powerful relay in orbit around Duna will provide a connection to local craft for only a portion of its
             orbit. It loses signal when behind Duna, and thus will not provide signal to the local craft.
@@ -709,9 +660,8 @@
         </aside>
       </section>
 
-      <section id="remote-control-stations">
-        <h4>Remote control stations
-          <a class="link" routerLink fragment="remote-control-stations"></a></h4>
+      <section>
+        <h4>Remote control stations</h4>
         <p>
           Crewed vehicles will always have some sort of control. A relay craft fitted with a
           <a href="https://wiki.kerbalspaceprogram.com/wiki/RC-001S_Remote_Guidance_Unit">RC-001S Remote Guidance

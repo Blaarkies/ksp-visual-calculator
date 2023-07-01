@@ -6,7 +6,9 @@ import { Injectable } from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
+  deleteUser,
   GoogleAuthProvider,
+  reload,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -166,14 +168,16 @@ export class AuthService {
     await signedInUser.reload();
   }
 
-  async deleteAccount(user: UserData): Promise<void> {
-    let signedInUser = await this.getSignedInUser();
+  async deleteAccount(): Promise<void> {
+    let signedInUser = this.auth.currentUser;
     await this.dataService.deleteAll('users');
     await this.dataService.deleteAll('states');
-    await signedInUser.delete().catch(e => {
-      if (e === AuthErrorCode.RequiresRecentLogin) {
-        this.snackBar.open('This action requires a recent sign in, try this again to complete');
-      }
-    });
+    await deleteUser(signedInUser)
+      .catch(e => {
+        if (e.toString().includes(AuthErrorCode.RequiresRecentLogin)) {
+          this.snackBar.open('Deleting your account requires a recent sign in, please login again to delete');
+        }
+      });
+    await signOut(this.auth);
   }
 }
