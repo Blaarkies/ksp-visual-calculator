@@ -7,14 +7,12 @@
     [options]="parts$ | async"
     [sectionIcons]="sectionIcons$ | async"
     [sectionLabels]="sectionLabels"
-    ></cp-input-section-selection-list>
+  ></cp-input-section-selection-list>
 
   <ng-container *ngIf="controlEntities$ | async as controlItems">
 
     <ng-container *ngIf="controlItems.length; else noSelection">
-      <ng-container *ngFor="let entry of controlItems;
-                   let i = index;
-                   trackBy: getEntryLabel">
+      <ng-container *ngFor="let entry of controlItems; let i = index; trackBy: getEntryLabel">
         <div @expandY class="part-row">
           <cp-input-number
             class="small-number-width"

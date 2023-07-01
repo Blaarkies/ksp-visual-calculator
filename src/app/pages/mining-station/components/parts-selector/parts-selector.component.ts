@@ -30,6 +30,8 @@ import { WithDestroy } from '../../../../common/with-destroy';
 import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
 import { Option } from '../../../../components/controls/input-section-selection-list/domain/option';
 import { InputSectionSelectionListComponent } from '../../../../components/controls/input-section-selection-list/input-section-selection-list.component';
+import { AnalyticsService } from '../../../../services/analytics.service';
+import { EventLogs } from '../../../../services/domain/event-logs';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
 import { ControlItem } from '../../domain/control-item';
 import { CraftPart } from '../../domain/craft-part';
@@ -70,8 +72,11 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
   private stopControls$ = new Subject<void>();
   private stopSetupValues$ = new Subject<void>();
 
-  constructor(private cacheService: StockEntitiesCacheService,
-              private miningBaseService: MiningBaseService) {
+  constructor(
+    private cacheService: StockEntitiesCacheService,
+    private miningBaseService: MiningBaseService,
+    private analyticsService: AnalyticsService,
+  ) {
     super();
 
     let miningParts$ = cacheService.miningParts$;
@@ -188,6 +193,10 @@ export class PartsSelectorComponent extends WithDestroy() implements OnDestroy {
       {emitEvent: false});
 
     this.eventUpdate();
+
+    this.analyticsService.logEventThrottled('Removed part via button', {
+      category: EventLogs.Category.MiningStation,
+    });
   }
 
   private eventUpdate() {

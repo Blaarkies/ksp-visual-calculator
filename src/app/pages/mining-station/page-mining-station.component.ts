@@ -11,13 +11,11 @@ import {
 } from 'rxjs';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
-import { AUTO_SAVE_INTERVAL } from '../../common/token';
 import { WithDestroy } from '../../common/with-destroy';
 import { InputSectionSelectionListComponent } from '../../components/controls/input-section-selection-list/input-section-selection-list.component';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
 import { AuthService } from '../../services/auth.service';
-import { EventService } from '../../services/event.service';
 import { GuidanceService } from '../../services/guidance.service';
 import { HudService } from '../../services/hud.service';
 import { CraftPartStatisticsComponent } from './components/craft-part-statistics/craft-part-statistics.component';
@@ -70,8 +68,8 @@ export default class PageMiningStationComponent extends WithDestroy() implements
       .pipe(takeUntil(this.destroy$))
       .subscribe(u => this.isruStateService.handleUserSingIn(u));
 
-    guidanceService.setSupportDeveloperSnackbar();
-    guidanceService.setSignUpDialog();
+    guidanceService.setSupportDeveloperSnackbar(this.destroy$);
+    guidanceService.setSignUpDialog(this.destroy$);
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

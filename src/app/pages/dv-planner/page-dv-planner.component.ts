@@ -85,8 +85,8 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
       .subscribe(u => this.dvStateService.handleUserSingIn(u));
 
     guidanceService.openTutorialDialog(GameStateType.DvPlanner);
-    guidanceService.setSupportDeveloperSnackbar();
-    guidanceService.setSignUpDialog();
+    guidanceService.setSupportDeveloperSnackbar(this.destroy$);
+    guidanceService.setSignUpDialog(this.destroy$);
   }
 
   ngOnDestroy() {

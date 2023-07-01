@@ -111,8 +111,8 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
       .subscribe(u => this.commnetStateService.handleUserSingIn(u));
 
     guidanceService.openTutorialDialog(GameStateType.CommnetPlanner);
-    guidanceService.setSupportDeveloperSnackbar();
-    guidanceService.setSignUpDialog();
+    guidanceService.setSupportDeveloperSnackbar(this.destroy$);
+    guidanceService.setSignUpDialog(this.destroy$);
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

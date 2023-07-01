@@ -81,13 +81,14 @@ export class GuidanceService extends WithDestroy() {
     this.localStorageService.setTutorialViewed();
   }
 
-  setSupportDeveloperSnackbar() {
+  setSupportDeveloperSnackbar(withDestroy$: Subject<void>) {
     this.stopSupportDeveloperSnackbar$.next();
     this.eventService.userIdle$
       .pipe(
         skip(1),
         skipWhile(() => this.eventService.hasActiveOverlay()),
         take(1),
+        takeUntil(withDestroy$),
         takeUntil(this.stopSupportDeveloperSnackbar$),
         takeUntil(this.destroy$))
       .subscribe(() => this.openSupportDeveloperSnackbar());
@@ -113,13 +114,14 @@ export class GuidanceService extends WithDestroy() {
     this.localStorageService.setSupportDeveloperSnackbarViewed();
   }
 
-  setSignUpDialog() {
+  setSignUpDialog(withDestroy$: Subject<void>) {
     this.stopSignUpDialog$.next();
     this.eventService.userIdle$
       .pipe(
         skip(1),
         skipWhile(() => this.eventService.hasActiveOverlay()),
         take(1),
+        takeUntil(withDestroy$),
         takeUntil(this.stopSignUpDialog$),
         takeUntil(this.destroy$))
       .subscribe(() => this.openSignUpDialog());

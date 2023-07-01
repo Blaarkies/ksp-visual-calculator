@@ -217,6 +217,10 @@ export class HudService {
             return;
           }
           await actionCallback();
+
+          this.analyticsService.logEvent('Used reset state', {
+            category: EventLogs.Category.State,
+          });
         },
       },
     );

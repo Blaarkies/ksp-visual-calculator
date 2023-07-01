@@ -52,6 +52,8 @@ import { Common } from '../../../common/common';
 import { Icons } from '../../../common/domain/icons';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { GlobalStyleClass } from '../../../common/global-style-class';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { EventLogs } from '../../../services/domain/event-logs';
 import { ExpandList } from './domain/expand-list';
 import { Option } from './domain/option';
 import { SelectionListComponent } from './selection-list/selection-list.component';
@@ -156,11 +158,14 @@ export class InputSectionSelectionListComponent
   private destroy$ = new Subject<void>();
   private unsubscribeClickTextField: () => void;
 
-  constructor(private renderer: Renderer2,
-              breakpointObserver: BreakpointObserver,
-              private overlay: Overlay,
-              private overlayContainer: OverlayContainer,
-              private viewContainerRef: ViewContainerRef) {
+  constructor(
+    private renderer: Renderer2,
+    breakpointObserver: BreakpointObserver,
+    private overlay: Overlay,
+    private overlayContainer: OverlayContainer,
+    private viewContainerRef: ViewContainerRef,
+    private analyticsService: AnalyticsService,
+  ) {
     super();
 
     this.isHandset$ = breakpointObserver.observe([
@@ -240,6 +245,11 @@ export class InputSectionSelectionListComponent
 
     this.writeValue(newValue);
     this.onChange && this.onChange(newValue);
+
+    this.analyticsService.logEventThrottled('Toggled part via menu', {
+      category: EventLogs.Category.MiningStation,
+      newState: option.checked,
+    });
   }
 
   close(event: MouseEvent) {

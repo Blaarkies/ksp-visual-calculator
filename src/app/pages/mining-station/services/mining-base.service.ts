@@ -6,6 +6,8 @@ import {
 } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { Group } from '../../../common/domain/group';
+import { AnalyticsService } from '../../../services/analytics.service';
+import { EventLogs } from '../../../services/domain/event-logs';
 import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { engineerBonusMap } from '../components/engineer-skill-selector/engineer-skill-selector.component';
@@ -33,7 +35,8 @@ export class MiningBaseService {
   partCountUpdated$ = new Subject<Group<CraftPart>>();
   statisticsMapUpdated$ = new Subject<void>();
 
-  constructor(private cacheService: StockEntitiesCacheService) {
+  constructor(private cacheService: StockEntitiesCacheService,
+              private analyticsService: AnalyticsService) {
   }
 
   destroy() {
@@ -82,6 +85,12 @@ export class MiningBaseService {
     }
 
     console.error('Part not found', part, this.partSelection);
+    this.analyticsService.logEvent('Part not found', {
+      category: EventLogs.Category.MiningStation,
+      id: part.id,
+      count,
+      partsTotal: this.partSelection.length,
+    });
   }
 
   updateStatisticsMap(value: StatisticsMapType) {

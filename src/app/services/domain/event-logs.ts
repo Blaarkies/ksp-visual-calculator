@@ -1,5 +1,6 @@
 class Category {
   static Tutorial = 'tutorial';
+  static MiningStation = 'mining-station';
   static DeltaV = 'deltav';
   static Craft = 'craft';
   static CelestialBody = 'celestialbody';
