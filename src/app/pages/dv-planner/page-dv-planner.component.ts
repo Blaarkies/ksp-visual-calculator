@@ -92,6 +92,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
   ngOnDestroy() {
     super.ngOnDestroy();
     this.travelService.unsubscribeFromComponent();
+    this.dvStateService.destroy();
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

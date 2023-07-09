@@ -1,6 +1,16 @@
-<div class="panel-layout frosted-glass" [@openCloseX]="isOpen" [@openCloseY]="isOpen">
+<div
+  class="panel-layout frosted-glass"
+  [@openCloseX]="isOpen"
+  [@openCloseY]="isOpen"
+  [attr.data-tutorial-msp-is-open]="isOpen"
+>
   <div class="panel-header">
-    <button class="button-with-icon" mat-button (click)="isOpen =! isOpen">
+    <button
+      class="button-with-icon"
+      mat-button
+      data-tutorial-toggle-msp
+      (click)="isOpen =! isOpen"
+    >
       <div>
         <mat-icon
           [svgIcon]="icons.CollapseRight"
@@ -43,21 +53,6 @@
     <cp-input-toggle class="checkbox-aerobraking"
                      label="Aerobraking"
                      [formControl]="aerobrakeControl"></cp-input-toggle>
-
-    <div class="plane-change-control"
-         matTooltip="Adds the cost of orbital plane changes">
-      <cp-input-number #planeChange
-                       class="hidden" style="transform: translateY(-1em);"
-                       [formControl]="planeChangeControl"
-                       [controlMeta]="planeChangeControlMeta"></cp-input-number>
-
-      <button mat-button
-              class="chip-button"
-              (click)="planeChange.focus()">
-        {{planeChangeControl.value}}%
-      </button>
-      <div class="text-white">Plane Change Cost</div>
-    </div>
 
     <div class="flight-situation"
          matTooltip="Set the default situation">

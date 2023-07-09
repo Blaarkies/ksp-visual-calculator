@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -69,7 +72,7 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   styleUrls: ['./page-commnet-planner.component.scss'],
   animations: [BasicAnimations.fade],
 })
-export default class PageCommnetPlannerComponent extends WithDestroy() {
+export default class PageCommnetPlannerComponent extends WithDestroy() implements OnDestroy {
 
   icons = Icons;
   contextPanelDetails: ActionPanelDetails;
@@ -113,6 +116,10 @@ export default class PageCommnetPlannerComponent extends WithDestroy() {
     guidanceService.openTutorialDialog(GameStateType.CommnetPlanner);
     guidanceService.setSupportDeveloperSnackbar(this.destroy$);
     guidanceService.setSignUpDialog(this.destroy$);
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.commnetStateService.destroy();
   }
 
   private getContextPanelDetails(): ActionPanelDetails {

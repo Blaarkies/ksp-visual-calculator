@@ -72,6 +72,12 @@ export default class PageMiningStationComponent extends WithDestroy() implements
     guidanceService.setSignUpDialog(this.destroy$);
   }
 
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.miningBaseService.destroy();
+    this.isruStateService.destroy();
+  }
+
   private getContextPanelDetails(): ActionPanelDetails {
     let options = [
       this.hudService.createActionOptionManageSaveGames(ref => {
@@ -95,11 +101,6 @@ export default class PageMiningStationComponent extends WithDestroy() implements
       color: 'orange',
       options,
     };
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-    this.miningBaseService.destroy();
   }
 
 }

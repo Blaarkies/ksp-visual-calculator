@@ -517,6 +517,20 @@ export class TutorialService {
       stages: [
         {
           callback: input => defer(() => {
+            let msp = this.document.querySelector(
+              'cp-maneuver-sequence-panel[data-tutorial-msp-is-open="true"]');
+            if (msp) {
+              return of(input);
+            }
+
+            let toggle = this.document.querySelector('[data-tutorial-toggle-msp]');
+            // Panel is not open. Ensure that it is open and visible to the user
+            (toggle as HTMLButtonElement).click();
+            return of(input);
+          }),
+        },
+        {
+          callback: input => defer(() => {
             let resetCheckpoints = this.document.querySelector('[data-tutorial-clear-dv]');
             (resetCheckpoints as HTMLDivElement).click();
             return of(input);

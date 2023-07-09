@@ -74,7 +74,6 @@ export abstract class AbstractBaseStateService {
     });
   }
 
-  // TODO: force a call on each page component
   destroy() {
     this.autoSaveStop$.next();
     this.autoSaveStop$.complete();
@@ -89,7 +88,7 @@ export abstract class AbstractBaseStateService {
       let imageFormatFix = state.state.replace(/.png/g, '.webp');
 
       let parsedState: StateContextual = JSON.parse(imageFormatFix);
-      this.id = state.id ?? state.name; // @fix v1.3.0:null check for ids did not previously exist
+      this.id = state.id ?? state.name; // @fix v1.3.0:null check for ids, old savegames used name
       this.name = state.name;
       this.setStatefulDetails(parsedState);
       buildStateResult = this.buildExistingState(imageFormatFix);
@@ -138,7 +137,9 @@ export abstract class AbstractBaseStateService {
       {merge: true})
       .catch((e: CpError) => {
         if (e.reason === 'no-user') {
-          console.error('No user is logged in for capturing this savegame');
+          if (!environment.production) {
+            console.error('No user is logged in for capturing this savegame');
+          }
           return;
         }
         throw e;
@@ -146,7 +147,7 @@ export abstract class AbstractBaseStateService {
   }
 
   async removeStateFromStore(name: string) {
-    // TODO: soft delete first
+    // TODO: soft delete savegames instead
     return this.dataService.delete('states', name)
       .catch(error => {
         this.snackBar.open(`Could not remove "${name}" from cloud storage`);
@@ -235,7 +236,8 @@ export abstract class AbstractBaseStateService {
     await firstValueFrom(this.loadState({
       id, name, timestamp: jsDate, context, version, state: newestState.state,
     }));
-    // todo: add snackbar queue service to stop message overriding each other
+
+    // TODO: Add snackbar queue service to stop messages overriding each other
     this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
 
