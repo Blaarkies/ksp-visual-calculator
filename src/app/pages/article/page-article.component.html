@@ -1,11 +1,16 @@
 <main (scroll)="updateNavbar($event)" (pointerdown)="updateSidebar($event)">
 
   <nav class="top-nav" [class.translate-up]="!showNavbar">
-    <a mat-button href="/dv-planner">Delta-v Calculator</a>
-    <a mat-button href="/commnet-planner">CommNet Calculator</a>
-    <a mat-button href="/mining-station-planner">Mining Station Calculator</a>
-    <i></i>
-    <button mat-icon-button (click)="toggleTheme()">◐</button>
+    <div class="nav-items-scroller">
+      <div class="nav-items">
+        <a mat-button href="/dv-planner">Delta-v Calculator</a>
+        <a mat-button href="/commnet-planner">CommNet Calculator</a>
+        <a mat-button href="/mining-station-planner">Mining Station Calculator</a>
+      </div>
+    </div>
+    <div class="nav-settings">
+      <button class="toggle-theme-button" mat-button (click)="toggleTheme()">◐</button>
+    </div>
   </nav>
 
   <div class="article-body">
