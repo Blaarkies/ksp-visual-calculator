@@ -25,4 +25,11 @@ export class DifficultySetting {
     return new DifficultySetting(difficulty.label, difficulty.rangeModifier, difficulty.dsnModifier);
   }
 
+  static matchObject(difficulty: DifficultySetting): DifficultySetting {
+    return DifficultySetting.All.find(d =>
+      d.rangeModifier === difficulty.rangeModifier
+      && d.dsnModifier === difficulty.dsnModifier
+      && d.label === difficulty.label);
+  }
+
 }

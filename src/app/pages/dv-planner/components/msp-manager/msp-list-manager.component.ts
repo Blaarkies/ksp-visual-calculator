@@ -27,9 +27,7 @@ import { MspListComponent } from '../msp-list/msp-list.component';
   ],
   templateUrl: './msp-list-manager.component.html',
   styleUrls: ['./msp-list-manager.component.scss'],
-  animations: [
-    BasicAnimations.height,
-  ],
+  animations: [BasicAnimations.height],
 })
 export class MspListManagerComponent {
 

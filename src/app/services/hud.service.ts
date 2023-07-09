@@ -73,10 +73,19 @@ export class HudService {
       'Blaarkies Hub',
       Icons.Blaarkies,
       {externalRoute: 'https://blaarkies.com/'},
-      'More tools made by Blaarkies'),
+      'More apps by Blaarkies'),
   ];
 
   infoOptions: ActionOption[] = [
+    new ActionOption('Profile', Icons.AccountSettings, {
+      action: () => {
+        this.analyticsService.logEvent('Call account dialog from menu', {
+          category: EventLogs.Category.Account,
+        });
+
+        this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+      },
+    }),
     new ActionOption('Credits', Icons.Credits, {
       action: () => {
         this.analyticsService.logEvent('Call Credits dialog', {
@@ -133,7 +142,7 @@ export class HudService {
       }, undefined, false, undefined,
       {
         unavailable$: this.authService.user$.pipe(map(user => user === null || !user?.isCustomer), startWith(true)),
-        tooltip: `Save games are only available after supporting on 'buymeacoffee.com/Blaarkies'`,
+        tooltip: `Savegames available to supporters on 'buymeacoffee.com/Blaarkies'`,
         action: async () => {
           let user = await firstValueFrom(this.authService.user$);
 

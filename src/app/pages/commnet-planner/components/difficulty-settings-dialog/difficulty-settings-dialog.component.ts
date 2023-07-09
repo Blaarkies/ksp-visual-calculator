@@ -1,16 +1,32 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
-import { InputFields } from '../../../../common/domain/input-fields/input-fields';
-import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
-import {MatButtonToggleGroup, MatButtonToggleModule} from '@angular/material/button-toggle';
-import { DifficultySetting } from './difficulty-setting';
-import { WithDestroy } from '../../../../common/with-destroy';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  MatButtonToggleGroup,
+  MatButtonToggleModule,
+} from '@angular/material/button-toggle';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntil } from 'rxjs';
-import {CommonModule} from "@angular/common";
-import {InputFieldListComponent} from "../../../../components/controls/input-field-list/input-field-list.component";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatButtonModule} from "@angular/material/button";
+import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
+import { InputFields } from '../../../../common/domain/input-fields/input-fields';
+import { WithDestroy } from '../../../../common/with-destroy';
+import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
+import { DifficultySetting } from './difficulty-setting';
 
 @Component({
   selector: 'cp-difficulty-settings-dialog',
@@ -35,7 +51,7 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
   inputFields = {
     rangeModifier: {
       label: 'Range Modifier',
-      control: new UntypedFormControl(this.data.rangeModifier ?? 1, [
+      control: new FormControl<number>(this.data.rangeModifier ?? 1, [
         Validators.required,
         Validators.min(.1),
         Validators.max(100)]),
@@ -44,7 +60,7 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
     },
     dsnModifier: {
       label: 'DSN Modifier',
-      control: new UntypedFormControl(this.data.dsnModifier ?? 1, [
+      control: new FormControl<number>(this.data.dsnModifier ?? 1, [
         Validators.required,
         Validators.min(0),
         Validators.max(100)]),
@@ -54,19 +70,24 @@ export class DifficultySettingsDialogComponent extends WithDestroy() implements 
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);
 
-  form = new UntypedFormArray(this.inputFieldsList.map(field => field.control));
+  form = new FormArray(this.inputFieldsList.map(field => field.control));
 
   constructor(private dialogRef: MatDialogRef<DifficultySettingsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DifficultySetting) {
     super();
     // Unselect buttonGroup toggle, because a form.valueChanges means this is now a custom difficulty
-    this.form.valueChanges
+    this.form
+      .valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.buttonGroup.writeValue(null));
   }
 
   ngOnInit() {
-    this.buttonGroup.writeValue(this.data);
+    let match = DifficultySetting.matchObject(this.data);
+    if (!match) {
+      return;
+    }
+    this.buttonGroup.writeValue(match);
   }
 
   submitDetails() {

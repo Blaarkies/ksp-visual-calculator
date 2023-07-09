@@ -14,10 +14,4 @@ export class SpriteList {
     skeleton2: 'halloween-skeleton-2.webp',
   };
 
-  static KspFree = {
-    box: 'ksp-free-1.png',
-    text: 'ksp-free-2.png',
-    epic: 'ksp-free-3.png',
-  };
-
 }

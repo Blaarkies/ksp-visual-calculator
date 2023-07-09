@@ -1636,6 +1636,17 @@ export class Word {
     'atmosphere analysis',
     'infrared telescope',
     'magnetometer boom',
+    'ember twin',
+    'ash twin',
+    'timber hearth',
+    'brittle hollow',
+    'giant\'s deep',
+    'dark bramble',
+    'attlerock',
+    'interloper',
+    'quantum',
+    'feldspar',
+    'hornfels',
   ];
 
 }

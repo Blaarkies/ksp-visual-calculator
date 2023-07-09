@@ -283,7 +283,7 @@ export class InputSectionSelectionListComponent
           this.open();
           return;
         }
-        
+
         if (e.type === 'click') {
           // firefox does not support pointerType
           this.open();

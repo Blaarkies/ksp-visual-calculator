@@ -116,6 +116,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     guidanceService.openTutorialDialog(GameStateType.CommnetPlanner);
     guidanceService.setSupportDeveloperSnackbar(this.destroy$);
     guidanceService.setSignUpDialog(this.destroy$);
+  }
 
   ngOnDestroy() {
     super.ngOnDestroy();

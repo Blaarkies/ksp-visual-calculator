@@ -12,8 +12,11 @@
   <div>{{deltaVTotal}} m/s</div>
 </div>
 
-<pre [@height]="!missionCheckpoints.length"
-     class="text-mute empty-state-msp">
+<pre
+  @height
+  *ngIf="!missionCheckpoints.length"
+  class="text-mute empty-state-msp"
+>
 No checkpoints selected.
 Start by adding your
 first checkpoint.
