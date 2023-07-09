@@ -126,7 +126,6 @@ export class InputSectionSelectionListComponent
 
   @ViewChild('input') input: ElementRef<HTMLInputElement>;
   @ViewChild('handset', {static: true}) handset: TemplateRef<any>;
-
   @ViewChild('origin', {static: true}) origin: TemplateRef<any>;
 
   textFieldContainer: HTMLElement;
@@ -280,10 +279,16 @@ export class InputSectionSelectionListComponent
 
     this.unsubscribeClickTextField = this.renderer
       .listen(elementToListen, 'click', (e: PointerEvent) => {
-        if (!e.pointerType) {
+        if (e.pointerType) {
+          this.open();
           return;
         }
-        this.open();
+        
+        if (e.type === 'click') {
+          // firefox does not support pointerType
+          this.open();
+          return;
+        }
       });
 
     this.minWidthPx = this.textFieldContainer.clientWidth;
