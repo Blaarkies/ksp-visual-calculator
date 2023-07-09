@@ -1,0 +1,12 @@
+.label-checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 0 10px;
+  user-select: none;
+
+  mat-list-item {
+    cursor: pointer;
+    pointer-events: visible;
+  }
+}

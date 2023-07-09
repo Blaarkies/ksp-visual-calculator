@@ -1,0 +1,49 @@
+.antenna-stats-layout {
+  margin-top: 8px;
+  overflow: hidden;
+  display: grid;
+  --gap: 6px;
+
+  >:nth-child(n + 2) {
+    border-top: 1px solid rgba(var(--color-rgb-border-simple), .5);
+    padding-top: var(--gap);
+    margin-top: var(--gap);
+  }
+
+  .number-stat {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .label-and-value {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+
+    mat-progress-bar {
+      height: 6px;
+    }
+  }
+
+  .number-line {
+    position: relative;
+
+    mat-progress-bar {
+      // cut an opening in the center to display text
+      --size: 16%;
+      --start: calc(50% - var(--size) * .5);
+      --end: calc(50% + var(--size) * .5);
+      clip-path: polygon(0 0, var(--start) 0, var(--start) 100%,
+        var(--end) 100%, var(--end) 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    div {
+      position: absolute;
+      top: -100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0 4px;
+    }
+  }
+}

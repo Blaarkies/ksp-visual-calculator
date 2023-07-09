@@ -1,7 +1,16 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {CommonModule} from "@angular/common";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
 
 @Component({
   selector: 'cp-credits-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
   templateUrl: './credits-dialog.component.html',
   styleUrls: ['./credits-dialog.component.scss'],
 })
@@ -37,6 +46,12 @@ export class CreditsDialogComponent {
       action: 'for interplanetary dv cost transfer calculations with',
       link: 'https://alexmoon.github.io/ksp/',
       product: 'Launch Window Planner',
+    },
+    {
+      creator: 'Ined',
+      action: 'for data on ISRU heat mechanics',
+      link: 'https://forum.kerbalspaceprogram.com/index.php?/topic/165362-an-optimizing-guide-for-mining-bases/',
+      product: 'Optimizing Guide for Mining Bases',
     },
   ];
 

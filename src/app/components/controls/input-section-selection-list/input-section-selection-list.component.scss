@@ -1,0 +1,43 @@
+.desktop-layout {
+  margin-top: -20px;
+}
+
+.handset-layout {
+  background-color: var(--color-background-card);
+  padding-right: 4px;
+  padding-top: 8px;
+  height: 100vh;
+
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: calc(100vw - 4px);
+
+  .search-header-container {
+    position: sticky;
+    top: 0;
+    padding-bottom: 8px;
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: max-content;
+  }
+
+  > :last-child {
+    margin-top: -20px;
+    overflow: scroll;
+  }
+}
+
+.pointer-clickable {
+  cursor: pointer;
+}
+
+.input-suffix {
+  height: 48px;
+  align-items: center;
+  justify-items: center;
+}
+
+.padding-right {
+  padding-right: 4px;
+}

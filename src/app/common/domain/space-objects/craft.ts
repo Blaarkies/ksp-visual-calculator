@@ -4,7 +4,7 @@ import { ImageUrls } from '../image-urls';
 import { CraftType } from './craft-type';
 import { Antenna } from '../antenna';
 import { Group } from '../group';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { SpaceObjectType } from './space-object-type';
 
 export class Craft extends SpaceObject {
@@ -13,7 +13,8 @@ export class Craft extends SpaceObject {
 
   get displayAltitude(): string {
     // performance impact on this function seems minimal, since it's called from inside an *ngIf
-    let soiParent = SpaceObjectContainerService.instance
+    // TODO: remove UniverseContainerInstance usages
+    let soiParent = UniverseContainerInstance.instance
       .getSoiParent(this.location);
 
     let distance = this.location.distance(soiParent.location) - soiParent.equatorialRadius;

@@ -22,7 +22,7 @@
 
 <!--TEMPLATES-->
 <ng-template #currentTab>
-  <div class="current-state-layout">
+  <div class="current-state-layout" *ngIf="nowState?.state">
     <div>
       <div>
         <div class="name-row-layout">
@@ -80,7 +80,7 @@
           <button class="button-loader"
                   mat-stroked-button
                   [matTooltip]="'Save now (auto-save occurs every 10 seconds)'"
-                  (click)="saveState(nowState)">
+                  (click)="saveState()">
             <mat-icon color="primary" [svgIcon]="icons.Save"></mat-icon>
           </button>
           <mat-progress-bar [@fade]
@@ -191,7 +191,7 @@
         <h3>No save games found</h3>
         <div>
           <span>Start by</span>
-          <button mat-button class="link" (click)="saveState(nowState)">saving</button>
+          <button mat-button class="link" (click)="saveState()">saving</button>
           <span>or</span>
           <button mat-button class="link" (click)="triggerImport()">importing</button>
           <span>your first save game</span>

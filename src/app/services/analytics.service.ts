@@ -1,77 +1,45 @@
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { AnalyticsEventName, EventLogs } from './event-logs';
-import { Subject, throttleTime } from 'rxjs';
-import { getApp } from '@angular/fire/app';
-import { Analytics, initializeAnalytics, logEvent, setAnalyticsCollectionEnabled } from '@angular/fire/analytics';
+import {
+  Analytics,
+  logEvent,
+  setAnalyticsCollectionEnabled,
+} from '@angular/fire/analytics';
+import { environment } from '../../environments/environment';
+import {
+  AnalyticsEventName,
+  EventLogs,
+} from './domain/event-logs';
+import { ThrottledEvents } from './domain/throttled-events';
+import { LocalStorageService } from './local-storage.service';
 
-let localStorageKeys = {
-  doNotTrack: 'ksp-visual-calculator-user-opted-out-of-tracking',
-};
-
-class ThrottledEvents {
-
-  private eventMap = new Map<AnalyticsEventName, Subject<any>>();
-
-  constructor(private analyticsService: AnalyticsService) {
-  }
-
-  addEvent(eventName: AnalyticsEventName, details: any, duration: number) {
-    let event$ = this.eventMap.get(eventName);
-    if (!event$) {
-      let subject$ = new Subject<any>();
-      this.eventMap.set(eventName, subject$);
-      subject$
-        .pipe(throttleTime(duration))
-        .subscribe(payload => this.analyticsService.logEvent(eventName.toString(), payload));
-      subject$.next(details);
-      return;
-    }
-
-    event$.next(details);
-  }
-
-  destroy() {
-    this.eventMap.forEach(value => value.complete());
-  }
-
-}
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class AnalyticsService {
 
   isTracking: boolean;
-  private analyticsInstance: Analytics;
   private throttledEvents = new ThrottledEvents(this);
 
-  constructor() {
-    let optedOut = localStorage.getItem(localStorageKeys.doNotTrack);
-    if (optedOut?.toBoolean()) {
+  constructor(private localStorageService: LocalStorageService,
+              private analytics: Analytics) {
+    let optedOut = localStorageService.hasDoNotTrack();
+    if (optedOut) {
       this.isTracking = false;
       return;
     }
 
-    this.setupAnalytics();
-  }
-
-  private setupAnalytics() {
-    this.analyticsInstance = initializeAnalytics(getApp());
     this.isTracking = true;
   }
 
   setActive(isTracking: boolean) {
     if (this.isTracking === false) {
-      this.setupAnalytics();
+      this.isTracking = true;
     }
 
     this.logEvent(`Set tracking ${isTracking.toString('on')}`, {category: EventLogs.Category.Privacy});
     setTimeout(() => {
       // Wait for previous event to finish sending before turning off
-      setAnalyticsCollectionEnabled(this.analyticsInstance, isTracking);
+      setAnalyticsCollectionEnabled(this.analytics, isTracking);
       this.isTracking = isTracking;
-      localStorage.setItem(localStorageKeys.doNotTrack, (!isTracking).toString());
+      this.localStorageService.setDoNotTrack(!isTracking);
     });
   }
 
@@ -81,7 +49,7 @@ export class AnalyticsService {
       environment: environment.production ? 'prod' : 'dev',
     };
     newDetails.environment === 'prod'
-      ? logEvent(this.analyticsInstance, name, newDetails)
+      ? logEvent(this.analytics, name, newDetails)
       // tslint:disable-next-line:no-console
       : console.info('%c analytics.logEvent()', 'color: #9ff',
         name, newDetails);

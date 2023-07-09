@@ -1,0 +1,30 @@
+<cp-universe-map #universeMap
+                 [allowEdit]="false"
+                 [orbits]="orbits$ | async"
+                 [planets]="planets$ | async"
+                 (startDrag)="selectCheckpoint($event)"
+                 (editPlanet)="editPlanet($event)">
+
+  <cp-mission-journey aboveOrbits
+                      class="no-pointer"
+                      [scale]="universeMap.camera.scale"
+                      [checkpoints]="checkpoints$ | async"
+                      [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
+  </cp-mission-journey>
+</cp-universe-map>
+
+<cp-hud
+  tooltip="This page handles Delta-v calculations, click the green menu for others"
+  [icon]="icons.DeltaV"
+  [contextPanelDetails]="contextPanelDetails"
+>
+  <div top class="screen-border-margin">
+    <cp-zoom-indicator></cp-zoom-indicator>
+  </div>
+  <cp-focus-jump-to-panel
+    class="all-pointer"
+    left
+    [focusables]="planets$ | async"
+  ></cp-focus-jump-to-panel>
+  <cp-maneuver-sequence-panel right class="all-pointer"></cp-maneuver-sequence-panel>
+</cp-hud>

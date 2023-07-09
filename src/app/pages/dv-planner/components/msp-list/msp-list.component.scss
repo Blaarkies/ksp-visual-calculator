@@ -1,0 +1,52 @@
+.list-layout {
+  max-height: 300px;
+  overflow-y: auto;
+
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+  transition: border .5s ease-out;
+
+  padding-top: 1em;
+
+  .divider {
+    border-bottom: 1px dotted #fff7;
+    padding: 10px;
+    margin: 0 20px;
+  }
+
+  &.border-transparent {
+    border-color: transparent;
+  }
+}
+
+.drag-list-layout {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+@media screen and (max-width: 600px), (max-height: 500px) {
+  .list-layout {
+    max-height: 200px;
+  }
+}
+
+.cdk-drag-preview {
+  background-color: #fff1;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px solid #fff7;
+  height: max-content !important;
+}
+
+.cdk-drag-animating {
+  transition: transform .3s ease-out;
+}
+
+.cdk-drop-list-dragging div:not(.cdk-drag-placeholder) {
+  transition: transform .3s ease-out;
+}
+
+.drag-placeholder {
+  min-height: 60px;
+  transition: transform .3s ease-out;
+}

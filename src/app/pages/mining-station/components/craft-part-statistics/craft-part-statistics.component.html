@@ -1,0 +1,45 @@
+<div class="text subtitle">{{title}}</div>
+
+<ng-container *ngIf="statistics?.results as results">
+
+  <table
+    class="stats-table"
+    @expandY
+    *ngIf="results.length; else noResults"
+  >
+    <tbody>
+    <tr *ngFor="let stat of results; trackBy: getLabel">
+      <td>
+        <mat-icon [svgIcon]="stat.icon" color="none"></mat-icon>
+      </td>
+      <td>{{stat.label}}</td>
+
+      <ng-container *ngIf="stat.type === 'excess' || stat.type === 'excess-reverse';
+                          else displayOnly">
+        <td class="floating-stat">
+          <cp-statistic-color-coded
+            [label]="stat.label"
+            [low]="stat.consume"
+            [high]="stat.produce"
+            [reverseSentiment]="stat.type === 'excess-reverse'"
+          ></cp-statistic-color-coded>
+        </td>
+      </ng-container>
+      <ng-template #displayOnly>
+        <td>
+          <div class="value-display">{{stat.valueDisplay}}</div>
+        </td>
+      </ng-template>
+
+      <td>{{stat.measure}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</ng-container>
+
+<ng-template #noResults>
+  <div @expandY class="text caption center empty-state">
+    No statistics to display
+  </div>
+</ng-template>

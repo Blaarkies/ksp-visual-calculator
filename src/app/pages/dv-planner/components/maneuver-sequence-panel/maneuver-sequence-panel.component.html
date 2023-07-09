@@ -1,0 +1,106 @@
+<div
+  class="panel-layout frosted-glass"
+  [@openCloseX]="isOpen"
+  [@openCloseY]="isOpen"
+  [attr.data-tutorial-msp-is-open]="isOpen"
+>
+  <div class="panel-header">
+    <button
+      class="button-with-icon"
+      mat-button
+      data-tutorial-toggle-msp
+      (click)="isOpen =! isOpen"
+    >
+      <div>
+        <mat-icon
+          [svgIcon]="icons.CollapseRight"
+          color="muted"
+          [@flipHorizontal]="!isOpen"
+        ></mat-icon>
+      </div>
+    </button>
+
+    <div class="text-white">Mission</div>
+
+    <button mat-button
+            class="button-with-icon"
+            [matTooltip]="'Preferences'"
+            matTooltipPosition="left"
+            (click)="toggleOptions()">
+      <div>
+        <mat-icon color="muted" [svgIcon]="icons.Configure"></mat-icon>
+      </div>
+    </button>
+  </div>
+
+  <div [@expandY]="isOptionsOpen && isOpen" class="options text-white">
+    <div class="text-white">Preferences</div>
+
+    <div class="error-margin-control">
+      <cp-input-number #errorMargin
+                       class="hidden" style="transform: translateY(-1em);"
+                       [formControl]="errorMarginControl"
+                       [controlMeta]="errorMarginControlMeta"></cp-input-number>
+
+      <button mat-button
+              class="chip-button"
+              (click)="errorMargin.focus()">
+        {{errorMarginControl.value}}%
+      </button>
+      <div class="text-white">Margin of Error</div>
+    </div>
+
+    <cp-input-toggle class="checkbox-aerobraking"
+                     label="Aerobraking"
+                     [formControl]="aerobrakeControl"></cp-input-toggle>
+
+    <div class="flight-situation"
+         matTooltip="Set the default situation">
+      <mat-menu #menuSituation="matMenu" class="menu-vertical buttons-left">
+        <button mat-button
+                *ngFor="let condition of availableConditions"
+                (click)="setPreferredCondition(condition)">
+          {{conditionReadableMap[condition]}}
+        </button>
+      </mat-menu>
+
+      <button mat-button
+              class="chip-button"
+              [matMenuTriggerFor]="menuSituation">
+        {{conditionReadableMap[preferredCondition$.value.toString()]}}
+      </button>
+
+      <div class="text-white">Flight Situation</div>
+    </div>
+
+    <div class="route-type"
+         matTooltip="Efficient routes may include extra destinations to decrease dv cost">
+      <mat-menu #menuRoute="matMenu" class="menu-vertical buttons-left">
+        <button mat-button
+                *ngFor="let routeType of routeTypes"
+                (click)="setRouteType(routeType)">
+          {{routeTypeReadableMap[routeType]}}
+        </button>
+      </mat-menu>
+
+      <button mat-button
+              class="chip-button"
+              [matMenuTriggerFor]="menuRoute">
+        {{routeTypeReadableMap[routeType$.value.toString()]}}
+      </button>
+
+      <div class="text-white">Route Type</div>
+    </div>
+  </div>
+
+  <cp-msp-list-manager #list
+                       [checkpoints]="checkpoints$ | async"
+                       [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
+                       (add)="addCheckpoint(list.isAddingCheckpoint)"
+                       (checkpointMode)="setCheckpointMode($event)"
+                       (resetAll)="resetMission()"
+                       (removeNode)="removeCheckpoint($event)"
+                       (updateNode)="updateCheckpoint($event)"
+                       (updateAll)="updateMission($event)">
+  </cp-msp-list-manager>
+</div>

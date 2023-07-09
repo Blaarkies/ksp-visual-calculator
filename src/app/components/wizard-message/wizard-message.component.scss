@@ -1,4 +1,8 @@
+@use '../../../styles/variables' as queries;
+
 :host {
+  margin: 8px;
+
   mat-card {
     box-shadow: var(--claymorph-faint) !important;
   }
@@ -24,24 +28,17 @@
     }
   }
 
-  @media screen and (max-width: 600px), (max-height: 500px) {
-    .layout {
-      .messages {
-        height: 100px;
-        overflow-y: auto;
-      }
+  @media screen and (max-width: queries.$query-mobile-width),
+  (max-height: queries.$query-mobile-height-landscape) {
+    width: 220px;
 
-      .header .dialog-title {
-        font-size: 1em;
-        line-height: unset;
-      }
+    mat-card-content {
+      padding-bottom: 0;
     }
-
-    width: 200px;
   }
 }
 
-.layout {
+.wizard-message-layout {
   display: grid;
   grid-template-columns: 1fr max-content;
   grid-template-areas:
@@ -75,6 +72,22 @@
     height: 75px;
     place-self: center;
     opacity: .75;
+  }
+
+  @media screen and (max-width: queries.$query-mobile-width),
+  (max-height: queries.$query-mobile-height-landscape) {
+    .messages {
+      height: 100px;
+      overflow-y: auto;
+      margin-inline: -10px;
+      font-size: 0.9em;
+      text-wrap: balance;
+    }
+
+    .header .dialog-title {
+      font-size: 1em;
+      line-height: unset;
+    }
   }
 }
 

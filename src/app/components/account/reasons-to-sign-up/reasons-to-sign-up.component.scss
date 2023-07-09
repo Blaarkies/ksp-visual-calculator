@@ -1,0 +1,26 @@
+.reasons-window {
+  overflow: hidden;
+
+  .reasons-container {
+    background-color: var(--color-background-description);
+    color: var(--color-text-primary);
+
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+
+    border: 1px solid #0003;
+    border-top: none;
+
+    padding: 10px 2ch 4px 1ch;
+  }
+
+  ul {
+    margin-left: 1em;
+  }
+
+  div {
+    margin-left: .3em;
+  }
+
+}
+

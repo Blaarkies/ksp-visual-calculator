@@ -30,6 +30,8 @@ declare global {
 
     toInt(this: number): number;
 
+    round(this: number, decimals?: number): number;
+
     sqrt(this: number): number;
 
     odd(this: number): boolean;
@@ -66,16 +68,22 @@ declare global {
 
     random(this: Array<T>): T;
 
-    sum(this: Array<number>): number;
+    equal(this: Array<T>, other: Array<T>, predicate?: (a: T, b: T) => boolean): boolean;
+
+    sum(this: Array<number | any>, selector?: (item: any) => number): number;
 
     add(this: Array<T>, fresh: T): Array<T>;
 
     replace(this: Array<T>, stale: T, fresh: T, addIfAbsent?: boolean): Array<T>;
 
-    /** Removes stale item from array, in-place */
+    /**
+     * Removes the stale element from this array in place and returns the modified array.
+     * @param stale The element to be removed.
+     * @returns This array.
+     */
     remove(this: Array<T>, stale: T): Array<T>;
 
-    flatMap(this: Array<T>, selectorCallback?: (item: T) => T): Array<any>;
+    flatMap<U = T>(this: Array<T>, selectorCallback?: (item: T) => U): U;
 
     distinct(this: Array<T>, indexCallback?: (parentItem: T, list: Array<T>) => number): Array<T>;
 
@@ -87,12 +95,6 @@ declare global {
 
     splitFilter(this: Array<T>, callback: (item: T) => number): Array<Array<T>>;
   }
-
-  // interface Object {
-  //   let<T, O>(this: T, callback: (it: T) => O): O;
-  //
-  //   also<T>(this: T, callback: (it: T) => void): T;
-  // }
 
   interface Boolean {
     toString(this: Boolean, variety?: 'yes' | 'good' | '✅' | 'on'): string;

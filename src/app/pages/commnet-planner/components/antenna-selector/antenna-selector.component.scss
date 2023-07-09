@@ -1,0 +1,15 @@
+mat-tab-header {
+  margin-bottom: 10px;
+}
+
+.antenna-selector-layout {
+  margin-top: 8px;
+  overflow: hidden;
+  display: grid;
+
+  .selected-antenna {
+    display: flex;
+    gap: 16px;
+  }
+
+}

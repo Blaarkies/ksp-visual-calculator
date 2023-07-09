@@ -27,8 +27,10 @@ Array.prototype.last = function (this: Array<any>): any {
   return this[this.length - 1];
 };
 
-Array.prototype.sum = function (this: Array<number>): number {
-  return this.reduce((total, c) => total + c, 0);
+Array.prototype.sum = function (this: Array<number>, selector?: (item: any) => number): number {
+  return selector
+    ? this.reduce((total, c) => total + selector(c), 0)
+    : this.reduce((total, c) => total + c, 0);
 };
 
 Array.prototype.add = function (this: Array<any>, fresh: any): Array<any> {
@@ -55,8 +57,9 @@ Array.prototype.remove = function (this: Array<any>, stale: any): Array<any> {
   return this;
 };
 
-Array.prototype.flatMap = function (this: Array<any>, selectorCallback: (item: any) => any
-  = item => item): Array<any> {
+Array.prototype.flatMap = function (
+  this: Array<any>,
+  selectorCallback: (item: any) => any = item => item): any {
   return this.reduce((sum, c) => [...sum, ...selectorCallback(c)], []);
 };
 
@@ -130,4 +133,21 @@ Array.prototype.splitFilter = function (this: Array<any>,
 Array.prototype.random = function (this: Array<any>): any {
   let randomIndex = Math.round(Math.random() * (this.length - 1));
   return this[randomIndex];
+};
+
+/**
+ * Checks whether elements are equal in both arrays
+ * @param other
+ * @param predicate
+ */
+Array.prototype.equal = function (this: Array<any>,
+                                  other: Array<any>,
+                                  predicate?: (a, b) => boolean): boolean {
+  if (this.length !== other.length) {
+    return false;
+  }
+
+  return this.every((e, i) => predicate
+    ? predicate(e, other[i])
+    : e === other[i]);
 };

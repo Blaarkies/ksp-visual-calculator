@@ -8,7 +8,7 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { Component } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { Vector2 } from '../vector2';
-import { SpaceObjectContainerService } from '../../../services/space-object-container.service';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { Common } from '../../common';
 import createSpy = jasmine.createSpy;
 
@@ -267,7 +267,7 @@ describe('Draggable class', () => {
         pageY: 0,
       }));
 
-      new SpaceObjectContainerService();
+      new UniverseContainerInstance();
       let fakePlanet = ineeda<SpaceObject>({
         showSoi: false,
         draggableHandle: ineeda<Draggable>({
@@ -275,8 +275,8 @@ describe('Draggable class', () => {
           addChild: createSpy(),
         })
       });
-      SpaceObjectContainerService.instance.celestialBodies$.next([fakePlanet]);
-      spyOn(SpaceObjectContainerService.instance, 'getSoiParent')
+      UniverseContainerInstance.instance.planets$.next([fakePlanet]);
+      spyOn(UniverseContainerInstance.instance, 'getSoiParent')
         .and.returnValue(fakePlanet);
 
       expect(fakePlanet.showSoi).toBe(false);

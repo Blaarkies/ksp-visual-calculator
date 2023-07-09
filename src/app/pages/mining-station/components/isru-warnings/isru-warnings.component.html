@@ -1,0 +1,10 @@
+<div *ngIf="(warnings$ | async) as warnings">
+  <div
+    @expandY
+    *ngFor="let warning of warnings; trackBy: trackLabel"
+    class="text warning-message"
+    [class]="warning.severity"
+  >
+    {{warning.message}}
+  </div>
+</div>

@@ -1,0 +1,10 @@
+@use '../../../../../styles/variables' as queries;
+
+.warning-message {
+  width: 37ch;
+  margin-top: 1ch;
+
+  @media screen and (max-width: queries.$query-mobile-width) {
+    width: unset;
+  }
+}

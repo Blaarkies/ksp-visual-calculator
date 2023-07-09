@@ -1,0 +1,106 @@
+@use 'src/styles/text' as textStyle;
+
+.display-details-layout {
+  .clickable {
+    cursor: pointer;
+    position: relative;
+
+    &:before {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      transition: .3s ease-out;
+    }
+
+    &:hover:before {
+      background-color: #fff4;
+    }
+  }
+
+  .avatar-layout {
+    margin-inline: auto;
+    margin-block: 16px;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    padding: 2px;
+
+    border: 1px solid var(--color-text-primary);
+    border-radius: 12px;
+
+    .premium-sash {
+      background-color: var(--color-background-panel-green-opaque);
+      box-shadow: 0 0 1px 1px white;
+      height: 16px;
+      width: max-content;
+      padding: 2px 40px 0 40px;
+      color: white;
+
+      transform: translate(-30%, 100%) rotate(-45deg);
+    }
+  }
+
+  .details-section {
+    display: flex;
+    gap: 8px;
+
+    .user-details {
+      display: grid;
+      grid-auto-rows: max-content;
+      gap: 10px;
+
+      > div {
+        width: auto;
+
+        & > div:first-child {
+          @extend .text-mute;
+        }
+
+        & > div:last-child {
+          margin-left: auto;
+        }
+      }
+
+      .bmac-button {
+        margin-left: 1ch;
+
+        .text-button {
+          display: flex;
+          align-items: center;
+        }
+
+        mat-icon {
+          height: 20px;
+        }
+      }
+
+      .analytics-info-section {
+        display: flex;
+        align-items: center;
+        gap: 1ch;
+
+        button {
+          border-radius: 50px;
+          min-height: unset;
+          min-width: unset;
+          padding: 4px;
+        }
+      }
+
+      .space-for-toggle {
+        margin-bottom: 2px;
+      }
+    }
+
+    .action-details {
+      min-width: max-content;
+      margin-top: 10px;
+      margin-left: auto;
+      border-radius: 50px;
+      padding: revert;
+      padding-top: 4px;
+    }
+  }
+}

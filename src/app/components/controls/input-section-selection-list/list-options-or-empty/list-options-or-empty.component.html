@@ -1,0 +1,14 @@
+  <ng-container *ngIf="!list || list.length; else empty">
+    <div @height>
+      <cp-selectable-list-item
+        *ngFor="let item of list; trackBy: trackByValue"
+        [item]="item"
+        (click)="selectItem.emit(item)"
+      ></cp-selectable-list-item>
+    </div>
+  </ng-container>
+
+
+  <ng-template #empty>
+    <mat-list-item @height>No results</mat-list-item>
+  </ng-template>

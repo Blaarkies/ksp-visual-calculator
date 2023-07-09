@@ -1,19 +1,19 @@
 import { ControlValueAccessor } from '@angular/forms';
 
-export class BasicValueAccessor implements ControlValueAccessor {
+export class BasicValueAccessor<T = any> implements ControlValueAccessor {
 
-  value: any;
-  onChange: (value: any) => void;
-  onTouched: (value: any) => void;
+  value: T;
+  onChange: (value: T) => void;
+  onTouched: (value: T) => void;
   disabled: boolean;
 
-  writeValue(value: any) {
+  writeValue(value: T) {
   }
 
-  registerOnChange(fn: any) {
+  registerOnChange(fn: (value: T) => T) {
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: () => void) {
   }
 
   setDisabledState(isDisabled: boolean) {

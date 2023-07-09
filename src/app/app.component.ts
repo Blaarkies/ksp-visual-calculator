@@ -1,51 +1,50 @@
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { WithDestroy } from './common/with-destroy';
-import { filter, Subject, takeUntil, timer } from 'rxjs';
-import { NavigationEnd, Router } from '@angular/router';
-import { PolicyDialogComponent } from './overlays/policy-dialog/policy-dialog.component';
-import { FeedbackDialogComponent } from './overlays/feedback-dialog/feedback-dialog.component';
-import { ThemeService } from './services/theme.service';
-import { AuthService } from './services/auth.service';
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+} from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import {
+  Subject,
+  takeUntil,
+  timer,
+} from 'rxjs';
+import { WithDestroy } from './common/with-destroy';
+import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/holiday-theme-sprite.component';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'cp-root',
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    HolidayThemeSpriteComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent extends WithDestroy() implements OnDestroy {
 
   showHolidayTheme = false;
-  unsubscribeHoliday$ = new Subject<void>();
 
-  constructor(dialog: MatDialog,
-              router: Router,
-              cdr: ChangeDetectorRef,
-              themeService: ThemeService,
-              authService: AuthService,
-              matIconRegistry: MatIconRegistry,
-              domSanitizer: DomSanitizer) {
+  private unsubscribeHoliday$ = new Subject<void>();
+
+  constructor(
+    cdr: ChangeDetectorRef,
+    themeService: ThemeService,
+    matIconRegistry: MatIconRegistry,
+    domSanitizer: DomSanitizer,
+  ) {
     super();
 
-
-      matIconRegistry.addSvgIconSet(
-        domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
-
+    matIconRegistry.addSvgIconSet(
+      domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
 
     themeService.logThemeOrigin();
-
-    let specialRoutes = {
-      '/policy': () => dialog.open(PolicyDialogComponent),
-      '/feedback': () => dialog.open(FeedbackDialogComponent),
-    };
-
-    router.events
-      .pipe(
-        filter(e => e instanceof NavigationEnd),
-        takeUntil(this.destroy$))
-      .subscribe((e: NavigationEnd) => specialRoutes[e.url]?.());
 
     timer(30e3, 300e3)
       .pipe(
@@ -53,16 +52,18 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
         takeUntil(this.destroy$))
       .subscribe(() => {
         this.showHolidayTheme = false;
-        cdr.detectChanges();
+        // cdr.detectChanges();
         this.showHolidayTheme = true;
       });
   }
 
   ngOnDestroy() {
-    super.ngOnDestroy();
-
     this.unsubscribeHoliday$.next();
     this.unsubscribeHoliday$.complete();
   }
 
+  cancelHolidayTheme() {
+    this.unsubscribeHoliday$.next();
+    this.unsubscribeHoliday$.complete();
+  }
 }

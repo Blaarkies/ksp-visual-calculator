@@ -1,0 +1,32 @@
+@use '../../../../../styles/variables' as queries;
+
+.list-styling {
+  --list-divider-color: #8883;
+
+  .header-list-option {
+    cursor: pointer;
+    user-select: none;
+
+    &:nth-child(n + 2) {
+      border-top: 1px solid var(--list-divider-color);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1ch;
+      width: auto;
+
+      > :last-child {
+        margin-left: auto;
+      }
+    }
+  }
+
+  .mobile-padding-holder {
+    @media screen and (max-width: queries.$query-mobile-width) {
+      border-top: 1px solid var(--list-divider-color);
+      height: 60px;
+    }
+  }
+}

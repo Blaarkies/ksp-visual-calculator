@@ -1,7 +1,7 @@
 .analytics-dialog-layout {
-  overflow: hidden;
   display: grid;
   gap: 20px;
+  text-wrap: balance;
 
   .usage-data-explained {
     max-width: 400px;

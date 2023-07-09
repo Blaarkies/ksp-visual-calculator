@@ -17,6 +17,11 @@ Number.prototype.pow = function (this: number, exponent: number = 2): number {
   return Math.pow(this, exponent);
 };
 
+Number.prototype.round = function (this: number, decimals = 0): number {
+  let factor = Math.pow(10, decimals);
+  return Math.round(this * factor) / factor;
+};
+
 Number.prototype.toInt = function (this: number): number {
   return Math.round(this);
 };
@@ -38,7 +43,7 @@ Number.prototype.lerp = function (this: number, other: number, ratio: number = .
   if (!ratio.between(0, 1)) {
     console.error(`ratio "${ratio}" must be between 0 and 1`);
   }
-  return this * ratio + other * (1 - ratio);
+  return ratio * (this - other) + other;
 };
 
 Number.prototype.odd = function (this: number): boolean {
@@ -75,19 +80,18 @@ Number.prototype.bitwiseIncludes = function (this: number, value: number): boole
 };
 
 Number.prototype.coerceAtLeast = function (this: number, threshold: number = 0): number {
-  return this < threshold ? threshold : this;
+  return Math.max(this, threshold);
 };
 
 Number.prototype.coerceAtMost = function (this: number, threshold: number = 0): number {
-  return this > threshold ? threshold : this;
+  return Math.min(this, threshold);
 };
 
 Number.prototype.coerceIn = function (this: number, lower: number = 0, upper: number = 1): number {
   if (lower > upper) {
     console.error(`lower "${lower}" must be less than or equal to upper "${upper}"`);
   }
-  let lowLimitedValue = this.coerceAtLeast(lower);
-  return lowLimitedValue.coerceAtMost(upper);
+  return Math.min(Math.max(lower, this), upper);
 };
 
 const siSuffixes = ['p', 'n', 'μ', 'm', '', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];

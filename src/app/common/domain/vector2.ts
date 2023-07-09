@@ -71,6 +71,10 @@ export class Vector2 {
     return this;
   }
 
+  multiplyClone(factor: number): Vector2 {
+    return this.clone().multiply(factor);
+  }
+
   multiplyVector2(factor: Vector2): Vector2 {
     this.x *= factor.x;
     this.y *= factor.y;

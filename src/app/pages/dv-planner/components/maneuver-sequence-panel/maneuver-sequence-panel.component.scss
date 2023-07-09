@@ -1,0 +1,107 @@
+.button-with-icon {
+  min-width: auto;
+  min-height: auto;
+  height: max-content;
+  padding: 4px;
+  border-radius: 50px;
+
+  div {
+    align-items: center;
+    display: flex;
+  }
+}
+
+.panel-layout {
+  background-color: #6662;
+  padding: 8px;
+
+  display: grid;
+  grid-auto-rows: max-content;
+
+  --border-radius: 12px;
+  border-bottom-left-radius: var(--border-radius);
+  border-top-left-radius: var(--border-radius);
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    >:last-child {
+     margin-left: auto;
+    }
+  }
+
+  .options {
+    margin-bottom: 4px;
+    display: grid;
+    gap: .6em;
+
+    // force labels color white
+    --mdc-theme-text-primary-on-background: #fff;
+
+    .checkbox-aerobraking {
+      margin-left: 36px;
+      position: relative;
+
+      // add backing for checkbox
+      &:before {
+        background-color: #fff2;
+        content: '';
+        --size: 24px;
+        width: var(--size);
+        height: var(--size);
+        position: absolute;
+        border-radius: 4px;
+        left: 8px;
+        top: -2px
+      }
+    }
+
+    --color-text-active: #afa;
+
+    .chip-button {
+      height: auto;
+      margin-right: .5em;
+      padding: 4px 6px;
+      background-color: #fff4;
+      color: var(--color-text-active);
+    }
+
+    --button-width: 80px;
+    .control-with-grid {
+      display: grid;
+      grid-template-columns: 0 var(--button-width) auto;
+      align-items: center;
+    }
+
+    .error-margin-control {
+      @extend .control-with-grid;
+      align-items: center;
+    }
+
+    .plane-change-control {
+      @extend .control-with-grid;
+      align-items: center;
+    }
+
+    .flight-situation {
+      @extend .control-with-grid;
+      grid-template-columns: var(--button-width) auto;
+    }
+
+    .route-type {
+      @extend .control-with-grid;
+      grid-template-columns: var(--button-width) auto;
+    }
+
+    .hidden {
+      visibility: hidden;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+  }
+
+}

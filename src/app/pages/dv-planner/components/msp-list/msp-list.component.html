@@ -1,0 +1,36 @@
+<div class="list-layout"
+     *ngIf="!dragModeActive; else dragMode"
+     @height
+     [class.border-transparent]="!missionCheckpoints.length">
+  <div *ngFor="let checkpoint of missionCheckpoints; trackBy: getNode"
+       @height>
+    <cp-msp-edge *ngIf="checkpoint.edge"
+                 [details]="checkpoint.edge"></cp-msp-edge>
+
+    <cp-msp-node [details]="checkpoint.node"
+                 (remove)="removeNode.emit(checkpoint)"
+                 (update)="updateNode.emit(checkpoint)"></cp-msp-node>
+  </div>
+
+  <div @height *ngIf="missionCheckpoints.length" class="divider"></div>
+</div>
+
+<ng-template #dragMode>
+  <div #dragList
+       class="drag-list-layout"
+       @height
+       [class.border-transparent]="!missionCheckpoints.length"
+       cdkDropList
+       (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let checkpoint of missionCheckpoints; trackBy: getNode"
+         cdkDrag
+         cdkDragLockAxis="y"
+         [cdkDragData]="node"
+         [cdkDragBoundary]="dragList">
+      <div class="drag-placeholder" *cdkDragPlaceholder></div>
+      <cp-msp-node #node
+                   [details]="checkpoint.node"
+                   [dragModeActive]="true"></cp-msp-node>
+    </div>
+  </div>
+</ng-template>

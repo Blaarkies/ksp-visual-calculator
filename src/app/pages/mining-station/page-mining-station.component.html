@@ -1,0 +1,18 @@
+<div class="padding-container">
+  <div class="isru-layout">
+    <div class="text title center">ISRU Mining Station Calculator</div>
+
+    <cp-mining-base-control></cp-mining-base-control>
+    <cp-parts-selector></cp-parts-selector>
+
+    <div class="statistics-messages">
+      <cp-craft-part-statistics></cp-craft-part-statistics>
+      <cp-isru-warnings></cp-isru-warnings>
+    </div>
+  </div>
+</div>
+
+<cp-hud tooltip="This page handles mining base power & heat calculations, click the green menu for others"
+        [icon]="icons.Ore"
+        [contextPanelDetails]="contextPanelDetails">
+</cp-hud>

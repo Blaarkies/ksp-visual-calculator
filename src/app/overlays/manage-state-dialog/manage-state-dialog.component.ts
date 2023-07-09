@@ -1,50 +1,94 @@
+import { state } from '@angular/animations';
+import { CommonModule } from '@angular/common';
 import {
   Component,
   ElementRef,
-  Inject,
+  Input,
   OnDestroy,
+  OnInit,
   QueryList,
   ViewChild,
   ViewChildren,
-  ViewEncapsulation
+  ViewEncapsulation,
 } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UsableRoutes } from '../../usable-routes';
-import { StateService } from '../../services/state.service';
-import { Icons } from '../../common/domain/icons';
-import { UntypedFormControl, Validators } from '@angular/forms';
-import { CommonValidators } from '../../common/validators/common-validators';
+import {
+  FormControl,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import {
+  MatListModule,
+  MatSelectionList,
+} from '@angular/material/list';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
-import { delay, filter, finalize, map, Observable, of, startWith, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+  delay,
+  filter,
+  finalize,
+  firstValueFrom,
+  map,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { GameStateType } from '../../common/domain/game-state-type';
+import { Icons } from '../../common/domain/icons';
+import { Uid } from '../../common/uid';
+import { CommonValidators } from '../../common/validators/common-validators';
 import { WithDestroy } from '../../common/with-destroy';
-import { StateRow } from './state-row';
-import { StateEntry } from './state-entry';
-import { MatSelectionList } from '@angular/material/list';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { StateDisplayComponent } from '../../components/state-display/state-display.component';
+import { FileDropDirective } from '../../directives/file-drop.directive';
 import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/event-logs';
-
-export class ManageStateDialogData {
-  context: UsableRoutes;
-}
+import { AbstractBaseStateService } from '../../services/domain/base-state.abstract.service';
+import { EventLogs } from '../../services/domain/event-logs';
+import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
+import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
+import { StateEntry } from './state-entry';
+import { StateRow } from './state-row';
 
 @Component({
   selector: 'cp-manage-state-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatTabsModule,
+    MatButtonModule,
+    StateEditNameRowComponent,
+    MatProgressBarModule,
+    StateDisplayComponent,
+    MatTooltipModule,
+    FileDropDirective,
+    MatIconModule,
+    MatListModule,
+  ],
   templateUrl: './manage-state-dialog.component.html',
   styleUrls: ['./manage-state-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
   animations: [BasicAnimations.fade, BasicAnimations.height],
 })
-export class ManageStateDialogComponent extends WithDestroy() implements OnDestroy {
+export class ManageStateDialogComponent extends WithDestroy() implements OnInit, OnDestroy {
 
-  context: UsableRoutes = this.data.context;
-  contextTitle = '';
+  @Input() contextTitle: string;
+  @Input() context: GameStateType;
+  @Input() stateHandler: AbstractBaseStateService;
+
   nowState: StateRow;
-  states$ = this.getStates().pipe(startWith([]));
+  states$: Observable<StateRow[]>;
 
   icons = Icons;
-  editNameControl = new UntypedFormControl('', [Validators.required, Validators.max(60)]);
+  editNameControl = new FormControl<string>('', [Validators.required, Validators.max(60)]);
   buttonLoaders = {
     load$: new Subject<boolean>(),
     import$: new Subject<boolean>(),
@@ -59,21 +103,20 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   @ViewChild('fileUploadInput') fileUploadInput: ElementRef<HTMLInputElement>;
   @ViewChildren(StateEditNameRowComponent) editors: QueryList<StateEditNameRowComponent>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ManageStateDialogData,
-              private stateService: StateService,
-              private snackBar: MatSnackBar,
+  constructor(private snackBar: MatSnackBar,
               private analyticsService: AnalyticsService) {
     super();
+  }
 
-    this.nowState = stateService.stateRow;
+  async ngOnInit() {
+    this.nowState = this.stateHandler.stateRow;
+    this.states$ = this.getStates().pipe(startWith([]));
     this.states$
       .pipe(
         filter(states => states.length > 0),
         delay(0),
         takeUntil(this.destroy$))
       .subscribe(() => this.stateList.selectedOptions.select(this.stateList.options.first));
-
-    this.contextTitle = this.getContextTitle(this.data.context);
   }
 
   ngOnDestroy() {
@@ -85,13 +128,13 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   async editStateName(oldName: string, state: StateRow) {
     this.buttonLoaders.edit$.next(true);
 
-    await this.stateService.renameState(oldName, state)
+    await this.stateHandler.renameState(oldName, state)
       .finally(() => this.buttonLoaders.edit$.next(false));
 
     // if the current loaded state is the one being renamed, then update nowState as well
     if (this.nowState.name === oldName) {
-      this.stateService.renameCurrentState(state.name);
-      this.nowState = this.stateService.stateRow;
+      this.stateHandler.renameCurrentState(state.name);
+      this.nowState = this.stateHandler.stateRow;
     }
 
     this.analyticsService.logEvent('Edit state name', {
@@ -111,7 +154,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
       .afterDismissed()
       .pipe(
         filter(action => !action.dismissedByAction),
-        switchMap(() => this.stateService.removeStateFromStore(selectedState.name)),
+        switchMap(() => this.stateHandler.removeStateFromStore(selectedState.name)),
         finalize(() => this.buttonLoaders.remove$.next(false)),
         takeUntil(this.destroy$))
       .subscribe(() => {
@@ -126,7 +169,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   }
 
   private getStates(): Observable<StateRow[]> {
-    return this.stateService.getStatesInContext()
+    return this.stateHandler.getStatesInContext()
       .pipe(
         // update the form control that handles renaming. it must validate for allowing only unique names
         tap(stateEntries => this.editNameControl = new UntypedFormControl('', [
@@ -142,12 +185,22 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
     });
 
     this.buttonLoaders.load$.next(true);
-    this.stateService.loadState(selectedState.state)
+    let {name, timestamp, version, state} = selectedState;
+    let jsDate = new Date(timestamp);
+    this.stateHandler.loadState({
+      id: selectedState.id,
+      name,
+      timestamp: jsDate,
+      context: this.context,
+      version: version.split('.').slice(1).map(t => t.toNumber()),
+      state,
+    })
       .pipe(
+        map(() => this.stateHandler.stateRow),
         finalize(() => this.buttonLoaders.load$.next(false)),
         takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.nowState = this.stateService.stateRow;
+      .subscribe(state => {
+        this.nowState = state;
         this.snackBar.open(`Loaded "${selectedState.name}"`);
       });
   }
@@ -160,12 +213,13 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
     }
 
     this.buttonLoaders.new$.next(true);
-    this.stateService.loadState()
+    this.stateHandler.loadState()
       .pipe(
+        map(() => this.stateHandler.stateRow),
         finalize(() => this.buttonLoaders.new$.next(false)),
         takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.nowState = this.stateService.stateRow;
+      .subscribe(state => {
+        this.nowState = state;
         if (noMessage) {
           return;
         }
@@ -175,7 +229,11 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
   }
 
   exportState(selectedState: StateRow) {
-    let sJson = selectedState.state;
+    let sJson = JSON.stringify({
+      context: this.context,
+      ...selectedState,
+      id: undefined,
+    });
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/json;charset=UTF-8,' + encodeURIComponent(sJson));
     element.setAttribute('download', `ksp-vc-savegame-${selectedState.name}.json`);
@@ -201,19 +259,36 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
     if (files.length === 1) {
       this.buttonLoaders.import$.next(true);
       let stateString: string = await files[0].text();
-      await this.stateService.importState(stateString);
+      await this.importState(stateString);
 
-      this.nowState = this.stateService.stateRow;
-      await this.stateService.saveState(this.nowState);
+      let state = this.stateHandler.stateBase;
+      await this.stateHandler.save();
       this.updateStates();
 
       this.buttonLoaders.import$.next(false);
-      this.snackBar.open(`Imported "${this.nowState.name}"`);
+      this.snackBar.open(`Imported "${state.name}"`);
     }
 
     this.analyticsService.logEvent('Import state', {
       category: EventLogs.Category.State,
     });
+  }
+
+  private async importState(stateString: string) {
+    let {name, timestamp, context, version, state} = JSON.parse(stateString);
+    // @fix v1.3.0: previous json files did not have a 'state' field
+    if (!state) {
+      state = stateString;
+    }
+
+    await firstValueFrom(this.stateHandler.loadState({
+      id: Uid.new,
+      name,
+      timestamp,
+      context,
+      version,
+      state,
+    }));
   }
 
   async uploadFileSelected(event: any) {
@@ -224,9 +299,10 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
     });
   }
 
-  async saveState(state: StateRow) {
+  async saveState() {
     this.buttonLoaders.save$.next(true);
-    await this.stateService.saveState(state)
+    let state = this.stateHandler.stateBase;
+    await this.stateHandler.save()
       .catch(error => {
         this.snackBar.open(`Could not save "${state.name}"`);
         throw error;
@@ -252,23 +328,12 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnDestr
 
   async editCurrentStateName(oldName: string, state: StateRow) {
     await this.editStateName(oldName, state);
-    this.stateService.renameCurrentState(state.name);
+    this.stateHandler.renameCurrentState(state.name);
     this.updateStates();
   }
 
   triggerImport() {
     this.fileUploadInput.nativeElement.click();
-  }
-
-  private getContextTitle(context: UsableRoutes): string {
-    switch (context) {
-      case UsableRoutes.SignalCheck:
-        return 'CommNet Planner';
-      case UsableRoutes.DvPlanner:
-        return 'Delta-v Planner';
-      // default:
-      //   throw new Error(`Context "${context}" does not exist`);
-    }
   }
 
 }

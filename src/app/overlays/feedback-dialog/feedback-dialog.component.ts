@@ -1,5 +1,5 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
@@ -7,8 +7,12 @@ import { ControlMetaFreeText } from '../../common/domain/input-fields/control-me
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
 import { HttpClient } from '@angular/common/http';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { firstValueFrom } from 'rxjs';
+import {CommonModule} from "@angular/common";
+import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatButtonModule} from "@angular/material/button";
 
 export class FeedbackSubmissionForm {
   name: string;
@@ -18,6 +22,14 @@ export class FeedbackSubmissionForm {
 
 @Component({
   selector: 'cp-feedback-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    InputFieldListComponent,
+    MatProgressBarModule,
+    MatButtonModule,
+  ],
   templateUrl: './feedback-dialog.component.html',
   styleUrls: ['./feedback-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,

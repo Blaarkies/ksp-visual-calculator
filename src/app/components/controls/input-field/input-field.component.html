@@ -1,17 +1,21 @@
-<mat-form-field class="input-field-component transition"
-                appearance="outline"
-                [color]="color"
-                [class.disabled]="disabled"
-                [class.error-blink]="errorBlink$ | async">
+<mat-form-field
+  class="input-field-component transition"
+  [ngClass]="widthClass"
+  appearance="outline"
+  [color]="color"
+  [class.disabled]="disabled"
+  [class.error-blink]="errorBlink$ | async"
+>
   <mat-label *ngIf="label !== null">{{label}}</mat-label>
   <input #input
          matInput
+         [class.no-spinner-arrows]="type === 'number'"
          [type]="type"
          (focus)="isActive = true; touch()"
-         (blur)="isActive = false" />
-  <mat-hint [@fade]
+         (blur)="isActive = false"/>
+  <mat-hint @fade
             *ngIf="hint && (value === null || value === '')">{{hint}}</mat-hint>
-  <span [@fade]
+  <span @fade
         *ngIf="suffix !== null"
         matSuffix
         class="pad-right">

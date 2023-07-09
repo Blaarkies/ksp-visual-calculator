@@ -113,12 +113,13 @@
       "skipImport": true
     },
     "@schematics/angular:service": {
-      "skipTests": true,
+      "skipTests": true
     }
   },
   "cli": {
     "schematicCollections": [
       "@angular-eslint/schematics"
-    ]
+    ],
+    "analytics": false
   }
 }

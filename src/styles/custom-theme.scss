@@ -70,22 +70,22 @@ $dark-theme: mat.define-dark-theme((
 }
 
 :root {
-  --green: 147, 177, 53;
-  --orange: 242, 65, 0;
+  --kerbal-green: 147, 177, 53;
+  --jumpsuit-orange: 242, 65, 0;
   --cosmic-blue: 63, 81, 181;
 
   --color-primary: #{map-get($primary-light, 500)};
   --color-accent: #{map-get($accent-light, 500)};
   --color-warn: #{map-get($warn-light, 500)};
 
-  --color-background-panel-green-opaque: rgb(var(--green));
-  --color-background-panel-orange-opaque: rgb(var(--orange));
+  --color-background-panel-green-opaque: rgb(var(--kerbal-green));
+  --color-background-panel-orange-opaque: rgb(var(--jumpsuit-orange));
   --color-background-panel-cosmic-blue-opaque: rgb(var(--cosmic-blue));
-  --color-background-panel-green: rgba(var(--green), .75);
-  --color-background-panel-orange: rgba(var(--orange), .75);
+  --color-background-panel-green: rgba(var(--kerbal-green), .75);
+  --color-background-panel-orange: rgba(var(--jumpsuit-orange), .75);
   --color-background-panel-cosmic-blue: rgba(var(--cosmic-blue), .75);
-  --color-background-panel-green-glass: rgba(var(--green), .5);
-  --color-background-panel-orange-glass: rgba(var(--orange), .5);
+  --color-background-panel-green-glass: rgba(var(--kerbal-green), .5);
+  --color-background-panel-orange-glass: rgba(var(--jumpsuit-orange), .5);
   --color-background-panel-cosmic-blue-glass: rgba(var(--cosmic-blue), .5);
   --color-background-card: #fff;
   --color-background-description: #fff;
@@ -150,5 +150,9 @@ mat-icon, mat-button {
 
   &[color="muted"], &[ng-reflect-color="muted"] {
     color: var(--color-icon-muted);
+  }
+
+  &[color="white"], &[ng-reflect-color="white"] {
+    color: var(--color-icon-white);
   }
 }

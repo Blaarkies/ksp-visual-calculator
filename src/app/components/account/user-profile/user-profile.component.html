@@ -1,0 +1,11 @@
+<div matRipple
+     class="profile-image"
+     (click)="$event.stopPropagation(); openAccountDialog()"
+     [matTooltip]="(user$ | async) ? 'Account Details' : 'Go to sign up page'">
+  <ng-container *ngIf="user$ | async as user; else guest">
+    <img [attr.src]="user.photoURL || 'assets/logos/guest-account.webp'" />
+  </ng-container>
+  <ng-template #guest>
+    <mat-icon @fade class="animate-flashing" [svgIcon]="icons.Guest"></mat-icon>
+  </ng-template>
+</div>

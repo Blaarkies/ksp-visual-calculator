@@ -1,0 +1,23 @@
+<div class="text subtitle">{{title}}</div>
+
+<cp-planet-moon-selector
+  [title]="null"
+  [filter]="['moon', 'planet']"
+  [selected]="selectedPlanet"
+  (update)="updatePlanet($event)"
+></cp-planet-moon-selector>
+
+<cp-input-number
+  label="Ore Concentration"
+  [min]="0.499"
+  [max]="100"
+  [factor]="4"
+  suffix="%"
+  [formControl]="controlOreConcentration"
+></cp-input-number>
+
+<cp-engineer-skill-selector
+  [formControl]="controlEngineerBonus"
+></cp-engineer-skill-selector>
+
+<cp-resource-processors></cp-resource-processors>

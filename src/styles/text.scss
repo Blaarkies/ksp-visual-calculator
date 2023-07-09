@@ -16,6 +16,10 @@
     padding-left: 1em;
   }
 
+  &.indent-2 {
+    padding-left: 2em;
+  }
+
   &.primary {
     color: var(--color-text-primary);
   }
@@ -26,6 +30,10 @@
 
   &.warn {
     color: var(--color-text-warn);
+  }
+
+  &.mute {
+    color: var(--color-text-muted);
   }
 
   &.dialog-title {

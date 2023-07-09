@@ -1,6 +1,6 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { UntypedFormControl } from '@angular/forms';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
+import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import { WithDestroy } from '../../common/with-destroy';
 import {
   debounceTime,
@@ -16,17 +16,32 @@ import {
   zip
 } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Section } from './faq-section/faq-section.component';
+import {FaqSectionComponent, Section} from './faq-section/faq-section.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HudService } from '../../services/hud.service';
-import { UsableRoutes } from '../../usable-routes';
+import {CommonModule} from "@angular/common";
+import {InputFieldComponent} from "../../components/controls/input-field/input-field.component";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatButtonModule} from "@angular/material/button";
+import { UsableRoutes } from '../../app.routes';
+import { GameStateType } from '../../common/domain/game-state-type';
 
 export class FaqDialogData {
-  sections: Section[];
+  gameStateType: GameStateType;
 }
 
 @Component({
   selector: 'cp-faq-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    InputFieldComponent,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    FaqSectionComponent,
+    MatButtonModule,
+  ],
   templateUrl: './faq-dialog.component.html',
   styleUrls: ['./faq-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -41,8 +56,7 @@ export class FaqDialogComponent extends WithDestroy() {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: FaqDialogData,
               http: HttpClient,
-              breakpointObserver: BreakpointObserver,
-              hudService: HudService) {
+              breakpointObserver: BreakpointObserver) {
     super();
 
     this.isHandset$ = breakpointObserver.observe([
@@ -53,7 +67,7 @@ export class FaqDialogComponent extends WithDestroy() {
 
     let sections$ = zip(
       http.get<Section[]>('assets/faq/general.json'),
-      http.get<Section[]>(this.getFilePathForPageContextFaq(hudService.pageContext)))
+      http.get<Section[]>(this.getFilePathForPageContextFaq(data.gameStateType)))
       .pipe(
         map(([general, contextual]) => [...general, ...contextual]),
         publishReplay(1),
@@ -91,11 +105,11 @@ export class FaqDialogComponent extends WithDestroy() {
     this.searchControl.setValue(query);
   }
 
-  private getFilePathForPageContextFaq(context: UsableRoutes): string {
+  private getFilePathForPageContextFaq(context: GameStateType): string {
     switch (context) {
-      case UsableRoutes.SignalCheck:
+      case GameStateType.CommnetPlanner:
         return 'assets/faq/signal-check.json';
-      case UsableRoutes.DvPlanner:
+      case GameStateType.DvPlanner:
         return 'assets/faq/dv-planner.json';
       default:
         throw new Error(`Context "${context}" does not exist`);

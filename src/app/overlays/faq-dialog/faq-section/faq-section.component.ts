@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {CommonModule} from "@angular/common";
+import {ContentPleatComponent} from "../../../components/content-pleat/content-pleat.component";
 
 class Explanation {
   type: 'span' | 'code' | 'search' | 'image';
@@ -18,6 +20,11 @@ export class Section {
 
 @Component({
   selector: 'cp-faq-section',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ContentPleatComponent,
+  ],
   templateUrl: './faq-section.component.html',
   styleUrls: ['./faq-section.component.scss'],
 })

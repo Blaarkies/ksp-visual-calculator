@@ -1,0 +1,81 @@
+<div cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <ng-container *ngTemplateOutlet="inputTemplate"></ng-container>
+</div>
+
+<ng-template #inputTemplate>
+  <mat-form-field appearance="outline">
+    <mat-label *ngIf="label">{{label}}</mat-label>
+    <input
+      matInput
+      #input
+      type="text"
+      [formControl]="controlSearch"
+    />
+    <div matSuffix class="input-suffix stack">
+      <button
+        *ngIf="clearable || isOpenHandsetOverlay"
+        @width
+        mat-icon-button
+        aria-label="Clear"
+        (click)="controlSearch.setValue('')">
+        <mat-icon [svgIcon]="icons.Backspace" color="muted"></mat-icon>
+      </button>
+      <mat-icon
+        [svgIcon]="icons.ChevronDown"
+        color="muted"
+        class="pointer-clickable padding-right"
+        [@scaleY]="!isOpenDesktop && !isOpenHandsetOverlay"
+      ></mat-icon>
+    </div>
+    <mat-hint
+      *ngIf="!isOpenHandsetOverlay && hint && controlSearch.value?.length < 3"
+      align="start"
+      class="text mute"
+    >
+      {{hint}}
+    </mat-hint>
+  </mat-form-field>
+</ng-template>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayPositions]="position"
+  [cdkConnectedOverlayOpen]="isOpenOverlay"
+  [cdkConnectedOverlayMinHeight]="360"
+  (overlayOutsideClick)="close($event)"
+>
+  <div class="desktop-layout"
+       [@height]="isOpenDesktop"
+       (@height.done)="closeOverlay($event)">
+    <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #handset>
+  <div
+    class="handset-layout"
+    [@height]="isOpenHandsetOverlay"
+    (@height.done)="handsetAnimationDone$.next()"
+  >
+    <div class="search-header-container">
+      <button mat-icon-button (click)="disposeOverlay()">
+        <mat-icon [svgIcon]="icons.NavigateBack"></mat-icon>
+      </button>
+      <ng-container *ngTemplateOutlet="inputTemplate"></ng-container>
+    </div>
+
+    <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
+  </div>
+</ng-template>
+
+<ng-template #listTemplate>
+  <cp-selection-list
+    (selectItem)="userInputChange($event)"
+    [minWidthPx]="minWidthPx"
+    [filtered]="filtered$ | async"
+    [sections]="sections"
+  ></cp-selection-list>
+</ng-template>
+
+

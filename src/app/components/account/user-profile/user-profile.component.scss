@@ -1,0 +1,19 @@
+.profile-image {
+  border-radius: 100px;
+  cursor: pointer;
+
+  --size: 28px;
+  width: var(--size);
+  height: var(--size);
+  overflow: hidden;
+  border: 1px solid var(--color-icon-none);
+
+  img, mat-icon {
+    width: var(--size);
+    height: var(--size);
+  }
+}
+
+.animate-flashing {
+  animation: kf-animate-fade-in 3s infinite alternate ease-out;
+}

@@ -1,36 +1,60 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
-import { CommonValidators } from '../../common/validators/common-validators';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Inject,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  UntypedFormArray,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { Antenna } from '../../common/domain/antenna';
+import { Icons } from '../../common/domain/icons';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
+import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CelestialBodyDetails } from './celestial-body-details';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
-import { Antenna } from '../../common/domain/antenna';
-import { SetupService } from '../../services/setup.service';
-import { Icons } from '../../common/domain/icons';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import { CommonValidators } from '../../common/validators/common-validators';
+import { InputFieldListComponent } from '../../components/controls/input-field-list/input-field-list.component';
+import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
+import { CelestialBodyDetails } from './celestial-body-details';
 
 export class CelestialBodyDetailsDialogData {
   forbiddenNames: string[];
   edit?: SpaceObject;
+  universeBuilderHandler: CommnetUniverseBuilderService;
 }
 
 @Component({
   selector: 'cp-celestial-body-details-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatButtonModule,
+    InputFieldListComponent,
+  ],
   templateUrl: './celestial-body-details-dialog.component.html',
   styleUrls: ['./celestial-body-details-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class CelestialBodyDetailsDialogComponent {
 
-  private trackingStationOptions = this.setupService.availableAntennae$.value
+  private trackingStationOptions = this.data.universeBuilderHandler.antennae$.value
     .filter(a => a.label.includes('Tracking Station'))
     .map(a => new LabeledOption<Antenna>(a.label, a))
     .concat(new LabeledOption<Antenna>('None', null));
+
   inputFields = {
     name: {
       label: 'Name',
@@ -76,8 +100,7 @@ export class CelestialBodyDetailsDialogComponent {
   form = new UntypedFormArray(this.inputFieldsList.map(field => field.control));
 
   constructor(private dialogRef: MatDialogRef<CelestialBodyDetailsDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CelestialBodyDetailsDialogData,
-              private setupService: SetupService) {
+              @Inject(MAT_DIALOG_DATA) public data: CelestialBodyDetailsDialogData) {
   }
 
   submitDetails() {

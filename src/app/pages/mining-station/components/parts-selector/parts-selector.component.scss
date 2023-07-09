@@ -1,0 +1,25 @@
+@use 'src/styles/common';
+
+:host {
+  @extend .titled-form;
+}
+
+.parts-listed {
+  cp-input-number {
+    height: 50px;
+  }
+
+  .part-row {
+    display: grid;
+    grid-template-columns: max-content auto max-content;
+    gap: 8px;
+    align-items: center;
+  }
+}
+
+.empty-state {
+  border-radius: 8px;
+  background-color: var(--color-background-description-glass);
+  padding: 40px 10px;
+  grid-column: 1/-1;
+}

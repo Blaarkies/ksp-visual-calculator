@@ -1,4 +1,14 @@
-import { firstValueFrom, timer } from 'rxjs';
+import {
+  ConnectionPositionPair,
+  HorizontalConnectionPos,
+  OriginConnectionPosition,
+  OverlayConnectionPosition,
+  VerticalConnectionPos,
+} from '@angular/cdk/overlay';
+import {
+  firstValueFrom,
+  timer,
+} from 'rxjs';
 
 export class Common {
 
@@ -63,4 +73,51 @@ export class Common {
       : fixed;
     return fixed.toNumber() * (isNegative ? -1 : 1);
   }
+
+  /** Creates ConnectionPositionPair[] with positions matching the DirectionString */
+  static createConnectionPair(origin: DirectionString, overlay = origin): ConnectionPositionPair[] {
+    let origins = getPosition(origin);
+    let overlays = getPosition(overlay);
+    let originX = origins[0] as HorizontalConnectionPos;
+    let originY = origins[1] as VerticalConnectionPos;
+    let overlayX = overlays[0] as HorizontalConnectionPos;
+    let overlayY = overlays[1] as VerticalConnectionPos;
+
+    return [
+      new ConnectionPositionPair(
+        {originX, originY},
+        {overlayX, overlayY},
+      ),
+    ];
+  }
 }
+
+function getPosition(direction: DirectionString): OverlayPositions[] {
+  switch (direction) {
+    case '↖':
+      return ['start', 'top'];
+    case '↗':
+      return ['end', 'top'];
+    case '↙':
+      return ['start', 'bottom'];
+    case '↘':
+      return ['end', 'bottom'];
+    case '←':
+      return ['start', 'center'];
+    case '→':
+      return ['end', 'center'];
+    case '↑':
+      return ['center', 'start'];
+    case '↓':
+      return ['center', 'bottom'];
+    default:
+      return getPosition('↖');
+  }
+}
+
+/** Visual interface to easily setup directional properties */
+type DirectionString = '↖' | '↙' | '↘' | '↗' | '←' | '→' | '↑' | '↓';
+type OverlayPositions = OriginConnectionPosition['originX']
+  | OriginConnectionPosition['originY']
+  | OverlayConnectionPosition['overlayX']
+  | OverlayConnectionPosition['overlayY']

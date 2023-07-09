@@ -1,0 +1,68 @@
+@use '../../../../../styles/variables' as queries;
+
+.craft-details-form {
+  --grid-gap: 20px;
+
+  display: grid;
+  gap: var(--grid-gap);
+  grid-template-columns: min-content min-content auto;
+  grid-template-areas:
+    'title title  title'
+    'left  middle right';
+
+  .dialog-title {
+    grid-area: title;
+  }
+
+  .left-column {
+    grid-area: left;
+    display: grid;
+    grid-auto-rows: max-content;
+
+    .add-gap {
+      display: grid;
+      gap: var(--grid-gap);
+    }
+
+    .advanced-placement-button {
+      justify-content: unset;
+    }
+
+    .advanced-placement-fields {
+      margin-top: 8px;
+    }
+  }
+
+  .middle-column {
+    grid-area: middle;
+  }
+
+  .right-column {
+    grid-area: right;
+  }
+
+  @media screen and (max-width: queries.$query-mobile-width) {
+    gap: unset;
+    grid-template-areas:
+    'title'
+    'left'
+    'right';
+    grid-template-columns: auto;
+
+    .middle-column {
+      display: none;
+    }
+  }
+
+  // landscape mobile cuts off the dialog action buttons
+  @media screen and (max-height: queries.$query-mobile-height-landscape) {
+    box-shadow: inset 0 0 6px 2px #0002;
+    overflow-y: auto;
+    max-height: 260px;
+  }
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+}

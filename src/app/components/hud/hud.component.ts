@@ -1,126 +1,84 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { ActionOption } from '../../common/domain/action-option';
-import { Icons } from '../../common/domain/icons';
-import { HudService } from '../../services/hud.service';
-import { AnalyticsService } from '../../services/analytics.service';
-import { FaqDialogComponent, FaqDialogData } from '../../overlays/faq-dialog/faq-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { WithDestroy } from '../../common/with-destroy';
-import { firstValueFrom, map, Observable, takeUntil } from 'rxjs';
-import { ActionPanelColors } from '../action-panel/action-panel.component';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import {
+  NoopScrollStrategy,
+  ScrollStrategy,
+} from '@angular/cdk/overlay';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  Input,
+} from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
+import {
+  MatBottomSheet,
+  MatBottomSheetModule,
+  MatBottomSheetRef,
+} from '@angular/material/bottom-sheet';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+  firstValueFrom,
+  map,
+  Observable,
+} from 'rxjs';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { Icons } from '../../common/domain/icons';
+import { NegatePipe } from '../../common/negate.pipe';
+import { WithDestroy } from '../../common/with-destroy';
 import {
   ActionBottomSheetComponent,
-  ActionBottomSheetData
+  ActionBottomSheetData,
 } from '../../overlays/list-bottom-sheet/action-bottom-sheet.component';
-import { GlobalStyleClass } from '../../common/global-style-class';
-import { EventLogs } from '../../services/event-logs';
-import { UsableRoutes } from '../../usable-routes';
-import { BuyMeACoffeeDialogComponent } from '../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
-import { AuthService } from '../../services/auth.service';
-import { BasicAnimations } from '../../common/animations/basic-animations';
-import { DomPortal } from '@angular/cdk/portal';
-import { ThemeService, ThemeTypeEnum } from '../../services/theme.service';
-
-export class ActionPanelDetails {
-  startTitle?: string;
-  color: ActionPanelColors;
-  startIcon: Icons;
-  options: ActionOption[];
-}
-
-export class ActionGroupType {
-  static General = 'general';
-  static Information = 'information';
-  static Context = 'context';
-}
+import { HudService } from '../../services/hud.service';
+import { UserProfileComponent } from '../account/user-profile/user-profile.component';
+import { ActionFabComponent } from './action-fab/action-fab.component';
+import { ActionGroupType } from './action-group-type';
+import { ActionPanelDetails } from './action-panel-details';
+import { ActionPanelComponent } from './action-panel/action-panel.component';
 
 @Component({
   selector: 'cp-hud',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ActionFabComponent,
+    ActionPanelComponent,
+    UserProfileComponent,
+    NegatePipe,
+    MatBadgeModule,
+    MatButtonModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatBottomSheetModule,
+  ],
   templateUrl: './hud.component.html',
   styleUrls: ['./hud.component.scss'],
   animations: [BasicAnimations.fade],
 })
-export class HudComponent extends WithDestroy() implements AfterViewInit {
+export class HudComponent extends WithDestroy() {
+
+  @Input() tooltip: string;
+  @Input() icon: string;
+  @Input() contextPanelDetails: ActionPanelDetails;
 
   navigationOptions = this.hudService.navigationOptions;
   infoOptions = this.hudService.infoOptions;
 
-  get contextPanel$(): Observable<ActionPanelDetails> {
-    return this.hudService.contextPanel$.asObservable();
-  }
-
-  context$ = this.hudService.context$;
-  contextTypes = UsableRoutes;
-
   isHandset$: Observable<boolean>;
   icons = Icons;
   actionGroupTypes = ActionGroupType;
-  pageContextInfo: { icon, tooltip };
-  hasBoughtCoffee$ = this.auth.user$.pipe(map(u => u?.isCustomer));
-
-  lastTheme: string;
-  themeIconMap = {
-    [ThemeTypeEnum.Light]: Icons.ThemeLight,
-    [ThemeTypeEnum.Dark]: Icons.ThemeDark,
-  };
-
-  @ViewChild('baseContent') baseContent: ElementRef<HTMLElement>;
-  domPortal: DomPortal;
 
   constructor(private hudService: HudService,
-              private analyticsService: AnalyticsService,
-              private auth: AuthService,
-              private dialog: MatDialog,
               breakpointObserver: BreakpointObserver,
-              private bottomSheet: MatBottomSheet,
-              private cdr: ChangeDetectorRef,
-              private themeService: ThemeService) {
+              private bottomSheet: MatBottomSheet) {
     super();
-
-    this.lastTheme = themeService.currentTheme;
 
     this.isHandset$ = breakpointObserver.observe([
       '(max-width: 600px)',
       '(max-height: 800px)',
     ])
       .pipe(map(bp => bp.matches));
-
-    let contextVisualMap = {
-      [UsableRoutes.DvPlanner]: {
-        icon: Icons.DeltaV,
-        tooltip: 'This page handles Delta-v calculations, click the green menu for others',
-      },
-      [UsableRoutes.SignalCheck]: {
-        icon: Icons.Relay,
-        tooltip: 'This page handles CommNet calculations, click the green menu for others',
-      }
-    };
-
-    hudService.pageContextChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(context => this.pageContextInfo = contextVisualMap[context]);
-  }
-
-  ngAfterViewInit() {
-    this.domPortal = new DomPortal(this.baseContent);
-    this.cdr.detectChanges();
-  }
-
-  toggleTheme() {
-    this.lastTheme = this.themeService.toggleTheme();
-  }
-
-  openFaq() {
-    this.analyticsService.logEvent('Open faq dialog', {
-      category: EventLogs.Category.Help,
-    });
-
-    this.dialog.open(FaqDialogComponent, {
-      data: {} as FaqDialogData,
-      backdropClass: GlobalStyleClass.MobileFriendly,
-    });
   }
 
   async openBottomSheet(group: ActionGroupType, updateUnreadCountCallback: () => void) {
@@ -138,14 +96,14 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
       case ActionGroupType.Information:
         result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
-            startTitle: 'Information',
+            startTitle: 'Account',
             actionOptions: this.infoOptions,
           } as ActionBottomSheetData,
           panelClass: ['bottom-sheet-panel', 'cosmic-blue'],
         });
         break;
       case ActionGroupType.Context:
-        let panel = await firstValueFrom(this.contextPanel$);
+        let panel = this.contextPanelDetails;
         result = await this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
             startTitle: panel.startTitle,
@@ -161,14 +119,6 @@ export class HudComponent extends WithDestroy() implements AfterViewInit {
     await firstValueFrom(result?.afterDismissed());
 
     updateUnreadCountCallback();
-  }
-
-  openBuyMeACoffee() {
-    this.analyticsService.logEvent('Call coffee dialog from hud', {
-      category: EventLogs.Category.Coffee,
-    });
-
-    this.dialog.open(BuyMeACoffeeDialogComponent);
   }
 
 }

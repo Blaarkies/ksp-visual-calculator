@@ -34,6 +34,11 @@ export interface SupporterData {
 
 export type TableName = 'users' | 'states' | 'feedback' | 'supporters';
 
+export class CpError {
+  constructor(public reason: 'no-user', public message: string) {
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -60,10 +65,10 @@ export class DataService {
     });
   }
 
-  private checkUserSignIn(): Promise<void> {
+  private checkUserSignIn(): Promise<void | CpError> {
     return new Promise((resolve, reject) => this.userId$.value
       ? resolve()
-      : reject('No user signed in, cannot use database without user authentication.'));
+      : reject(new CpError('no-user', 'No user signed in, cannot use database without user authentication.')));
   }
 
   async write(table: TableName, fields: {}, options: SetOptions = {}) {

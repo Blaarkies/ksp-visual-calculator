@@ -1,0 +1,73 @@
+.hover-target {
+  border-radius: 4px;
+  overflow: hidden;
+
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: .5;
+  }
+
+  &.good:before {
+    background-color: var(--color-primary);
+  }
+
+  &.bad:before {
+    background-color: var(--color-warn);
+  }
+
+  .base-text {
+    padding-inline: 1ch;
+  }
+}
+
+.table-container {
+  border-radius: 4px;
+  cursor: default;
+
+  table {
+    padding: 4px 8px;
+    color: var(--color-text-white);
+  }
+
+  &.good {
+    background-color: var(--color-primary);
+  }
+
+  &.bad {
+    background-color: var(--color-warn);
+  }
+
+  .tr, td {
+    padding-inline: 4px;
+    text-align: center;
+  }
+
+  .title-label {
+    opacity: .7;
+    justify-self: center;
+  }
+
+  .close-button {
+    @media (hover: hover) {
+      display: none;
+    }
+
+    justify-self: end;
+    min-width: unset;
+    height: auto;
+    padding: unset;
+
+    > div {
+      height: 24px;
+    }
+  }
+
+  .headers {
+    font-size: 12px;
+  }
+}

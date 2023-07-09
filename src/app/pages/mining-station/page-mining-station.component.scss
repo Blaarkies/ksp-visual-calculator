@@ -1,0 +1,53 @@
+@use '../../../styles/variables';
+@use '../../../styles/common';
+
+:host {
+  @extend .full-page;
+}
+
+.padding-container {
+  background-color: var(--color-background-card);
+  color: var(--color-text);
+
+  overflow-y: scroll;
+  > .isru-layout {
+    padding: 60px 16px;
+
+    // mobile
+    @media screen and (max-width: variables.$query-mobile-width) {
+      padding-top: 8px;
+      padding-bottom: 120px;
+    }
+  }
+}
+
+.isru-layout {
+  display: grid;
+  gap: 1em;
+
+  // desktop
+    grid-template-columns: auto auto auto;
+    grid-template-rows: max-content auto;
+    justify-content: center;
+
+    > div.text {
+      grid-column: 1/-1;
+    }
+  // tablet
+  @media screen and (max-width: variables.$query-tablet-width) {
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+  }
+
+  // mobile
+  @media screen and (max-width: variables.$query-mobile-width) {
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+  }
+
+  .statistics-messages {
+    display: grid;
+    gap: 1em;
+    grid-auto-rows: max-content;
+  }
+}

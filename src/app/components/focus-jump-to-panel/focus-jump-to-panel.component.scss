@@ -1,3 +1,8 @@
+:host {
+  width: max-content;
+  display: block;
+}
+
 .focus-layout {
   --width: 150px;
   width: var(--width);

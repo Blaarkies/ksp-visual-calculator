@@ -1,0 +1,17 @@
+@use '../../../../../styles/variables' as queries;
+
+.list-menu {
+  border: 1px solid rgb(var(--color-rgb-border-simple), .5);
+  background-color: var(--color-background-card);
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 4px;
+
+  @media screen and (max-width: queries.$query-mobile-width) {
+    max-height: unset;
+    border-radius: unset;
+    // Turns element 'fullscreen' to avoid clicking the backdrop
+    min-height: 100vh;
+  }
+}

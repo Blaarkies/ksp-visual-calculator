@@ -1,0 +1,70 @@
+@use 'src/styles/common';
+
+:host {
+  color: white;
+
+  text-align: center;
+  justify-self: center;
+  width: 100%;
+
+  display: grid;
+  margin-bottom: .2em;
+}
+
+.node-layout {
+  align-items: center;
+
+  .destination-layout {
+    display: grid;
+    gap: .2em;
+  }
+
+  .capture-methods {
+    justify-self: start;
+    display: grid;
+
+    button {
+      min-width: 0;
+      --size: 34px;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50px;
+
+      box-shadow: var(--claymorph-fainter) !important;
+    }
+  }
+
+  .node-actions {
+    justify-self: end;
+    min-width: 0;
+    padding: 4px;
+    margin-right: 8px;
+    @extend .dim-until-hover;
+  }
+
+}
+
+.is-draggable {
+  cursor: grab;
+  border-radius: 4px;
+  background-color: #8882;
+}
+
+.destination {
+  font-size: 1.5em;
+}
+
+.condition {
+  justify-self: center;
+  color: #fffc;
+  font-weight: 200;
+
+  background-color: #fff2;
+  height: auto;
+  padding: 4px 8px;
+}
+
+.hidden-condition {
+  visibility: hidden;
+  height: 0;
+}

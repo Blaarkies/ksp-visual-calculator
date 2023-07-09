@@ -1,17 +1,18 @@
-import { ChangeDetectorRef, ElementRef, Injectable } from '@angular/core';
-import { Vector2 } from '../common/domain/vector2';
+import {
+  ChangeDetectorRef,
+  ElementRef,
+  Injectable,
+} from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 import { Draggable } from '../common/domain/space-objects/draggable';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
-import { SpaceObjectContainerService } from './space-object-container.service';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
-import { ReplaySubject } from 'rxjs';
+import { Vector2 } from '../common/domain/vector2';
 
 let defaultScale = 1;
 let defaultLocation = new Vector2(960, 540);
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class CameraService {
 
   static zoomLimits = [.1, 1.9e3];
@@ -24,6 +25,7 @@ export class CameraService {
   static scaleModifier = CameraService.backboardScale * CameraService.normalizedScale;
 
   private _scale = defaultScale;
+
   get scale(): number {
     return this._scale;
   }
@@ -37,10 +39,6 @@ export class CameraService {
 
   get screenCenterOffset(): Vector2 {
     return new Vector2(window.innerWidth, window.innerHeight).multiply(.5);
-  }
-
-  get screenSize(): Vector2 {
-    return new Vector2(window.innerWidth, window.innerHeight);
   }
 
   private hoverObject: Draggable;
@@ -62,11 +60,12 @@ export class CameraService {
   // TODO: change to proper setters, callbacks
   cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
+  getSoiParent: (location: Vector2) => SpaceObject;
 
   reset(scale?: number, location?: Vector2) {
     this._scale = scale ?? defaultScale;
     this.location = location ?? defaultLocation.clone();
-    this.cdr.markForCheck();
+    this.cdr?.markForCheck();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
@@ -103,7 +102,7 @@ export class CameraService {
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
     this.lastFocusObject = spaceObject.draggableHandle;
     this.focusAt(spaceObject.location, spaceObject.type, zoomIn);
-    this.cdr.markForCheck();
+    this.cdr?.markForCheck();
 
     this.cameraChange$.next();
   }
@@ -124,8 +123,7 @@ export class CameraService {
   }
 
   private getScaleForCraft(newLocation: Vector2): number {
-    let spaceObjectContainerService = SpaceObjectContainerService.instance;
-    let parent = spaceObjectContainerService.getSoiParent(newLocation);
+    let parent = this.getSoiParent(newLocation);
     return this.getScaleForFocus(newLocation, parent.type);
   }
 
@@ -142,8 +140,8 @@ export class CameraService {
 
   convertScreenToGameSpace(screenSpaceLocation: Vector2): Vector2 {
     let backboardLocation = screenSpaceLocation.clone().subtractVector2(this.location);
-    let backboardRatio = backboardLocation.multiply(1/(CameraService.backboardScale*this.scale));
-    let gameSpaceLocationOffset = backboardRatio.multiply(1/CameraService.normalizedScale);
+    let backboardRatio = backboardLocation.multiply(1 / (CameraService.backboardScale * this.scale));
+    let gameSpaceLocationOffset = backboardRatio.multiply(1 / CameraService.normalizedScale);
     return gameSpaceLocationOffset;
   }
 

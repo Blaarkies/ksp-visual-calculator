@@ -1,13 +1,13 @@
-import { Words } from './words';
+import { Word } from './word';
 import { Common } from './common';
 
 export class Namer {
 
   static get savegame(): string {
     let baseWords = [
-      () => Words.adjectives.random(),
-      () => Words.nouns.random(),
-      () => Words.kspNouns.random(),
+      () => Word.adjectives.random(),
+      () => Word.nouns.random(),
+      () => Word.kspNouns.random(),
     ];
 
     return `${this.starName} ${baseWords.random()().toTitleCase()}`;

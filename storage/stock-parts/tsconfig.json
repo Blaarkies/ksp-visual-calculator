@@ -4,7 +4,7 @@
     "target": "es5",
     "sourceMap": true,
     "lib": [
-      "es2019"
+      "es2021"
     ]
   },
   "exclude": [

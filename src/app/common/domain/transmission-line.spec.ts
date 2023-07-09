@@ -1,4 +1,4 @@
-import { TransmissionLine } from './transmission-line';
+import { AntennaSignal } from './antenna.signal';
 import { ineeda } from 'ineeda';
 import { SetupService } from '../../services/setup.service';
 import { SpaceObject } from './space-objects/space-object';
@@ -18,11 +18,11 @@ describe('TransmissionLine class', () => {
     difficultySetting: {rangeModifier: 1} as any,
   });
 
-  let transmissionLine: TransmissionLine;
+  let transmissionLine: AntennaSignal;
 
   beforeEach(() => {
     let nodes = [newNode(), newNode()];
-    transmissionLine = new TransmissionLine(nodes, mockSetupService);
+    transmissionLine = new AntennaSignal(nodes, mockSetupService);
   });
 
   it('textLocation is correct', () => {

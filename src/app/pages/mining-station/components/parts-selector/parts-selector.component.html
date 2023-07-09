@@ -1,0 +1,46 @@
+<div class="text subtitle">{{title}}</div>
+
+<div class="parts-listed">
+  <cp-input-section-selection-list
+    label="Add Part"
+    [formControl]="controlSelectedParts"
+    [options]="parts$ | async"
+    [sectionIcons]="sectionIcons$ | async"
+    [sectionLabels]="sectionLabels"
+  ></cp-input-section-selection-list>
+
+  <ng-container *ngIf="controlEntities$ | async as controlItems">
+
+    <ng-container *ngIf="controlItems.length; else noSelection">
+      <ng-container *ngFor="let entry of controlItems; let i = index; trackBy: getEntryLabel">
+        <div @expandY class="part-row">
+          <cp-input-number
+            class="small-number-width"
+            [label]="null"
+            [formControl]="entry.control"
+            [controlMeta]="defaultControlMeta"
+          ></cp-input-number>
+
+          <div>{{entry.value.label}}</div>
+
+          <button
+            class="dim-until-hover"
+            mat-icon-button
+            color="warn"
+            (click)="removeControl(entry, i)"
+          >
+            <mat-icon [svgIcon]="icons.Delete"></mat-icon>
+          </button>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #noSelection>
+      <div @expandY class="text caption center empty-state">
+        No parts selected
+      </div>
+    </ng-template>
+  </ng-container>
+</div>
+
+

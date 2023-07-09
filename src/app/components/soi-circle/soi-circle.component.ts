@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { CameraService } from '../../services/camera.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'cp-soi-circle',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './soi-circle.component.html',
   styleUrls: ['./soi-circle.component.scss'],
   animations: [BasicAnimations.fade],

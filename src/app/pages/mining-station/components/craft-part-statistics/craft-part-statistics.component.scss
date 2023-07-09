@@ -1,0 +1,34 @@
+@use 'src/styles/common';
+
+:host {
+  @extend .titled-form;
+}
+
+.stats-table {
+  tr, td {
+    padding-inline: 2px;
+  }
+
+  .floating-stat {
+    position: relative;
+    cp-statistic-color-coded {
+      position: absolute;
+      right: 2px;
+      top: 6px;
+    }
+  }
+
+  .value-display {
+    width: max-content;
+    margin-left: auto;
+    border-radius: 4px;
+    padding-inline: 1ch;
+    background-color: rgba(var(--color-rgb-text), .1);
+  }
+}
+
+.empty-state {
+  border-radius: 8px;
+  background-color: var(--color-background-description-glass);
+  padding: 40px 10px;
+}

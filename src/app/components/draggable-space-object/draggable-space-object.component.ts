@@ -1,13 +1,26 @@
 import { Component, EventEmitter, Input, OnDestroy, Output, ViewEncapsulation } from '@angular/core';
-import { BasicAnimations } from '../../common/animations/basic-animations';
+import { BasicAnimations } from '../../animations/basic-animations';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { CameraService } from '../../services/camera.service';
 import { WithDestroy } from '../../common/with-destroy';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Icons } from '../../common/domain/icons';
+import { CommonModule } from '@angular/common';
+import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
+import { DoublePointerActionDirective } from '../../directives/double-pointer-action.directive';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'cp-draggable-space-object',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MouseHoverDirective,
+    DoublePointerActionDirective,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './draggable-space-object.component.html',
   styleUrls: ['./draggable-space-object.component.scss'],
   encapsulation: ViewEncapsulation.None,

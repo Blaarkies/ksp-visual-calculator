@@ -1,0 +1,24 @@
+@use 'src/styles/common';
+
+:host {
+  @extend .titled-form;
+}
+
+.skill-selector-layout {
+  margin-top: -20px;
+  max-width: max-content;
+  display: grid;
+
+  .icons-row {
+    display: flex;
+
+    > button {
+      margin-inline: -2px;
+    }
+  }
+
+  .slider-row {
+    width: calc(100% - 44px);
+    justify-self: center;
+  }
+}

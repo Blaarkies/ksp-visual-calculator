@@ -1,30 +1,14 @@
-import { Injectable } from '@angular/core';
 import {
-  distinctUntilChanged,
-  filter,
-  firstValueFrom,
-  map,
-  Observable,
-  of,
-  shareReplay,
-  switchMap,
-  take,
-  takeWhile,
-  tap,
-  zip
-} from 'rxjs';
-import { Router } from '@angular/router';
-import { DataService, UserData } from './data.service';
-import { StateService } from './state.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { MatDialog } from '@angular/material/dialog';
-import { AnalyticsService } from './analytics.service';
-import { AuthErrorCode } from '../components/account-details/auth-error-code';
+  HttpClient,
+  HttpParams,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
+  deleteUser,
   GoogleAuthProvider,
+  reload,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -32,88 +16,67 @@ import {
   User,
   UserCredential,
 } from '@angular/fire/auth';
-import { authState, user } from 'rxfire/auth';
-import { AdDispenserService } from '../adsense-manager/services/ad-dispenser.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  authState,
+  user,
+} from 'rxfire/auth';
+import {
+  distinctUntilChanged,
+  firstValueFrom,
+  map,
+  mergeWith,
+  Observable,
+  of,
+  shareReplay,
+  Subject,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { AuthErrorCode } from '../components/account/account-details/auth-error-code';
+import {
+  DataService,
+  UserData,
+} from './data.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class AuthService {
 
   user$: Observable<UserData>;
+  signIn$ = new Subject<UserData>();
+  signOut$ = new Subject<void>();
+  updateUserDetails$ = new Subject<string>();
 
   constructor(private auth: Auth,
-              private router: Router,
               private dataService: DataService,
-              private stateService: StateService,
               private snackBar: MatSnackBar,
-              private dialog: MatDialog,
-              private analyticsService: AnalyticsService,
-              private http: HttpClient,
-              adDispenserService: AdDispenserService) {
+              private http: HttpClient) {
     this.user$ = authState(auth)
       .pipe(
         map(user => user?.uid),
         distinctUntilChanged(),
         tap(uid => this.dataService.updateUserId(uid)),
+        mergeWith(this.updateUserDetails$),
         switchMap(uid => (uid
           ? this.dataService.getUser(uid)
           : of(null)) as Observable<UserData>),
         shareReplay(1));
-
-    stateService.earlyState
-      .pipe(
-        map(state => JSON.stringify(stateService.getTimestamplessState(state))),
-        switchMap(state => zip(of(state), this.user$)),
-        take(1),
-        filter(([, user]) => user !== null),
-        switchMap(([state]) => zip(of(state), stateService.getStatesInContext())),
-        switchMap(([earlyState, states]) => {
-          if (states.length === 0) {
-            return zip(of(false), of(states));
-          }
-
-          let newState = JSON.stringify(stateService.getTimestamplessState(stateService.state));
-          if (earlyState !== newState) {
-            return snackBar.open(`Latest save game found, discard current changes and load "${states[0]?.name}"?`,
-              'Discard Changes', {duration: 15e3})
-              .afterDismissed()
-              .pipe(map(value => [value.dismissedByAction, states]));
-          } else {
-            return zip(of(true), of(states));
-          }
-        }),
-        filter(([shouldLoad]) => !!shouldLoad),
-        switchMap(([, states]) => {
-          let newestState = states[0];
-          return stateService.loadState(newestState.state);
-        }),
-      )
-      .subscribe();
-
-    this.user$
-      .pipe(
-        map(u => u?.isCustomer),
-        takeWhile(isCustomer => !isCustomer, true))
-      .subscribe(isCustomer => isCustomer
-        ? adDispenserService.removeAds()
-        : adDispenserService.addAds());
   }
 
   async googleSignIn(agreedPolicy: boolean) {
     const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
-    await this.loadUserLastSaveGame();
+    let user = await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
+    this.signIn$.next(user);
   }
 
   async emailSignIn(email: string, password: string, agreedPolicy: boolean): Promise<UserCredential> {
     let credential = await signInWithEmailAndPassword(this.auth, email, password);
     await this.updateDataService(credential);
 
-    await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
-    await this.loadUserLastSaveGame();
+    let user = await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
+    this.signIn$.next(user);
     return credential;
   }
 
@@ -122,14 +85,12 @@ export class AuthService {
     await this.updateDataService(credential);
 
     await this.updateUserData(credential.user, {userAgreedToPrivacyPolicy: agreedPolicy});
-    // todo: check that current "tutorial" game is saved
     return credential;
   }
 
   async signOut() {
     await signOut(this.auth);
-    await firstValueFrom(this.stateService.loadState());
-    this.stateService.setStateRecord();
+    this.signOut$.next();
   }
 
   async updateUserData(user: UserData | User, extra?: {userAgreedToPrivacyPolicy: boolean}): Promise<UserData> {
@@ -145,6 +106,7 @@ export class AuthService {
     };
 
     await this.dataService.write('users', data);
+    this.updateUserDetails$.next(user.uid);
 
     return data;
   }
@@ -156,6 +118,7 @@ export class AuthService {
     };
 
     await this.dataService.write('users', data, {merge: true});
+    this.updateUserDetails$.next(user.uid);
 
     return user as UserData;
   }
@@ -166,31 +129,6 @@ export class AuthService {
     }
 
     return await sendPasswordResetEmail(this.auth, email);
-  }
-
-  private async loadUserLastSaveGame(): Promise<void> {
-    await firstValueFrom(this.user$);
-
-    let states = await firstValueFrom(this.stateService.getStatesInContext());
-    let newestState = states[0];
-    if (!newestState) {
-      return;
-    }
-
-    if (this.stateService.stateIsUnsaved) {
-      let snackbarResult$ = this.snackBar
-        .open(`Latest save game found, discard current changes and load "${newestState?.name}"?`,
-          'Discard Changes', {duration: 15e3})
-        .afterDismissed();
-      let {dismissedByAction} = await firstValueFrom(snackbarResult$);
-      if (!dismissedByAction) {
-        return;
-      }
-    }
-
-    await firstValueFrom(this.stateService.loadState(newestState?.state as string));
-    // todo: add snackbar queue service to stop message overriding each other
-    this.snackBar.open(`Loading latest save game "${newestState?.name}"`);
   }
 
   /**
@@ -230,14 +168,16 @@ export class AuthService {
     await signedInUser.reload();
   }
 
-  async deleteAccount(user: UserData): Promise<void> {
-    let signedInUser = await this.getSignedInUser();
+  async deleteAccount(): Promise<void> {
+    let signedInUser = this.auth.currentUser;
     await this.dataService.deleteAll('users');
     await this.dataService.deleteAll('states');
-    await signedInUser.delete().catch(e => {
-      if (e === AuthErrorCode.RequiresRecentLogin) {
-        this.snackBar.open('This action requires a recent sign in, try this again to complete');
-      }
-    });
+    await deleteUser(signedInUser)
+      .catch(e => {
+        if (e.toString().includes(AuthErrorCode.RequiresRecentLogin)) {
+          this.snackBar.open('Deleting your account requires a recent sign in, please login again to delete');
+        }
+      });
+    await signOut(this.auth);
   }
 }

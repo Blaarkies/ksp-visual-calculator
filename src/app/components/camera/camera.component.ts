@@ -1,5 +1,11 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Vector2 } from '../../common/domain/vector2';
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   distinctUntilChanged,
   filter,
@@ -12,10 +18,12 @@ import {
   skip,
   startWith,
   switchMap,
-  takeUntil
+  takeUntil,
 } from 'rxjs';
-import { CameraService } from '../../services/camera.service';
+import { Vector2 } from '../../common/domain/vector2';
 import { WithDestroy } from '../../common/with-destroy';
+import { CameraService } from '../../services/camera.service';
+import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
 
 interface TouchCameraControl {
   dxy: Vector2;
@@ -25,6 +33,8 @@ interface TouchCameraControl {
 
 @Component({
   selector: 'cp-camera',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.scss'],
 })
@@ -44,7 +54,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   }
 
   constructor(private cdr: ChangeDetectorRef,
-              private cameraService: CameraService) {
+              private cameraService: CameraService,
+              private universeBuilderService: AbstractUniverseBuilderService) {
     super();
   }
 
@@ -55,6 +66,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   ngOnInit() {
     this.cameraService.cdr = this.cdr;
     this.cameraService.cameraController = this.cameraController;
+    this.cameraService.getSoiParent =
+      (location: Vector2) => this.universeBuilderService.getSoiParent(location);
   }
 
   updateScale(event: WheelEvent) {

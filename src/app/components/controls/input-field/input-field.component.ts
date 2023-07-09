@@ -14,13 +14,14 @@ import {
 import { NG_VALUE_ACCESSOR, UntypedFormControl } from '@angular/forms';
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { BasicAnimations } from '../../../animations/basic-animations';
 import { Icons } from 'src/app/common/domain/icons';
 import { ControlInputType } from '../../../common/domain/input-fields/control-meta-input';
 import { fromEvent, Subject, takeUntil, timer } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { WidthClass } from '../input-number/input-number.component';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,17 +29,8 @@ import { MatButtonModule } from '@angular/material/button';
 export type CpColors = 'primary' | 'accent' | 'warn';
 
 @Component({
-  standalone: true,
   selector: 'cp-input-field',
-  templateUrl: './input-field.component.html',
-  styleUrls: ['./input-field.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  animations: [BasicAnimations.fade],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => InputFieldComponent),
-    multi: true,
-  }],
+  standalone: true,
   imports: [
     CommonModule,
     MatInputModule,
@@ -47,6 +39,14 @@ export type CpColors = 'primary' | 'accent' | 'warn';
     MatButtonModule,
     ValidationMessageComponent,
   ],
+  templateUrl: './input-field.component.html',
+  styleUrls: ['./input-field.component.scss'],
+  animations: [BasicAnimations.fade],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => InputFieldComponent),
+    multi: true,
+  }],
 })
 export class InputFieldComponent extends BasicValueAccessor implements OnInit, OnDestroy {
 
@@ -62,6 +62,7 @@ export class InputFieldComponent extends BasicValueAccessor implements OnInit, O
   @Input() suffix: string;
   @Input() allowClear: boolean;
   @Input() errors: FormControlError;
+  @Input() widthClass: WidthClass = 'normal';
 
   @Input() set formControl(value: UntypedFormControl) {
     this.setDisabledState(value?.disabled);

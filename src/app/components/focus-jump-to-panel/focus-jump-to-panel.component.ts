@@ -1,13 +1,30 @@
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { SpaceObjectService } from '../../services/space-object.service';
-import { combineLatest, filter, fromEvent, take, takeUntil } from 'rxjs';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
+import {
+  filter,
+  fromEvent,
+  takeUntil,
+} from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { MatButton } from '@angular/material/button';
+import {
+  MatButton,
+  MatButtonModule,
+} from '@angular/material/button';
 import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/event-logs';
-import { ConfigurableAnimations } from '../../common/animations/configurable-animations';
+import { EventLogs } from '../../services/domain/event-logs';
+import { ConfigurableAnimations } from '../../animations/configurable-animations';
+import { CommonModule } from '@angular/common';
+import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
 
 interface FocusItem {
   icon: string;
@@ -18,56 +35,58 @@ interface FocusItem {
 
 @Component({
   selector: 'cp-focus-jump-to-panel',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MouseHoverDirective,
+    MatButtonModule,
+    MatTooltipModule,
+    MatIconModule,
+  ],
   templateUrl: './focus-jump-to-panel.component.html',
   styleUrls: ['./focus-jump-to-panel.component.scss'],
   animations: [ConfigurableAnimations.openCloseX(48)],
 })
 export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, OnDestroy {
 
+  @Input() set focusables(value: SpaceObject[]) {
+    this.list = this.getActionPrimedList(value);
+
+    if (!this.hasFocusablesBeenSet && this.list?.length) {
+      // TODO: modded/renamed universes might no longer have 'Kerbin'
+      let kerbin = value.find(so => so.label === 'Kerbin');
+      this.cameraService.focusSpaceObject(kerbin);
+
+      this.hasFocusablesBeenSet = true;
+    }
+  }
+
+  private getActionPrimedList(value: SpaceObject[]) {
+    return value?.map((so: SpaceObject) => ({
+      icon: so.type.icon,
+      label: so.label,
+      itemAction: () => {
+        this.analyticsService.logEventThrottled(EventLogs.Name.FocusBodyWithButton, {
+          category: EventLogs.Category.Camera,
+          body: EventLogs.Sanitize.anonymize(so.label),
+        });
+
+        this.cameraService.focusSpaceObject(so);
+      },
+      source: so,
+    }));
+  }
+
   list: FocusItem[];
   isOpen = false;
 
+  private hasFocusablesBeenSet = false;
+
   @ViewChildren('button') buttons: QueryList<MatButton>;
 
-  constructor(spaceObjectService: SpaceObjectService,
-              private cameraService: CameraService,
+  constructor(private cameraService: CameraService,
               private analyticsService: AnalyticsService) {
     super();
-
-    let focusablesChange$ = combineLatest([
-      spaceObjectService.crafts$,
-      spaceObjectService.celestialBodies$])
-      .pipe(filter(values => !values.some(v => v === null))); // filter null items out
-
-    focusablesChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(values => {
-        this.list = values
-          .flatMap()
-          .map((so: SpaceObject) => ({
-            icon: so.type.icon,
-            label: so.label,
-            itemAction: () => {
-              this.analyticsService.logEventThrottled(EventLogs.Name.FocusBodyWithButton, {
-                category: EventLogs.Category.Camera,
-                body: EventLogs.Sanitize.anonymize(so.label),
-              });
-
-              cameraService.focusSpaceObject(so);
-            },
-            source: so,
-          }));
-      });
-
-    focusablesChange$
-      .pipe(
-        take(1),
-        takeUntil(this.destroy$))
-      .subscribe(values => {
-        // todo: modded/renamed universes might no longer have 'Kerbin'
-        let kerbin = values.flatMap().find(so => so.label === 'Kerbin');
-        cameraService.focusSpaceObject(kerbin);
-      });
   }
 
   ngOnInit() {

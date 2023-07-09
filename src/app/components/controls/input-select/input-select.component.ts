@@ -7,14 +7,23 @@ import { LabeledOption } from '../../../common/domain/input-fields/labeled-optio
 import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { Icons } from '../../../common/domain/icons';
 import { BehaviorSubject, map, Subject, takeUntil } from 'rxjs';
-import { BasicAnimations } from '../../../common/animations/basic-animations';
+import { BasicAnimations } from '../../../animations/basic-animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import {MatOptionModule} from "@angular/material/core";
 
 @Component({
-  standalone: true,
   selector: 'cp-input-select',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatIconModule,
+    MatOptionModule,
+    InputFieldComponent,
+  ],
   templateUrl: './input-select.component.html',
   styleUrls: ['./input-select.component.scss'],
   animations: [BasicAnimations.fade],
@@ -23,13 +32,6 @@ import { CommonModule } from '@angular/common';
     useExisting: forwardRef(() => InputSelectComponent),
     multi: true,
   }],
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatIconModule,
-    InputFieldComponent,
-  ],
 })
 export class InputSelectComponent extends BasicValueAccessor implements OnDestroy {
 

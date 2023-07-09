@@ -1,24 +1,31 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { Icons } from '../../common/domain/icons';
-import { ActionOption, ActionOptionType } from '../../common/domain/action-option';
-import { AnalyticsService } from '../../services/analytics.service';
-import { ActionPanelColors } from '../action-panel/action-panel.component';
-import { WithDestroy } from '../../common/with-destroy';
-import { EventLogs } from '../../services/event-logs';
-import { MatTooltipModule, TooltipPosition } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { AppRoutingModule } from '../../app-routing.module';
+import {
+  MatTooltipModule,
+  TooltipPosition,
+} from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
+import {
+  ActionOption,
+  ActionOptionType,
+} from '../../common/domain/action-option';
+import { Icons } from '../../common/domain/icons';
+import { AnalyticsService } from '../../services/analytics.service';
+import { EventLogs } from '../../services/domain/event-logs';
+import { ActionPanelColors } from '../hud/action-panel/action-panel.component';
 
 @Component({
-  standalone: true,
   selector: 'cp-action-list',
-  templateUrl: './action-list.component.html',
-  styleUrls: ['./action-list.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+  standalone: true,
   imports: [
     CommonModule,
     MatTooltipModule,
@@ -28,39 +35,22 @@ import { RouterModule } from '@angular/router';
     MatListModule,
     RouterModule,
   ],
+  templateUrl: './action-list.component.html',
+  styleUrls: ['./action-list.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
-export class ActionListComponent extends WithDestroy() {
+export class ActionListComponent {
 
   @Input() color: ActionPanelColors = 'green';
   @Input() justifyRight: boolean;
   @Input() tooltipPosition: TooltipPosition = 'right';
-
-  private actionOptions: ActionOption[];
-
-  get options(): ActionOption[] {
-    return this.actionOptions;
-  }
-
-  @Input() set options(value: ActionOption[]) {
-    this.actionOptions = value ?? [];
-    setTimeout(() =>
-      this.unreadCount = this.actionOptions.count(ao => ao.unread));
-  }
-
-  @Output() action = new EventEmitter();
-
-  unreadCount: number;
+  @Input() options: ActionOption[];
+  @Output() action = new EventEmitter<ActionOption>();
 
   icons = Icons;
   actionTypes = ActionOptionType;
 
   constructor(private analyticsService: AnalyticsService) {
-    super();
-  }
-
-  updateUnreads(option: ActionOption) {
-    option.readNotification();
-    this.unreadCount = this.actionOptions.count(ao => ao.unread);
   }
 
   logExternalLink(externalRoute: string) {
