@@ -120,12 +120,14 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     if (body.draggableHandle.orbit) {
       body.draggableHandle.orbit.color = details.orbitColor;
     }
-    body.antennae = details.currentDsn ? [new Group(details.currentDsn)] : [];
+    let antennaeIfDsn = details.currentDsn ? [new Group(details.currentDsn)] : [];
+    body.communication.setAntennae(antennaeIfDsn);
   }
 
   getSoiParent(location: Vector2): SpaceObject {
     return this.planets$.value
       .filter(p => !p.sphereOfInfluence || location.distance(p.location) <= p.sphereOfInfluence)
+      // TODO: use max
       .sort((a, b) => a.location.distance(location) - b.location.distance(location))
       .first();
   }

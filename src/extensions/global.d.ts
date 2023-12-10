@@ -72,6 +72,8 @@ declare global {
 
     sum(this: Array<number | any>, selector?: (item: any) => number): number;
 
+    max(this: Array<number | any>, selector?: (item: any) => number): T;
+
     add(this: Array<T>, fresh: T): Array<T>;
 
     replace(this: Array<T>, stale: T, fresh: T, addIfAbsent?: boolean): Array<T>;

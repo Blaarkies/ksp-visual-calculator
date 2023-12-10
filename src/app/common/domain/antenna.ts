@@ -1,6 +1,11 @@
-import { Group } from './group';
 import { AntennaPart } from '../../services/json-interfaces/antenna-part';
+import { Group } from './group';
 import { Icons } from './icons';
+
+export enum ProbeControlPoint {
+  SingleHop = 'single-hop',
+  MultiHop = 'multi-hop',
+}
 
 export class Antenna {
 
@@ -17,25 +22,27 @@ export class Antenna {
   constructor(public label: string,
               public cost: number,
               public mass: number,
-              public electricityPMit: number,
-              public electricityPS: number,
-              public transmissionSpeed: number,
-              public relay: boolean,
-              public tier: number,
-              public powerRating: number,
-              public combinabilityExponent: number) {
+              public electricityPMit: number = 0,
+              public electricityPS: number = 0,
+              public transmissionSpeed: number = 0,
+              public relay?: boolean,
+              public tier?: number,
+              public powerRating: number = 0,
+              public combinabilityExponent: number = 0,
+              public probeControlPoint?: ProbeControlPoint) {
   }
 
   static combinedPower(antennae: Group<Antenna>[]): number {
     if (!antennae.length) {
       return 0;
     }
+
     let strongestAntennaPower = antennae
-      .map(g => g.item)
-      .sort((a, b) => b.powerRating - a.powerRating)
-      .first()
+      .max(g => g.item.powerRating)
+      .item
       .powerRating;
-    let {sumOfAntennaPowers, averageCombinabilityExponent} = this.getAverageCombinabilityExponent(antennae);
+    let {sumOfAntennaPowers, averageCombinabilityExponent}
+      = this.getAverageCombinabilityExponent(antennae);
 
     let vesselPower = strongestAntennaPower
       * (sumOfAntennaPowers / strongestAntennaPower)
@@ -46,13 +53,25 @@ export class Antenna {
   static getAverageCombinabilityExponent(antennae: Group<Antenna>[]) {
     let sumOfAntennaPowers = antennae.map(({item, count}) => item.powerRating * count).sum();
     let averageCombinabilityExponent = antennae
-      .map(({item, count}) => item.powerRating * item.combinabilityExponent * count)
-      .sum() / sumOfAntennaPowers;
+        .sum(({item, count}) => item.powerRating * item.combinabilityExponent * count)
+      / sumOfAntennaPowers;
     return {sumOfAntennaPowers, averageCombinabilityExponent};
   }
 
   static containsRelay(antennae: Group<Antenna>[]): boolean {
-    return antennae.map(g => g.item).some(a => a.relay);
+    return antennae.some(a => a.item.relay);
+  }
+
+  static bestProbeControlPoint(antennae: Antenna[]): ProbeControlPoint {
+    let distinctControlTypes = antennae
+      .map(g => g.probeControlPoint)
+      .distinct();
+
+    return distinctControlTypes.includes(ProbeControlPoint.MultiHop)
+      ? ProbeControlPoint.MultiHop
+      : distinctControlTypes.includes(ProbeControlPoint.SingleHop)
+        ? ProbeControlPoint.SingleHop
+        : null;
   }
 
   static fromAntennaPart(part: AntennaPart): Antenna {
@@ -67,6 +86,7 @@ export class Antenna {
       part.tier,
       part.powerRating,
       part.combinabilityExponent,
+      part.probeControlPoint as ProbeControlPoint,
     );
   }
 

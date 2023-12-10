@@ -4,7 +4,6 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
 import {
   combineLatest,
   delayWhen,
@@ -19,7 +18,7 @@ import {
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { ActionOption } from '../../common/domain/action-option';
-import { AntennaSignal } from '../../common/domain/antenna.signal';
+import { AntennaSignal } from '../../common/domain/antenna-signal';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Craft } from '../../common/domain/space-objects/craft';
@@ -45,6 +44,7 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData,
 } from './components/craft-details-dialog/craft-details-dialog.component';
+import { CraftComponent } from './components/craft/craft.component';
 import { DifficultySettingsDialogComponent } from './components/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
@@ -60,6 +60,7 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
     UniverseMapComponent,
     AntennaSignalComponent,
     DraggableSpaceObjectComponent,
+    CraftComponent,
   ],
   providers: [
     HudService,
@@ -84,7 +85,6 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
 
   constructor(
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
     private analyticsService: AnalyticsService,
     private hudService: HudService,
@@ -191,7 +191,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
 
   updateUniverse(dragged: SpaceObject) {
     // TODO: check if children in SOI feature have antennae
-    if (dragged.antennae?.length) {
+    if (dragged.communication?.antennae?.length) {
       this.commnetUniverseBuilderService.updateTransmissionLines();
     }
   }

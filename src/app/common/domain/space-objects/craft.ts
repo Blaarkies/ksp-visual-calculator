@@ -1,10 +1,11 @@
-import { SpaceObject } from './space-object';
-import { Vector2 } from '../vector2';
-import { ImageUrls } from '../image-urls';
-import { CraftType } from './craft-type';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { Antenna } from '../antenna';
 import { Group } from '../group';
-import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
+import { ImageUrls } from '../image-urls';
+import { Vector2 } from '../vector2';
+import { Communication } from './communication';
+import { CraftType } from './craft-type';
+import { SpaceObject } from './space-object';
 import { SpaceObjectType } from './space-object-type';
 
 export class Craft extends SpaceObject {
@@ -35,18 +36,19 @@ export class Craft extends SpaceObject {
       ...base,
       label: this.label,
       craftType: this.craftType.label,
-      antennae: this.antennae.map(a => [a.item.label, a.count]),
       location: this.location.toList(),
     };
   }
 
-  static fromJson(json: any, getAntenna: (name) => Antenna): Craft {
-    let antennae = json.antennae.map(([label, count]) => new Group<Antenna>(getAntenna(label), count));
+  static fromJson(json: any, getAntenna: (name: string) => Antenna): Craft {
+    let communication = Communication.fromJson(json.communication, getAntenna);
+    let craftType = CraftType.fromString(json.craftType);
 
     let object = new Craft(
       json.label,
-      CraftType.fromString(json.craftType),
-      antennae);
+      craftType,
+      communication.antennae,
+    );
 
     object.draggableHandle.location = Vector2.fromList(json.draggableHandle.location);
     object.draggableHandle.lastAttemptLocation = json.draggableHandle.lastAttemptLocation;

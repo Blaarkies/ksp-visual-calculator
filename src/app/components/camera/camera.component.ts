@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -35,6 +36,7 @@ interface TouchCameraControl {
   selector: 'cp-camera',
   standalone: true,
   imports: [CommonModule],
+  providers: [{provide: Window, useValue: window}],
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.scss'],
 })
@@ -55,7 +57,8 @@ export class CameraComponent extends WithDestroy() implements OnInit {
 
   constructor(private cdr: ChangeDetectorRef,
               private cameraService: CameraService,
-              private universeBuilderService: AbstractUniverseBuilderService) {
+              private universeBuilderService: AbstractUniverseBuilderService,
+              @Inject(Window) private window: Window) {
     super();
   }
 
@@ -76,7 +79,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
     let location = new Vector2(event.x, event.y);
     this.cameraService.zoomAt(1.07 * zoomDirection, location);
     event.preventDefault();
-    window.requestAnimationFrame(() => this.cdr.markForCheck());
+    this.window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 
   mouseDown(event: MouseEvent, screenSpace: HTMLDivElement) {
@@ -98,7 +101,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         takeUntil(this.destroy$))
       .subscribe(([x, y]) => {
         this.cameraService.translate(x, y);
-        window.requestAnimationFrame(() => this.cdr.markForCheck());
+        this.window.requestAnimationFrame(() => this.cdr.markForCheck());
       });
   }
 
@@ -125,7 +128,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
         }
         this.cameraService.location.addVector2(dxy);
 
-        window.requestAnimationFrame(() => this.cdr.markForCheck());
+        this.window.requestAnimationFrame(() => this.cdr.markForCheck());
       });
   }
 

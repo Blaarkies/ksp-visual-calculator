@@ -1,5 +1,5 @@
 <div class="draggable-body stack"
-     [class.cursor-grab]="!spaceObject.draggableHandle.isGrabbing"
+     [class.cursor-grab]="isIdle$ | async"
      [style.left.%]="normalizedScale * spaceObject.location.x"
      [style.top.%]="normalizedScale * spaceObject.location.y"
      (pointerdown)="dragSpaceObject.emit($event)"
@@ -10,12 +10,19 @@
 
   <ng-content></ng-content>
 
-  <span class="label-space-object">{{spaceObject.label}}</span>
+  <span
+    @fade
+    *ngIf="isIdle$ | async"
+    class="label-space-object"
+  >
+    {{spaceObject.label}}
+  </span>
 
-  <button class="edit-icon-space-object"
-          mat-icon-button
-          [@fade]
-          *ngIf="allowEdit && (buttonHover$ | async)"
+  <button class="edit-button"
+          mat-button
+          @fade
+          *ngIf="showEdit$ | async"
+          matTooltip="Edit"
           (click)="editSpaceObject.next()"
           (pointerdown)="$event.stopPropagation()">
     <mat-icon [svgIcon]="icons.Edit"></mat-icon>

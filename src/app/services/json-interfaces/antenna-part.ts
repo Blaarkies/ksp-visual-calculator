@@ -9,4 +9,5 @@ export interface AntennaPart {
   tier: number;
   powerRating: number;
   combinabilityExponent: number;
+  probeControlPoint: string;
 }

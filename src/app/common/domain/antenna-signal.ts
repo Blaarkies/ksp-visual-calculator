@@ -47,27 +47,27 @@ export class AntennaSignal {
 
   get strengthTotal(): number {
     return this.memoizeStrengthTotal(
-      this.nodes[0].hasRelay,
-      this.nodes[1].hasRelay,
+      this.nodes[0].communication.containsRelay(),
+      this.nodes[1].communication.containsRelay(),
       this.nodes[0].location.x,
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].antennae,
-      this.nodes[1].antennae,
+      this.nodes[0].communication.antennae,
+      this.nodes[1].communication.antennae,
     );
   }
 
   get strengthRelay(): number {
     return this.memoizeStrengthRelay(
-      this.nodes[0].hasRelay,
-      this.nodes[1].hasRelay,
+      this.nodes[0].communication.containsRelay(),
+      this.nodes[1].communication.containsRelay(),
       this.nodes[0].location.x,
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].antennae,
-      this.nodes[1].antennae,
+      this.nodes[0].communication.antennae,
+      this.nodes[1].communication.antennae,
     );
   }
 
@@ -100,11 +100,13 @@ export class AntennaSignal {
   });
 
   private memoizeStrengthTotal = memoize((hasRelay1, hasRelay2, ...rest) =>
-      this.getSignalStrength(hasRelay1, hasRelay2, node => node.powerRatingTotal),
+      this.getSignalStrength(hasRelay1, hasRelay2,
+          node => node.communication.powerRatingTotal()),
     {strategy: memoize.strategies.variadic});
 
   private memoizeStrengthRelay = memoize((hasRelay1, hasRelay2, ...rest) =>
-      this.getSignalStrength(hasRelay1, hasRelay2, node => node.powerRatingRelay),
+      this.getSignalStrength(hasRelay1, hasRelay2,
+          node => node.communication.powerRatingRelay()),
     {strategy: memoize.strategies.variadic});
 
   private getSignalStrength(hasRelay1: boolean,

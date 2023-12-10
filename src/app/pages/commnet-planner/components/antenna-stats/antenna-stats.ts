@@ -7,4 +7,5 @@ export interface AntennaStats {
   totalTransmissionSpeed: number;
   relayBias: number;
   averageCombinabilityExponent: number;
+  remoteGuidanceCapability: string;
 }

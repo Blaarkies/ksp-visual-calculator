@@ -5,7 +5,6 @@
 .draggable-body {
   width: 0;
   height: 0;
-  //transition: .05s;
 
   position: absolute;
   user-select: none;
@@ -20,18 +19,33 @@
 .label-space-object {
   color: var(--color-text-map-green);
   text-align: center;
+
   position: absolute;
   top: 50%;
-  left: -50%;
+  --width: 140px;
+  left: calc(-.5 * var(--width));
+  min-width: var(--width);
 
   width: 100%;
-  white-space: nowrap;
   pointer-events: none;
 }
 
-.edit-icon-space-object {
-  color: var(--color-text-map-green) !important;
+.edit-button {
   position: absolute;
-  left: -50%;
-  top: calc(50% + 8px);
+  left: 25%;
+  top: 0;
+
+  width: max-content;
+  min-width: unset !important;
+  height: auto !important;
+  padding: 6px;
+
+  color: var(--color-text-map-green) !important;
+  background-color: rgba(var(--color-rgb-text-map-green), .1) !important;
+  border-radius: 50px !important;
+  border: 1px solid rgba(var(--color-rgb-text-map-green), .3) !important;
+
+  mat-icon {
+    margin-right: 0 !important;
+  }
 }

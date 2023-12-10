@@ -1,0 +1,28 @@
+.craft-icon-sprite-image {
+  width: 65px;
+  height: 65px;
+}
+
+.altitude-text {
+  color: var(--color-text-map-green);
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: max-content;
+
+  text-shadow: 0 0 1px black;
+  background-color: #0009;
+  border-radius: 10px;
+  padding: 2px 6px;
+}
+
+.connection-indicator {
+  color: var(--color-text-warn);
+  position: absolute;
+  top: -40%;
+  left: -50%;
+
+  --animate-opacity-wobble-0: .1;
+  --animate-opacity-wobble-1: 1;
+  animation: 1s kf-animate-opacity-wobble var(--timing-function-quadratic-out) alternate infinite;
+}

@@ -88,7 +88,7 @@ export class CelestialBodyDetailsDialogComponent {
     },
     currentDsn: {
       label: 'Current Tracking Station',
-      control: new UntypedFormControl(this.data.edit?.antennae[0]?.item),
+      control: new UntypedFormControl(this.data.edit?.communication.antennae[0]?.item),
       controlMeta: new ControlMetaSelect(
         this.trackingStationOptions,
         new Map<Antenna, string>(this.trackingStationOptions.map(a => [a.value, a.value?.icon ?? Icons.Delete])),

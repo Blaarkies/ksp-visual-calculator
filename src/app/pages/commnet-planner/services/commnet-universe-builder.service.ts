@@ -3,20 +3,26 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
+  combineLatest,
+  distinct,
+  distinctUntilChanged,
   firstValueFrom,
+  map,
+  sampleTime,
+  startWith,
   take,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { Antenna } from '../../../common/domain/antenna';
-import { AntennaSignal } from '../../../common/domain/antenna.signal';
+import { AntennaSignal } from '../../../common/domain/antenna-signal';
 import { Group } from '../../../common/domain/group';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import { Vector2 } from '../../../common/domain/vector2';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { CameraService } from '../../../services/camera.service';
 import { EventLogs } from '../../../services/domain/event-logs';
@@ -28,6 +34,7 @@ import { StockEntitiesCacheService } from '../../../services/stock-entities-cach
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { CraftDetails } from '../components/craft-details-dialog/craft-details';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
+import { ConnectionGraph } from '../connection-graph';
 
 @Injectable()
 export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
@@ -43,7 +50,6 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
-
     private cameraService: CameraService,
   ) {
     super();
@@ -57,6 +63,25 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       });
 
     this.difficultySetting = DifficultySetting.normal;
+
+    combineLatest([
+      this.signals$.stream$,
+      this.craft$.stream$,
+      this.planets$,
+    ]).pipe(
+      tap(([signals, craft, planets]) => {
+        if (!signals.length) {
+          craft.forEach(c => c.communication.noSignal());
+          return;
+        }
+        let connectionGraph = new ConnectionGraph(signals, craft, planets);
+        craft.forEach(c =>
+          c.communication.hasControl$.set(
+            connectionGraph.hasControlCraft.has(c)));
+
+        console.count('Generated new ConnectionGraph');
+      }),
+    ).subscribe();
 
     // TODO: remove UniverseContainerInstance usages
     this.craft$.stream$
@@ -79,9 +104,9 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     this.signals$.set([]);
     this.difficultySetting = DifficultySetting.normal;
 
-    // todo: hasDsn is removed. add default tracking station another way
+    // TODO: hasDsn is removed. add default tracking station another way
     let needsBasicDsn = this.planets$.value
-      .find(cb => cb.hasDsn && cb.antennae?.length === 0);
+      .find(cb => cb.hasDsn && !cb.communication);
     if (needsBasicDsn) {
       await firstValueFrom(this.cacheService.antennae$);
       needsBasicDsn.antennae.push(
@@ -144,14 +169,14 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     this.updateTransmissionLines();
   }
 
-  private getIndexOfSameCombination = (parentItem, list) =>
+  private getIndexOfSameCombination = <T>(parentItem: T[], list: T[][]) =>
     list.findIndex(item =>
       item.every(so =>
         parentItem.includes(so)));
 
   private getFreshTransmissionLines(nodes: SpaceObject[], signals: AntennaSignal[]): AntennaSignal[] {
     return nodes
-      .filter(so => so.antennae?.length)
+      .filter(so => so.communication?.antennae?.length)
       .joinSelf()
       .distinct(this.getIndexOfSameCombination)
       // run again, opposing permutations are still similar as combinations
@@ -168,7 +193,12 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       ...this.craft$.value ?? [],
     ];
     let signals = reset ? [] : this.signals$.value;
-    this.signals$.set(this.getFreshTransmissionLines(nodes, signals));
+    let freshTransmissionLines = this.getFreshTransmissionLines(nodes, signals);
+    if (signals.equal(freshTransmissionLines)) {
+      return;
+    }
+
+    this.signals$.set(freshTransmissionLines);
   }
 
   private addCraft(details: CraftDetails, allCraft: Craft[]) {

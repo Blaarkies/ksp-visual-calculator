@@ -33,6 +33,20 @@ Array.prototype.sum = function (this: Array<number>, selector?: (item: any) => n
     : this.reduce((total, c) => total + c, 0);
 };
 
+Array.prototype.max = function (this: Array<number>, selector?: (item: any) => number): number | object {
+  return selector
+    ? this.reduce((maxEntry, c) => {
+      let selected = selector(c);
+      if (selected > maxEntry.value) {
+        maxEntry.value = selected;
+        maxEntry.item = c;
+      }
+      return maxEntry;
+    }, {value: Number.MIN_VALUE, item: undefined})
+      .item
+    : Math.max(...this);
+};
+
 Array.prototype.add = function (this: Array<any>, fresh: any): Array<any> {
   this.push(fresh);
   return this;
@@ -140,9 +154,9 @@ Array.prototype.random = function (this: Array<any>): any {
  * @param other
  * @param predicate
  */
-Array.prototype.equal = function (this: Array<any>,
-                                  other: Array<any>,
-                                  predicate?: (a, b) => boolean): boolean {
+Array.prototype.equal = function (this: Array<unknown>,
+                                  other: Array<unknown>,
+                                  predicate?: (a: unknown, b: unknown) => boolean): boolean {
   if (this.length !== other.length) {
     return false;
   }

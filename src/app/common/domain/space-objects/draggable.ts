@@ -1,4 +1,5 @@
 import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, throttleTime } from 'rxjs';
+import { SubjectHandle } from '../../subject-handle';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { Vector2 } from '../vector2';
 import { CameraComponent } from '../../../components/camera/camera.component';
@@ -12,6 +13,7 @@ import { MoveType } from './move-type';
 
 export class Draggable {
 
+  isGrabbing$ = new SubjectHandle<boolean>({defaultValue: false});
   isGrabbing: boolean;
   isHover$ = new Subject<boolean>();
   location = new Vector2();
@@ -64,6 +66,7 @@ export class Draggable {
     if (event.pointerType === 'mouse') {
       screen.style.cursor = 'grabbing';
       this.isGrabbing = true;
+      this.isGrabbing$.set(true);
 
       pointerStream = this.getEventObservable(screen, 'mousemove')
         .pipe(
@@ -74,6 +77,7 @@ export class Draggable {
           finalize(() => {
             screen.style.cursor = 'unset';
             this.isGrabbing = false;
+            this.isGrabbing$.set(false);
           }),
           takeUntil(fromEvent(screen, 'mouseleave')),
           takeUntil(fromEvent(event.target, 'mouseup')),

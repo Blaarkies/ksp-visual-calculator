@@ -1,7 +1,7 @@
 import { AntennaSignalComponent } from './antenna-signal.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
-import { AntennaSignal } from '../../../../common/domain/antenna.signal';
+import { AntennaSignal } from '../../../../common/domain/antenna-signal';
 import { ineeda } from 'ineeda';
 import { of } from 'rxjs';
 import { SpaceObject } from '../../../../common/domain/space-objects/space-object';

@@ -1,7 +1,9 @@
 <div class="antenna-stats-layout">
 
-  <div class="number-stat"
-       *ngFor="let stat of displayStats">
+  <div
+    class="number-stat"
+    *ngFor="let stat of displayStats"
+  >
     <div>{{stat.label}}</div>
     <div>{{stat.value}}</div>
   </div>
@@ -22,6 +24,13 @@
       <mat-progress-bar color="primary" [value]="(stats?.averageCombinabilityExponent || 0) * 100"></mat-progress-bar>
       <div>{{(stats?.averageCombinabilityExponent || 0) | number : '1.2-2'}}</div>
     </div>
+  </div>
+
+  <div *ngIf="stats?.remoteGuidanceCapability"
+       class="number-stat"
+       [matTooltip]="'Indicates the diminishing returns from adding more antennae to this craft'">
+    <div>Remote Guidance Capability</div>
+    <div>{{stats?.remoteGuidanceCapability}}</div>
   </div>
 
 </div>

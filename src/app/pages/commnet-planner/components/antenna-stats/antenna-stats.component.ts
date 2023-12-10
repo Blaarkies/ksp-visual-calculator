@@ -1,12 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AntennaInput } from '../antenna-selector/antenna-input';
-import { Antenna } from '../../../../common/domain/antenna';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+  Antenna,
+  ProbeControlPoint,
+} from '../../../../common/domain/antenna';
 import { Group } from '../../../../common/domain/group';
 import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
+import { AntennaInput } from '../antenna-selector/antenna-input';
 import { AntennaStats } from './antenna-stats';
-import {CommonModule} from "@angular/common";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @Component({
   selector: 'cp-antenna-stats',
@@ -34,6 +37,9 @@ export class AntennaStatsComponent {
     let {averageCombinabilityExponent} = Antenna.getAverageCombinabilityExponent(
       antennaInputs.map(a => new Group<Antenna>(a.selectedAntenna, a.countControl.value)));
 
+    let remoteGuidanceCapability = Antenna.bestProbeControlPoint(antennaInputs.map(a => a.selectedAntenna))
+      ?.let(pcp => pcp === ProbeControlPoint.MultiHop ? 'Multi-hop' : 'Single-hop');
+
     this.stats = {
       totalPowerRating: Antenna.combinedPower(antennaInputs.map(a => new Group<Antenna>(a.selectedAntenna, a.countControl.value))),
       totalCost: antennaInputs.map(a => a.selectedAntenna.cost * a.countControl.value).sum(),
@@ -43,6 +49,7 @@ export class AntennaStatsComponent {
       totalTransmissionSpeed: antennaInputs.map(a => a.selectedAntenna.transmissionSpeed * a.countControl.value).sum(),
       relayBias,
       averageCombinabilityExponent,
+      remoteGuidanceCapability,
     } as AntennaStats;
 
     this.displayStats = [
