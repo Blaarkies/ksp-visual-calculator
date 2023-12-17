@@ -1,42 +1,47 @@
+import {
+  Subject,
+  takeUntil,
+} from 'rxjs';
+import { antennaServiceGetAntennaeMap$ } from '../../../pages/commnet-planner/services/pseudo/antenna.service';
 import { SubjectHandle } from '../../subject-handle';
 import {
   Antenna,
   ProbeControlPoint,
 } from '../antenna';
+import { CommunicationDto } from '../dtos/communication-dto';
 import { Group } from '../group';
 
 export class Communication {
 
   hasControl$ = new SubjectHandle<boolean>({defaultValue: false});
+  antennaeFull: Group<Antenna>[];
+  antennae: Group<string>[];
 
   private bestProbeControlPoint: ProbeControlPoint;
+  private destroy$ = new Subject<void>();
 
-  constructor(
-    public antennae: Group<Antenna>[] = [],
-    public isDsn?: boolean,
-  ) {
-    this.bestProbeControlPoint = this.getBestProbeControlPoint(antennae);
-    this.hasControl$.set(!!this.bestProbeControlPoint);
+  constructor(antennae: Group<string>[] = []) {
+    this.setAntennae(antennae);
   }
 
-  private getBestProbeControlPoint(antennae: Group<Antenna>[]) {
-    return Antenna.bestProbeControlPoint(antennae.map(a => a.item));
+  private getBestProbeControlPoint(): ProbeControlPoint {
+    return Antenna.bestProbeControlPoint(this.antennaeFull.map(a => a.item));
   }
 
   destroy() {
     this.hasControl$.destroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  toJson(): {} {
+  toJson(): CommunicationDto {
     return {
-      antennae: this.antennae.map(a => [a.item.label, a.count]),
-      isDsn: this.isDsn,
+      antennae: this.antennae.map(g => [g.item, g.count]),
     };
   }
 
-  static fromJson(json: any, getAntenna: (name: string) => Antenna): Communication {
-    let antennae = json.antennae.map(([label, count]) =>
-      new Group<Antenna>(getAntenna(label), count));
+  static fromJson(json: CommunicationDto): Communication {
+    let antennae = json.antennae.map(g => new Group(g[0].toString(), g[1] as number));
     return new Communication(antennae);
   }
 
@@ -44,22 +49,31 @@ export class Communication {
     this.hasControl$.set(!!this.bestProbeControlPoint);
   }
 
-  setAntennae(antennae: Group<Antenna>[]) {
+  setAntennae(antennae: Group<string>[]) {
     this.antennae = antennae;
-    this.bestProbeControlPoint = this.getBestProbeControlPoint(this.antennae);
+
+    antennaServiceGetAntennaeMap$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(antennaeMap => {
+        this.antennaeFull = antennae
+          .map(a => new Group(antennaeMap.get(a.item), a.count));
+
+        this.bestProbeControlPoint = this.getBestProbeControlPoint();
+        this.hasControl$.set(!!this.bestProbeControlPoint);
+      });
   }
 
   containsRelay(): boolean {
-    return Antenna.containsRelay(this.antennae);
+    return Antenna.containsRelay(this.antennaeFull);
   }
 
   powerRatingTotal(): number {
-    return Antenna.combinedPower(this.antennae);
+    return Antenna.combinedPower(this.antennaeFull);
   }
 
   powerRatingRelay(): number {
     return Antenna.combinedPower(
-      this.antennae.filter(a => a.item.relay));
+      this.antennaeFull.filter(a => a.item.relay));
   }
 
   bestRemoteGuidanceCapability(): ProbeControlPoint {

@@ -8,9 +8,11 @@ export class PathController {
   duration: number;
   timingFunction: string | 'ease-in-out' | 'linear' = 'ease-in-out';
 
-  private screen = new Vector2(window.innerWidth, window.innerHeight);
+  private screen: Vector2;
 
-  constructor(type?: 'snow' | 'spooky' | 'free') {
+  constructor(window: Window, type?: 'snow' | 'spooky' | 'free') {
+    this.screen = new Vector2(window.innerWidth, window.innerHeight);
+
     if (type === 'snow') {
       this.height = Common.randomInt(10, 80);
       this.path = this.getSnowPath();

@@ -6,7 +6,7 @@
      (touchstart)="$event.stopImmediatePropagation()"
      (mousedown)="$event.buttons.bitwiseIncludes(1) && $event.stopImmediatePropagation()"
      cpDoublePointerAction (doubleAction)="focusObject.emit($event)"
-     cpMouseHover (hoverChange)="buttonHover$.next($event); spaceObject.draggableHandle.isHover$.next($event)">
+     cpMouseHover (hoverChange)="buttonHover$.next($event); spaceObject.draggable.isHover$.next($event)">
 
   <ng-content></ng-content>
 

@@ -1,8 +1,11 @@
 import { ProbeControlPoint } from '../../common/domain/antenna';
-import { AntennaSignal } from '../../common/domain/antenna-signal';
+import {
+  AntennaSignal,
+  CanCommunicate,
+} from '../../common/domain/antenna-signal';
+import { NodeGraph } from '../../common/domain/graph-data-structure';
 import { Craft } from '../../common/domain/space-objects/craft';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { NodeGraph } from '../dv-planner/domain/graph-data-structure';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
 
 export class ConnectionGraph {
 
@@ -12,7 +15,7 @@ export class ConnectionGraph {
 
   constructor(signals: AntennaSignal[],
               craft: Craft[],
-              planets: SpaceObject[]) {
+              planets: Planetoid[]) {
     signals
       .filter(s => s.strengthRelay)
       .forEach(s => {
@@ -22,8 +25,8 @@ export class ConnectionGraph {
 
     let graphNodes = this.graph.nodes();
 
-    let trackingStations = planets
-      .filter(p => p.communication?.isDsn);
+    let trackingStations: CanCommunicate[] = planets
+      .filter(p => p.communication?.antennae?.length);
     let multiHopGuidanceCores = craft
       .filter(c => c.communication.bestRemoteGuidanceCapability()
         === ProbeControlPoint.MultiHop);
@@ -42,7 +45,9 @@ export class ConnectionGraph {
 
           let otherNode = signal.nodes.find(n => n !== c);
 
-          let hasControlConnection = otherNode.communication.isDsn
+          let hasDsnCapability = otherNode instanceof Planetoid
+            && otherNode.communication?.antennae?.length;
+          let hasControlConnection = hasDsnCapability
             || otherNode.communication.bestRemoteGuidanceCapability();
           if (hasControlConnection) {
             this.hasControlCraft.add(c);

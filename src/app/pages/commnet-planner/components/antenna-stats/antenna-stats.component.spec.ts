@@ -3,7 +3,7 @@ import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { AntennaInput } from '../antenna-selector/antenna-input';
 import { Antenna } from '../../../../common/domain/antenna';
-import { AntennaPart } from '../../../../services/json-interfaces/antenna-part';
+import { AntennaDto } from '../../../../common/domain/dtos/antenna-dto';
 
 let componentType = AntennaStatsComponent;
 describe('AntennaStatsComponent', () => {
@@ -18,7 +18,7 @@ describe('AntennaStatsComponent', () => {
     expect(component).toBeDefined();
   });
 
-  let defaultAntennaJson: AntennaPart = {
+  let defaultAntennaJson: AntennaDto = {
     label: 'Communotron 16',
     cost: 300,
     mass: 0.005,
@@ -31,7 +31,7 @@ describe('AntennaStatsComponent', () => {
     combinabilityExponent: 1,
   };
 
-  let defaultAntenna = Antenna.fromAntennaPart(defaultAntennaJson);
+  let defaultAntenna = Antenna.fromJson(defaultAntennaJson);
 
   it('updateStats() should fill in properties', () => {
     let fixture = MockRender(componentType);

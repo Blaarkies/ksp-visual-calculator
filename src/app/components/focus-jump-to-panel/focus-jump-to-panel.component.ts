@@ -1,5 +1,6 @@
 import {
   Component,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -85,12 +86,13 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
   @ViewChildren('button') buttons: QueryList<MatButton>;
 
   constructor(private cameraService: CameraService,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private window: Window) {
     super();
   }
 
   ngOnInit() {
-    fromEvent(window, 'keyup')
+    fromEvent(this.window, 'keyup')
       .pipe(
         filter((event: KeyboardEvent) => event.key === 'Tab'),
         takeUntil(this.destroy$))
@@ -109,7 +111,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
     let lastDraggable = this.cameraService.lastFocusObject ?? this.list[0];
     let nextBodyIndex = this.list.findIndex(so =>
-        (so.source as SpaceObject).draggableHandle === lastDraggable)
+        (so.source as SpaceObject).draggable === lastDraggable)
       + (shiftKey ? -1 : 1);
     let index = (nextBodyIndex + this.list.length) % this.list.length;
     let nextBody = this.list[index];

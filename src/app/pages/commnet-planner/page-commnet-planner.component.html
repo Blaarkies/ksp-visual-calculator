@@ -1,7 +1,6 @@
 <cp-universe-map #universe
-                 [orbits]="orbits$ | async"
-                 [planets]="planets$ | async"
-                 (editPlanet)="editPlanet($event)"
+                 [planetoids]="planetoids$ | async"
+                 (editPlanetoid)="editPlanet($event)"
                  (update)="updateUniverse($event)">
 
   <ng-container aboveOrbits>
@@ -31,7 +30,10 @@
   [icon]="icons.Relay"
   [contextPanelDetails]="contextPanelDetails"
 >
-  <div top class="screen-border-margin">
+  <div top class="screen-border-margin" style="pointer-events: all">
+    <button (click)="loadMapState()">Load JSON</button>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <button (click)="log(mapState)">Output JSON</button>
     <cp-zoom-indicator></cp-zoom-indicator>
   </div>
   <cp-focus-jump-to-panel

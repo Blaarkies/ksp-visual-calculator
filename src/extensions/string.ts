@@ -1,6 +1,13 @@
 export {}; // this file needs to be a module
 
 /**
+ * Returns a true when the string is contained inside at least 1 of the list elements.
+ */
+String.prototype.includesSome = function (this: string, list: string[]): boolean {
+  return list.some(l => this.includes(l));
+};
+
+/**
  * Returns a title case version of the string.
  */
 String.prototype.toTitleCase = function (this: string): string {

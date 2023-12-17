@@ -1,6 +1,9 @@
 import memoize from 'fast-memoize';
-import { SpaceObject } from './space-objects/space-object';
+import { Craft } from './space-objects/craft';
+import { Planetoid } from './space-objects/planetoid';
 import { Vector2 } from './vector2';
+
+export type CanCommunicate = Planetoid | Craft;
 
 export class AntennaSignal {
 
@@ -53,8 +56,8 @@ export class AntennaSignal {
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].communication.antennae,
-      this.nodes[1].communication.antennae,
+      this.nodes[0].communication.antennaeFull,
+      this.nodes[1].communication.antennaeFull,
     );
   }
 
@@ -66,8 +69,8 @@ export class AntennaSignal {
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].communication.antennae,
-      this.nodes[1].communication.antennae,
+      this.nodes[0].communication.antennaeFull,
+      this.nodes[1].communication.antennaeFull,
     );
   }
 
@@ -111,7 +114,7 @@ export class AntennaSignal {
 
   private getSignalStrength(hasRelay1: boolean,
                             hasRelay2: boolean,
-                            powerRatingCallback: (node: SpaceObject) => number) {
+                            powerRatingCallback: (node: CanCommunicate) => number) {
     if (!hasRelay1 && !hasRelay2) {
       return 0;
     }
@@ -130,7 +133,7 @@ export class AntennaSignal {
     return signalStrength;
   }
 
-  constructor(public nodes: SpaceObject[],
+  constructor(public nodes: CanCommunicate[],
               private getRangeModifier: () => number) {
     this.id = Math.random().toString().slice(2);
   }

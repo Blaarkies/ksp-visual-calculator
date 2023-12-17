@@ -25,6 +25,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { takeUntil } from 'rxjs';
+import { Planetoid } from 'src/app/common/domain/space-objects/planetoid';
 import { BasicAnimations } from '../../../../animations/basic-animations';
 import { Group } from '../../../../common/domain/group';
 import { Icons } from '../../../../common/domain/icons';
@@ -170,7 +171,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
         return null;
       }
 
-      let parent = value.orbitParent as SpaceObject;
+      let parent = value.orbitParent as Planetoid;
       if (parent.sphereOfInfluence < (value.altitude + parent.equatorialRadius)) {
         return {altitudeTooHigh: `Altitude is beyond the sphere of influence of ${parent.label}`};
       }
@@ -197,7 +198,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       },
       antennaSelection: {
         label: 'Antennae Onboard',
-        control: new FormControl(this.data.edit?.antennae
+        control: new FormControl(this.data.edit?.communication.antennaeFull
           ?? [new Group(this.data.universeBuilderHandler.getAntenna('Internal'))]),
         controlMeta: new ControlMetaAntennaSelector(this.data.universeBuilderHandler.antennaList),
       },
@@ -206,7 +207,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     this.inputListAntenna = [this.inputFields.antennaSelection];
     this.inputFieldsList = Object.values(this.inputFields);
 
-    this.orbitParentOptions = this.data.universeBuilderHandler.planets$.value
+    this.orbitParentOptions = this.data.universeBuilderHandler.planetoids$.value
       .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
 
     this.advancedInputFields = {

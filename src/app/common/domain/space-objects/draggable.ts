@@ -1,49 +1,63 @@
-import { filter, finalize, fromEvent, map, Observable, Subject, takeUntil, throttleTime } from 'rxjs';
+import {
+  filter,
+  finalize,
+  fromEvent,
+  map,
+  Observable,
+  Subject,
+  takeUntil,
+  throttleTime,
+} from 'rxjs';
+import { CameraComponent } from '../../../components/camera/camera.component';
+import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { SubjectHandle } from '../../subject-handle';
 import { ConstrainLocationFunction } from '../constrain-location-function';
-import { Vector2 } from '../vector2';
-import { CameraComponent } from '../../../components/camera/camera.component';
+import { DraggableDto } from '../dtos/draggable.dto';
 import { LocationConstraints } from '../location-constraints';
-import { SpaceObject } from './space-object';
+import { Vector2 } from '../vector2';
+import { MoveType } from './move-type';
 import { Orbit } from './orbit';
 import { OrbitParameterData } from './orbit-parameter-data';
-import { WithDestroy } from '../../with-destroy';
-import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
-import { MoveType } from './move-type';
+import { Planetoid } from './planetoid';
+import { SpaceObject } from './space-object';
 
 export class Draggable {
 
   isGrabbing$ = new SubjectHandle<boolean>({defaultValue: false});
-  isGrabbing: boolean;
   isHover$ = new Subject<boolean>();
   location = new Vector2();
   lastAttemptLocation: number[];
   children: Draggable[] = [];
+
   parameterData = new OrbitParameterData();
+  orbit?: Orbit;
+
+  parent: Draggable;
+  imageUrl: string;
 
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
-  private lastActivatedSoi: SpaceObject;
+  private lastActivatedSoi: Planetoid;
   private destroy$ = new Subject<void>();
 
-  public parent: Draggable;
-  public orbit: Orbit;
+  constructor(public label: string,
+              imageUrl: string,
+              public moveType: MoveType) {
+    this.imageUrl = imageUrl.startsWith('url(')
+      ? imageUrl
+      : `url(${imageUrl}) 0 0`;
+  }
 
-  toJson(): {} {
+  toJson(): DraggableDto {
     return {
+      label: this.label,
       location: this.location.toList(),
       lastAttemptLocation: this.lastAttemptLocation,
       children: this.children?.map(d => d.label),
-      orbit: this.orbit?.toJson(),
-      label: this.label,
       imageUrl: this.imageUrl,
       moveType: this.moveType,
+      parameterData: this.parameterData.toJson(),
     };
-  }
-
-  constructor(public label: string,
-              public imageUrl: string,
-              public moveType: MoveType) {
   }
 
   // TODO: destroy/dispose
@@ -65,7 +79,6 @@ export class Draggable {
 
     if (event.pointerType === 'mouse') {
       screen.style.cursor = 'grabbing';
-      this.isGrabbing = true;
       this.isGrabbing$.set(true);
 
       pointerStream = this.getEventObservable(screen, 'mousemove')
@@ -76,7 +89,6 @@ export class Draggable {
           map((move: MouseEvent) => new Vector2(move.pageX, move.pageY)),
           finalize(() => {
             screen.style.cursor = 'unset';
-            this.isGrabbing = false;
             this.isGrabbing$.set(false);
           }),
           takeUntil(fromEvent(screen, 'mouseleave')),
@@ -167,7 +179,7 @@ export class Draggable {
     }
   }
 
-  addOrbit(orbit: Orbit) {
+  setOrbit(orbit: Orbit) {
     this.orbit = orbit;
     this.parameterData.xy = this.parent?.parameterData?.xy ?? orbit.parameters.xy;
     this.parameterData.r = orbit.parameters.r;
@@ -180,14 +192,14 @@ export class Draggable {
 
     // TODO: remove UniverseContainerInstance usages
     UniverseContainerInstance.instance.planets$.value
-      .map(cb => cb.draggableHandle)
+      .map(cb => cb.draggable)
       .forEach(d => d.removeChild(this));
 
     this.lastActivatedSoi.showSoi = false;
-    this.lastActivatedSoi.draggableHandle.addChild(this);
+    this.lastActivatedSoi.draggable.addChild(this);
 
     this.constrainLocation = LocationConstraints.soiLock(this.location, this.lastActivatedSoi.location);
-    this.parent = this.lastActivatedSoi.draggableHandle;
+    this.parent = this.lastActivatedSoi.draggable;
 
     this.lastActivatedSoi = undefined;
   }
@@ -208,7 +220,7 @@ export class Draggable {
   }
 
   setChildren(spaceObjects: SpaceObject[]) {
-    let draggables = spaceObjects.map(so => so.draggableHandle);
+    let draggables = spaceObjects.map(so => so.draggable);
     this.children = draggables;
     draggables.forEach(so => so.parent = this);
   }

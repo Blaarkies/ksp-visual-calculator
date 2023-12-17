@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, shareReplay, Subject, takeUntil } from 'rxjs';
 import { Antenna } from '../common/domain/antenna';
-import { AntennaPart } from './json-interfaces/antenna-part';
+import { AntennaDto } from '../common/domain/dtos/antenna-dto';
 import { CraftPart, craftPartFromJson } from '../pages/mining-station/domain/craft-part';
-import { KerbolSystemCharacteristics } from './json-interfaces/kerbol-system-characteristics';
+import { StarSystemDto } from '../common/domain/dtos/star-system-dto';
 
 @Injectable({providedIn: 'root'})
 export class StockEntitiesCacheService {
@@ -19,18 +19,18 @@ export class StockEntitiesCacheService {
       shareReplay(1),
     );
 
-  planets$ = this.http.get<KerbolSystemCharacteristics>(
+  planets$ = this.http.get<StarSystemDto>(
     'assets/stock/kerbol-system-characteristics.json')
     .pipe(
       takeUntil(this.destroy$),
       shareReplay(1),
     );
 
-  antennae$ = this.http.get<AntennaPart[]>(
+  antennae$ = this.http.get<AntennaDto[]>(
     'assets/stock/antenna-parts.json')
     .pipe(
       takeUntil(this.destroy$),
-      map(parts => parts.map(json => Antenna.fromAntennaPart(json))),
+      map(parts => parts.map(json => Antenna.fromJson(json))),
       shareReplay(1),
     );
 

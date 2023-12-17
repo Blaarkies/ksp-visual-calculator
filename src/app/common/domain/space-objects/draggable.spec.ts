@@ -16,8 +16,8 @@ let nameA = 'A';
 let nameB = 'B';
 let simpleChildren = {
   children: [
-    {draggableHandle: new Draggable(nameA, '', 'noMove')} as SpaceObject,
-    {draggableHandle: new Draggable(nameB, '', 'noMove')} as SpaceObject,
+    {draggable: new Draggable(nameA, '', 'noMove')} as SpaceObject,
+    {draggable: new Draggable(nameB, '', 'noMove')} as SpaceObject,
   ],
   nameA,
   nameB,
@@ -133,7 +133,7 @@ describe('Draggable class', () => {
       let orbitParameterData = new OrbitParameterData([1, 2], 3);
       let orbit = new Orbit(orbitParameterData, '');
 
-      draggable.addOrbit(orbit);
+      draggable.setOrbit(orbit);
 
       expect(draggable.orbit).toBe(orbit);
       expect(draggable.parameterData.xy[0]).toBe(1);

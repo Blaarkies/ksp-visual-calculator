@@ -2,6 +2,8 @@ export {}; // this file needs to be a module
 declare global {
 
   interface String {
+    includesSome(this: string, list: string[]): boolean;
+
     toTitleCase(this: string): string;
 
     like(this: string, search: string): boolean;
@@ -72,7 +74,9 @@ declare global {
 
     sum(this: Array<number | any>, selector?: (item: any) => number): number;
 
-    max(this: Array<number | any>, selector?: (item: any) => number): T;
+    min(this: Array<T>, selector?: (item: T) => number): T;
+
+    max(this: Array<T>, selector?: (item: T) => number): T;
 
     add(this: Array<T>, fresh: T): Array<T>;
 

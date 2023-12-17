@@ -1,8 +1,4 @@
-export interface KerbolSystemCharacteristics {
-  bodies: CelestialBody[];
-}
-
-export interface CelestialBody {
+export interface PlanetoidAssetDto {
   id: string;
   type: string;
   name: string;

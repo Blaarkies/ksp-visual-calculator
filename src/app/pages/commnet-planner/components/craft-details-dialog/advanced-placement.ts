@@ -1,4 +1,4 @@
-import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
+import { Planetoid } from 'src/app/common/domain/space-objects/planetoid';
 import { Vector2 } from '../../../../common/domain/vector2';
 
 export class AdvancedPlacement {
@@ -8,7 +8,7 @@ export class AdvancedPlacement {
     return this.orbitParent.location.addVector2Clone(relativeLocation);
   }
 
-  constructor(public orbitParent: SpaceObject,
+  constructor(public orbitParent: Planetoid,
               public altitude: number,
               public angle: number) {
   }

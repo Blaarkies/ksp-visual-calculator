@@ -28,8 +28,8 @@ import {
   DataService,
   UserData,
 } from '../data.service';
-import { StateBase } from '../json-interfaces/state-base';
-import { StateContextual } from '../json-interfaces/state-contextual';
+import { StateBaseDto } from '../../common/domain/dtos/state-base-dto';
+import { StateContextualDto } from '../../common/domain/dtos/state-contextual.dto';
 
 export abstract class AbstractBaseStateService {
 
@@ -53,9 +53,9 @@ export abstract class AbstractBaseStateService {
       && this.lastStateRecord !== JSON.stringify(this.stateContextual);
   }
 
-  protected abstract get stateContextual(): StateContextual;
+  protected abstract get stateContextual(): StateContextualDto;
 
-  get stateBase(): StateBase {
+  get stateBase(): StateBaseDto {
     return {
       id: this.id,
       name: this.name,
@@ -81,13 +81,13 @@ export abstract class AbstractBaseStateService {
     this.destroy$.complete();
   }
 
-  loadState(state?: StateBase): Observable<void> {
+  loadState(state?: StateBaseDto): Observable<void> {
     let buildStateResult: Observable<void>;
     if (state && typeof state.state === 'string') {
       // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
       let imageFormatFix = state.state.replace(/.png/g, '.webp');
 
-      let parsedState: StateContextual = JSON.parse(imageFormatFix);
+      let parsedState: StateContextualDto = JSON.parse(imageFormatFix);
       this.id = state.id ?? state.name; // @fix v1.3.0:null check for ids, old savegames used name
       this.name = state.name;
       this.setStatefulDetails(parsedState);
@@ -115,7 +115,7 @@ export abstract class AbstractBaseStateService {
     return buildStateResult.pipe(tap(() => this.setStateRecord()));
   }
 
-  protected abstract setStatefulDetails(parsedState: StateContextual)
+  protected abstract setStatefulDetails(parsedState: StateContextualDto)
 
   protected abstract setStatelessDetails()
 
@@ -123,7 +123,7 @@ export abstract class AbstractBaseStateService {
 
   protected abstract buildFreshState(): Observable<any>
 
-  async addStateToStore(state: StateBase, contextual: StateContextual) {
+  async addStateToStore(state: StateBaseDto, contextual: StateContextualDto) {
     let compressed = gzip(JSON.stringify(contextual));
     let bytes = Bytes.fromUint8Array(compressed);
 
@@ -132,7 +132,7 @@ export abstract class AbstractBaseStateService {
         [state.id]: {
           ...state,
           state: bytes,
-        } as StateBase,
+        } as StateBaseDto,
       },
       {merge: true})
       .catch((e: CpError) => {
@@ -196,7 +196,7 @@ export abstract class AbstractBaseStateService {
 
   async renameState(oldName: string, state: StateRow) {
     let updatedStateGame = state.toUpdatedStateGame();
-    return this.addStateToStore(updatedStateGame as StateBase, updatedStateGame)
+    return this.addStateToStore(updatedStateGame as StateBaseDto, updatedStateGame)
       .then(() => this.removeStateFromStore(oldName))
       .catch(error => {
         this.snackBar.open(`Could not rename "${oldName}"`);

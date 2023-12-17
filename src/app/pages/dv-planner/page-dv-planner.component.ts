@@ -76,7 +76,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
 
     let universe = dvUniverseBuilderService;
     this.orbits$ = universe.orbits$;
-    this.planets$ = universe.planets$;
+    this.planets$ = universe.planetoids$;
 
     merge(
       this.authService.user$.pipe(take(1)),

@@ -1,19 +1,28 @@
+import { OrbitDto } from '../dtos/orbit-dto';
+import { PlanetoidAssetDto } from '../dtos/planetoid-asset.dto';
+import { Draggable } from './draggable';
 import { OrbitParameterData } from './orbit-parameter-data';
-import { SpaceObjectType } from './space-object-type';
 
 export class Orbit {
 
-  type: SpaceObjectType;
-
   constructor(public parameters: OrbitParameterData,
-              public color: string) {
+              public color: string,
+              public reference: Draggable) {
   }
 
-  toJson(): {} {
+  static fromJson(p: PlanetoidAssetDto, reference: Draggable): Orbit {
+    return new Orbit(
+      OrbitParameterData.fromRadius(p.semiMajorAxis),
+      p.orbitLineColor,
+      reference,
+    );
+  }
+
+  toJson(): OrbitDto {
     return {
-      type: this.type.name,
       parameters: this.parameters.toJson(),
       color: this.color,
+      reference: this.reference.label,
     };
   }
 

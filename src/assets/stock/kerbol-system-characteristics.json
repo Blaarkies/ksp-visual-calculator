@@ -1,5 +1,5 @@
 {
-  "bodies": [
+  "planetoids": [
     {
       "id": "kerbol",
       "type": "star",

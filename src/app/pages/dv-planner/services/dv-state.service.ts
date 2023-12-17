@@ -7,10 +7,11 @@ import { Observable } from 'rxjs';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { GameStateType } from '../../../common/domain/game-state-type';
 import { AUTO_SAVE_INTERVAL } from '../../../common/token';
+import { CameraService } from '../../../services/camera.service';
 import { DataService } from '../../../services/data.service';
 import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
-import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
-import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
+import { CheckpointDto } from '../../../common/domain/dtos/checkpoint-dto';
+import { StateDvPlannerDto } from '../../../common/domain/dtos/state-dv-planner.dto';
 import { DvUniverseBuilderService } from './dv-universe-builder.service';
 import { TravelService } from './travel.service';
 
@@ -21,7 +22,8 @@ export class DvStateService extends AbstractUniverseStateService {
 
   constructor(
     protected universeBuilderService: DvUniverseBuilderService,
-    protected dataService: DataService,
+    protected dataService: DataService, // used by abstract
+    protected cameraService: CameraService, // used by abstract
     protected snackBar: MatSnackBar,
     @Inject(AUTO_SAVE_INTERVAL) protected autoSaveInterval,
 
@@ -30,7 +32,7 @@ export class DvStateService extends AbstractUniverseStateService {
     super();
   }
 
-  get stateContextual(): StateDvPlanner {
+  get stateContextual(): StateDvPlannerDto {
     let universe = super.stateContextual;
     return {
       ...universe,
@@ -38,11 +40,11 @@ export class DvStateService extends AbstractUniverseStateService {
         preferences: this.universeBuilderService.checkpointPreferences$.value,
       },
       checkpoints: this.travelService.checkpoints$.value
-        .map(c => c.toJson()) as StateCheckpoint[],
+        .map(c => c.toJson()) as CheckpointDto[],
     };
   }
 
-  protected setStatefulDetails(parsedState: StateDvPlanner) {
+  protected setStatefulDetails(parsedState: StateDvPlannerDto) {
     this.universeBuilderService.updateCheckpointPreferences(CheckpointPreferences.fromObject(parsedState.settings.preferences));
   }
 

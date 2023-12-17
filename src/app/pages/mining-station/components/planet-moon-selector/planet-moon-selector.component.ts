@@ -21,7 +21,7 @@ import { LabeledOption } from '../../../../common/domain/input-fields/labeled-op
 import { SpaceObjectType } from '../../../../common/domain/space-objects/space-object-type';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputSelectComponent } from '../../../../components/controls/input-select/input-select.component';
-import { CelestialBody } from '../../../../services/json-interfaces/kerbol-system-characteristics';
+import { PlanetoidAssetDto } from '../../../../common/domain/dtos/planetoid-asset.dto';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
 
 type BodyFilter = 'star' | 'planet' | 'moon';
@@ -41,12 +41,12 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
 
   @Input() title = 'Location';
 
-  @Input() set selected(body: CelestialBody) {
+  @Input() set selected(body: PlanetoidAssetDto) {
     this.planetOptions$
       .pipe(
         map(list => this.getBodyMatch(body, list)),
         switchMap(selected => {
-          this.control = new FormControl<CelestialBody>(selected);
+          this.control = new FormControl<PlanetoidAssetDto>(selected);
           return this.control.valueChanges;
         }),
         takeUntil(this.destroy$))
@@ -57,11 +57,11 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
     this.filter$.next(value);
   }
 
-  @Output() update = new EventEmitter<CelestialBody>();
+  @Output() update = new EventEmitter<PlanetoidAssetDto>();
 
-  planetOptions$: Observable<LabeledOption<CelestialBody>[]>;
-  planetIcons$: Observable<Map<CelestialBody, string>>;
-  control: FormControl<CelestialBody>;
+  planetOptions$: Observable<LabeledOption<PlanetoidAssetDto>[]>;
+  planetIcons$: Observable<Map<PlanetoidAssetDto, string>>;
+  control: FormControl<PlanetoidAssetDto>;
 
   private filter$ = new BehaviorSubject<BodyFilter[]>(['planet']);
 
@@ -70,7 +70,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
 
     this.planetOptions$ = cacheService.planets$.pipe(
       withLatestFrom(this.filter$),
-      map(([data, filter]) => data.bodies.filter(b => filter.includes(<BodyFilter>b.type))),
+      map(([data, filter]) => data.planetoids.filter(b => filter.includes(<BodyFilter>b.type))),
       map(bodies => bodies.map(b => new LabeledOption(b.name, b))));
 
     this.planetIcons$ = this.planetOptions$.pipe(
@@ -81,7 +81,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
       )));
   }
 
-  private getBodyMatch(body: CelestialBody, list: LabeledOption<CelestialBody>[]) {
+  private getBodyMatch(body: PlanetoidAssetDto, list: LabeledOption<PlanetoidAssetDto>[]) {
     if (!body) {
       return list.find(b => b.value.name === 'Kerbin')?.value;
     }

@@ -1,4 +1,4 @@
-export interface AntennaPart {
+export interface AntennaDto {
   label: string;
   cost: number;
   mass: number;

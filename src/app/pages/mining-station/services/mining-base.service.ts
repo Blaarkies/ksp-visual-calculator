@@ -8,17 +8,17 @@ import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { Group } from '../../../common/domain/group';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { EventLogs } from '../../../services/domain/event-logs';
-import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
+import { PlanetoidAssetDto } from '../../../common/domain/dtos/planetoid-asset.dto';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { engineerBonusMap } from '../components/engineer-skill-selector/engineer-skill-selector.component';
 import { CraftPart } from '../domain/craft-part';
 import { StatisticsMapType } from '../domain/isru-statistics-generator';
-import { StateIsru } from '../domain/state-isru';
+import { StateIsruDto } from '../domain/state-isru.dto';
 
 @Injectable()
 export class MiningBaseService {
 
-  planet: CelestialBody;
+  planet: PlanetoidAssetDto;
   oreConcentration: number = .05;
   engineerBonus: number = 0;
   activeConverters: string[] = [];
@@ -50,7 +50,7 @@ export class MiningBaseService {
     this.statisticsMapUpdated$.complete();
   }
 
-  updatePlanet(value: CelestialBody) {
+  updatePlanet(value: PlanetoidAssetDto) {
     this.planet = value;
     this.planetUpdated$.next();
   }
@@ -100,7 +100,7 @@ export class MiningBaseService {
 
   async setupEmptyState() {
     let planets = await firstValueFrom(this.cacheService.planets$);
-    let kerbin = planets.bodies.find(b => b.id === 'kerbin') || planets.bodies[4];
+    let kerbin = planets.planetoids.find(b => b.id === 'kerbin') || planets.planetoids[4];
     this.updatePlanet(kerbin);
     this.updateOreConcentration(.05);
     this.updateEngineerBonus(engineerBonusMap.get(-1));
@@ -111,9 +111,9 @@ export class MiningBaseService {
     this.loadState$.next();
   }
 
-  async setupFullState(state: StateIsru): Promise<boolean> {
+  async setupFullState(state: StateIsruDto): Promise<boolean> {
     let planets = await firstValueFrom(this.cacheService.planets$);
-    let planet = planets.bodies.find(b => b.id === state.planet);
+    let planet = planets.planetoids.find(b => b.id === state.planet);
     this.updatePlanet(planet);
     this.updateOreConcentration(state.oreConcentration);
     this.updateEngineerBonus(state.engineerBonus);
@@ -130,7 +130,7 @@ export class MiningBaseService {
     return true;
   }
 
-  buildState(state?: StateIsru): Observable<any> {
+  buildState(state?: StateIsruDto): Observable<any> {
     if (state) {
       return fromPromise(this.setupFullState(state));
     } else {

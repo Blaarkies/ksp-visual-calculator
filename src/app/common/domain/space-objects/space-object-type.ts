@@ -1,5 +1,6 @@
 import { Icons } from '../icons';
 import { LabeledOption } from '../input-fields/labeled-option';
+import { Planetoid } from './planetoid';
 
 export class SpaceObjectType {
 
@@ -14,12 +15,14 @@ export class SpaceObjectType {
   }
 
   static types = {
+    planetoid: 'planetoid',
     star: 'star',
     planet: 'planet',
     moon: 'moon',
     craft: 'craft',
   };
 
+  static Planetoid = new SpaceObjectType(SpaceObjectType.types.planetoid);
   static Star = new SpaceObjectType(SpaceObjectType.types.star);
   static Planet = new SpaceObjectType(SpaceObjectType.types.planet);
   static Moon = new SpaceObjectType(SpaceObjectType.types.moon);
@@ -29,6 +32,7 @@ export class SpaceObjectType {
   }
 
   private static All: SpaceObjectType[] = [
+    SpaceObjectType.Planetoid,
     SpaceObjectType.Star,
     SpaceObjectType.Planet,
     SpaceObjectType.Moon,
@@ -39,7 +43,7 @@ export class SpaceObjectType {
   static List = SpaceObjectType.All.map(sot =>
     new LabeledOption(sot.name[0].toLocaleUpperCase() + sot.name.slice(1), sot));
 
-  static fromString(type: 'star' | 'planet' | 'moon' | 'craft' | string): SpaceObjectType {
+  static fromString(type: 'planetoid' | 'star' | 'planet' | 'moon' | 'craft' | string): SpaceObjectType {
     let match = SpaceObjectType.All.find(t => t.name === type);
     if (!match) {
       throw new Error(`${type} is not a valid SpaceObjectType`);

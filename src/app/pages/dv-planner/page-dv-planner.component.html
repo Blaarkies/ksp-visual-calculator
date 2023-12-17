@@ -1,9 +1,7 @@
 <cp-universe-map #universeMap
-                 [allowEdit]="false"
-                 [orbits]="orbits$ | async"
-                 [planets]="planets$ | async"
+                 [planetoids]="planets$ | async"
                  (startDrag)="selectCheckpoint($event)"
-                 (editPlanet)="editPlanet($event)">
+                 (editPlanetoid)="editPlanet($event)">
 
   <cp-mission-journey aboveOrbits
                       class="no-pointer"

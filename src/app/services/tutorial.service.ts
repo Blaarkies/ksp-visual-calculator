@@ -33,7 +33,8 @@ export class TutorialService {
 
   constructor(private wizardSpotlightService: WizardSpotlightService,
               private analyticsService: AnalyticsService,
-              private document: Document) {
+              private document: Document,
+              private window: Window) {
   }
 
   async startFullTutorial(gameStateType: GameStateType,
@@ -716,8 +717,8 @@ export class TutorialService {
     let cameraElement = this.document.querySelector('.camera-controller');
     cameraElement.dispatchEvent(new MouseEvent('mousedown', {buttons: 2}));
     cameraElement.dispatchEvent(new MouseEvent('mousemove', {
-      movementX: -targetRect.right + window.innerWidth * .5,
-      movementY: -targetRect.top + window.innerHeight * .5,
+      movementX: -targetRect.right + this.window.innerWidth * .5,
+      movementY: -targetRect.top + this.window.innerHeight * .5,
     }));
     cameraElement.dispatchEvent(new MouseEvent('mouseup'));
   }

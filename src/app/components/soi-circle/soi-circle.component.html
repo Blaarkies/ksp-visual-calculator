@@ -1,4 +1,4 @@
-<svg *ngIf="body.draggableHandle.orbit"
+<svg *ngIf="body.draggable.orbit"
      class="soi-display"
      xmlns="http://www.w3.org/2000/svg"
      [style.left.%]="worldViewScale * body.location.x"
@@ -9,12 +9,12 @@
     <radialGradient [id]="'grad1' + body.label" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
       <stop offset="60%" [style.stop-opacity]="0" />
       <stop offset="100%"
-            [style.stop-color]="body.draggableHandle.orbit.color + '30'"
+            [style.stop-color]="body.draggable.orbit.color + '30'"
             [style.stop-opacity]="1" />
     </radialGradient>
   </defs>
   <circle [@fade]
-          *ngIf="body.draggableHandle.orbit && body.showSoi"
+          *ngIf="body.draggable.orbit && body.showSoi"
           cx="50%"
           cy="50%"
           r="50%"

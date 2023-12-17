@@ -27,7 +27,8 @@ export class HolidayThemeSpriteComponent implements OnInit {
 
   sprites: SpriteContents[];
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  constructor(@Inject(DOCUMENT) private document: Document,
+              private window: Window) {
   }
 
   ngOnInit() {
@@ -77,12 +78,12 @@ export class HolidayThemeSpriteComponent implements OnInit {
         .map(() => ({
           source: `assets/holiday-sprites/${sprites.random()}`,
           opacity: .7,
-          pathController: new PathController('snow'),
+          pathController: new PathController(this.window, 'snow'),
         })),
       ...Common.listNumbers(6)
         .map(() => ({
           source: `assets/holiday-sprites/${SpriteList.Xmas.snowflake}`,
-          pathController: new PathController('snow'),
+          pathController: new PathController(this.window,'snow'),
         })),
     ] as SpriteContents[];
   }
@@ -94,7 +95,7 @@ export class HolidayThemeSpriteComponent implements OnInit {
         .map(() => ({
           source: `assets/holiday-sprites/${sprites.random()}`,
           opacity: .7,
-          pathController: new PathController('spooky'),
+          pathController: new PathController(this.window,'spooky'),
         })),
     ] as SpriteContents[];
 

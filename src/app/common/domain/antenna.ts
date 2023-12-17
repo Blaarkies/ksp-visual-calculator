@@ -1,4 +1,4 @@
-import { AntennaPart } from '../../services/json-interfaces/antenna-part';
+import { AntennaDto } from './dtos/antenna-dto';
 import { Group } from './group';
 import { Icons } from './icons';
 
@@ -10,13 +10,23 @@ export enum ProbeControlPoint {
 export class Antenna {
 
   get icon(): string {
-    let isConstructionPart = this.combinabilityExponent === 0 && this.transmissionSpeed === 0
-      || this.label.includes('Tracking Station');
-    return isConstructionPart
-      ? Icons.Construction
-      : this.relay
-        ? Icons.Relay
-        : Icons.Antenna;
+    if (this.probeControlPoint) {
+      return Icons.Pilot;
+    }
+
+    if (this.label.includes('Tracking Station')) {
+      return Icons.Construction;
+    }
+
+    if (this.relay) {
+      return Icons.Relay;
+    }
+
+    if (this.label.includesSome(['Ground', 'Experiment'])) {
+      return Icons.Experiment;
+    }
+
+    return Icons.Antenna;
   }
 
   constructor(public label: string,
@@ -74,19 +84,19 @@ export class Antenna {
         : null;
   }
 
-  static fromAntennaPart(part: AntennaPart): Antenna {
+  static fromJson(json: AntennaDto): Antenna {
     return new Antenna(
-      part.label,
-      part.cost,
-      part.mass,
-      part.electricityPMit,
-      part.electricityPS,
-      part.transmissionSpeed,
-      part.relay,
-      part.tier,
-      part.powerRating,
-      part.combinabilityExponent,
-      part.probeControlPoint as ProbeControlPoint,
+      json.label,
+      json.cost,
+      json.mass,
+      json.electricityPMit,
+      json.electricityPS,
+      json.transmissionSpeed,
+      json.relay,
+      json.tier,
+      json.powerRating,
+      json.combinabilityExponent,
+      json.probeControlPoint as ProbeControlPoint,
     );
   }
 

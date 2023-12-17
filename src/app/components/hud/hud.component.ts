@@ -1,8 +1,4 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import {
-  NoopScrollStrategy,
-  ScrollStrategy,
-} from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   Component,

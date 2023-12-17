@@ -35,8 +35,8 @@ export class AntennaSignalComponent {
     this.signal = value;
     let [nodeA, nodeB] = value.nodes;
     this.showText$ = combineLatest([
-      nodeA.draggableHandle.isHover$.pipe(startWith(false)),
-      nodeB.draggableHandle.isHover$.pipe(startWith(false)),
+      nodeA.draggable.isHover$.pipe(startWith(false)),
+      nodeB.draggable.isHover$.pipe(startWith(false)),
     ])
       .pipe(map(([a, b]) => a || b));
   }

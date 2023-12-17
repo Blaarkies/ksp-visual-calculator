@@ -1,3 +1,4 @@
+import { OrbitParametersDto } from '../dtos/orbit-parameters-dto';
 import { Draggable } from './draggable';
 
 export class OrbitParameterData {
@@ -11,7 +12,7 @@ export class OrbitParameterData {
     return new OrbitParameterData([], r);
   }
 
-  toJson(): {} {
+  toJson(): OrbitParametersDto {
     return {
       xy: this.xy,
       r: this.r,

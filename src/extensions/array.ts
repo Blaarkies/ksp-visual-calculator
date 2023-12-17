@@ -33,18 +33,32 @@ Array.prototype.sum = function (this: Array<number>, selector?: (item: any) => n
     : this.reduce((total, c) => total + c, 0);
 };
 
-Array.prototype.max = function (this: Array<number>, selector?: (item: any) => number): number | object {
+Array.prototype.max = function (this: Array<any>, selector?: (item: any) => number): any {
   return selector
-    ? this.reduce((maxEntry, c) => {
+    ? this.reduce((result, c) => {
       let selected = selector(c);
-      if (selected > maxEntry.value) {
-        maxEntry.value = selected;
-        maxEntry.item = c;
+      if (selected > result.value) {
+        result.value = selected;
+        result.item = c;
       }
-      return maxEntry;
+      return result;
     }, {value: Number.MIN_VALUE, item: undefined})
       .item
     : Math.max(...this);
+};
+
+Array.prototype.min = function (this: Array<any>, selector?: (item: any) => number): any {
+  return selector
+    ? this.reduce((result, c) => {
+      let selected = selector(c);
+      if (selected < result.value) {
+        result.value = selected;
+        result.item = c;
+      }
+      return result;
+    }, {value: Number.MAX_VALUE, item: undefined})
+      .item
+    : Math.min(...this);
 };
 
 Array.prototype.add = function (this: Array<any>, fresh: any): Array<any> {

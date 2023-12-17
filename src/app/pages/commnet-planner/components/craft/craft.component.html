@@ -7,14 +7,14 @@
   <div
     class="craft-icon-sprite-image"
     draggable="false"
-    [style.background]="craft.draggableHandle.imageUrl"
+    [style.background]="craft.draggable.imageUrl"
     [style.background-position-x.px]="craft.spriteLocation.x"
     [style.background-position-y.px]="craft.spriteLocation.y"
   ></div>
 
   <div
     @fade
-    *ngIf="craft.draggableHandle.isHover$ | async"
+    *ngIf="craft.draggable.isHover$ | async"
     class="altitude-text"
     matTooltip="Altitude"
   >

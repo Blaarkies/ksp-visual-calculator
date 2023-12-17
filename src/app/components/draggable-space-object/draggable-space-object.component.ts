@@ -67,11 +67,11 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnIn
       .pipe(
         filter(hoverOn => {
           let mustSetNewObject = !cameraService.currentHoverObject || hoverOn;
-          let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject.draggableHandle && !hoverOn;
+          let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject.draggable && !hoverOn;
           return mustSetNewObject || mustRemoveSelf;
         }),
         takeUntil(this.destroy$))
-      .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject.draggableHandle : null);
+      .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject.draggable : null);
   }
 
   ngOnDestroy() {
@@ -80,7 +80,7 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnIn
   }
 
   ngOnInit() {
-    this.isIdle$ = this.spaceObject.draggableHandle.isGrabbing$.stream$
+    this.isIdle$ = this.spaceObject.draggable.isGrabbing$.stream$
       .pipe(map(grabbed => !grabbed));
 
     this.showEdit$ =

@@ -36,7 +36,6 @@ interface TouchCameraControl {
   selector: 'cp-camera',
   standalone: true,
   imports: [CommonModule],
-  providers: [{provide: Window, useValue: window}],
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.scss'],
 })
@@ -58,7 +57,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   constructor(private cdr: ChangeDetectorRef,
               private cameraService: CameraService,
               private universeBuilderService: AbstractUniverseBuilderService,
-              @Inject(Window) private window: Window) {
+              private window: Window) {
     super();
   }
 

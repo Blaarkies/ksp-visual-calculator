@@ -6,10 +6,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { GameStateType } from '../../../common/domain/game-state-type';
 import { AUTO_SAVE_INTERVAL } from '../../../common/token';
+import { CameraService } from '../../../services/camera.service';
 import { DataService } from '../../../services/data.service';
 import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
-import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
-import { StateCraft } from '../../../services/json-interfaces/state-craft';
+import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 
@@ -20,14 +20,15 @@ export class CommnetStateService extends AbstractUniverseStateService {
 
   constructor(
     protected universeBuilderService: CommnetUniverseBuilderService,
-    protected dataService: DataService,
+    protected dataService: DataService, // used by abstract
+    protected cameraService: CameraService, // used by abstract
     protected snackBar: MatSnackBar,
-    @Inject(AUTO_SAVE_INTERVAL) protected autoSaveInterval,
+    @Inject(AUTO_SAVE_INTERVAL) protected autoSaveInterval: number,
   ) {
     super();
   }
 
-  get stateContextual(): StateCommnetPlanner {
+  get stateContextual(): StateCommnetPlannerDto {
     let universe = super.stateContextual;
     let craft = this.universeBuilderService.craft$.value;
     return {
@@ -35,7 +36,7 @@ export class CommnetStateService extends AbstractUniverseStateService {
       settings: {
         difficulty: this.universeBuilderService.difficultySetting,
       },
-      craft: craft?.map(b => b.toJson()) as StateCraft[],
+      craft: craft?.map(b => b.toJson()),
     };
   }
 
@@ -47,7 +48,7 @@ export class CommnetStateService extends AbstractUniverseStateService {
     return this.universeBuilderService.buildStockState();
   }
 
-  protected setStatefulDetails(parsedState: StateCommnetPlanner) {
+  protected setStatefulDetails(parsedState: StateCommnetPlannerDto) {
     this.universeBuilderService.updateDifficultySetting(DifficultySetting.fromObject(parsedState.settings.difficulty));
   }
 

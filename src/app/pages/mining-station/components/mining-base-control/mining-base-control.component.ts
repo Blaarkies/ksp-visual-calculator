@@ -14,7 +14,7 @@ import {
 } from 'rxjs';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
-import { CelestialBody } from '../../../../services/json-interfaces/kerbol-system-characteristics';
+import { PlanetoidAssetDto } from '../../../../common/domain/dtos/planetoid-asset.dto';
 import { MiningBaseService } from '../../services/mining-base.service';
 import { EngineerSkillSelectorComponent } from '../engineer-skill-selector/engineer-skill-selector.component';
 import { PlanetMoonSelectorComponent } from '../planet-moon-selector/planet-moon-selector.component';
@@ -38,7 +38,7 @@ export class MiningBaseControlComponent extends WithDestroy() implements OnDestr
 
   @Input() title = 'Environment';
 
-  selectedPlanet: CelestialBody;
+  selectedPlanet: PlanetoidAssetDto;
   controlOreConcentration: FormControl<number>;
   controlEngineerBonus: FormControl<number>;
 
@@ -79,7 +79,7 @@ export class MiningBaseControlComponent extends WithDestroy() implements OnDestr
       .subscribe(value => this.updateEngineerBonus(value));
   }
 
-  updatePlanet(value: CelestialBody) {
+  updatePlanet(value: PlanetoidAssetDto) {
     this.miningBaseService.updatePlanet(value);
   }
 

@@ -1,5 +1,8 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Injectable } from '@angular/core';
+import {
+  Inject,
+  Injectable,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   BehaviorSubject,
@@ -55,7 +58,8 @@ export class ThemeService {
   constructor(private analyticsService: AnalyticsService,
               private overlayContainer: OverlayContainer,
               private snackBar: MatSnackBar,
-              private localStorageService: LocalStorageService) {
+              private localStorageService: LocalStorageService,
+              private window: Window) {
     let {theme, origin} = this.detectThemePreference();
 
     this.setNewTheme(theme);
@@ -81,7 +85,7 @@ export class ThemeService {
       return {theme: this.theme, origin: ThemeOrigin.LocalStorage};
     }
 
-    const browserPreferenceDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const browserPreferenceDarkMode = this.window.matchMedia('(prefers-color-scheme: dark)').matches;
     this.theme = browserPreferenceDarkMode ? ThemeTypeEnum.Dark : ThemeTypeEnum.Light;
 
     this.analyticsService.logEvent(`Default color scheme was ${this.theme}`, {

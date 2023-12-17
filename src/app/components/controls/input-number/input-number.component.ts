@@ -5,6 +5,7 @@ import {
   ElementRef,
   EventEmitter,
   forwardRef,
+  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -71,7 +72,8 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
   private unsubscribe$ = new Subject<void>();
 
   constructor(private cdr: ChangeDetectorRef,
-              private self: ElementRef) {
+              private self: ElementRef,
+              private window: Window) {
     super();
   }
 
@@ -192,6 +194,6 @@ export class InputNumberComponent extends BasicValueAccessor implements OnInit, 
 
     this.onChange && this.onChange(scaledNumber);
     this.output.emit(scaledNumber);
-    window.requestAnimationFrame(() => this.cdr.markForCheck());
+    this.window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 }

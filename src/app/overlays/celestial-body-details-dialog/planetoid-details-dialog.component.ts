@@ -22,6 +22,7 @@ import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta
 import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta-select';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { CommonValidators } from '../../common/validators/common-validators';
@@ -29,9 +30,9 @@ import { InputFieldListComponent } from '../../components/controls/input-field-l
 import { CommnetUniverseBuilderService } from '../../pages/commnet-planner/services/commnet-universe-builder.service';
 import { CelestialBodyDetails } from './celestial-body-details';
 
-export class CelestialBodyDetailsDialogData {
+export class PlanetoidDetailsDialogData {
   forbiddenNames: string[];
-  edit?: SpaceObject;
+  edit?: Planetoid;
   universeBuilderHandler: CommnetUniverseBuilderService;
 }
 
@@ -44,11 +45,11 @@ export class CelestialBodyDetailsDialogData {
     MatButtonModule,
     InputFieldListComponent,
   ],
-  templateUrl: './celestial-body-details-dialog.component.html',
-  styleUrls: ['./celestial-body-details-dialog.component.scss'],
+  templateUrl: './planetoid-details-dialog.component.html',
+  styleUrls: ['./planetoid-details-dialog.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class CelestialBodyDetailsDialogComponent {
+export class PlanetoidDetailsDialogComponent {
 
   private trackingStationOptions = this.data.universeBuilderHandler.antennae$.value
     .filter(a => a.label.includes('Tracking Station'))
@@ -83,7 +84,7 @@ export class CelestialBodyDetailsDialogComponent {
     },
     orbitColor: {
       label: 'Color',
-      control: new UntypedFormControl(this.data.edit?.draggableHandle.orbit?.color ?? '#ff0000', [Validators.required]),
+      control: new UntypedFormControl(this.data.edit?.draggable.orbit?.color ?? '#ff0000', [Validators.required]),
       controlMeta: new ControlMetaInput('color', 'Color of orbital line'),
     },
     currentDsn: {
@@ -99,8 +100,8 @@ export class CelestialBodyDetailsDialogComponent {
 
   form = new UntypedFormArray(this.inputFieldsList.map(field => field.control));
 
-  constructor(private dialogRef: MatDialogRef<CelestialBodyDetailsDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CelestialBodyDetailsDialogData) {
+  constructor(private dialogRef: MatDialogRef<PlanetoidDetailsDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: PlanetoidDetailsDialogData) {
   }
 
   submitDetails() {

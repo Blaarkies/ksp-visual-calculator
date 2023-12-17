@@ -1,4 +1,4 @@
-export interface StateCheckpoint {
+export interface CheckpointDto {
   name: string;
   condition: string;
   aerobraking: boolean;

@@ -1,5 +1,6 @@
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { Antenna } from '../antenna';
+import { CraftDto } from '../dtos/craft-dto';
 import { Group } from '../group';
 import { ImageUrls } from '../image-urls';
 import { Vector2 } from '../vector2';
@@ -11,6 +12,7 @@ import { SpaceObjectType } from './space-object-type';
 export class Craft extends SpaceObject {
 
   spriteLocation: Vector2;
+  communication: Communication;
 
   get displayAltitude(): string {
     // performance impact on this function seems minimal, since it's called from inside an *ngIf
@@ -25,33 +27,33 @@ export class Craft extends SpaceObject {
 
   constructor(label: string,
               public craftType: CraftType,
-              antennae: Group<Antenna>[] = []) {
-    super(30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft, antennae);
+              antennae: Group<string>[] = []) {
+    super(30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft);
     this.spriteLocation = craftType.iconLocation;
+    this.communication = new Communication(antennae.slice());
   }
 
-  toJson(): {} {
+  toJson(): CraftDto {
     let base = super.toJson();
     return {
       ...base,
-      label: this.label,
       craftType: this.craftType.label,
-      location: this.location.toList(),
+      communication: this.communication.toJson(),
     };
   }
 
-  static fromJson(json: any, getAntenna: (name: string) => Antenna): Craft {
-    let communication = Communication.fromJson(json.communication, getAntenna);
+  static fromJson(json: CraftDto): Craft {
+    let communication = Communication.fromJson(json.communication);
     let craftType = CraftType.fromString(json.craftType);
 
     let object = new Craft(
-      json.label,
+      json.draggable.label,
       craftType,
       communication.antennae,
     );
 
-    object.draggableHandle.location = Vector2.fromList(json.draggableHandle.location);
-    object.draggableHandle.lastAttemptLocation = json.draggableHandle.lastAttemptLocation;
+    object.draggable.location = Vector2.fromList(json.draggable.location);
+    object.draggable.lastAttemptLocation = json.draggable.lastAttemptLocation;
 
     return object;
   }
