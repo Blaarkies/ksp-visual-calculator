@@ -68,6 +68,7 @@ export class CameraComponent extends WithDestroy() implements OnInit {
   ngOnInit() {
     this.cameraService.cdr = this.cdr;
     this.cameraService.cameraController = this.cameraController;
+    this.cameraService.contentStack = this.contentStack;
     this.cameraService.getSoiParent =
       (location: Vector2) => this.universeBuilderService.getSoiParent(location);
   }
@@ -86,15 +87,9 @@ export class CameraComponent extends WithDestroy() implements OnInit {
       return;
     }
 
-    // Remove the transition animation that causes lag when mouse-dragging the map around
-    let screenStyle = this.contentStack.nativeElement.style;
-    let oldTransition = screenStyle.transition;
-    screenStyle.transition = 'unset';
-
     fromEvent(screenSpace, 'mousemove')
       .pipe(
         map((move: MouseEvent) => [move.movementX, move.movementY]),
-        finalize(() => screenStyle.transition = oldTransition),
         takeUntil(fromEvent(screenSpace, 'mouseleave')),
         takeUntil(fromEvent(screenSpace, 'mouseup')),
         takeUntil(this.destroy$))

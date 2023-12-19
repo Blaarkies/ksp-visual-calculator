@@ -138,7 +138,7 @@ export abstract class AbstractBaseStateService {
       .catch((e: CpError) => {
         if (e.reason === 'no-user') {
           if (!environment.production) {
-            console.error('No user is logged in for capturing this savegame');
+            console.warn('No user is logged in for capturing this savegame');
           }
           return;
         }

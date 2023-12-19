@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
 import { StateIsruDto } from '../../pages/mining-station/domain/state-isru.dto';
@@ -58,7 +59,7 @@ export class StateDisplayComponent {
     let isUniverseType = [GameStateType.CommnetPlanner, GameStateType.DvPlanner].includes(this.contextType);
     if (isUniverseType) {
       let universeContents = contents as unknown as StateUniverseDto;
-      let starName = universeContents.planetoids.find(cb => cb.type === SpaceObjectType.Star.name).draggable.label;
+      let starName = universeContents.planetoids.find(cb => cb.type === PlanetoidType.Star.name).draggable.label;
       properties.push(['Star', starName]);
       properties.push(['Celestial bodies', universeContents.planetoids.length.toString()]);
     }

@@ -1,6 +1,7 @@
 import { Icons } from '../../../common/domain/icons';
 import { Group } from '../../../common/domain/group';
 import { PlanetoidAssetDto } from '../../../common/domain/dtos/planetoid-asset.dto';
+import { PlanetoidType } from '../../../common/domain/space-objects/planetoid-type';
 import { Converter, CraftPart, ResourceProperties } from './craft-part';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { PartCategory } from './part-category';
@@ -421,7 +422,7 @@ export class IsruStatisticsGenerator {
   updatePlanet(body: PlanetoidAssetDto, planetMap: Map<string, PlanetoidAssetDto>) {
     let planet = body ?? planetMap.get('kerbin');
 
-    let solarDistancePlanet = planet.type === SpaceObjectType.Moon.name
+    let solarDistancePlanet = planet.type === PlanetoidType.Moon.name
       ? planetMap.get(planet.parent)
       : planet;
     this.solarFactor = this.getSolarEfficiency(solarDistancePlanet);

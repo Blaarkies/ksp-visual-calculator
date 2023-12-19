@@ -1,20 +1,19 @@
+import {
+  extensionAlso,
+  extensionLet,
+} from './callback-extensions';
+
 export {}; // this file needs to be a module
 
-Number.prototype.let = function (this: number, callback: (it) => any): any {
-  return callback(this);
-};
-
-Number.prototype.also = function (this: number, callback: (it) => void): number {
-  callback(this);
-  return this;
-};
+Number.prototype.let = extensionLet<number>;
+Number.prototype.also = extensionAlso<number>;
 
 Number.prototype.isNaN = function (this: number): boolean {
   return isNaN(this);
 };
 
-Number.prototype.pow = function (this: number, exponent: number = 2): number {
-  return Math.pow(this, exponent);
+Number.prototype.pow = function (this: number, power: number = 2): number {
+  return Math.pow(this, power);
 };
 
 Number.prototype.round = function (this: number, decimals = 0): number {

@@ -23,6 +23,7 @@ import { ControlMetaSelect } from '../../common/domain/input-fields/control-meta
 import { InputFields } from '../../common/domain/input-fields/input-fields';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
+import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { CommonValidators } from '../../common/validators/common-validators';
@@ -68,7 +69,7 @@ export class PlanetoidDetailsDialogComponent {
     },
     celestialBodyType: {
       label: 'Type',
-      control: new UntypedFormControl(this.data.edit?.type ?? SpaceObjectType.Planet, Validators.required),
+      control: new UntypedFormControl(this.data.edit?.type ?? PlanetoidType.Planet, Validators.required),
       controlMeta: new ControlMetaSelect(
         SpaceObjectType.List,
         new Map<SpaceObjectType, string>(SpaceObjectType.List.map(so => [so.value, so.value.icon])),

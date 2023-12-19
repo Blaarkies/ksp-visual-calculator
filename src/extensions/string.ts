@@ -1,15 +1,17 @@
+import {
+  extensionAlso,
+  extensionLet,
+} from './callback-extensions';
+
 export {}; // this file needs to be a module
 
-/**
- * Returns a true when the string is contained inside at least 1 of the list elements.
- */
+String.prototype.let = extensionLet<string>;
+String.prototype.also = extensionAlso<string>;
+
 String.prototype.includesSome = function (this: string, list: string[]): boolean {
   return list.some(l => this.includes(l));
 };
 
-/**
- * Returns a title case version of the string.
- */
 String.prototype.toTitleCase = function (this: string): string {
   return this.replace(
     /([^\W_]+[^\s-]*) */g, // match words separated by space/dash
@@ -64,13 +66,4 @@ String.prototype.toNumber = function (this: String): number {
 
 String.prototype.toBoolean = function (this: String): boolean {
   return this === 'true';
-};
-
-String.prototype.let = function (this: String, callback: (it) => any): any {
-  return callback(this);
-};
-
-String.prototype.also = function (this: String, callback: (it) => void): String {
-  callback(this);
-  return this;
 };

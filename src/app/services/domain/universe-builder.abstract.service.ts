@@ -124,7 +124,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     body.communication.setAntennae(antennaeIfDsn);
   }
 
-  getSoiParent(location: Vector2): SpaceObject {
+  getSoiParent(location: Vector2): Planetoid {
     return this.planetoids$.value
       .filter(p => !p.sphereOfInfluence || location.distance(p.location) <= p.sphereOfInfluence)
       .min(p => p.location.distance(location));

@@ -1,43 +1,52 @@
+import { CallbackExtensions } from './callback-extensions';
+
 export {}; // this file needs to be a module
+
 declare global {
 
-  interface String {
+  interface String extends CallbackExtensions<string> {
+    /** Returns a true when the string is contained inside **list**. */
     includesSome(this: string, list: string[]): boolean;
 
+    /** Returns a title case version. */
     toTitleCase(this: string): string;
 
+    /** Returns true if **search** matches, disregards letter casing or trimmed whitespace. */
     like(this: string, search: string): boolean;
 
+    /** Returns true if **search** is contained. */
     fuzzyMatch(this: string, search: string): boolean;
 
+    /** Returns a score number describing how well **search** matched. */
     relevanceScore(this: string, search: string): number;
 
+    /** Return the string in number format */
     toNumber(this: string): number;
 
+    /** Return the string in boolean format */
     toBoolean(this: string): boolean;
-
-    let<O>(this: String, callback: (it: String) => O): O;
-
-    also(this: String, callback: (it: String) => void): String;
   }
 
-  interface Number {
-    let<O>(this: number, callback: (it: number) => O): O;
-
-    also(this: number, callback: (it: number) => void): number;
-
+  interface Number extends CallbackExtensions<number> {
+    /** Returns true if the value is **NaN** when converted to a number. */
     isNaN(this: number): boolean;
 
-    pow(this: number, exponent: number): number;
+    /** Returns the result of the value raised by **power**. */
+    pow(this: number, power: number): number;
 
+    /** Returns the result of the value rounded to the nearest integer. */
     toInt(this: number): number;
 
+    /** Returns the result of the value rounded to the nearest **decimals** count. */
     round(this: number, decimals?: number): number;
 
+    /** Returns the square root of the value. */
     sqrt(this: number): number;
 
+    /** Returns true if the value is odd. */
     odd(this: number): boolean;
 
+    /** Returns the transformed result of the value, according to a chosen mapping function. */
     transform(this: number, type: 'log' | 'eo-parab' | 'ei-parab'): number;
 
     sign(this: number): number;
@@ -102,12 +111,8 @@ declare global {
     splitFilter(this: Array<T>, callback: (item: T) => number): Array<Array<T>>;
   }
 
-  interface Boolean {
+  interface Boolean extends CallbackExtensions<boolean> {
     toString(this: Boolean, variety?: 'yes' | 'good' | '✅' | 'on'): string;
-
-    let<O>(this: Boolean, callback: (it: Boolean) => O): O;
-
-    also(this: Boolean, callback: (it: Boolean) => void): Boolean;
   }
 
 }
