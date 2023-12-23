@@ -1,6 +1,6 @@
 <ng-container *ngFor="let sprite of sprites">
   <div class="stack sprite-container"
-       [@blurOut]
+       @blurOut
        *ngIf="!sprite.touched"
        [style.animation-delay.s]="sprite.pathController.duration - 1">
     <img [src]="sprite.source"

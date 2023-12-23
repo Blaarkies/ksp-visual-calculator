@@ -52,7 +52,7 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
         takeUntil(this.destroy$))
       .subscribe(() => {
         this.showHolidayTheme = false;
-        // cdr.detectChanges();
+        cdr.detectChanges();
         this.showHolidayTheme = true;
       });
   }

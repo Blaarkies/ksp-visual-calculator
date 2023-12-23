@@ -1,9 +1,12 @@
 :host {
   pointer-events: none;
+  height: 10%;
+  position: absolute;
+  top: -10px;
 }
 
 .sprite-container {
-  animation: kf-blur-out 1s ease-in-out;
+  animation: kf-blur-out 1s ease-in-out forwards;
 }
 
 .image-sprite {
@@ -11,13 +14,7 @@
   cursor: grab;
   pointer-events: all;
 
-  animation: kf-offset-path-move;
-}
-
-@supports not (offset-path: path('')) {
-  .image-sprite {
-    display: none;
-  }
+  animation: kf-offset-path-move forwards;
 }
 
 @keyframes kf-blur-out {
