@@ -68,7 +68,6 @@ export class CameraService extends WithDestroy() implements OnDestroy {
   cameraChange$ = new ReplaySubject<void>();
 
   // TODO: change to proper setters, callbacks
-  cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
   contentStack: ElementRef<HTMLDivElement>;
   getSoiParent: (location: Vector2) => Planetoid;
@@ -95,18 +94,20 @@ export class CameraService extends WithDestroy() implements OnDestroy {
         this.location.setVector2(newLocation);
 
         this.cameraChange$.next();
-        this.cdr?.markForCheck();
       });
   }
 
   toJson(): CameraDto {
-    return {scale: this.scale, location: this.location.toList()};
+    return {
+      scale: this.scale.round(5),
+      location: this.location.toList().map(v => v.round()),
+    };
   }
 
   reset(scale?: number, location?: Vector2) {
     this._scale = scale ?? defaultScale;
     this.location = location ?? defaultLocation.clone();
-    this.cdr?.markForCheck();
+    this.cameraChange$.next();
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
@@ -138,6 +139,8 @@ export class CameraService extends WithDestroy() implements OnDestroy {
     this.location = spaceObject.location.clone()
       .multiply(-this.scale * CameraService.scaleModifier)
       .addVector2(this.screenCenterOffset);
+
+    this.cameraChange$.next();
   }
 
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
@@ -171,6 +174,7 @@ export class CameraService extends WithDestroy() implements OnDestroy {
 
   translate(x: number, y: number) {
     this.location.add(x, y);
+    this.cameraChange$.next();
   }
 
   convertGameToScreenSpace(gameSpaceLocation: Vector2): Vector2 {

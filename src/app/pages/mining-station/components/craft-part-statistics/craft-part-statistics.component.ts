@@ -67,7 +67,7 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
               cacheService: StockEntitiesCacheService) {
     super();
 
-    this.planetMap$ = cacheService.planets$
+    this.planetMap$ = cacheService.planetoids$
       .pipe(
         map(characteristics => new Map<string, PlanetoidAssetDto>(
           characteristics.planetoids.map(p => [p.id, p]),

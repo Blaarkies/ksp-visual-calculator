@@ -3,7 +3,6 @@ import { OrbitDto } from './orbit-dto';
 
 export interface DraggableDto {
   label: string;
-  parameterData: {};
   children: string[];
   location: number[];
   imageUrl: string;

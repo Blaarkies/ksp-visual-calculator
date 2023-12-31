@@ -34,6 +34,7 @@ import {
   DataService,
   UserData,
 } from '../data.service';
+import { OldStateSupporter } from './old-state-supporter.model';
 
 export abstract class AbstractBaseStateService {
 
@@ -88,21 +89,13 @@ export abstract class AbstractBaseStateService {
   loadState(state?: StateBaseDto): Observable<void> {
     let buildStateResult: Observable<void>;
     if (state && typeof state.state === 'string') {
-      let contextualStringState = state.state;
-
-      // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
-      let needsWebpFix = compareSemver(state.version, [1, 2, 6]) < 0;
-      if (needsWebpFix) {
-        contextualStringState = state.state.replace(/.png/g, '.webp');
-      }
-
-      this.id = state.id ?? state.name; // @fix v1.3.0:null check for ids, old savegames used name
+      this.id = state.id;
       this.name = state.name;
 
-      let parsedState: StateContextualDto = JSON.parse(contextualStringState);
+      let parsedState: StateContextualDto = JSON.parse(state.state);
 
       this.setStatefulDetails(parsedState);
-      buildStateResult = this.buildExistingState(contextualStringState, state.version);
+      buildStateResult = this.buildExistingState(state.state);
     } else {
       this.id = Uid.new;
       this.name = Namer.savegame;
@@ -130,7 +123,7 @@ export abstract class AbstractBaseStateService {
 
   protected abstract setStatelessDetails()
 
-  protected abstract buildExistingState(state: string, version?: VersionValue): Observable<any>
+  protected abstract buildExistingState(state: string): Observable<any>
 
   protected abstract buildFreshState(): Observable<any>
 
@@ -167,21 +160,23 @@ export abstract class AbstractBaseStateService {
   }
 
   getStates(): Observable<StateEntry[]> {
-    return from(this.dataService.readAll<StateEntry>('states'))
-      .pipe(map(states => states
-        .filter(s => s.name) // @fix v1.2.6: ignore other fields, like "isCompressed"
-        .map(s => {
-          // @fix v1.2.6: previous version savegames are not compressed
-          let notCompressed = compareSemver(s.version, [1, 2, 6]) < 0;
-          if (notCompressed) {
-            return s;
-          }
+    return from(this.dataService.readAll<StateEntry>('states')).pipe(
+        map(states => states
+            .filter(s => s.name) // @fix v1.2.6: ignore other fields, like "isCompressed"
+            .map(s => {
+              // @fix v1.2.6: previous version savegames are not compressed
+              let notCompressed = compareSemver(s.version, [1, 2, 6]) < 0;
+              if (notCompressed) {
+                return s;
+              }
 
-          // uncompress state
-          let arrayBuffer = (s.state as Bytes).toUint8Array().buffer;
-          let unzipped = ungzip(arrayBuffer, {to: 'string'});
-          return ({...s, state: unzipped});
-        })));
+              // uncompress state
+              let arrayBuffer = (s.state as Bytes).toUint8Array().buffer;
+              let unzipped = ungzip(arrayBuffer, {to: 'string'});
+              return {...s, state: unzipped};
+            })
+            .map((s: StateEntry) => new OldStateSupporter(s).getRepairedState()),
+        ));
   }
 
   getStatesInContext({sorted} = {sorted: true}): Observable<StateEntry[]> {

@@ -5,19 +5,19 @@ export {}; // this file needs to be a module
 declare global {
 
   interface String extends CallbackExtensions<string> {
-    /** Returns a true when the string is contained inside **list**. */
+    /** Returns a true when the string is contained inside `list`. */
     includesSome(this: string, list: string[]): boolean;
 
     /** Returns a title case version. */
     toTitleCase(this: string): string;
 
-    /** Returns true if **search** matches, disregards letter casing or trimmed whitespace. */
+    /** Returns true if `search` matches, disregards letter casing or trimmed whitespace. */
     like(this: string, search: string): boolean;
 
-    /** Returns true if **search** is contained. */
+    /** Returns true if `search` is contained. */
     fuzzyMatch(this: string, search: string): boolean;
 
-    /** Returns a score number describing how well **search** matched. */
+    /** Returns a score number describing how well `search` matched. */
     relevanceScore(this: string, search: string): number;
 
     /** Return the string in number format */
@@ -28,16 +28,16 @@ declare global {
   }
 
   interface Number extends CallbackExtensions<number> {
-    /** Returns true if the value is **NaN** when converted to a number. */
+    /** Returns true if the value is `NaN` when converted to a number. */
     isNaN(this: number): boolean;
 
-    /** Returns the result of the value raised by **power**. */
+    /** Returns the result of the value raised by `power`. */
     pow(this: number, power: number): number;
 
     /** Returns the result of the value rounded to the nearest integer. */
     toInt(this: number): number;
 
-    /** Returns the result of the value rounded to the nearest **decimals** count. */
+    /** Returns the result of the value rounded to the nearest `decimals` count. */
     round(this: number, decimals?: number): number;
 
     /** Returns the square root of the value. */

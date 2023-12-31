@@ -56,9 +56,8 @@ export class DvStateService extends AbstractUniverseStateService {
     this.universeBuilderService.updateCheckpointPreferences(CheckpointPreferences.default);
   }
 
-  protected buildExistingState(state: string, version?: VersionValue): Observable<any> {
-    return super.buildExistingState(state, version)
-      .pipe(switchMap(s => this.universeBuilderService.buildState(s)));
+  protected buildExistingState(state: string): Observable<any> {
+    return this.universeBuilderService.buildState(state);
   }
 
   protected buildFreshState(): Observable<any> {

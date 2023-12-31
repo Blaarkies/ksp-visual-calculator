@@ -29,7 +29,7 @@ export class Draggable {
   lastAttemptLocation: number[];
   children: Draggable[] = [];
 
-  parameterData = new OrbitParameterData();
+  parameterData = new OrbitParameterData(); // TODO: replace using orbit directly
   orbit?: Orbit;
 
   parent: Draggable;
@@ -56,7 +56,7 @@ export class Draggable {
       children: this.children?.map(d => d.label),
       imageUrl: this.imageUrl,
       moveType: this.moveType,
-      parameterData: this.parameterData.toJson(),
+      // parameterData: this.parameterData.toJson(),
     };
   }
 

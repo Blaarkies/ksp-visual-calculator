@@ -3,13 +3,23 @@ import {
   Injectable,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import {
+  map,
+  Observable,
+  of,
+  switchMap,
+} from 'rxjs';
+import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { GameStateType } from '../../../common/domain/game-state-type';
+import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
+import {
+  compareSemver,
+  VersionValue,
+} from '../../../common/semver';
 import { AUTO_SAVE_INTERVAL } from '../../../common/token';
 import { CameraService } from '../../../services/camera.service';
 import { DataService } from '../../../services/data.service';
 import { AbstractUniverseStateService } from '../../../services/domain/universe-state.abstract.service';
-import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { CommnetUniverseBuilderService } from './commnet-universe-builder.service';
 
@@ -20,8 +30,8 @@ export class CommnetStateService extends AbstractUniverseStateService {
 
   constructor(
     protected universeBuilderService: CommnetUniverseBuilderService,
-    protected dataService: DataService, // used by abstract
-    protected cameraService: CameraService, // used by abstract
+    protected cameraService: CameraService,
+    protected dataService: DataService,
     protected snackBar: MatSnackBar,
     @Inject(AUTO_SAVE_INTERVAL) protected autoSaveInterval: number,
   ) {

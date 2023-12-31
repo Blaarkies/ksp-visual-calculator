@@ -3,6 +3,7 @@ import {
   Component,
   Input,
 } from '@angular/core';
+import { Antenna } from '../../common/domain/antenna';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
@@ -56,10 +57,11 @@ export class StateDisplayComponent {
     properties.push(['Name', state.name]);
     properties.push(['Last saved', `${daysSince} day${daysSince !== 1 ? 's' : ''} ago`]);
 
-    let isUniverseType = [GameStateType.CommnetPlanner, GameStateType.DvPlanner].includes(this.contextType);
+    let universeContextTypes = [GameStateType.CommnetPlanner, GameStateType.DvPlanner];
+    let isUniverseType = this.contextType.includesSome(universeContextTypes);
     if (isUniverseType) {
       let universeContents = contents as unknown as StateUniverseDto;
-      let starName = universeContents.planetoids.find(cb => cb.type === PlanetoidType.Star.name).draggable.label;
+      let starName = universeContents.planetoids.find(cb => cb.planetoidType === PlanetoidType.Star.name).draggable.label;
       properties.push(['Star', starName]);
       properties.push(['Celestial bodies', universeContents.planetoids.length.toString()]);
     }
@@ -68,18 +70,22 @@ export class StateDisplayComponent {
       let commnetContents = contents as unknown as StateCommnetPlannerDto;
 
       let dsnPlanets = commnetContents.planetoids
-        .filter(cb => cb.trackingStation);
-      let bestDsn = dsnPlanets
-          .sort((a, b) => b.trackingStation.slice(-1).toNumber()
-            - a.trackingStation.slice(-1).toNumber())
-          [0]?.trackingStation
+        .filter(cb => cb.communication);
+      let bestDsn = dsnPlanets.max(p => {
+          let antennaeLabel = p.communication.antennae[0][0] as string;
+          let trackingStationLevel = antennaeLabel.slice(-1);
+          return trackingStationLevel.toNumber();
+        })?.draggable.label
         || 'None';
 
       let newProperties = [
         ['Craft', commnetContents.craft.length.toString()],
         ['DSN', bestDsn],
-        ['DSN at', dsnPlanets.map(b => b.draggable.label).join(', ')],
       ];
+      if (dsnPlanets.length > 1) {
+        newProperties.push(
+          ['DSN at', dsnPlanets.map(b => b.draggable.label).join(', ')]);
+      }
 
       properties.push(...newProperties);
     }

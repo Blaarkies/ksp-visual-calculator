@@ -118,7 +118,11 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     let state: StateCommnetPlannerDto = JSON.parse(lastState);
     let {planetoids, craft: craftDtos, camera} = state;
 
-    this.cameraService.setFromJson(camera);
+    if (camera) {
+      this.cameraService.setFromJson(camera);
+    } else {
+      this.cameraService.reset();
+    }
 
     let planetoidDtoPairs = planetoids
       .map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));

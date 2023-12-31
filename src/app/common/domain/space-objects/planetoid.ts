@@ -30,7 +30,6 @@ export class Planetoid extends SpaceObject {
     let base = super.toJson();
     return {
       ...base,
-      trackingStation: this.communication?.antennae?.[0]?.item,
       communication: this.communication?.toJson(),
       planetoidType: this.planetoidType.name,
       size: this.size,

@@ -99,7 +99,7 @@ export class MiningBaseService {
   }
 
   async setupEmptyState() {
-    let planets = await firstValueFrom(this.cacheService.planets$);
+    let planets = await firstValueFrom(this.cacheService.planetoids$);
     let kerbin = planets.planetoids.find(b => b.id === 'kerbin') || planets.planetoids[4];
     this.updatePlanet(kerbin);
     this.updateOreConcentration(.05);
@@ -112,7 +112,7 @@ export class MiningBaseService {
   }
 
   async setupFullState(state: StateIsruDto): Promise<boolean> {
-    let planets = await firstValueFrom(this.cacheService.planets$);
+    let planets = await firstValueFrom(this.cacheService.planetoids$);
     let planet = planets.planetoids.find(b => b.id === state.planet);
     this.updatePlanet(planet);
     this.updateOreConcentration(state.oreConcentration);

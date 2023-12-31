@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Planetoid } from '../common/domain/space-objects/planetoid';
-import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { Craft } from '../common/domain/space-objects/craft';
+import { Planetoid } from '../common/domain/space-objects/planetoid';
 import { Vector2 } from '../common/domain/vector2';
 
 @Injectable({

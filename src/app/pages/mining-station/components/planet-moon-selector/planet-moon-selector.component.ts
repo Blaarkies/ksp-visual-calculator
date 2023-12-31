@@ -68,7 +68,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
   constructor(private cacheService: StockEntitiesCacheService) {
     super();
 
-    this.planetOptions$ = cacheService.planets$.pipe(
+    this.planetOptions$ = cacheService.planetoids$.pipe(
       withLatestFrom(this.filter$),
       map(([data, filter]) => data.planetoids.filter(b => filter.includes(<BodyFilter>b.type))),
       map(bodies => bodies.map(b => new LabeledOption(b.name, b))));

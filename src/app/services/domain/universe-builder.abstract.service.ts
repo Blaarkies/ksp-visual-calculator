@@ -53,7 +53,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   }
 
   private stockAssetsReady(): Observable<OrbitsBodies> {
-    return this.cacheService.planets$
+    return this.cacheService.planetoids$
       .pipe(
         take(1),
         map(data => AbstractUniverseBuilderService.generateOrbitsAndPlanetoids(data)),
@@ -131,7 +131,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   }
 
   private static generateOrbitsAndPlanetoids(data: StarSystemDto): OrbitsBodies {
-    // Setup abstract celestial bodies
+    // Setup abstract planetoids
     let bodyToJsonMap = new Map<PlanetoidAssetDto, Planetoid>(
       data.planetoids.map(b => [
         /*key  */ b,
