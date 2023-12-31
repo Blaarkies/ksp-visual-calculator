@@ -13,7 +13,7 @@ describe('StateRow class', () => {
 
     expect(state.name).toBe('test-name');
     expect(state.timestamp.length).toBeGreaterThan(2);
-    expect(state.version).toBe('v1.0.0');
+    expect(state.versionLabel).toBe('v1.0.0');
     expect(state.state).toBe('test-state');
   });
 

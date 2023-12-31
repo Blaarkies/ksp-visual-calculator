@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -40,10 +39,12 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timestamp,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
+import { compareSemver } from '../../common/semver';
 import { Uid } from '../../common/uid';
 import { CommonValidators } from '../../common/validators/common-validators';
 import { WithDestroy } from '../../common/with-destroy';
@@ -192,7 +193,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
       name,
       timestamp: jsDate,
       context: this.context,
-      version: version.split('.').slice(1).map(t => t.toNumber()),
+      version,
       state,
     })
       .pipe(
@@ -231,7 +232,10 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
   exportState(selectedState: StateRow) {
     let sJson = JSON.stringify({
       context: this.context,
-      ...selectedState,
+      name: selectedState.name,
+      timestamp: selectedState.timestamp,
+      version: selectedState.version,
+      state: JSON.parse(selectedState.state),
       id: undefined,
     });
     let element = document.createElement('a');
@@ -276,8 +280,10 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
 
   private async importState(stateString: string) {
     let {name, timestamp, context, version, state} = JSON.parse(stateString);
+
     // @fix v1.3.0: previous json files did not have a 'state' field
-    if (!state) {
+    let needsStateProp = compareSemver(version, [1, 3, 0]) < 0;
+    if (needsStateProp) {
       state = stateString;
     }
 

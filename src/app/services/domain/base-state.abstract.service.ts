@@ -18,8 +18,14 @@ import {
   timer,
 } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { StateBaseDto } from '../../common/domain/dtos/state-base-dto';
+import { StateContextualDto } from '../../common/domain/dtos/state-contextual.dto';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Namer } from '../../common/namer';
+import {
+  compareSemver,
+  VersionValue,
+} from '../../common/semver';
 import { Uid } from '../../common/uid';
 import { StateEntry } from '../../overlays/manage-state-dialog/state-entry';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
@@ -28,8 +34,6 @@ import {
   DataService,
   UserData,
 } from '../data.service';
-import { StateBaseDto } from '../../common/domain/dtos/state-base-dto';
-import { StateContextualDto } from '../../common/domain/dtos/state-contextual.dto';
 
 export abstract class AbstractBaseStateService {
 
@@ -61,7 +65,7 @@ export abstract class AbstractBaseStateService {
       name: this.name,
       timestamp: new Date(),
       context: this.context,
-      version: environment.APP_VERSION.split('.').map(t => t.toNumber()),
+      version: environment.APP_VERSION.split('.').map((t: string) => t.toNumber()),
     };
   }
 
@@ -84,14 +88,21 @@ export abstract class AbstractBaseStateService {
   loadState(state?: StateBaseDto): Observable<void> {
     let buildStateResult: Observable<void>;
     if (state && typeof state.state === 'string') {
-      // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
-      let imageFormatFix = state.state.replace(/.png/g, '.webp');
+      let contextualStringState = state.state;
 
-      let parsedState: StateContextualDto = JSON.parse(imageFormatFix);
+      // @fix v1.2.6:webp format planet images introduced, but old savegames have .png in details
+      let needsWebpFix = compareSemver(state.version, [1, 2, 6]) < 0;
+      if (needsWebpFix) {
+        contextualStringState = state.state.replace(/.png/g, '.webp');
+      }
+
       this.id = state.id ?? state.name; // @fix v1.3.0:null check for ids, old savegames used name
       this.name = state.name;
+
+      let parsedState: StateContextualDto = JSON.parse(contextualStringState);
+
       this.setStatefulDetails(parsedState);
-      buildStateResult = this.buildExistingState(imageFormatFix);
+      buildStateResult = this.buildExistingState(contextualStringState, state.version);
     } else {
       this.id = Uid.new;
       this.name = Namer.savegame;
@@ -119,7 +130,7 @@ export abstract class AbstractBaseStateService {
 
   protected abstract setStatelessDetails()
 
-  protected abstract buildExistingState(state: string): Observable<any>
+  protected abstract buildExistingState(state: string, version?: VersionValue): Observable<any>
 
   protected abstract buildFreshState(): Observable<any>
 
@@ -161,12 +172,13 @@ export abstract class AbstractBaseStateService {
         .filter(s => s.name) // @fix v1.2.6: ignore other fields, like "isCompressed"
         .map(s => {
           // @fix v1.2.6: previous version savegames are not compressed
-          if (typeof s.state === 'string') {
+          let notCompressed = compareSemver(s.version, [1, 2, 6]) < 0;
+          if (notCompressed) {
             return s;
           }
 
-          // uncompress states
-          let arrayBuffer = s.state.toUint8Array().buffer;
+          // uncompress state
+          let arrayBuffer = (s.state as Bytes).toUint8Array().buffer;
           let unzipped = ungzip(arrayBuffer, {to: 'string'});
           return ({...s, state: unzipped});
         })));

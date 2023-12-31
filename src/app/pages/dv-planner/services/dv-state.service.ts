@@ -3,9 +3,13 @@ import {
   Injectable,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import {
+  Observable,
+  switchMap,
+} from 'rxjs';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
 import { GameStateType } from '../../../common/domain/game-state-type';
+import { VersionValue } from '../../../common/semver';
 import { AUTO_SAVE_INTERVAL } from '../../../common/token';
 import { CameraService } from '../../../services/camera.service';
 import { DataService } from '../../../services/data.service';
@@ -52,8 +56,9 @@ export class DvStateService extends AbstractUniverseStateService {
     this.universeBuilderService.updateCheckpointPreferences(CheckpointPreferences.default);
   }
 
-  protected buildExistingState(state: string): Observable<any> {
-    return this.universeBuilderService.buildState(state);
+  protected buildExistingState(state: string, version?: VersionValue): Observable<any> {
+    return super.buildExistingState(state, version)
+      .pipe(switchMap(s => this.universeBuilderService.buildState(s)));
   }
 
   protected buildFreshState(): Observable<any> {
