@@ -9,16 +9,17 @@ import {
 } from 'rxjs';
 import { PlanetoidAssetDto } from '../../common/domain/dtos/planetoid-asset.dto';
 import { StarSystemDto } from '../../common/domain/dtos/star-system-dto';
+import { StateCommnetPlannerDto } from '../../common/domain/dtos/state-commnet-planner.dto';
 import { Group } from '../../common/domain/group';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../common/domain/space-objects/orbit-parameter-data';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { Vector2 } from '../../common/domain/vector2';
 import { WithDestroy } from '../../common/with-destroy';
 import { CelestialBodyDetails } from '../../overlays/celestial-body-details-dialog/celestial-body-details';
 import { AnalyticsService } from '../analytics.service';
+import { CameraService } from '../camera.service';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';
 import { UniverseContainerInstance } from '../universe-container-instance.service';
 import { EventLogs } from './event-logs';
@@ -30,6 +31,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   protected abstract analyticsService: AnalyticsService;
   protected abstract universeContainerInstance: UniverseContainerInstance;
   protected abstract cacheService: StockEntitiesCacheService;
+  protected abstract cameraService: CameraService;
 
   orbits$ = new BehaviorSubject<Orbit[]>([]);
   planetoids$ = new BehaviorSubject<Planetoid[]>([]);
@@ -63,9 +65,11 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   buildStockState(): Observable<OrbitsBodies> {
     return this.stockAssetsReady()
       .pipe(
-        tap(({listOrbits, celestialBodies}) => {
+        tap(({listOrbits, planetoids}) => {
           this.orbits$.next(listOrbits);
-          this.planetoids$.next(celestialBodies);
+          this.planetoids$.next(planetoids);
+          this.cameraService.focusSpaceObject(
+            planetoids.find(p => p.hasDsn) ?? planetoids[0]);
         }),
         delayWhen(() => this.setDetails()));
   }
@@ -73,7 +77,23 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   protected async setDetails() {
   }
 
-  protected abstract buildContextState(lastState: string): Promise<void>
+  protected async buildContextState(lastState: string): Promise<void> {
+    let state: StateCommnetPlannerDto = JSON.parse(lastState);
+    let {camera} = state;
+
+    if (camera) {
+      this.cameraService.setFromJson(camera);
+    } else {
+      this.planetoids$.pipe(
+        take(1),
+        takeUntil(this.destroy$))
+        .subscribe(planetoids => {
+          let target = planetoids.find(p => p.communication);
+          this.cameraService.focusSpaceObject(target);
+        });
+    }
+    return;
+  }
 
   buildState(lastState: string): Observable<any> {
     return this.stockAssetsReady()
@@ -160,7 +180,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     let bodyToJsonMapEntries = Array.from(bodyToJsonMap.entries());
     let bodyOrbitMap = new Map<Planetoid, Orbit>(
       bodyToJsonMapEntries
-        .filter(([,p]) => p.planetoidType !== PlanetoidType.Star)
+        .filter(([, p]) => p.planetoidType !== PlanetoidType.Star)
         .map(([dto, p]) => [p, Orbit.fromJson(dto, p.draggable)]));
     bodyOrbitMap.forEach((orbit, body) => body.draggable.setOrbit(orbit));
 
@@ -170,9 +190,9 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
       .draggable
       .updateConstrainLocation({xy: [0, 0]} as OrbitParameterData);
     let listOrbits = Array.from(bodyOrbitMap.values());
-    let celestialBodies = bodyToJsonMapEntries.map(([, so]) => so);
+    let planetoids = bodyToJsonMapEntries.map(([, so]) => so);
 
-    return {listOrbits, celestialBodies};
+    return {listOrbits, planetoids};
   }
 
 }

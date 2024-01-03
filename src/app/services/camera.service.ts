@@ -1,12 +1,13 @@
 import {
-  ChangeDetectorRef,
   ElementRef,
   Injectable,
   OnDestroy,
 } from '@angular/core';
 import {
   ReplaySubject,
+  Subject,
   take,
+  takeUntil,
   timer,
 } from 'rxjs';
 import { CameraDto } from '../common/domain/dtos/camera.dto';
@@ -20,7 +21,7 @@ import { easeOutExpo } from '../common/timing-functions';
 import { WithDestroy } from '../common/with-destroy';
 
 let defaultScale = 1;
-let defaultLocation = new Vector2(960, 540);
+let defaultLocation = new Vector2(-960, 540);
 
 @Injectable({providedIn: 'root'})
 export class CameraService extends WithDestroy() implements OnDestroy {
@@ -66,6 +67,7 @@ export class CameraService extends WithDestroy() implements OnDestroy {
 
   lastFocusObject: Draggable;
   cameraChange$ = new ReplaySubject<void>();
+  stopAnimation$ = new Subject<void>();
 
   // TODO: change to proper setters, callbacks
   cameraController: ElementRef<HTMLDivElement>;
@@ -76,19 +78,36 @@ export class CameraService extends WithDestroy() implements OnDestroy {
     super();
   }
 
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.cameraChange$.next();
+    this.cameraChange$.complete();
+    this.stopAnimation$.next();
+    this.stopAnimation$.complete();
+  }
+
   setFromJson(dto: CameraDto) {
+    this.animateCameraTo(dto.scale, Vector2.fromList(dto.location));
+  }
+
+  private animateCameraTo(endScale: number, endLocation: Vector2) {
+    this.stopAnimation$.next();
+
     let startScale = this.scale;
     let startLocation = this.location.clone();
-    let endLocation = Vector2.fromList(dto.location);
+
     let intervalDuration = 10;
     let totalDuration = 1000;
     let steps = (totalDuration / intervalDuration).toInt();
 
-    timer(0, intervalDuration).pipe(take(steps))
+    timer(0, intervalDuration).pipe(
+      take(steps),
+      takeUntil(this.stopAnimation$),
+      takeUntil(this.destroy$))
       .subscribe(i => {
         let t = (i + 1) / steps;
         let tw = easeOutExpo(t);
-        let newScale = dto.scale.lerp(startScale, tw);
+        let newScale = endScale.lerp(startScale, tw);
         let newLocation = endLocation.lerpClone(startLocation, tw);
         this.scale = newScale;
         this.location.setVector2(newLocation);
@@ -105,9 +124,11 @@ export class CameraService extends WithDestroy() implements OnDestroy {
   }
 
   reset(scale?: number, location?: Vector2) {
-    this._scale = scale ?? defaultScale;
-    this.location = location ?? defaultLocation.clone();
+    let newScale = scale ?? defaultScale;
+    let newLocation = location ?? defaultLocation.clone();
     this.cameraChange$.next();
+
+    this.animateCameraTo(newScale, newLocation);
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
@@ -129,18 +150,21 @@ export class CameraService extends WithDestroy() implements OnDestroy {
     this.scale *= delta;
 
     this.cameraChange$.next();
+    this.stopAnimation$.next();
   }
 
   private focusAt(spaceObject: SpaceObject, zoomIn?: boolean) {
-    this.scale = zoomIn
+    let newScale = zoomIn
       ? CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .999)
       : this.getScaleForFocus(spaceObject);
 
-    this.location = spaceObject.location.clone()
-      .multiply(-this.scale * CameraService.scaleModifier)
+    let newLocation = spaceObject.location
+      .multiplyClone(-newScale * CameraService.scaleModifier)
       .addVector2(this.screenCenterOffset);
 
     this.cameraChange$.next();
+
+    this.animateCameraTo(newScale, newLocation);
   }
 
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
@@ -175,6 +199,7 @@ export class CameraService extends WithDestroy() implements OnDestroy {
   translate(x: number, y: number) {
     this.location.add(x, y);
     this.cameraChange$.next();
+    this.stopAnimation$.next();
   }
 
   convertGameToScreenSpace(gameSpaceLocation: Vector2): Vector2 {

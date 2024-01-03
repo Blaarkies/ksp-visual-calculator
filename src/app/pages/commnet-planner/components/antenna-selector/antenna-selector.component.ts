@@ -141,9 +141,10 @@ export class AntennaSelectorComponent extends BasicValueAccessor implements OnIn
   }
 
   private refreshAvailableOptions() {
-    this.availableOptions = this.selectionOptions.except(
-      this.antennaInputs.map(ai => ({value: ai.selectedAntenna})),
-      lo => lo.value);
+    let queryableInputs = this.antennaInputs
+      .map(ai => ({label: undefined, value: ai.selectedAntenna}));
+    this.availableOptions = this.selectionOptions
+      .except(queryableInputs, lo => lo.value);
   }
 
   removeAntenna(antennaInput: AntennaInput) {

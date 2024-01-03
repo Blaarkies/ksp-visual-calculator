@@ -52,14 +52,6 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
   @Input() set focusables(value: SpaceObject[]) {
     this.list = this.getActionPrimedList(value);
-
-    if (!this.hasFocusablesBeenSet && this.list?.length) {
-      // TODO: modded/renamed universes might no longer have 'Kerbin'
-      let kerbin = value.find(so => so.label === 'Kerbin');
-      this.cameraService.focusSpaceObject(kerbin);
-
-      this.hasFocusablesBeenSet = true;
-    }
   }
 
   private getActionPrimedList(value: SpaceObject[]) {
@@ -80,8 +72,6 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
   list: FocusItem[];
   isOpen = false;
-
-  private hasFocusablesBeenSet = false;
 
   @ViewChildren('button') buttons: QueryList<MatButton>;
 

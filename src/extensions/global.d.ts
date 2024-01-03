@@ -79,6 +79,12 @@ declare global {
 
     random(this: Array<T>): T;
 
+    /**
+     * Returns true when all pairs of elements from both arrays are equal.
+     * Use the predicate to define the required equality.
+     * @param other array to compare
+     * @param predicate callback to define equality
+     */
     equal(this: Array<T>, other: Array<T>, predicate?: (a: T, b: T) => boolean): boolean;
 
     sum(this: Array<number | any>, selector?: (item: any) => number): number;
@@ -102,13 +108,28 @@ declare global {
 
     distinct(this: Array<T>, indexCallback?: (parentItem: T, list: Array<T>) => number): Array<T>;
 
+    /**
+     * Returns an array joined with itself, where each element is paired with every
+     * element in the array. Each pair is a 2 element array.
+     * @example
+     * `[1,2].joinSelf()` will return `[[1,1], [1,2], [2,1], [2,2]]`
+     */
     joinSelf(this: Array<T>): Array<Array<T>>;
 
-    except(this: Array<T>, other: Array<any>, selector?: (item: any) => any): Array<T>;
+    /**
+     * Returns an array will with all elements except those found in `other` array.
+     * @param other list of items to be excluded
+     * @param selector callback used to determine element exclusion using properties
+     */
+    except(this: Array<T>, other: Array<T>, selector?: (item: T) => unknown): Array<T>;
 
     windowed(this: Array<T>, size: number, step?: number, partialWindows?: boolean): Array<Array<T>>;
 
-    splitFilter(this: Array<T>, callback: (item: T) => number): Array<Array<T>>;
+    /**
+     * Returns a list split into separate lists indexed by the value of the `indexer` callback.
+     * @param indexer
+     */
+    splitFilter(this: Array<T>, indexer: (item: T) => number): Array<Array<T>>;
   }
 
   interface Boolean extends CallbackExtensions<boolean> {

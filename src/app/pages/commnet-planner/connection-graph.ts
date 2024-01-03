@@ -41,41 +41,51 @@ export class ConnectionGraph {
 
       for (let signal of signals) {
         let isSignalOfCraft = signal.nodes.some(n => n === c);
-        if (isSignalOfCraft) {
+        if (!isSignalOfCraft) {
+          continue;
+        }
 
-          let otherNode = signal.nodes.find(n => n !== c);
+        let otherNode = signal.nodes.find(n => n !== c);
+        let isGuidanceControlled = this.hostNodeCanControl(signal, otherNode, c);
 
-          let hasDsnCapability = otherNode instanceof Planetoid
-            && otherNode.communication?.antennae?.length;
-          let hasControlConnection = hasDsnCapability
-            || otherNode.communication.bestRemoteGuidanceCapability();
-          if (hasControlConnection) {
+        if (isGuidanceControlled) {
+          this.hasControlCraft.add(c);
+
+          break;
+        }
+        let isOtherNodeInNetwork = graphNodes
+          .some(id => id === otherNode.label);
+        if (isOtherNodeInNetwork) {
+
+          let hasConnectionToBase = controlStationsAndCores
+            .some(cb => {
+              try {
+                return this.graph.shortestPath(
+                  otherNode.label, cb.label);
+              } catch (e) {
+                console.log(`No path from [${otherNode.label}] to [${cb.label}]`);
+                return false;
+              }
+            });
+          if (hasConnectionToBase) {
             this.hasControlCraft.add(c);
             break;
-          }
-
-          let isOtherNodeInNetwork = graphNodes
-            .some(id => id === otherNode.label);
-          if (isOtherNodeInNetwork) {
-
-            let hasConnectionToBase = controlStationsAndCores
-              .some(cb => {
-                try {
-                  return this.graph.shortestPath(
-                    otherNode.label, cb.label);
-                } catch (e) {
-                  console.log(`No path from [${otherNode.label}] to [${cb.label}]`);
-                  return false;
-                }
-              });
-            if (hasConnectionToBase) {
-              this.hasControlCraft.add(c);
-              break;
-            }
           }
         }
       }
     });
   }
 
+  private hostNodeCanControl(signal: AntennaSignal,
+                             hostNode: CanCommunicate,
+                             clientNode: CanCommunicate): boolean {
+    let hasDsnCapability = hostNode instanceof Planetoid
+      && hostNode.communication?.antennae?.length;
+
+    let hostCanRelayConnectionToClient = hostNode.communication.bestRemoteGuidanceCapability()
+      && signal.getHostToClientSignalStrength(hostNode, clientNode);
+
+    let hasControlConnection = hasDsnCapability || hostCanRelayConnectionToClient;
+    return !!hasControlConnection;
+  }
 }

@@ -4,6 +4,9 @@ import {
 } from '@angular/core';
 import {
   combineLatest,
+  map,
+  merge,
+  switchMap,
   take,
   takeUntil,
   tap,
@@ -51,7 +54,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
-    private cameraService: CameraService,
+    protected cameraService: CameraService,
   ) {
     super();
 
@@ -66,8 +69,13 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     this.difficultySetting = DifficultySetting.normal;
 
+    let signalsUpdate$ = this.signals$.stream$.pipe(
+      switchMap(signals =>
+        merge(...signals.map(s => s.relayChange$))
+          .pipe(map(() => signals))));
+
     combineLatest([
-      this.signals$.stream$,
+      signalsUpdate$,
       this.craft$.stream$,
       this.planetoids$,
     ]).pipe(
@@ -114,15 +122,11 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     this.updateTransmissionLines();
   }
 
-  protected async buildContextState(lastState: string) {
+  protected override async buildContextState(lastState: string) {
+    await super.buildContextState(lastState);
+
     let state: StateCommnetPlannerDto = JSON.parse(lastState);
     let {planetoids, craft: craftDtos, camera} = state;
-
-    if (camera) {
-      this.cameraService.setFromJson(camera);
-    } else {
-      this.cameraService.reset();
-    }
 
     let planetoidDtoPairs = planetoids
       .map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));
@@ -175,7 +179,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         parentItem.includes(so)));
 
   private getFreshTransmissionLines(nodes: CanCommunicate[], signals: AntennaSignal[]): AntennaSignal[] {
-    return nodes
+    let [removeSignals = [], newSignals = []] = nodes
       .filter(so => so.communication?.antennae?.length)
       .joinSelf()
       .distinct(this.getIndexOfSameCombination)
@@ -184,7 +188,11 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       .map(pair => // leave existing signals here so that visuals do not flicker
         signals.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new AntennaSignal(pair, () => this.difficultySetting.rangeModifier))
-      .filter(tl => tl.strengthTotal);
+      .splitFilter(tl => tl.strengthTotal ? 1 : 0);
+
+    removeSignals.forEach(s => s.destroy());
+
+    return newSignals;
   }
 
   updateTransmissionLines({reset}: { reset?: boolean } = {}) {

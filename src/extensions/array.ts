@@ -140,16 +140,11 @@ Array.prototype.windowed = function (this: Array<any>,
   return result;
 };
 
-/**
- * Filters a list into separate lists given by the callback function. The return value of the
- * callback function is used as the index for where to place each item
- * @param callback
- */
 Array.prototype.splitFilter = function (this: Array<any>,
-                                        callback: (item: any) => any): Array<Array<any>> {
+                                        indexer: (item: any) => number): Array<Array<any>> {
   let resultLists = [];
   for (let item of this) {
-    let destinationKey = callback(item);
+    let destinationKey = indexer(item);
     resultLists[destinationKey]
       ? resultLists[destinationKey].push(item)
       : resultLists[destinationKey] = [item];

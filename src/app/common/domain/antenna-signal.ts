@@ -1,4 +1,5 @@
 import memoize from 'fast-memoize';
+import { Subject } from 'rxjs';
 import { Craft } from './space-objects/craft';
 import { Planetoid } from './space-objects/planetoid';
 import { Vector2 } from './vector2';
@@ -74,6 +75,8 @@ export class AntennaSignal {
     );
   }
 
+  relayChange$ = new Subject<void>();
+
   private memoizeTextLocation = memoize((x1, y1, x2, y2) => {
     return this.nodes[0].location
       .lerpClone(this.nodes[1].location);
@@ -107,14 +110,24 @@ export class AntennaSignal {
           node => node.communication.powerRatingTotal()),
     {strategy: memoize.strategies.variadic});
 
-  private memoizeStrengthRelay = memoize((hasRelay1, hasRelay2, ...rest) =>
-      this.getSignalStrength(hasRelay1, hasRelay2,
-          node => node.communication.powerRatingRelay()),
+  private hasRelayStrength: boolean;
+
+  private memoizeStrengthRelay = memoize((hasRelay1, hasRelay2, ...rest) => {
+      let relayStrength = this.getSignalStrength(hasRelay1, hasRelay2,
+        node => node.communication.powerRatingRelay());
+      let hasRelayStrength = !!relayStrength;
+      if (this.hasRelayStrength === undefined || hasRelayStrength !== this.hasRelayStrength) {
+        this.hasRelayStrength = hasRelayStrength;
+        this.relayChange$.next();
+      }
+      return relayStrength;
+    },
     {strategy: memoize.strategies.variadic});
 
   private getSignalStrength(hasRelay1: boolean,
                             hasRelay2: boolean,
-                            powerRatingCallback: (node: CanCommunicate) => number) {
+                            powerRatingCallback: (node: CanCommunicate) => number)
+    : number {
     if (!hasRelay1 && !hasRelay2) {
       return 0;
     }
@@ -136,6 +149,30 @@ export class AntennaSignal {
   constructor(public nodes: CanCommunicate[],
               private getRangeModifier: () => number) {
     this.id = Math.random().toString().slice(2);
+  }
+
+  destroy() {
+    this.relayChange$.complete();
+  }
+
+  getHostToClientSignalStrength(hostNode: CanCommunicate,
+                                clientNode: CanCommunicate): number {
+    if (!hostNode.communication.containsRelay()) {
+      return 0;
+    }
+
+    let distance = hostNode.location.distance(clientNode.location);
+    let maxRange = (this.getRangeModifier()
+      * hostNode.communication.powerRatingRelay()
+      * clientNode.communication.powerRatingTotal())
+      .sqrt();
+
+    if (distance > maxRange) {
+      return 0;
+    }
+    let x = 1 - distance / maxRange; // relative distance
+    let signalStrength = (3 - 2 * x) * x.pow(2);
+    return signalStrength;
   }
 
 }

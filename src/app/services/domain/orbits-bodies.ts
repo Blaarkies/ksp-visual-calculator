@@ -3,5 +3,5 @@ import { Planetoid } from '../../common/domain/space-objects/planetoid';
 
 export interface OrbitsBodies {
   listOrbits: Orbit[];
-  celestialBodies: Planetoid[];
+  planetoids: Planetoid[];
 }

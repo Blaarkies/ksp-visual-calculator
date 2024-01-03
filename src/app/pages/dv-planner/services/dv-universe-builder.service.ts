@@ -1,3 +1,4 @@
+import { state } from '@angular/animations';
 import {
   Injectable,
   OnDestroy,
@@ -8,6 +9,7 @@ import { CheckpointPreferences } from '../../../common/domain/checkpoint-prefere
 import { StateDvPlannerDto } from '../../../common/domain/dtos/state-dv-planner.dto';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SubjectHandle } from '../../../common/subject-handle';
+import { CameraService } from '../../../services/camera.service';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
@@ -23,6 +25,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
+    protected cameraService: CameraService,
 
     private travelService: TravelService,
   ) {
@@ -42,7 +45,9 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     this.checkpointPreferences$.set(CheckpointPreferences.default);
   }
 
-  protected async buildContextState(lastState: string) {
+  protected override async buildContextState(lastState: string) {
+    await super.buildContextState(lastState);
+
     let state: StateDvPlannerDto = JSON.parse(lastState);
     let {planetoids, checkpoints: jsonCheckpoints} = state;
 
