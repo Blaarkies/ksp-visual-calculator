@@ -6,5 +6,4 @@ export interface PlanetoidDto extends SpaceObjectDto {
   planetoidType: string;
   sphereOfInfluence: number;
   equatorialRadius: number;
-  hasDsn?: boolean;
 }

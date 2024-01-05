@@ -28,6 +28,7 @@ import { Planetoid } from '../../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { CameraService } from '../../../services/camera.service';
+import { EnrichedStarSystem } from '../../../services/domain/enriched-star-system.model';
 import { EventLogs } from '../../../services/domain/event-logs';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
@@ -106,15 +107,13 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     antennaServiceDestroy();
   }
 
-  protected async setDetails() {
-    await super.setDetails();
-
+  protected async setDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.craft$.set([]);
     this.signals$.set([]);
     this.difficultySetting = DifficultySetting.normal;
 
-    // TODO: hasDsn is removed. add default tracking station another way
-    let needsBasicDsn = this.planetoids$.value.find(cb => cb.hasDsn);
+    let dsnIds = enrichedStarSystem.starSystem.dsnIds;
+    let needsBasicDsn = this.planetoids$.value.find(p => p.label.includesSome(dsnIds));
     if (needsBasicDsn) {
       needsBasicDsn.communication = new Communication([new Group('Tracking Station 1')]);
     }

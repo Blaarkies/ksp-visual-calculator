@@ -15,6 +15,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
+import { StarSystemDto } from '../../../../common/domain/dtos/star-system-dto';
 import { Group } from '../../../../common/domain/group';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { PlanetoidAssetDto } from '../../../../common/domain/dtos/planetoid-asset.dto';
@@ -69,8 +70,8 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
 
     this.planetMap$ = cacheService.planetoids$
       .pipe(
-        map(characteristics => new Map<string, PlanetoidAssetDto>(
-          characteristics.planetoids.map(p => [p.id, p]),
+        map(starSystemDto => new Map<string, PlanetoidAssetDto>(
+          starSystemDto.planetoids.map(p => [p.id, p]),
         )),
         takeUntil(this.destroy$));
 

@@ -18,8 +18,7 @@ export class Planetoid extends SpaceObject {
               public planetoidType: PlanetoidType,
               public size: number,
               public sphereOfInfluence: number,
-              public equatorialRadius: number,
-              public hasDsn?: boolean) {
+              public equatorialRadius: number) {
     super(size, label, imageUrl, moveType, SpaceObjectType.Planetoid);
     if (antennae?.length) {
       this.communication = new Communication(antennae.slice());
@@ -35,7 +34,6 @@ export class Planetoid extends SpaceObject {
       size: this.size,
       sphereOfInfluence: this.sphereOfInfluence,
       equatorialRadius: this.equatorialRadius,
-      hasDsn: this.hasDsn,
     };
   }
 
@@ -52,7 +50,6 @@ export class Planetoid extends SpaceObject {
       json.size,
       json.sphereOfInfluence,
       json.equatorialRadius,
-      json.hasDsn,
     );
 
     return object;

@@ -22,10 +22,7 @@ import { StateBaseDto } from '../../common/domain/dtos/state-base-dto';
 import { StateContextualDto } from '../../common/domain/dtos/state-contextual.dto';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Namer } from '../../common/namer';
-import {
-  compareSemver,
-  VersionValue,
-} from '../../common/semver';
+import { compareSemver } from '../../common/semver';
 import { Uid } from '../../common/uid';
 import { StateEntry } from '../../overlays/manage-state-dialog/state-entry';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
@@ -151,7 +148,7 @@ export abstract class AbstractBaseStateService {
   }
 
   async removeStateFromStore(name: string) {
-    // TODO: soft delete savegames instead
+    // TODO: soft-delete savegames instead
     return this.dataService.delete('states', name)
       .catch(error => {
         this.snackBar.open(`Could not remove "${name}" from cloud storage`);
@@ -159,6 +156,7 @@ export abstract class AbstractBaseStateService {
       });
   }
 
+  // TODO: use lazy entries that have observables for unzipping state
   getStates(): Observable<StateEntry[]> {
     return from(this.dataService.readAll<StateEntry>('states')).pipe(
         map(states => states

@@ -1,6 +1,6 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -8,24 +8,23 @@ import {
   ViewChildren,
 } from '@angular/core';
 import {
+  MatButton,
+  MatButtonModule,
+} from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {
   filter,
   fromEvent,
   takeUntil,
 } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
-import { CameraService } from '../../services/camera.service';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import {
-  MatButton,
-  MatButtonModule,
-} from '@angular/material/button';
-import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/domain/event-logs';
 import { ConfigurableAnimations } from '../../animations/configurable-animations';
-import { CommonModule } from '@angular/common';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { WithDestroy } from '../../common/with-destroy';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
+import { AnalyticsService } from '../../services/analytics.service';
+import { CameraService } from '../../services/camera.service';
+import { EventLogs } from '../../services/domain/event-logs';
 
 interface FocusItem {
   icon: string;

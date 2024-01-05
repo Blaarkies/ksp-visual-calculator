@@ -3,19 +3,9 @@ import {
   Injectable,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  map,
-  Observable,
-  of,
-  switchMap,
-} from 'rxjs';
+import { Observable } from 'rxjs';
 import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { GameStateType } from '../../../common/domain/game-state-type';
-import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import {
-  compareSemver,
-  VersionValue,
-} from '../../../common/semver';
 import { AUTO_SAVE_INTERVAL } from '../../../common/token';
 import { CameraService } from '../../../services/camera.service';
 import { DataService } from '../../../services/data.service';

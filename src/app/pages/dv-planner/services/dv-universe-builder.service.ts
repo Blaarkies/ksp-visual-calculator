@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import {
   Injectable,
   OnDestroy,
@@ -10,6 +9,7 @@ import { StateDvPlannerDto } from '../../../common/domain/dtos/state-dv-planner.
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { CameraService } from '../../../services/camera.service';
+import { EnrichedStarSystem } from '../../../services/domain/enriched-star-system.model';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
@@ -39,8 +39,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     this.travelService.resetCheckpoints();
   }
 
-  protected async setDetails() {
-    await super.setDetails();
+  protected async setDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.travelService.resetCheckpoints();
     this.checkpointPreferences$.set(CheckpointPreferences.default);
   }

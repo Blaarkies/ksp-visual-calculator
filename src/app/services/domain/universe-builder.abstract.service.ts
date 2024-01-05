@@ -22,8 +22,8 @@ import { AnalyticsService } from '../analytics.service';
 import { CameraService } from '../camera.service';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';
 import { UniverseContainerInstance } from '../universe-container-instance.service';
+import { EnrichedStarSystem } from './enriched-star-system.model';
 import { EventLogs } from './event-logs';
-import { OrbitsBodies } from './orbits-bodies';
 import { PlanetoidWithDto } from './planetoid-with-dto.model';
 
 export abstract class AbstractUniverseBuilderService extends WithDestroy() {
@@ -54,28 +54,28 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     this.universeContainerInstance.crafts$.next([]);
   }
 
-  private stockAssetsReady(): Observable<OrbitsBodies> {
+  private stockAssetsReady(): Observable<EnrichedStarSystem> {
     return this.cacheService.planetoids$
       .pipe(
         take(1),
-        map(data => AbstractUniverseBuilderService.generateOrbitsAndPlanetoids(data)),
+        map(data => AbstractUniverseBuilderService.generateEnrichedStarSystem(data)),
         takeUntil(this.destroy$));
   }
 
-  buildStockState(): Observable<OrbitsBodies> {
+  buildStockState(): Observable<EnrichedStarSystem> {
     return this.stockAssetsReady()
       .pipe(
-        tap(({listOrbits, planetoids}) => {
+        tap(({starSystem, listOrbits, planetoids}) => {
           this.orbits$.next(listOrbits);
           this.planetoids$.next(planetoids);
           this.cameraService.focusSpaceObject(
-            planetoids.find(p => p.hasDsn) ?? planetoids[0]);
+            planetoids.find(p => p.label.includesSome(starSystem.dsnIds))
+            ?? planetoids[0]);
         }),
-        delayWhen(() => this.setDetails()));
+        delayWhen(enrichedStarSystem => this.setDetails(enrichedStarSystem)));
   }
 
-  protected async setDetails() {
-  }
+  protected abstract setDetails(enrichedStarSystem: EnrichedStarSystem): Promise<void>
 
   protected async buildContextState(lastState: string): Promise<void> {
     let state: StateCommnetPlannerDto = JSON.parse(lastState);
@@ -88,14 +88,14 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
         take(1),
         takeUntil(this.destroy$))
         .subscribe(planetoids => {
-          let target = planetoids.find(p => p.communication);
+          let target = planetoids.find(p => p.communication) || planetoids[4];
           this.cameraService.focusSpaceObject(target);
         });
     }
     return;
   }
 
-  buildState(lastState: string): Observable<any> {
+  buildState(lastState: string): Observable<EnrichedStarSystem> {
     return this.stockAssetsReady()
       .pipe(delayWhen(() => this.buildContextState(lastState)));
   }
@@ -150,10 +150,10 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
       .min(p => p.location.distance(location));
   }
 
-  private static generateOrbitsAndPlanetoids(data: StarSystemDto): OrbitsBodies {
+  private static generateEnrichedStarSystem(starSystem: StarSystemDto): EnrichedStarSystem {
     // Setup abstract planetoids
     let bodyToJsonMap = new Map<PlanetoidAssetDto, Planetoid>(
-      data.planetoids.map(b => [
+      starSystem.planetoids.map(b => [
         /*key  */ b,
         /*value*/ new Planetoid(
           b.name,
@@ -163,8 +163,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
           PlanetoidType.fromString(b.type),
           (Math.log(b.equatorialRadius) * 4).toInt(),
           b.sphereOfInfluence,
-          b.equatorialRadius,
-          b.hasDsn),
+          b.equatorialRadius),
       ]));
 
     // Setup SOI hierarchies
@@ -192,7 +191,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     let listOrbits = Array.from(bodyOrbitMap.values());
     let planetoids = bodyToJsonMapEntries.map(([, so]) => so);
 
-    return {listOrbits, planetoids};
+    return {starSystem, listOrbits, planetoids};
   }
 
 }

@@ -1,4 +1,6 @@
 {
+  "name": ["Kerbol System"],
+  "dsnIds": ["kerbin"],
   "planetoids": [
     {
       "id": "kerbol",
@@ -49,8 +51,7 @@
       "equatorialRadius": 6e5,
       "sphereOfInfluence": 84159286,
       "imageUrl": "assets/stock/kerbol-system-icons/kerbin.webp",
-      "orbitLineColor": "#30f0f0",
-      "hasDsn": true
+      "orbitLineColor": "#30f0f0"
     },
     {
       "id": "mun",

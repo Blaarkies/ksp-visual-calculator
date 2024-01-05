@@ -8,5 +8,4 @@ export interface PlanetoidAssetDto {
   sphereOfInfluence?: number;
   imageUrl: string;
   orbitLineColor?: string;
-  hasDsn?: boolean;
 }
