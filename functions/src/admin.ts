@@ -2,11 +2,19 @@ import * as functions from 'firebase-functions';
 import { log } from 'firebase-functions/logger';
 import { Supporter, TableName, UserData } from './common/types';
 import { db } from './common/singletons';
-import { gzip } from 'pako';
+import {
+  gzip,
+  ungzip,
+} from 'pako';
 import admin from 'firebase-admin';
 import { distinct, getAllBmacSupporters, getUniqueDateKey, uid } from './common/tools';
 
 import * as corsImport from 'cors';
+import {
+  writeFileSync,
+  mkdirSync,
+  existsSync,
+} from 'fs';
 
 let cors = corsImport.default({
   origin: ['https://ksp-visual-calculator.blaarkies.com'],
@@ -145,5 +153,46 @@ export const upgradeIsCustomerToSupportersTable = functions
     }
 
     res.sendStatus(200)
+    return;
+  });
+
+export const collectOldVersionSavegames = functions.runWith({timeoutSeconds: 540})
+  .https.onRequest(async (req, res) => {
+
+    let savegames = await db.collection(<TableName>'states').get();
+
+    let collectedVersions = new Set()
+    let states = [];
+    for (let row of savegames.docs) {
+      let data = row.data();
+      let gameNames = Object.keys(data);
+      for (let gameName of gameNames) {
+        let details = row.get(gameName);
+
+        let versionString = details.version.toString();
+        if (collectedVersions.has(versionString)) {
+          continue;
+        }
+
+        collectedVersions.add(versionString);
+        let unzipped = ungzip(details.state, {to: 'string'});
+        let jsonState = {
+          ...details,
+          state: JSON.parse(unzipped),
+        };
+        states.push(JSON.stringify(jsonState));
+      }
+
+      if (collectedVersions.size > 10) {
+        break;
+      }
+    }
+
+    if (!existsSync('dist')) {
+      mkdirSync('dist');
+    }
+    states.forEach(s => writeFileSync(`dist/${JSON.parse(s).version}.json`, s, {encoding: 'utf8'}))
+
+    res.sendStatus(200);
     return;
   });
