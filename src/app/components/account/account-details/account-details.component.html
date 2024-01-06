@@ -42,23 +42,6 @@
               </button>
             </div>
           </div>
-
-          <div>
-            <div class="space-for-toggle">Light Theme</div>
-            <cp-input-toggle [formControl]="controlTheme" type="switch"></cp-input-toggle>
-          </div>
-
-          <div>
-            <div class="space-for-toggle">Analytics</div>
-            <div class="analytics-info-section">
-              <cp-input-toggle [formControl]="controlAnalytics" type="switch"></cp-input-toggle>
-              <button mat-button (click)="openAnalyticsDialog()">
-                <div>
-                  <mat-icon color="muted" [svgIcon]="icons.Info"></mat-icon>
-                </div>
-              </button>
-            </div>
-          </div>
         </div>
 
         <button mat-stroked-button [matMenuTriggerFor]="menu" class="action-details">

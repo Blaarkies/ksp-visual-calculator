@@ -94,7 +94,7 @@ export class TutorialService {
       dialogMessages: [
         'This is a planet, it can be dragged around its orbit.',
         'Moons and spacecraft can also be moved.',
-        'Left-click (or tap) and hold the planet to move it around.'],
+        'Left-click (or tap) and hold the planet to <strong>move it around</strong>.'],
       dialogIcon: Icons.Planet,
       stages: [
         {
@@ -153,7 +153,7 @@ export class TutorialService {
       dialogTargetCallback: () => this.selectObjectInDom('kerbol')?.firstChild?.firstChild,
       dialogMessages: [
         'The camera can be moved around to view other parts of the Kerbol system.',
-        'Right-click and hold in the universe to pan the camera around.',
+        'Right-click and hold in the universe, then <strong>move to pan the camera</strong> around.',
         'On touch screens, swipe with two fingers to move the camera.'],
       dialogIcon: Icons.Camera,
       stages: [
@@ -198,7 +198,7 @@ export class TutorialService {
         'Some planets have moons, but you have to zoom in to see them.',
         'Point the mouse cursor at Kerbin, then scroll in/out with the mouse wheel, to zoom in/out.',
         'On touch screens you can pinch with two fingers to zoom in/out, or double-tap on Kerbin to zoom in.',
-        'Zoom in until you can see the moons of Kerbin.'],
+        '<strong>Zoom in until you can see the moons</strong> of Kerbin.'],
       dialogIcon: Icons.ZoomIn,
       stages: [
         {
@@ -265,7 +265,7 @@ export class TutorialService {
       case GameStateType.CommnetPlanner:
         startTutorial.dialogTitle = 'CommNet Planner Tutorial';
         startTutorial.dialogMessages = [
-          'This page helps setup satellite communication networks by letting you place craft with specific antennae.',
+          'This page helps design satellite communication networks by letting you place craft with specific antennae.',
           'Dragging these craft around will instantly show where connections are possible.',
         ];
         startTutorial.dialogIcon = Icons.Relay;
@@ -273,8 +273,8 @@ export class TutorialService {
       case GameStateType.DvPlanner:
         startTutorial.dialogTitle = 'Delta-v Mission Tutorial';
         startTutorial.dialogMessages = [
-          'This page calculates the required amount of delta-v a rocket needs to reach a specific destination.',
-          'Multiple checkpoints can be added with aerobraking rules for each to calculate the total delta-v required.',
+          'This page calculates the required delta-v a rocket needs to reach a specific destination.',
+          'Multiple checkpoints can be added, some with aerobraking rules, to calculate the total delta-v required.',
         ];
         startTutorial.dialogIcon = Icons.DeltaV;
         break;
@@ -292,8 +292,8 @@ export class TutorialService {
       dialogTitle: 'The End',
       dialogTargetCallback: () => this.document.body,
       dialogMessages: [
-        'That concludes the tutorial.',
-        'The universe is now your playground!'],
+        'Congratulations! That concludes the tutorial.',
+        'The universe is now your playground.'],
       dialogIcon: Icons.Congratulations,
       stages: [
         {
@@ -316,7 +316,7 @@ export class TutorialService {
       dialogTargetCallback: () => this.document.querySelector('[data-tutorial-commnet-menu]'),
       dialogMessages: [
         'Spacecraft can be added to this universe.',
-        'Click "New Craft" to add your own spacecraft.'],
+        'Click <strong>"New Craft"</strong> to add your own spacecraft.'],
       dialogIcon: Icons.Configure,
       stages: [
         {
@@ -367,8 +367,8 @@ export class TutorialService {
       dialogTargetCallback: () => this.document.querySelector('cp-craft-details-dialog'),
       dialogMessages: [
         'Spacecraft are added and configured here.',
-        'Select a communications antenna like the "Communotron 16".',
-        'Click "Create" to add the spacecraft.'],
+        '<strong>Select a communications antenna</strong>, such as the "Communotron 16".',
+        '<strong>Click "Create"</strong> to add the spacecraft.'],
       dialogIcon: Icons.Antenna,
       stages: [
         {
@@ -398,9 +398,9 @@ export class TutorialService {
         return crafts[crafts.length - 1];
       },
       dialogMessages: [
-        'The new spacecraft should have a visible solid green line to the closest relay or Kerbin.',
+        'The new spacecraft should have a <strong>visible solid green line</strong> to the closest relay, or to Kerbin.',
         'This line color represents the signal strength. A dashed line indicates the relay aspect of this connection.',
-        'Move the spacecraft closer/farther from Kerbin to see the connection strength change.',
+        '<strong>Move the spacecraft</strong> closer/farther from Kerbin to see the connection strength change.',
         'Strong antennae can be dragged to far away planets before losing connection.'],
       dialogIcon: Icons.SignalStrength,
       stages: [
@@ -446,7 +446,7 @@ export class TutorialService {
       dialogTargetCallback: () => this.document.querySelector('.craft-icon-sprite-image'),
       dialogMessages: [
         'Some antenna types can relay a weak connection back to Kerbin.',
-        'Add another spacecraft, but with a relay type antenna on it.',
+        '<strong>Add another spacecraft</strong>, but with a relay type antenna on it.',
       ],
       dialogIcon: Icons.Relay,
       stages: [
@@ -470,8 +470,8 @@ export class TutorialService {
       dialogTitle: 'Relaying Signals',
       dialogTargetCallback: () => this.document.querySelector('.craft-icon-sprite-image'),
       dialogMessages: [
-        'Craft can be part of long chains to facilitate network coverage for rovers landed on far away moons.',
-        'Move the spacecraft around until it loses or gains a connection to another spacecraft.',
+        'Craft can be part of long chains in a network to facilitate communication for rovers landed on moons.',
+        'Move the spacecraft around <strong>until it loses or gains</strong> a connection to another spacecraft.',
       ],
       dialogIcon: Icons.Relay,
       stages: [
@@ -513,13 +513,13 @@ export class TutorialService {
       dialogTargetCallback: () => this.document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
         'This panel calculates how much delta-v is required for your mission specifications.',
-        'Tap the green add checkpoint button on the flashing panel to start your journey.'],
+        'Tap the <strong>green add checkpoint button</strong> on the flashing panel to begin the journey.'],
       dialogIcon: Icons.MapMarker,
       stages: [
         {
           callback: input => defer(() => {
             let msp = this.document.querySelector(
-              'cp-maneuver-sequence-panel[data-tutorial-msp-is-open="true"]');
+              'cp-maneuver-sequence-panel > div[data-tutorial-msp-is-open="true"]');
             if (msp) {
               return of(input);
             }
@@ -558,8 +558,8 @@ export class TutorialService {
       dialogTitle: 'Adding Checkpoints',
       dialogTargetCallback: () => this.document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
-        'Checkpoints define where the mission will be going. We will start at Kerbin',
-        'Tap Kerbin to add it as your first checkpoint.'],
+        'Checkpoints define where the craft will be going. Let\'s start at Kerbin',
+        '<strong>Tap Kerbin</strong> to add it as the first checkpoint.'],
       dialogIcon: Icons.Traveler,
       stages: [
         {
@@ -598,8 +598,8 @@ export class TutorialService {
       dialogTargetCallback: () => this.document.querySelector('cp-maneuver-sequence-panel'),
       dialogMessages: [
         `Checkpoints appear in this list. The "Surface" button shows the specific situation.`,
-        `"Surface" means we are landed, but our plan is to have a craft in orbit instead.`,
-        `Set the situation to "Low Orbit".`,
+        `"Surface" means that it is landed, but the plan is to have a craft in orbit instead.`,
+        `<strong>Set the situation</strong> to "Low Orbit".`,
       ],
       dialogIcon: Icons.Takeoff,
       stages: [
@@ -624,8 +624,8 @@ export class TutorialService {
       dialogTitle: 'Multiple Checkpoints',
       dialogTargetCallback: () => this.document.querySelector('cp-maneuver-sequence-panel'),
       dialogMessages: [
-        `A mission has more than one checkpoint. Add a checkpoint on Duna.`,
-        `The red planet might be far away, try zooming out to see it.`,
+        `A mission has multiple checkpoints. <strong>Add a checkpoint on Duna</strong>.`,
+        `The red planet might be far away, <strong>try zooming out</strong> to see it.`,
       ],
       dialogIcon: Icons.Ore,
       stages: [
@@ -651,7 +651,7 @@ export class TutorialService {
       dialogTargetCallback: () => this.document.querySelector('cp-maneuver-sequence-panel *'),
       dialogMessages: [
         'With multiple checkpoints, the delta-v requirements show up.',
-        'Tap the delta-v number in the list to show trip details. This shows all intermediary steps as well.',
+        '<strong>Tap the delta-v number</strong> in the list to show trip details. This shows all intermediary steps as well.',
       ],
       dialogIcon: Icons.Fuel,
       stages: [
@@ -680,7 +680,7 @@ export class TutorialService {
       dialogMessages: [
         'The total required delta-v is always displayed below the list.',
         'It automatically updates as you change or re-order checkpoints.',
-        'Add the final checkpoint on another planet, and watch for changes on the total delta-v.',
+        '<strong>Add the final checkpoint on another planet</strong>, and watch for changes on the total delta-v.',
       ],
       dialogIcon: Icons.Policy,
       stages: [

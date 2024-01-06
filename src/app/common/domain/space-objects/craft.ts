@@ -25,10 +25,13 @@ export class Craft extends SpaceObject {
     return `${distance.coerceAtLeast(0).toSi(3)}m`;
   }
 
-  constructor(label: string,
-              public craftType: CraftType,
-              antennae: Group<string>[] = []) {
-    super(30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft);
+  constructor(
+    id: string,
+    label: string,
+    public craftType: CraftType,
+    antennae: Group<string>[] = [],
+  ) {
+    super(id, 30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft);
     this.spriteLocation = craftType.iconLocation;
     this.communication = new Communication(antennae.slice());
   }
@@ -47,6 +50,7 @@ export class Craft extends SpaceObject {
     let craftType = CraftType.fromString(json.craftType);
 
     let object = new Craft(
+      json.id,
       json.draggable.label,
       craftType,
       communication.antennae,

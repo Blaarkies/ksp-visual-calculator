@@ -1,9 +1,7 @@
 <div mat-dialog-content class="feedback-layout">
   <div class="text dialog-title">Feedback to the Developer</div>
 
-  <p>
-    Thank you for taking the time to provide feedback on this application.
-  </p>
+  <p>Thank you for taking the time to provide feedback on this application.</p>
 
   <p>Please let me know what you like about KSP Visual Calculator, what features are most useful, or any ideas for
     features to add to future development.</p>
@@ -21,7 +19,7 @@
 <div mat-dialog-actions class="feedback-actions-layout">
   <mat-progress-bar class="feedback-progress-bar"
                     mode="indeterminate"
-                    [@height]
+                    @height
                     *ngIf="feedbackState === 'waiting'">
   </mat-progress-bar>
 

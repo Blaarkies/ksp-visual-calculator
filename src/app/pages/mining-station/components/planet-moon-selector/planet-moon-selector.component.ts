@@ -17,11 +17,11 @@ import {
   takeUntil,
   withLatestFrom,
 } from 'rxjs';
+import { PlanetoidAssetDto } from '../../../../common/domain/dtos/planetoid-asset.dto';
 import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
-import { SpaceObjectType } from '../../../../common/domain/space-objects/space-object-type';
+import { PlanetoidType } from '../../../../common/domain/space-objects/planetoid-type';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputSelectComponent } from '../../../../components/controls/input-select/input-select.component';
-import { PlanetoidAssetDto } from '../../../../common/domain/dtos/planetoid-asset.dto';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
 
 type BodyFilter = 'star' | 'planet' | 'moon';
@@ -65,7 +65,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
 
   private filter$ = new BehaviorSubject<BodyFilter[]>(['planet']);
 
-  constructor(private cacheService: StockEntitiesCacheService) {
+  constructor(cacheService: StockEntitiesCacheService) {
     super();
 
     this.planetOptions$ = cacheService.planetoids$.pipe(
@@ -76,7 +76,7 @@ export class PlanetMoonSelectorComponent extends WithDestroy() {
     this.planetIcons$ = this.planetOptions$.pipe(
       map(bodies => new Map(bodies.map(b => [
           b.value,
-          SpaceObjectType.fromString(b.value.type).icon.toString(),
+          PlanetoidType.fromString(b.value.type).icon.toString(),
         ]),
       )));
   }

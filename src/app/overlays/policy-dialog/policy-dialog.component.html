@@ -198,7 +198,7 @@
 
 </div>
 
-<div mat-dialog-actions>
+<div *ngIf="isDialog" mat-dialog-actions>
   <button color="primary"
           mat-stroked-button
           [mat-dialog-close]>

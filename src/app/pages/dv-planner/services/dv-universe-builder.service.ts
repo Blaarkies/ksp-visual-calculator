@@ -39,7 +39,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     this.travelService.resetCheckpoints();
   }
 
-  protected async setDetails(enrichedStarSystem: EnrichedStarSystem) {
+  protected async setStockDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.travelService.resetCheckpoints();
     this.checkpointPreferences$.set(CheckpointPreferences.default);
   }

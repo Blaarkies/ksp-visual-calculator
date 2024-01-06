@@ -6,6 +6,7 @@ import {
   combineLatest,
   map,
   merge,
+  startWith,
   switchMap,
   take,
   takeUntil,
@@ -70,10 +71,15 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     this.difficultySetting = DifficultySetting.normal;
 
+    let getConnectionsChange$ = (signals: AntennaSignal[]) =>
+      merge(signals.map(s => s.relayChange$)).pipe(
+        startWith(undefined),
+        map(() => signals),
+        )
+
     let signalsUpdate$ = this.signals$.stream$.pipe(
-      switchMap(signals =>
-        merge(...signals.map(s => s.relayChange$))
-          .pipe(map(() => signals))));
+      switchMap(signals => getConnectionsChange$(signals)),
+    );
 
     combineLatest([
       signalsUpdate$,
@@ -86,9 +92,10 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
           return;
         }
         let connectionGraph = new ConnectionGraph(signals, craft, planets);
-        craft.forEach(c =>
-          c.communication.hasControl$.set(
-            connectionGraph.hasControlCraft.has(c)));
+        craft.forEach(c => {
+          let control = connectionGraph.hasControlCraft.has(c);
+          return c.communication.hasControl$.set(control);
+        });
       }),
     ).subscribe();
 
@@ -107,15 +114,17 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     antennaServiceDestroy();
   }
 
-  protected async setDetails(enrichedStarSystem: EnrichedStarSystem) {
+  protected async setStockDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.craft$.set([]);
     this.signals$.set([]);
     this.difficultySetting = DifficultySetting.normal;
 
+    //
     let dsnIds = enrichedStarSystem.starSystem.dsnIds;
-    let needsBasicDsn = this.planetoids$.value.find(p => p.label.includesSome(dsnIds));
-    if (needsBasicDsn) {
-      needsBasicDsn.communication = new Communication([new Group('Tracking Station 1')]);
+    if (dsnIds) {
+      let dsnPlanetoids = this.planetoids$.value.filter(p => p.id.includesSome(dsnIds));
+      dsnPlanetoids.forEach(p =>
+        p.communication = new Communication([new Group('Tracking Station 1')]));
     }
 
     this.updateTransmissionLines();
@@ -212,7 +221,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     let location = details.advancedPlacement?.location
       ?? this.cameraService.convertScreenToGameSpace(this.cameraService.screenCenterOffset);
 
-    let craft = new Craft(details.name, details.craftType,
+    let craft = new Craft(details.id, details.name, details.craftType,
       details.antennae.map(g => new Group(g.item.label, g.count)));
     let parent = this.getSoiParent(location);
     parent.draggable.addChild(craft.draggable);
@@ -237,7 +246,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   }
 
   async editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
-    let newCraft = new Craft(craftDetails.name, craftDetails.craftType,
+    let newCraft = new Craft(craftDetails.id, craftDetails.name, craftDetails.craftType,
       craftDetails.antennae.map(g => new Group(g.item.label, g.count)));
     let parent = craftDetails.advancedPlacement?.orbitParent
       ?? this.getSoiParent(oldCraft.location);

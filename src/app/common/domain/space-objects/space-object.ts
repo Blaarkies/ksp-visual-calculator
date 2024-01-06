@@ -17,6 +17,7 @@ export abstract class SpaceObject {
   }
 
   protected constructor(
+    public id: string,
     public size: number,
     label: string,
     imageUrl: string,
@@ -28,6 +29,7 @@ export abstract class SpaceObject {
 
   toJson(): SpaceObjectDto {
     return {
+      id: this.id,
       size: this.size,
       draggable: this.draggable.toJson(),
       type: this.type.name,

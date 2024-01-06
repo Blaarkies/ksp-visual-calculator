@@ -1,18 +1,25 @@
-import { Component, Inject, ViewEncapsulation } from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
-import { UntypedFormArray, UntypedFormControl, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import {
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { ControlMetaFreeText } from '../../common/domain/input-fields/control-meta-free-text';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { InputFields } from '../../common/domain/input-fields/input-fields';
-import { ControlMetaFreeText } from '../../common/domain/input-fields/control-meta-free-text';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { WithDestroy } from '../../common/with-destroy';
-import { HttpClient } from '@angular/common/http';
-import { BasicAnimations } from '../../animations/basic-animations';
-import { firstValueFrom } from 'rxjs';
-import {CommonModule} from "@angular/common";
-import {InputFieldListComponent} from "../../components/controls/input-field-list/input-field-list.component";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
-import {MatButtonModule} from "@angular/material/button";
+import { InputFieldListComponent } from '../../components/controls/input-field-list/input-field-list.component';
 
 export class FeedbackSubmissionForm {
   name: string;
@@ -40,28 +47,27 @@ export class FeedbackDialogComponent extends WithDestroy() {
   inputFields = {
     name: {
       label: 'Name (Optional)',
-      control: new UntypedFormControl(),
+      control: new FormControl<string>(null),
       controlMeta: new ControlMetaInput(),
     },
     contact: {
       label: 'Contact Info (Optional)',
-      control: new UntypedFormControl(),
-      controlMeta: new ControlMetaInput('text', 'Enables me to follow-up if needed'),
+      control: new FormControl<string>(null),
+      controlMeta: new ControlMetaInput('text'),
     },
     feedback: {
       label: 'Feedback Message',
-      control: new UntypedFormControl(null, [Validators.required, Validators.maxLength(1000)]),
+      control: new FormControl<string>(null, [Validators.required, Validators.maxLength(1000)]),
       controlMeta: new ControlMetaFreeText(),
     },
   } as InputFields;
   inputFieldsList = Object.values(this.inputFields);
 
-  form = new UntypedFormArray(this.inputFieldsList.map(field => field.control));
+  form = new FormArray(this.inputFieldsList.map(field => field.control));
 
   feedbackState: 'nothing' | 'waiting' | 'success' | 'failed' = 'nothing';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any,
-              private snackBar: MatSnackBar,
+  constructor(private snackBar: MatSnackBar,
               private http: HttpClient) {
     super();
   }

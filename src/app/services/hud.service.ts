@@ -22,6 +22,7 @@ import {
 import { FeedbackDialogComponent } from '../overlays/feedback-dialog/feedback-dialog.component';
 import { ManageStateDialogComponent } from '../overlays/manage-state-dialog/manage-state-dialog.component';
 import { PolicyDialogComponent } from '../overlays/policy-dialog/policy-dialog.component';
+import { PreferencesDialogComponent } from '../overlays/preferences-dialog/preferences-dialog.component';
 import {
   SimpleDialogComponent,
   SimpleDialogData,
@@ -84,6 +85,15 @@ export class HudService {
         });
 
         this.dialog.open(AccountDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
+      },
+    }),
+    new ActionOption('Preferences', Icons.Settings, {
+      action: () => {
+        this.analyticsService.logEvent('Call preferences dialog from menu', {
+          category: EventLogs.Category.Preferences,
+        });
+
+        this.dialog.open(PreferencesDialogComponent, {backdropClass: GlobalStyleClass.MobileFriendly});
       },
     }),
     new ActionOption('Credits', Icons.Credits, {

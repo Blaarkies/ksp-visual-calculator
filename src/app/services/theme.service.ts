@@ -54,7 +54,6 @@ export class ThemeService {
 
   private themes: string[] = Object.values(ThemeTypeEnum);
 
-
   constructor(private analyticsService: AnalyticsService,
               private overlayContainer: OverlayContainer,
               private snackBar: MatSnackBar,

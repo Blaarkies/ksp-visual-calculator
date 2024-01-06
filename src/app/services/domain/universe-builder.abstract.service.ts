@@ -10,14 +10,13 @@ import {
 import { PlanetoidAssetDto } from '../../common/domain/dtos/planetoid-asset.dto';
 import { StarSystemDto } from '../../common/domain/dtos/star-system-dto';
 import { StateCommnetPlannerDto } from '../../common/domain/dtos/state-commnet-planner.dto';
-import { Group } from '../../common/domain/group';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../common/domain/space-objects/orbit-parameter-data';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { Vector2 } from '../../common/domain/vector2';
 import { WithDestroy } from '../../common/with-destroy';
-import { CelestialBodyDetails } from '../../overlays/celestial-body-details-dialog/celestial-body-details';
+import { PlanetoidDetails } from '../../overlays/celestial-body-details-dialog/planetoid-details';
 import { AnalyticsService } from '../analytics.service';
 import { CameraService } from '../camera.service';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';
@@ -72,10 +71,10 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
             planetoids.find(p => p.label.includesSome(starSystem.dsnIds))
             ?? planetoids[0]);
         }),
-        delayWhen(enrichedStarSystem => this.setDetails(enrichedStarSystem)));
+        delayWhen(enrichedStarSystem => this.setStockDetails(enrichedStarSystem)));
   }
 
-  protected abstract setDetails(enrichedStarSystem: EnrichedStarSystem): Promise<void>
+  protected abstract setStockDetails(enrichedStarSystem: EnrichedStarSystem): Promise<void>
 
   protected async buildContextState(lastState: string): Promise<void> {
     let state: StateCommnetPlannerDto = JSON.parse(lastState);
@@ -89,7 +88,9 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
         takeUntil(this.destroy$))
         .subscribe(planetoids => {
           let target = planetoids.find(p => p.communication) || planetoids[4];
-          this.cameraService.focusSpaceObject(target);
+          if (target) {
+            this.cameraService.focusSpaceObject(target);
+          }
         });
     }
     return;
@@ -117,31 +118,29 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
     return orbitsLabelMap;
   }
 
-  editCelestialBody(body: Planetoid, details: CelestialBodyDetails) {
+  editCelestialBody(body: Planetoid, details: PlanetoidDetails) {
     this.analyticsService.logEvent('Edit celestial body', {
       category: EventLogs.Category.CelestialBody,
       old: {
         label: EventLogs.Sanitize.anonymize(body.label),
         type: body.type,
         size: body.size,
-        dsn: body.communication.antennae[0] && body.communication.antennae[0].item,
+        dsn: body.communication?.antennae[0] && body.communication?.antennae[0].item,
       },
       new: {
         label: EventLogs.Sanitize.anonymize(details.name),
-        type: details.celestialBodyType,
+        type: details.planetoidType,
         size: details.size,
         dsn: details.currentDsn?.label,
       },
     });
 
     body.draggable.label = details.name;
-    body.type = details.celestialBodyType;
+    body.planetoidType = details.planetoidType;
     body.size = details.size;
     if (body.draggable.orbit) {
       body.draggable.orbit.color = details.orbitColor;
     }
-    let antennaeIfDsn = details.currentDsn ? [new Group(details.currentDsn.label)] : [];
-    body.communication.setAntennae(antennaeIfDsn);
   }
 
   getSoiParent(location: Vector2): Planetoid {
@@ -156,6 +155,7 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
       starSystem.planetoids.map(b => [
         /*key  */ b,
         /*value*/ new Planetoid(
+          b.id,
           b.name,
           b.imageUrl,
           b.type === PlanetoidType.types.star ? 'noMove' : 'orbital',

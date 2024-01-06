@@ -1,14 +1,14 @@
-.celestial-body-details-form {
+.planetoid-details-form {
   .dialog-title {
     margin-bottom: 16px;
   }
 
   > cp-input-field-list {
-  overflow: hidden;
+    overflow: hidden;
 
-  display: grid;
-  grid-template-rows: auto auto auto;
-  grid-auto-flow: column;
-  gap: 10px 40px;
-}
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-auto-flow: column;
+    gap: 10px 40px;
+  }
 }

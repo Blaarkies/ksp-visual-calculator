@@ -1,12 +1,10 @@
 import { Antenna } from '../../common/domain/antenna';
-import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
-import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 
-export class CelestialBodyDetails {
+export class PlanetoidDetails {
 
   constructor(public name: string,
-              public celestialBodyType: PlanetoidType,
+              public planetoidType: PlanetoidType,
               public size: number,
               public orbitColor: string,
               public currentDsn: Antenna) {

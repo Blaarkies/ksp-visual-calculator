@@ -105,13 +105,11 @@ export abstract class AbstractBaseStateService {
     buildStateResult.pipe(
       combineLatestWith(timer(this.autoSaveInterval, this.autoSaveInterval)),
       // TODO: block while handleUserSingIn() snackbar is open
-      filter(() => {
-        return this.hasPendingChanges;
-      }),
+      filter(() => this.hasPendingChanges),
       delayWhen(() => this.save()),
       takeUntil(this.autoSaveStop$),
       takeUntil(this.destroy$))
-      .subscribe();
+    .subscribe();
 
     return buildStateResult.pipe(tap(() => this.setStateRecord()));
   }
@@ -160,7 +158,7 @@ export abstract class AbstractBaseStateService {
   getStates(): Observable<StateEntry[]> {
     return from(this.dataService.readAll<StateEntry>('states')).pipe(
         map(states => states
-            .filter(s => s.name) // @fix v1.2.6: ignore other fields, like "isCompressed"
+            .filter(s => s.name) // @fix v1.2.6: ignore other fields, such as "isCompressed"
             .map(s => {
               // @fix v1.2.6: previous version savegames are not compressed
               let notCompressed = compareSemver(s.version, [1, 2, 6]) < 0;

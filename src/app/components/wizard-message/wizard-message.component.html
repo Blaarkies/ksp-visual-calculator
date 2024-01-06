@@ -10,7 +10,7 @@
       </div>
 
       <div class="messages">
-        <p *ngFor="let message of messages">{{message}}</p>
+        <p *ngFor="let message of messages" [innerHtml]="message"></p>
       </div>
 
       <mat-icon *ngIf="icon && (isHandset$ | async | not)" cdkDragHandle

@@ -10,10 +10,12 @@ import { RouterModule } from '@angular/router';
 import {
   Subject,
   takeUntil,
+  takeWhile,
   timer,
 } from 'rxjs';
 import { WithDestroy } from './common/with-destroy';
 import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/holiday-theme-sprite.component';
+import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';
 
 @Component({
@@ -38,6 +40,7 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
     themeService: ThemeService,
     matIconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
+    storageService: LocalStorageService,
   ) {
     super();
 
@@ -48,6 +51,7 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
 
     timer(30e3, 300e3)
       .pipe(
+        takeWhile(() => storageService.hasHolidays()),
         takeUntil(this.unsubscribeHoliday$),
         takeUntil(this.destroy$))
       .subscribe(() => {

@@ -42,6 +42,7 @@ import { LabeledOption } from '../../../../common/domain/input-fields/labeled-op
 import { Craft } from '../../../../common/domain/space-objects/craft';
 import { CraftType } from '../../../../common/domain/space-objects/craft-type';
 import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
+import { Uid } from '../../../../common/uid';
 import { CommonValidators } from '../../../../common/validators/common-validators';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
@@ -146,6 +147,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       : AdvancedPlacement.fromObject(this.advancedForm.value, 'deg->rad');
 
     let craftDetails = new CraftDetails(
+      this.data.edit?.id ?? Uid.new,
       this.inputFields.name.control.value,
       this.inputFields.craftType.control.value,
       this.inputFields.antennaSelection.control.value,

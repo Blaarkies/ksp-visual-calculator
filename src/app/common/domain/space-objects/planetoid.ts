@@ -11,15 +11,18 @@ export class Planetoid extends SpaceObject {
   showSoi?: boolean;
   communication?: Communication;
 
-  constructor(label: string,
-              imageUrl: string,
-              moveType: MoveType,
-              antennae: Group<string>[],
-              public planetoidType: PlanetoidType,
-              public size: number,
-              public sphereOfInfluence: number,
-              public equatorialRadius: number) {
-    super(size, label, imageUrl, moveType, SpaceObjectType.Planetoid);
+  constructor(
+    id: string,
+    label: string,
+    imageUrl: string,
+    moveType: MoveType,
+    antennae: Group<string>[],
+    public planetoidType: PlanetoidType,
+    public size: number,
+    public sphereOfInfluence: number,
+    public equatorialRadius: number,
+  ) {
+    super(id, size, label, imageUrl, moveType, SpaceObjectType.Planetoid);
     if (antennae?.length) {
       this.communication = new Communication(antennae.slice());
     }
@@ -42,6 +45,7 @@ export class Planetoid extends SpaceObject {
     let planetoidType = PlanetoidType.fromString(json.planetoidType);
 
     let object = new Planetoid(
+      json.id,
       json.draggable.label,
       json.draggable.imageUrl,
       json.draggable.moveType,
