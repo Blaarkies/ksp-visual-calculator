@@ -5,7 +5,7 @@ import { SpaceObjectType } from '../../common/domain/space-objects/space-object-
 import { compareSemver } from '../../common/semver';
 import { StateEntry } from '../../overlays/manage-state-dialog/state-entry';
 
-export class OldStateSupporter {
+export class SavegameAssistant {
 
   private readonly isUniverseContext: boolean;
   private parsedState: StateContextualDto;

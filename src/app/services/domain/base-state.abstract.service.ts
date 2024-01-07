@@ -31,7 +31,7 @@ import {
   DataService,
   UserData,
 } from '../data.service';
-import { OldStateSupporter } from './old-state-supporter.model';
+import { SavegameAssistant } from './savegame-assistant.model';
 
 export abstract class AbstractBaseStateService {
 
@@ -68,9 +68,12 @@ export abstract class AbstractBaseStateService {
   }
 
   get stateRow(): StateRow {
-    let {id, name, timestamp, version} = this.stateBase;
+    let {id, name, context, timestamp, version} = this.stateBase;
     return new StateRow({
-      id, name, version,
+      id, name,
+      context: context as GameStateType,
+      version,
+      deletedAt: null,
       timestamp: {seconds: timestamp.getTime() * .001},
       state: JSON.stringify(this.stateContextual),
     });
@@ -145,11 +148,20 @@ export abstract class AbstractBaseStateService {
       });
   }
 
-  async removeStateFromStore(name: string) {
-    // TODO: soft-delete savegames instead
-    return this.dataService.delete('states', name)
+  async removeStateFromStore(state: StateRow, hardDelete = false) {
+    let deletePromise: Promise<void> = hardDelete
+      ? this.dataService.delete('states', state.id)
+      : this.dataService.deleteSoft('states', state.id);
+    return deletePromise.catch(error => {
+      this.snackBar.open(`Could not remove "${state.name}" from cloud storage`);
+      throw new Error(error);
+    });
+  }
+
+  async recoverStateFromStore(state: StateRow) {
+    return this.dataService.recover('states', state.id)
       .catch(error => {
-        this.snackBar.open(`Could not remove "${name}" from cloud storage`);
+        this.snackBar.open(`Could not undo deletion of "${state.name}".`);
         throw new Error(error);
       });
   }
@@ -158,6 +170,7 @@ export abstract class AbstractBaseStateService {
   getStates(): Observable<StateEntry[]> {
     return from(this.dataService.readAll<StateEntry>('states')).pipe(
         map(states => states
+            .filter(s => !s.deletedAt)
             .filter(s => s.name) // @fix v1.2.6: ignore other fields, such as "isCompressed"
             .map(s => {
               // @fix v1.2.6: previous version savegames are not compressed
@@ -171,7 +184,7 @@ export abstract class AbstractBaseStateService {
               let unzipped = ungzip(arrayBuffer, {to: 'string'});
               return {...s, state: unzipped};
             })
-            .map((s: StateEntry) => new OldStateSupporter(s).getRepairedState()),
+            .map((s: StateEntry) => new SavegameAssistant(s).getRepairedState()),
         ));
   }
 
@@ -200,7 +213,7 @@ export abstract class AbstractBaseStateService {
   async renameState(oldName: string, state: StateRow) {
     let updatedStateGame = state.toUpdatedStateGame();
     return this.addStateToStore(updatedStateGame as StateBaseDto, updatedStateGame)
-      .then(() => this.removeStateFromStore(oldName))
+      .then(() => this.removeStateFromStore(state, true))
       .catch(error => {
         this.snackBar.open(`Could not rename "${oldName}"`);
         throw error;

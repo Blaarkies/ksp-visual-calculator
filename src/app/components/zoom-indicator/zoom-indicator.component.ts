@@ -12,7 +12,6 @@ import {
   Subject,
   takeUntil,
   tap,
-  throttleTime,
 } from 'rxjs';
 import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';

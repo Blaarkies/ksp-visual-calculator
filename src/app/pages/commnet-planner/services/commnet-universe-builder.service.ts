@@ -6,6 +6,7 @@ import {
   combineLatest,
   map,
   merge,
+  sampleTime,
   startWith,
   switchMap,
   take,
@@ -75,7 +76,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       merge(signals.map(s => s.relayChange$)).pipe(
         startWith(undefined),
         map(() => signals),
-        )
+        );
 
     let signalsUpdate$ = this.signals$.stream$.pipe(
       switchMap(signals => getConnectionsChange$(signals)),
@@ -86,6 +87,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       this.craft$.stream$,
       this.planetoids$,
     ]).pipe(
+      sampleTime(200),
       tap(([signals, craft, planets]) => {
         if (!signals.length) {
           craft.forEach(c => c.communication.noSignal());
@@ -119,7 +121,6 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     this.signals$.set([]);
     this.difficultySetting = DifficultySetting.normal;
 
-    //
     let dsnIds = enrichedStarSystem.starSystem.dsnIds;
     if (dsnIds) {
       let dsnPlanetoids = this.planetoids$.value.filter(p => p.id.includesSome(dsnIds));

@@ -1,3 +1,4 @@
+import { environment } from '../../../environments/environment';
 import { ProbeControlPoint } from '../../common/domain/antenna';
 import {
   AntennaSignal,
@@ -63,7 +64,9 @@ export class ConnectionGraph {
                 return this.graph.shortestPath(
                   otherNode.label, cb.label);
               } catch (e) {
-                console.log(`No path from [${otherNode.label}] to [${cb.label}]`);
+                if (!environment.production) {
+                  console.log(`No path from [${otherNode.label}] to [${cb.label}]`);
+                }
                 return false;
               }
             });
@@ -80,7 +83,7 @@ export class ConnectionGraph {
                              hostNode: CanCommunicate,
                              clientNode: CanCommunicate): boolean {
     let hasDsnCapability = hostNode instanceof Planetoid
-      && hostNode.communication?.antennae?.length;
+      && hostNode.communication?.antennae.length;
 
     let hostCanRelayConnectionToClient = hostNode.communication.bestRemoteGuidanceCapability()
       && signal.getHostToClientSignalStrength(hostNode, clientNode);

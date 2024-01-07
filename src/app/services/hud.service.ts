@@ -152,7 +152,7 @@ export class HudService {
       }, undefined, false, undefined,
       {
         unavailable$: this.authService.user$.pipe(map(user => user === null || !user?.isCustomer), startWith(true)),
-        tooltip: `Savegames available to supporters on 'buymeacoffee.com/Blaarkies'`,
+        tooltip: `Save games available to supporters on 'buymeacoffee.com/Blaarkies'`,
         action: async () => {
           let user = await firstValueFrom(this.authService.user$);
 

@@ -1,11 +1,24 @@
-import { Directive, EventEmitter, HostBinding, HostListener, Input, Output } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  HostListener,
+  Input,
+  Output,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  fromEvent,
+  takeUntil,
+} from 'rxjs';
+import { WithDestroy } from '../common/with-destroy';
 
 @Directive({
   selector: '[cpFileDrop]',
   standalone: true,
 })
-export class FileDropDirective {
+export class FileDropDirective extends WithDestroy() {
 
   @Input() fileTypeWhitelist: string[];
 
@@ -15,7 +28,9 @@ export class FileDropDirective {
     'application/json': 'JSON',
   };
 
-  constructor(private snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar,
+              private self: ElementRef) {
+    super();
   }
 
   // tslint:disable:no-unused-variable
@@ -23,6 +38,7 @@ export class FileDropDirective {
   @HostBinding('class.file-drop-over') private classOver = false;
   @HostBinding('class.file-drop-leave') private classLeave = false;
   @HostBinding('class.file-drop-event') private classEvent = false;
+  @HostBinding('class.file-drop-error') private classError = false;
 
   @HostListener('dragover', ['$event'])
   private onDragOver(event: DragEvent) {
@@ -71,8 +87,38 @@ export class FileDropDirective {
     }
 
     this.fileDrop.emit(files);
+  }
 
+  showSuccess() {
     this.classEvent = true;
+  }
+
+  showError() {
+    this.classError = true;
+
+    let target: HTMLElement = this.self.nativeElement;
+    fromEvent(target, 'animationEnd')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.classError = false;
+        target
+          .getAnimations()
+          .forEach((a: Animation) => a.cancel());
+      });
+
+    target.animate(
+      [
+        {offset: 0, translate: '0'},
+        {offset: .3, translate: '5px'},
+        {offset: 1, translate: '-5px'},
+      ],
+      {
+        duration: 200,
+        iterations: 3,
+        direction: 'alternate-reverse',
+        easing: 'ease-in-out',
+      },
+    );
   }
 
 }

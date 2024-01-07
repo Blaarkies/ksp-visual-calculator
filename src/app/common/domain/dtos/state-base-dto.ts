@@ -4,9 +4,9 @@ import { VersionValue } from '../../semver';
 export interface StateBaseDto {
   id: string;
   name: string;
-  timestamp: Date;
   context: string;
+  timestamp: Date;
   version: VersionValue;
-
+  deletedAt?: Date;
   state?: string | Bytes;
 }

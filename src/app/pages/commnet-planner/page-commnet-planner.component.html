@@ -17,7 +17,7 @@
       @fade
       [craft]="craft"
       (dragStart)="universe.startBodyDrag(craft,$event,
-                     universe.backboard.nativeElement, universe.camera)"
+                   universe.backboard.nativeElement, universe.camera)"
       (focus)="universe.focusBody(craft, $event)"
       (edit)="editCraft(craft)"
     ></cp-craft>
@@ -30,12 +30,6 @@
   [icon]="icons.Relay"
   [contextPanelDetails]="contextPanelDetails"
 >
-  <div top class="screen-border-margin" style="pointer-events: all">
-    <button (click)="loadMapState()">Load JSON</button>
-    &nbsp; &nbsp; &nbsp; &nbsp;
-    <button (click)="log(mapState)">Output JSON</button>
-    <cp-zoom-indicator></cp-zoom-indicator>
-  </div>
   <cp-focus-jump-to-panel
     class="all-pointer"
     left

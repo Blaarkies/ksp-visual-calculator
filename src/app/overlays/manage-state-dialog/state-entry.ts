@@ -8,5 +8,6 @@ export interface StateEntry {
   context: GameStateType;
   timestamp: { seconds };
   version: VersionValue;
+  deletedAt: Date | null;
   state: string | Bytes;
 }
