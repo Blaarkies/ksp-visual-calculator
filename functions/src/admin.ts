@@ -1,20 +1,29 @@
+import * as corsImport from 'cors';
+import admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import { log } from 'firebase-functions/logger';
-import { Supporter, TableName, UserData } from './common/types';
-import { db } from './common/singletons';
+import {
+  existsSync,
+  mkdirSync,
+  writeFileSync,
+} from 'fs';
 import {
   gzip,
   ungzip,
 } from 'pako';
-import admin from 'firebase-admin';
-import { distinct, getAllBmacSupporters, getUniqueDateKey, uid } from './common/tools';
-
-import * as corsImport from 'cors';
+import { db } from './common/singletons';
 import {
-  writeFileSync,
-  mkdirSync,
-  existsSync,
-} from 'fs';
+  distinct,
+  getAllBmacSupporters,
+  getNextRandomIndex,
+  getUniqueDateKey,
+  uid,
+} from './common/tools';
+import {
+  Supporter,
+  TableName,
+  UserData,
+} from './common/types';
 
 let cors = corsImport.default({
   origin: ['https://ksp-visual-calculator.blaarkies.com'],
@@ -27,18 +36,18 @@ let cors = corsImport.default({
  */
 export const captureFeedback = functions
   .https.onRequest(async (req, res) => cors(req, res, async () => {
-  // let feedbackEmail = functions.config().emailSendToAddress.id;
+    // let feedbackEmail = functions.config().emailSendToAddress.id;
 
-  let key = getUniqueDateKey();
+    let key = getUniqueDateKey();
 
-  await db.doc(`${<TableName>'feedback'}/${key}`)
-    .set({...req.body});
+    await db.doc(`${<TableName>'feedback'}/${key}`)
+      .set({...req.body});
 
-  log(`Saved feedback [${Object.values(req.body).join().slice(0, 50)}] to document [${key}]`);
+    log(`Saved feedback [${Object.values(req.body).join().slice(0, 50)}] to document [${key}]`);
 
-  res.sendStatus(200);
-  return;
-}));
+    res.sendStatus(200);
+    return;
+  }));
 
 /**
  * Version v1.2.6 introduces compressed savegame state. This function will compress all old savegames
@@ -98,9 +107,45 @@ export const removeIsCompressedField = functions.runWith({timeoutSeconds: 540})
 
     for (let row of docsNotCompressed) {
       await row.ref.update({
-        isCompressed: admin.firestore.FieldValue.delete()
+        isCompressed: admin.firestore.FieldValue.delete(),
       });
       log(`User [${row.id}], removed isCompressed`);
+    }
+
+    res.sendStatus(200);
+    return;
+  });
+
+/**
+ * Version v1.3.2 introduces soft deleting savegames.
+ * After 7 days of not recovering the savegame, they should be removed.
+ */
+export const clearOldSoftDeletes = functions.runWith({timeoutSeconds: 540})
+  .https.onRequest(async (req, res) => {
+
+    let d = new Date();
+    let cutoffDate = d.setDate(d.getDate() - 7);
+
+    let usersGames = await db.collection(<TableName>'states').get();
+    let oldUsersGames = usersGames.docs
+      .filter(d => {
+        let saveGames = Object.values(d.data());
+
+        return saveGames.some(sg => sg.deletedAt < cutoffDate);
+      });
+
+    log(`Found [${oldUsersGames.length}] docs containing soft deletes.`);
+
+    for (let row of oldUsersGames) {
+      let saveGameEntries = Object.entries(row.data());
+
+      let toBeDeletedList = saveGameEntries
+        .filter(([, v]) => v.deletedAt < cutoffDate)
+        .map(([k]) => [k, admin.firestore.FieldValue.delete()]);
+      let toBeDeleted = Object.fromEntries(toBeDeletedList);
+
+      await row.ref.update(toBeDeleted);
+      log(`User [${row.id}], removed [${toBeDeletedList.length}] save games.`);
     }
 
     res.sendStatus(200);
@@ -144,7 +189,7 @@ export const upgradeIsCustomerToSupportersTable = functions
     log(`We have ${uniqueSupporters.length} supporters in total.`);
 
     let refUserCount = uniqueSupporters.filter(s => s.user).length;
-    log(`Adding ${refUserCount} rows with references ids, and ${uniqueSupporters.length - refUserCount} unmatched rows.`)
+    log(`Adding ${refUserCount} rows with references ids, and ${uniqueSupporters.length - refUserCount} unmatched rows.`);
 
     for (const supporter of uniqueSupporters) {
       await db.collection(<TableName>'supporters')
@@ -152,38 +197,56 @@ export const upgradeIsCustomerToSupportersTable = functions
         .set(supporter);
     }
 
-    res.sendStatus(200)
+    res.sendStatus(200);
     return;
   });
 
+/**
+ * Collects a sample of save games in json format and writes them to .json files in the functions/dist folder.
+ * For use in confirming regression tests.
+ */
 export const collectOldVersionSavegames = functions.runWith({timeoutSeconds: 540})
   .https.onRequest(async (req, res) => {
 
     let savegames = await db.collection(<TableName>'states').get();
 
-    let collectedVersions = new Set()
+    let collectedVersions = new Set<string>();
+    let collectedContexts = new Set<string>();
     let states = [];
-    for (let row of savegames.docs) {
+    let savegamesCount = 10;
+    let cache: Set<number> = undefined;
+    let docsCount = savegames.docs.length;
+
+    for (let i = 0; i < savegamesCount * 10; i++) {
+      let {cache: newCache, value: index} = getNextRandomIndex(docsCount - 1, cache);
+      cache = newCache;
+
+      let row = savegames.docs.at(index);
       let data = row.data();
       let gameNames = Object.keys(data);
+
       for (let gameName of gameNames) {
         let details = row.get(gameName);
 
         let versionString = details.version.toString();
-        if (collectedVersions.has(versionString)) {
+        let contextString = details.context.toString();
+        if (collectedVersions.has(versionString) && collectedContexts.has(contextString)) {
           continue;
         }
 
         collectedVersions.add(versionString);
+        collectedContexts.add(contextString);
+
         let unzipped = ungzip(details.state, {to: 'string'});
         let jsonState = {
           ...details,
           state: JSON.parse(unzipped),
         };
         states.push(JSON.stringify(jsonState));
+        break;
       }
 
-      if (collectedVersions.size > 10) {
+      if (collectedVersions.size >= savegamesCount) {
         break;
       }
     }
@@ -191,7 +254,7 @@ export const collectOldVersionSavegames = functions.runWith({timeoutSeconds: 540
     if (!existsSync('dist')) {
       mkdirSync('dist');
     }
-    states.forEach(s => writeFileSync(`dist/${JSON.parse(s).version}.json`, s, {encoding: 'utf8'}))
+    states.forEach(s => writeFileSync(`dist/${JSON.parse(s).version}.json`, s, {encoding: 'utf8'}));
 
     res.sendStatus(200);
     return;
