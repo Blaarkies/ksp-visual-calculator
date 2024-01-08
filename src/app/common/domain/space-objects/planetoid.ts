@@ -1,5 +1,6 @@
 import { PlanetoidDto } from '../dtos/planetoid-dto';
 import { Group } from '../group';
+import { Vector2 } from '../vector2';
 import { Communication } from './communication';
 import { MoveType } from './move-type';
 import { PlanetoidType } from './planetoid-type';
@@ -55,6 +56,9 @@ export class Planetoid extends SpaceObject {
       json.sphereOfInfluence,
       json.equatorialRadius,
     );
+
+    object.draggable.location.set(json.draggable.location);
+    object.draggable.lastAttemptLocation = json.draggable.lastAttemptLocation;
 
     return object;
   }

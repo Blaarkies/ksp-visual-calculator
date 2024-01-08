@@ -54,10 +54,10 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
   }
 
   private stockAssetsReady(): Observable<EnrichedStarSystem> {
-    return this.cacheService.planetoids$
+    return this.cacheService.starSystem$
       .pipe(
         take(1),
-        map(data => AbstractUniverseBuilderService.generateEnrichedStarSystem(data)),
+        map(starSystemDto => AbstractUniverseBuilderService.generateEnrichedStarSystem(starSystemDto)),
         takeUntil(this.destroy$));
   }
 

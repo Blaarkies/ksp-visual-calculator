@@ -135,7 +135,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     await super.buildContextState(lastState);
 
     let state: StateCommnetPlannerDto = JSON.parse(lastState);
-    let {planetoids, craft: craftDtos, camera} = state;
+    let {planetoids, craft: craftDtos} = state;
 
     let planetoidDtoPairs = planetoids
       .map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));

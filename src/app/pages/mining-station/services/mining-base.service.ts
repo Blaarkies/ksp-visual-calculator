@@ -99,8 +99,8 @@ export class MiningBaseService {
   }
 
   async setupEmptyState() {
-    let planets = await firstValueFrom(this.cacheService.planetoids$);
-    let kerbin = planets.planetoids.find(b => b.id === 'kerbin') || planets.planetoids[4];
+    let starSystemDto = await firstValueFrom(this.cacheService.starSystem$);
+    let kerbin = starSystemDto.planetoids.find(b => b.id === 'kerbin') || starSystemDto.planetoids[4];
     this.updatePlanet(kerbin);
     this.updateOreConcentration(.05);
     this.updateEngineerBonus(engineerBonusMap.get(-1));
@@ -112,8 +112,8 @@ export class MiningBaseService {
   }
 
   async setupFullState(state: StateIsruDto): Promise<boolean> {
-    let planets = await firstValueFrom(this.cacheService.planetoids$);
-    let planet = planets.planetoids.find(b => b.id === state.planet);
+    let starSystemDto = await firstValueFrom(this.cacheService.starSystem$);
+    let planet = starSystemDto.planetoids.find(b => b.id === state.planet);
     this.updatePlanet(planet);
     this.updateOreConcentration(state.oreConcentration);
     this.updateEngineerBonus(state.engineerBonus);

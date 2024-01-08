@@ -56,7 +56,6 @@ export class Draggable {
       children: this.children?.map(d => d.label),
       imageUrl: this.imageUrl,
       moveType: this.moveType,
-      // parameterData: this.parameterData.toJson(),
     };
   }
 

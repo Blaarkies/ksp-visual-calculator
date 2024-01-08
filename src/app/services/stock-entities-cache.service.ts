@@ -19,7 +19,7 @@ export class StockEntitiesCacheService {
       shareReplay(1),
     );
 
-  planetoids$ = this.http.get<StarSystemDto>(
+  starSystem$ = this.http.get<StarSystemDto>(
     'assets/stock/kerbol-system.json')
     .pipe(
       takeUntil(this.destroy$),

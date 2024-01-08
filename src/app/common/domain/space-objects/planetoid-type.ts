@@ -33,8 +33,8 @@ export class PlanetoidType {
   ];
 
   // todo: use dedicated labels instead of re-using source code labels
-  static List = PlanetoidType.All.map(sot =>
-    new LabeledOption(sot.name[0].toLocaleUpperCase() + sot.name.slice(1), sot));
+  static List = PlanetoidType.All.map(t =>
+    new LabeledOption(t.name[0].toLocaleUpperCase() + t.name.slice(1), t));
 
   static fromString(type: string): PlanetoidType {
     let match = PlanetoidType.All.find(t => t.name === type);
