@@ -23,7 +23,7 @@
           @fade
           *ngIf="showEdit$ | async"
           matTooltip="Edit"
-          (click)="editSpaceObject.next()"
+          (click)="triggerEdit$.next(undefined)"
           (pointerdown)="$event.stopPropagation()">
     <mat-icon [svgIcon]="icons.Edit"></mat-icon>
   </button>

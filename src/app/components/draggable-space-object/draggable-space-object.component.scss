@@ -38,6 +38,7 @@
   width: max-content;
   min-width: unset !important;
   height: auto !important;
+  max-height: 34px !important; // Mobile buttons stretch vertically
   padding: 6px;
 
   color: var(--color-text-map-green) !important;

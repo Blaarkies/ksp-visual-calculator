@@ -13,10 +13,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   combineLatest,
+  delay,
+  EMPTY,
   filter,
   map,
   Observable,
   Subject,
+  switchMap,
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
@@ -48,7 +51,6 @@ import { CameraService } from '../../services/camera.service';
 export class DraggableSpaceObjectComponent extends WithDestroy() implements OnInit, OnDestroy {
 
   @Input() spaceObject: SpaceObject;
-  @Input() allowEdit = true;
 
   @Output() dragSpaceObject = new EventEmitter<PointerEvent>();
   @Output() focusObject = new EventEmitter<PointerEvent>();
@@ -59,6 +61,7 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnIn
   icons = Icons;
   showEdit$: Observable<boolean>;
   isIdle$: Observable<boolean>;
+  triggerEdit$ = new Subject<void>();
 
   constructor(cameraService: CameraService) {
     super();
@@ -92,6 +95,12 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnIn
           this.editSpaceObject.observed
           && hovered
           && idled));
+
+    this.showEdit$.pipe(
+      delay(300), // prevents accidental clicks/taps on the transparent button
+      switchMap(allow => allow ? this.triggerEdit$ : EMPTY),
+      takeUntil(this.destroy$))
+      .subscribe(() => this.editSpaceObject.emit());
   }
 
 }
