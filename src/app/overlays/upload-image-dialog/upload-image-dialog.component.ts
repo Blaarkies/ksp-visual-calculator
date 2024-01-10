@@ -1,25 +1,30 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject } from 'rxjs';
-import { Icons } from '../../common/domain/icons';
-import { BasicAnimations } from '../../animations/basic-animations';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
   ReactiveFormsModule,
-  UntypedFormArray,
-  UntypedFormControl,
-  Validators
+  Validators,
 } from '@angular/forms';
-import {MatStepper, MatStepperModule} from '@angular/material/stepper';
-import {CommonModule} from "@angular/common";
-import {MatDialogModule} from "@angular/material/dialog";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {FileDropDirective} from "../../directives/file-drop.directive";
-import {MatIconModule} from "@angular/material/icon";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
-import {ImageCropperModule} from "ngx-image-cropper";
-import {MatButtonModule} from "@angular/material/button";
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  MatStepper,
+  MatStepperModule,
+} from '@angular/material/stepper';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { Subject } from 'rxjs';
+import { BasicAnimations } from '../../animations/basic-animations';
+import { Icons } from '../../common/domain/icons';
+import { FileDropDirective } from '../../directives/file-drop.directive';
 
 export class UploadImageDialogData {
 
@@ -61,6 +66,7 @@ export class UploadImageDialogComponent {
 
   @ViewChild('fileUploadInput') fileUploadInput: ElementRef<HTMLInputElement>;
   @ViewChild('stepper') stepper: MatStepper;
+  @ViewChild(FileDropDirective) importer: FileDropDirective;
 
   constructor(private snackBar: MatSnackBar) {
   }
@@ -79,6 +85,7 @@ export class UploadImageDialogComponent {
         this.stepper.steps.get(1).select();
 
         this.buttonLoaders.import$.next(false);
+        this.importer.showSuccess();
       });
 
       reader.readAsDataURL(file);

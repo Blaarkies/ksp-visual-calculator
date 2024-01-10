@@ -1,45 +1,36 @@
 import { Icons } from '../icons';
 import { LabeledOption } from '../input-fields/labeled-option';
+import { Planetoid } from './planetoid';
 
 export class SpaceObjectType {
 
   get icon(): string {
-    return this === SpaceObjectType.Star
-      ? Icons.Star
-      : this === SpaceObjectType.Planet
-        ? Icons.Planet
-        : this === SpaceObjectType.Moon
-          ? Icons.Moon
-          : Icons.Craft;
+    return this === SpaceObjectType.Planetoid
+      ? Icons.Planet
+      : Icons.Craft;
   }
 
   static types = {
-    star: 'star',
-    planet: 'planet',
-    moon: 'moon',
+    planetoid: 'planetoid',
     craft: 'craft',
   };
 
-  static Star = new SpaceObjectType(SpaceObjectType.types.star);
-  static Planet = new SpaceObjectType(SpaceObjectType.types.planet);
-  static Moon = new SpaceObjectType(SpaceObjectType.types.moon);
+  static Planetoid = new SpaceObjectType(SpaceObjectType.types.planetoid);
   static Craft = new SpaceObjectType(SpaceObjectType.types.craft);
 
   constructor(public name: string) {
   }
 
   private static All: SpaceObjectType[] = [
-    SpaceObjectType.Star,
-    SpaceObjectType.Planet,
-    SpaceObjectType.Moon,
+    SpaceObjectType.Planetoid,
     SpaceObjectType.Craft,
   ];
 
   // todo: use dedicated labels instead of re-using source code labels
-  static List = SpaceObjectType.All.map(sot =>
-    new LabeledOption(sot.name[0].toLocaleUpperCase() + sot.name.slice(1), sot));
+  static List = SpaceObjectType.All.map(t =>
+    new LabeledOption(t.name[0].toLocaleUpperCase() + t.name.slice(1), t));
 
-  static fromString(type: 'star' | 'planet' | 'moon' | 'craft' | string): SpaceObjectType {
+  static fromString(type: 'planetoid' | 'craft' | string): SpaceObjectType {
     let match = SpaceObjectType.All.find(t => t.name === type);
     if (!match) {
       throw new Error(`${type} is not a valid SpaceObjectType`);

@@ -1,4 +1,3 @@
-import { state } from '@angular/animations';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -17,7 +16,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import {
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import {
   MatListModule,
@@ -27,6 +29,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import {
   delay,
   filter,
@@ -40,8 +43,10 @@ import {
   switchMap,
   takeUntil,
   tap,
+  timer,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
+import { UsableRoutes } from '../../app.routes';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Uid } from '../../common/uid';
@@ -52,10 +57,34 @@ import { FileDropDirective } from '../../directives/file-drop.directive';
 import { AnalyticsService } from '../../services/analytics.service';
 import { AbstractBaseStateService } from '../../services/domain/base-state.abstract.service';
 import { EventLogs } from '../../services/domain/event-logs';
-import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
+import { SavegameAssistant } from '../../services/domain/savegame-assistant.model';
 import { StateEditNameRowComponent } from './state-edit-name-row/state-edit-name-row.component';
 import { StateEntry } from './state-entry';
 import { StateRow } from './state-row';
+
+enum ErrorReasons {
+  incorrectContext,
+}
+
+let contextLabelMap = new Map<GameStateType, string>([
+  [GameStateType.CommnetPlanner, 'Commnet Planner'],
+  [GameStateType.DvPlanner, 'Delta-v Planner'],
+  [GameStateType.Isru, 'ISRU Mining Station'],
+]);
+
+function getContextLabel(value: GameStateType): string {
+  return contextLabelMap.get(value) ?? undefined;
+}
+
+let contextRouteMap = new Map<GameStateType, UsableRoutes>([
+  [GameStateType.CommnetPlanner, UsableRoutes.CommnetPlanner],
+  [GameStateType.DvPlanner, UsableRoutes.DvPlanner],
+  [GameStateType.Isru, UsableRoutes.MiningStation],
+]);
+
+function getRouteForContext(value: GameStateType): UsableRoutes {
+  return contextRouteMap.get(value) ?? undefined;
+}
 
 @Component({
   selector: 'cp-manage-state-dialog',
@@ -99,12 +128,17 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     edit$: new Subject<boolean>(),
   };
 
+  @ViewChild(FileDropDirective) importer: FileDropDirective;
   @ViewChild('stateList') stateList: MatSelectionList;
   @ViewChild('fileUploadInput') fileUploadInput: ElementRef<HTMLInputElement>;
   @ViewChildren(StateEditNameRowComponent) editors: QueryList<StateEditNameRowComponent>;
 
-  constructor(private snackBar: MatSnackBar,
-              private analyticsService: AnalyticsService) {
+  constructor(
+    private dialogRef: MatDialogRef<ManageStateDialogComponent>,
+    private snackBar: MatSnackBar,
+    private analyticsService: AnalyticsService,
+    private router: Router,
+  ) {
     super();
   }
 
@@ -150,18 +184,28 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
 
   async removeState(selectedState: StateRow) {
     this.buttonLoaders.remove$.next(true);
-    this.snackBar.open(`Removing "${selectedState.name}"`, 'Undo', {duration: 3e3})
+
+    await this.stateHandler.removeStateFromStore(selectedState);
+    this.buttonLoaders.remove$.next(false);
+
+    this.snackBar.open(`Removed "${selectedState.name}"`, 'Undo', {duration: 5e3})
       .afterDismissed()
       .pipe(
-        filter(action => !action.dismissedByAction),
-        switchMap(() => this.stateHandler.removeStateFromStore(selectedState.name)),
-        finalize(() => this.buttonLoaders.remove$.next(false)),
+        filter(action => action.dismissedByAction),
+        switchMap(() => {
+          this.analyticsService.logEvent('Recovered state', {
+            category: EventLogs.Category.State,
+          });
+          return this.stateHandler.recoverStateFromStore(selectedState);
+        }),
         takeUntil(this.destroy$))
       .subscribe(() => {
-        this.snackBar.open(`Removed "${selectedState.name}" from cloud storage`);
-        this.newState(true);
+        this.snackBar.open(`Recovered "${selectedState.name}"`);
         this.updateStates();
       });
+
+    this.newState(true);
+    this.updateStates();
 
     this.analyticsService.logEvent('Removed state', {
       category: EventLogs.Category.State,
@@ -192,7 +236,7 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
       name,
       timestamp: jsDate,
       context: this.context,
-      version: version.split('.').slice(1).map(t => t.toNumber()),
+      version,
       state,
     })
       .pipe(
@@ -231,7 +275,10 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
   exportState(selectedState: StateRow) {
     let sJson = JSON.stringify({
       context: this.context,
-      ...selectedState,
+      name: selectedState.name,
+      timestamp: selectedState.timestamp,
+      version: selectedState.version,
+      state: JSON.parse(selectedState.state),
       id: undefined,
     });
     let element = document.createElement('a');
@@ -259,7 +306,31 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
     if (files.length === 1) {
       this.buttonLoaders.import$.next(true);
       let stateString: string = await files[0].text();
-      await this.importState(stateString);
+      try {
+        await this.importState(stateString);
+      } catch (e) {
+        this.buttonLoaders.import$.next(false);
+        this.importer.showError();
+
+        if (e.reason === undefined) {
+          this.snackBar.open(`Could not import file.`);
+          console.warn('Could not import file', e);
+        } else {
+          if (e.solution) {
+            this.snackBar.open(e.message, e.solution.label, {duration: 10e3})
+              .afterDismissed().pipe(
+              filter(action => action.dismissedByAction),
+              takeUntil(this.destroy$))
+              .subscribe(() => e.solution.callback());
+          } else {
+            this.snackBar.open(e.message);
+          }
+        }
+
+        return;
+      }
+
+      this.importer.showSuccess();
 
       let state = this.stateHandler.stateBase;
       await this.stateHandler.save();
@@ -275,18 +346,37 @@ export class ManageStateDialogComponent extends WithDestroy() implements OnInit,
   }
 
   private async importState(stateString: string) {
-    let {name, timestamp, context, version, state} = JSON.parse(stateString);
-    // @fix v1.3.0: previous json files did not have a 'state' field
-    if (!state) {
-      state = stateString;
+    let stateEntry: StateEntry = JSON.parse(stateString);
+    let repairedState = new SavegameAssistant(stateEntry).getRepairedState();
+
+    let {name, context, timestamp, version, deletedAt, state} = repairedState;
+
+    if (context !== this.context) {
+      throw {
+        reason: ErrorReasons.incorrectContext,
+        message: `Cannot not import a ${getContextLabel(context)} save game into the ${getContextLabel(this.context)}.`,
+        solution: {
+          label: 'Help',
+          callback: async () => {
+            this.dialogRef.close();
+            await this.router.navigate([getRouteForContext(context)]);
+            await firstValueFrom(timer(1e3));
+            this.snackBar.open(`Now open Manage Save Games again.`);
+          },
+        },
+      };
     }
+
+    // firebase firestore uses `timestamp.seconds` object structure
+    let jsDate = new Date(timestamp.seconds * 1e3);
 
     await firstValueFrom(this.stateHandler.loadState({
       id: Uid.new,
       name,
-      timestamp,
       context,
+      timestamp: jsDate,
       version,
+      deletedAt,
       state,
     }));
   }

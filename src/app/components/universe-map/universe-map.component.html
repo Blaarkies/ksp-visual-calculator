@@ -10,28 +10,30 @@
 
     <ng-content select="[aboveBackground]"></ng-content>
 
-    <ng-container *ngFor="let orbit of filteredOrbits">
+    <ng-container *ngFor="let pair of orbits">
       <cp-orbit-line
-        [@fade]
-        *ngIf="orbit.type !== spaceObjectTypes.Moon || camera.scale > scaleToShowMoons"
-        [orbit]="orbit"
+        @fade
+        *ngIf="pair.type !== planetoidType.Moon
+              || camera.scale > scaleToShowMoons"
+        [orbit]="pair.orbit"
       ></cp-orbit-line>
     </ng-container>
 
     <ng-content select="[aboveOrbits]"></ng-content>
 
-    <ng-container *ngFor="let body of filteredPlanets">
-      <cp-draggable-space-object [@fade]
-                                 *ngIf="body.type !== spaceObjectTypes.Moon || camera.scale > scaleToShowMoons"
+    <ng-container *ngFor="let body of bodies">
+      <cp-draggable-space-object @fade
+                                 *ngIf="body.planetoidType !== planetoidType.Moon
+                                        || camera.scale > scaleToShowMoons"
                                  [spaceObject]="body"
                                  (dragSpaceObject)="startBodyDrag(body, $event, backboard, camera)"
                                  cpMouseHover (hoverChange)="hoverBody.emit({body: body, hover: $event})"
                                  (focusObject)="focusBody(body, $event)"
-                                 [allowEdit]="allowEdit"
-                                 (editSpaceObject)="editCelestialBody(body)">
+                                 [showEdit]="editPlanetoid.observed"
+                                 (editSpaceObject)="editPlanetoidWithDialog(body)">
         <div class="div-as-image"
              draggable="false"
-             [style.background]="body.draggableHandle.imageUrl"
+             [style.background]="body.draggable.imageUrl"
              [style.width.px]="body.size"
              [style.height.px]="body.size"></div>
 

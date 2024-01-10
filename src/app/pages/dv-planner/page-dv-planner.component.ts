@@ -76,7 +76,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
 
     let universe = dvUniverseBuilderService;
     this.orbits$ = universe.orbits$;
-    this.planets$ = universe.planets$;
+    this.planets$ = universe.planetoids$;
 
     merge(
       this.authService.user$.pipe(take(1)),
@@ -125,9 +125,5 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
 
   selectCheckpoint(spaceObject: SpaceObject) {
     this.travelService.selectCheckpoint(spaceObject);
-  }
-
-  editPlanet({body, details}) {
-    this.dvUniverseBuilderService.editCelestialBody(body, details);
   }
 }

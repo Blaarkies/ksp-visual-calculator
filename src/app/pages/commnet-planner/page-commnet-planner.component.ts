@@ -4,7 +4,6 @@ import {
   OnDestroy,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
 import {
   combineLatest,
   delayWhen,
@@ -19,11 +18,17 @@ import {
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { ActionOption } from '../../common/domain/action-option';
-import { AntennaSignal } from '../../common/domain/antenna.signal';
+import {
+  AntennaSignal,
+  CanCommunicate,
+} from '../../common/domain/antenna-signal';
 import { GameStateType } from '../../common/domain/game-state-type';
+import { Group } from '../../common/domain/group';
 import { Icons } from '../../common/domain/icons';
+import { Communication } from '../../common/domain/space-objects/communication';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { Orbit } from '../../common/domain/space-objects/orbit';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
@@ -45,6 +50,7 @@ import {
   CraftDetailsDialogComponent,
   CraftDetailsDialogData,
 } from './components/craft-details-dialog/craft-details-dialog.component';
+import { CraftComponent } from './components/craft/craft.component';
 import { DifficultySettingsDialogComponent } from './components/difficulty-settings-dialog/difficulty-settings-dialog.component';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
@@ -60,6 +66,7 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
     UniverseMapComponent,
     AntennaSignalComponent,
     DraggableSpaceObjectComponent,
+    CraftComponent,
   ],
   providers: [
     HudService,
@@ -79,19 +86,18 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
   signals$: Observable<AntennaSignal[]>;
   crafts$: Observable<Craft[]>;
   orbits$: Observable<Orbit[]>;
-  planets$: Observable<SpaceObject[]>;
+  planetoids$: Observable<Planetoid[]>;
   focusables$: Observable<SpaceObject[]>;
 
   constructor(
     private authService: AuthService,
-    private activatedRoute: ActivatedRoute,
     private dialog: MatDialog,
     private analyticsService: AnalyticsService,
     private hudService: HudService,
     private commnetStateService: CommnetStateService,
     private commnetUniverseBuilderService: CommnetUniverseBuilderService,
     guidanceService: GuidanceService,
-    ) {
+  ) {
     super();
 
     this.contextPanelDetails = this.getContextPanelDetails();
@@ -100,9 +106,12 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     this.signals$ = universe.signals$.stream$;
     this.crafts$ = universe.craft$.stream$;
     this.orbits$ = universe.orbits$;
-    this.planets$ = universe.planets$;
+    this.planetoids$ = universe.planetoids$;
 
-    this.focusables$ = combineLatest([this.crafts$.pipe(startWith([])), this.planets$])
+    this.focusables$ = combineLatest([
+      this.crafts$.pipe(startWith([])),
+      this.planetoids$,
+    ])
       .pipe(
         filter(([craft, planets]) => !!craft && !!planets),
         map(lists => lists.flatMap() as SpaceObject[]));
@@ -189,9 +198,8 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     };
   }
 
-  updateUniverse(dragged: SpaceObject) {
-    // TODO: check if children in SOI feature have antennae
-    if (dragged.antennae?.length) {
+  updateUniverse(dragged: CanCommunicate) {
+    if (dragged.communication?.antennae?.length) {
       this.commnetUniverseBuilderService.updateTransmissionLines();
     }
   }
@@ -220,6 +228,12 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
 
   editPlanet({body, details}) {
     this.commnetUniverseBuilderService.editCelestialBody(body, details);
+    if (details.currentDsn) {
+      body.communication = new Communication([new Group(details.currentDsn.label)]);
+    } else {
+      body.communication = undefined;
+    }
+
     this.commnetUniverseBuilderService.updateTransmissionLines();
   }
 

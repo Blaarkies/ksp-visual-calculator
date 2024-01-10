@@ -1,21 +1,32 @@
 import {
-  ChangeDetectorRef,
   ElementRef,
   Injectable,
+  OnDestroy,
 } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import {
+  ReplaySubject,
+  Subject,
+  take,
+  takeUntil,
+  timer,
+} from 'rxjs';
+import { CameraDto } from '../common/domain/dtos/camera.dto';
 import { Draggable } from '../common/domain/space-objects/draggable';
+import { Planetoid } from '../common/domain/space-objects/planetoid';
+import { PlanetoidType } from '../common/domain/space-objects/planetoid-type';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { Vector2 } from '../common/domain/vector2';
+import { easeOutExpo } from '../common/timing-functions';
+import { WithDestroy } from '../common/with-destroy';
 
 let defaultScale = 1;
-let defaultLocation = new Vector2(960, 540);
+let defaultLocation = new Vector2(-960, 540);
 
 @Injectable({providedIn: 'root'})
-export class CameraService {
+export class CameraService extends WithDestroy() implements OnDestroy {
 
-  static zoomLimits = [.1, 1.9e3];
+  static zoomLimits = [1e-1, 1.9e3];
   static scaleToShowMoons = 25;
 
   /** Size of Backboard */
@@ -38,7 +49,7 @@ export class CameraService {
   location = defaultLocation.clone();
 
   get screenCenterOffset(): Vector2 {
-    return new Vector2(window.innerWidth, window.innerHeight).multiply(.5);
+    return new Vector2(this.window.innerWidth, this.window.innerHeight).multiply(.5);
   }
 
   private hoverObject: Draggable;
@@ -56,16 +67,68 @@ export class CameraService {
 
   lastFocusObject: Draggable;
   cameraChange$ = new ReplaySubject<void>();
+  stopAnimation$ = new Subject<void>();
 
   // TODO: change to proper setters, callbacks
-  cdr: ChangeDetectorRef;
   cameraController: ElementRef<HTMLDivElement>;
-  getSoiParent: (location: Vector2) => SpaceObject;
+  contentStack: ElementRef<HTMLDivElement>;
+  getSoiParent: (location: Vector2) => Planetoid;
+
+  constructor(private window: Window) {
+    super();
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+    this.cameraChange$.next();
+    this.cameraChange$.complete();
+    this.stopAnimation$.next();
+    this.stopAnimation$.complete();
+  }
+
+  setFromJson(dto: CameraDto) {
+    this.animateCameraTo(dto.scale, Vector2.fromList(dto.location));
+  }
+
+  private animateCameraTo(endScale: number, endLocation: Vector2) {
+    this.stopAnimation$.next();
+
+    let startScale = this.scale;
+    let startLocation = this.location.clone();
+
+    let intervalDuration = 10;
+    let totalDuration = 1000;
+    let steps = (totalDuration / intervalDuration).toInt();
+
+    timer(0, intervalDuration).pipe(
+      take(steps),
+      takeUntil(this.stopAnimation$),
+      takeUntil(this.destroy$))
+      .subscribe(i => {
+        let t = (i + 1) / steps;
+        let tw = easeOutExpo(t);
+        let newScale = endScale.lerp(startScale, tw);
+        let newLocation = endLocation.lerpClone(startLocation, tw);
+        this.scale = newScale;
+        this.location.setVector2(newLocation);
+
+        this.cameraChange$.next();
+      });
+  }
+
+  toJson(): CameraDto {
+    return {
+      scale: this.scale.round(5),
+      location: this.location.toList().map(v => v.round()),
+    };
+  }
 
   reset(scale?: number, location?: Vector2) {
-    this._scale = scale ?? defaultScale;
-    this.location = location ?? defaultLocation.clone();
-    this.cdr?.markForCheck();
+    let newScale = scale ?? defaultScale;
+    let newLocation = location ?? defaultLocation.clone();
+    this.cameraChange$.next();
+
+    this.animateCameraTo(newScale, newLocation);
   }
 
   zoomAt(delta: number, mouseLocation: Vector2 = null) {
@@ -87,48 +150,56 @@ export class CameraService {
     this.scale *= delta;
 
     this.cameraChange$.next();
+    this.stopAnimation$.next();
   }
 
-  private focusAt(newLocation: Vector2, type: SpaceObjectType, zoomIn?: boolean) {
-    this.scale = zoomIn
+  private focusAt(spaceObject: SpaceObject, zoomIn?: boolean) {
+    let newScale = zoomIn
       ? CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .999)
-      : this.getScaleForFocus(newLocation, type);
+      : this.getScaleForFocus(spaceObject);
 
-    this.location = newLocation.clone()
-      .multiply(-this.scale * CameraService.scaleModifier)
+    let newLocation = spaceObject.location
+      .multiplyClone(-newScale * CameraService.scaleModifier)
       .addVector2(this.screenCenterOffset);
+
+    this.cameraChange$.next();
+
+    this.animateCameraTo(newScale, newLocation);
   }
 
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
-    this.lastFocusObject = spaceObject.draggableHandle;
-    this.focusAt(spaceObject.location, spaceObject.type, zoomIn);
-    this.cdr?.markForCheck();
-
-    this.cameraChange$.next();
+    this.lastFocusObject = spaceObject.draggable;
+    this.focusAt(spaceObject, zoomIn);
   }
 
-  private getScaleForFocus(location: Vector2, type: SpaceObjectType) {
-    switch (type) {
-      case SpaceObjectType.Star:
-        return CameraService.zoomLimits[0].lerp(CameraService.zoomLimits[1], .99997);
-      case SpaceObjectType.Planet:
-        return defaultScale;
-      case SpaceObjectType.Moon:
-        return CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .9);
-      case SpaceObjectType.Craft:
-        return this.getScaleForCraft(location);
-      default:
-        return defaultScale;
+  private getScaleForFocus(spaceObject: SpaceObject) {
+    if (spaceObject.type === SpaceObjectType.Craft) {
+      return this.getScaleForCraft(spaceObject.location);
     }
+
+    if (spaceObject instanceof Planetoid) {
+      switch (spaceObject.planetoidType) {
+        case PlanetoidType.Star:
+          return CameraService.zoomLimits[0].lerp(CameraService.zoomLimits[1], .99997);
+        case PlanetoidType.Planet:
+          return defaultScale;
+        case PlanetoidType.Moon:
+          return CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .9);
+      }
+    }
+
+    return defaultScale;
   }
 
   private getScaleForCraft(newLocation: Vector2): number {
     let parent = this.getSoiParent(newLocation);
-    return this.getScaleForFocus(newLocation, parent.type);
+    return this.getScaleForFocus(parent);
   }
 
   translate(x: number, y: number) {
     this.location.add(x, y);
+    this.cameraChange$.next();
+    this.stopAnimation$.next();
   }
 
   convertGameToScreenSpace(gameSpaceLocation: Vector2): Vector2 {

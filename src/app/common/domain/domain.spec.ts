@@ -1,7 +1,7 @@
 import * as antennaPartsJson from 'src/assets/stock/antenna-parts.json';
 import { Antenna } from './antenna';
-import { AntennaPart } from '../../services/json-interfaces/antenna-part';
-import { AntennaSignal } from './antenna.signal';
+import { AntennaDto } from './dtos/antenna-dto';
+import { AntennaSignal } from './antenna-signal';
 import { SpaceObject } from './space-objects/space-object';
 import { Group } from './group';
 import { SetupService } from '../../services/setup.service';
@@ -35,7 +35,7 @@ describe('Domain tests', () => {
     } as SetupService;
 
     let stockAntennae = ((antennaPartsJson as any).default as {}[])
-      .map((a: AntennaPart) => Antenna.fromAntennaPart(a));
+      .map((a: AntennaDto) => Antenna.fromJson(a));
 
     let antennaeMap = {
       internal: stockAntennae.find(a => a.label === 'Internal'),

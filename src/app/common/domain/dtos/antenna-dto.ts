@@ -1,4 +1,4 @@
-export interface AntennaPart {
+export interface AntennaDto {
   label: string;
   cost: number;
   mass: number;
@@ -9,4 +9,5 @@ export interface AntennaPart {
   tier: number;
   powerRating: number;
   combinabilityExponent: number;
+  probeControlPoint: string;
 }

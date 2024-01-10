@@ -33,6 +33,34 @@ Array.prototype.sum = function (this: Array<number>, selector?: (item: any) => n
     : this.reduce((total, c) => total + c, 0);
 };
 
+Array.prototype.max = function (this: Array<any>, selector?: (item: any) => number): any {
+  return selector
+    ? this.reduce((result, c) => {
+      let selected = selector(c);
+      if (selected > result.value) {
+        result.value = selected;
+        result.item = c;
+      }
+      return result;
+    }, {value: Number.MIN_VALUE, item: undefined})
+      .item
+    : Math.max(...this);
+};
+
+Array.prototype.min = function (this: Array<any>, selector?: (item: any) => number): any {
+  return selector
+    ? this.reduce((result, c) => {
+      let selected = selector(c);
+      if (selected < result.value) {
+        result.value = selected;
+        result.item = c;
+      }
+      return result;
+    }, {value: Number.MAX_VALUE, item: undefined})
+      .item
+    : Math.min(...this);
+};
+
 Array.prototype.add = function (this: Array<any>, fresh: any): Array<any> {
   this.push(fresh);
   return this;
@@ -112,16 +140,11 @@ Array.prototype.windowed = function (this: Array<any>,
   return result;
 };
 
-/**
- * Filters a list into separate lists given by the callback function. The return value of the
- * callback function is used as the index for where to place each item
- * @param callback
- */
 Array.prototype.splitFilter = function (this: Array<any>,
-                                        callback: (item: any) => any): Array<Array<any>> {
+                                        indexer: (item: any) => number): Array<Array<any>> {
   let resultLists = [];
   for (let item of this) {
-    let destinationKey = callback(item);
+    let destinationKey = indexer(item);
     resultLists[destinationKey]
       ? resultLists[destinationKey].push(item)
       : resultLists[destinationKey] = [item];
@@ -140,9 +163,9 @@ Array.prototype.random = function (this: Array<any>): any {
  * @param other
  * @param predicate
  */
-Array.prototype.equal = function (this: Array<any>,
-                                  other: Array<any>,
-                                  predicate?: (a, b) => boolean): boolean {
+Array.prototype.equal = function (this: Array<unknown>,
+                                  other: Array<unknown>,
+                                  predicate?: (a: unknown, b: unknown) => boolean): boolean {
   if (this.length !== other.length) {
     return false;
   }

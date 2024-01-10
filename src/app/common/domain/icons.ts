@@ -74,6 +74,8 @@ export class Icons {
   static Camera = 'video-vintage';
   static Antenna = 'antenna';
   static Relay = 'access-point';
+  static Pilot = 'account-voice';
+  static Experiment = 'test-tube';
   static ZoomIn = 'magnify-plus';
   static SignalStrength = 'wifi-strength-1-alert';
   static Congratulations = 'trophy';

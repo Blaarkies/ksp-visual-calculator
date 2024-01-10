@@ -1,9 +1,19 @@
 .toolbar {
   background-color: var(--color-background-panel-green-opaque);
-  padding: 2em;
+  position: sticky;
+  top: 0;
+  padding: .5em;
 
+  a {
+    color: var(--color-text-dark);
+    text-decoration: none;
+    font-weight: 500;
+  }
 }
 
 .content {
+  background-color: var(--color-background-article);
   padding: 2em;
+  max-height: calc(100% - 6rem);
+  overflow-y: auto;
 }

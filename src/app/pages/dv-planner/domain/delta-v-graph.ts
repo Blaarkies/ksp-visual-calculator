@@ -1,5 +1,5 @@
 import { DeltavDestination } from './deltav-destination';
-import { GraphDataStructure, NodeGraph } from './graph-data-structure';
+import { GraphDataStructure, NodeGraph } from '../../../common/domain/graph-data-structure';
 import { TravelCondition } from './travel-condition';
 import { CheckpointNode } from './checkpoint-node';
 import { DvRouteType } from './dv-route-type';

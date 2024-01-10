@@ -1,7 +1,6 @@
 import {
   FullscreenOverlayContainer,
   OverlayContainer,
-  OverlayRef,
 } from '@angular/cdk/overlay';
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';

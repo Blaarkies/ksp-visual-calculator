@@ -15,9 +15,10 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
+import { StarSystemDto } from '../../../../common/domain/dtos/star-system-dto';
 import { Group } from '../../../../common/domain/group';
 import { WithDestroy } from '../../../../common/with-destroy';
-import { CelestialBody } from '../../../../services/json-interfaces/kerbol-system-characteristics';
+import { PlanetoidAssetDto } from '../../../../common/domain/dtos/planetoid-asset.dto';
 import { StockEntitiesCacheService } from '../../../../services/stock-entities-cache.service';
 import { CraftPart } from '../../domain/craft-part';
 import {
@@ -28,7 +29,7 @@ import { MiningBaseService } from '../../services/mining-base.service';
 import { StatisticColorCodedComponent } from '../statistic-color-coded/statistic-color-coded.component';
 
 class CraftSettings {
-  planet: CelestialBody;
+  planet: PlanetoidAssetDto;
   oreConcentration: number;
   engineerBonus: number;
   activeConverters: string[];
@@ -61,16 +62,16 @@ export class CraftPartStatisticsComponent extends WithDestroy() {
 
   statistics: IsruStatisticsGenerator;
 
-  private readonly planetMap$: Observable<Map<string, CelestialBody>>;
+  private readonly planetMap$: Observable<Map<string, PlanetoidAssetDto>>;
 
   constructor(private miningBaseService: MiningBaseService,
               cacheService: StockEntitiesCacheService) {
     super();
 
-    this.planetMap$ = cacheService.planets$
+    this.planetMap$ = cacheService.starSystem$
       .pipe(
-        map(characteristics => new Map<string, CelestialBody>(
-          characteristics.bodies.map(p => [p.id, p]),
+        map(starSystemDto => new Map<string, PlanetoidAssetDto>(
+          starSystemDto.planetoids.map(p => [p.id, p]),
         )),
         takeUntil(this.destroy$));
 

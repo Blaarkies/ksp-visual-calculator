@@ -6,6 +6,7 @@ class Category {
   static CelestialBody = 'celestialbody';
   static Privacy = 'privacy';
   static Account = 'account';
+  static Preferences = 'preferences';
   static Credits = 'credits';
   static Coffee = 'coffee';
   static Feedback = 'feedback';

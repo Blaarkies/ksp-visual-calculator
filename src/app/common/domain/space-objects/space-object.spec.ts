@@ -5,9 +5,9 @@ describe('SpaceObject class', () => {
 
   it('constructor() creates a draggableHandle', () => {
     let so = new SpaceObject(1, 'A', '', 'noMove', SpaceObjectType.Star);
-    expect(so.draggableHandle).toBeDefined();
-    expect(so.draggableHandle.label).toBe('A');
-    expect(so.draggableHandle.moveType).toBe('noMove');
+    expect(so.draggable).toBeDefined();
+    expect(so.draggable.label).toBe('A');
+    expect(so.draggable.moveType).toBe('noMove');
   });
 });
 

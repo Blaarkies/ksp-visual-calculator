@@ -1,16 +1,20 @@
+import { PlanetoidDto } from '../../common/domain/dtos/planetoid-dto';
+import { StateUniverseDto } from '../../common/domain/dtos/state-universe.dto';
+import { CameraService } from '../camera.service';
 import { AbstractBaseStateService } from './base-state.abstract.service';
-import { StateSpaceObject } from '../json-interfaces/state-space-object';
-import { StateUniverse } from '../json-interfaces/state-universe';
 import { AbstractUniverseBuilderService } from './universe-builder.abstract.service';
 
 export abstract class AbstractUniverseStateService extends AbstractBaseStateService {
 
   protected abstract universeBuilderService: AbstractUniverseBuilderService;
+  protected abstract cameraService: CameraService;
 
-  get stateContextual(): StateUniverse {
-    let planets = this.universeBuilderService.planets$.value;
+  get stateContextual(): StateUniverseDto {
+    let planetoids = this.universeBuilderService.planetoids$.value;
+
     return {
-      celestialBodies: planets?.map(b => b.toJson()) as StateSpaceObject[],
+      planetoids: planetoids?.map(b => b.toJson()) as PlanetoidDto[],
+      camera: this.cameraService.toJson(),
     };
   }
 

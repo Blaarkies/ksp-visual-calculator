@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Input,
@@ -7,24 +8,23 @@ import {
   ViewChildren,
 } from '@angular/core';
 import {
+  MatButton,
+  MatButtonModule,
+} from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {
   filter,
   fromEvent,
   takeUntil,
 } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
-import { CameraService } from '../../services/camera.service';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import {
-  MatButton,
-  MatButtonModule,
-} from '@angular/material/button';
-import { AnalyticsService } from '../../services/analytics.service';
-import { EventLogs } from '../../services/domain/event-logs';
 import { ConfigurableAnimations } from '../../animations/configurable-animations';
-import { CommonModule } from '@angular/common';
+import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { WithDestroy } from '../../common/with-destroy';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
+import { AnalyticsService } from '../../services/analytics.service';
+import { CameraService } from '../../services/camera.service';
+import { EventLogs } from '../../services/domain/event-logs';
 
 interface FocusItem {
   icon: string;
@@ -51,14 +51,6 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
   @Input() set focusables(value: SpaceObject[]) {
     this.list = this.getActionPrimedList(value);
-
-    if (!this.hasFocusablesBeenSet && this.list?.length) {
-      // TODO: modded/renamed universes might no longer have 'Kerbin'
-      let kerbin = value.find(so => so.label === 'Kerbin');
-      this.cameraService.focusSpaceObject(kerbin);
-
-      this.hasFocusablesBeenSet = true;
-    }
   }
 
   private getActionPrimedList(value: SpaceObject[]) {
@@ -80,17 +72,16 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
   list: FocusItem[];
   isOpen = false;
 
-  private hasFocusablesBeenSet = false;
-
   @ViewChildren('button') buttons: QueryList<MatButton>;
 
   constructor(private cameraService: CameraService,
-              private analyticsService: AnalyticsService) {
+              private analyticsService: AnalyticsService,
+              private window: Window) {
     super();
   }
 
   ngOnInit() {
-    fromEvent(window, 'keyup')
+    fromEvent(this.window, 'keyup')
       .pipe(
         filter((event: KeyboardEvent) => event.key === 'Tab'),
         takeUntil(this.destroy$))
@@ -109,7 +100,7 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
     let lastDraggable = this.cameraService.lastFocusObject ?? this.list[0];
     let nextBodyIndex = this.list.findIndex(so =>
-        (so.source as SpaceObject).draggableHandle === lastDraggable)
+        (so.source as SpaceObject).draggable === lastDraggable)
       + (shiftKey ? -1 : 1);
     let index = (nextBodyIndex + this.list.length) % this.list.length;
     let nextBody = this.list[index];

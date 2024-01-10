@@ -3,15 +3,17 @@ import {
   Component,
   Input,
 } from '@angular/core';
+import { Antenna } from '../../common/domain/antenna';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
+import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { StateRow } from '../../overlays/manage-state-dialog/state-row';
-import { StateIsru } from '../../pages/mining-station/domain/state-isru';
-import { StateBase } from '../../services/json-interfaces/state-base';
-import { StateCommnetPlanner } from '../../services/json-interfaces/state-commnet-planner';
-import { StateDvPlanner } from '../../services/json-interfaces/state-dv-planner';
-import { StateUniverse } from '../../services/json-interfaces/state-universe';
+import { StateIsruDto } from '../../pages/mining-station/domain/state-isru.dto';
+import { StateBaseDto } from '../../common/domain/dtos/state-base-dto';
+import { StateCommnetPlannerDto } from '../../common/domain/dtos/state-commnet-planner.dto';
+import { StateDvPlannerDto } from '../../common/domain/dtos/state-dv-planner.dto';
+import { StateUniverseDto } from '../../common/domain/dtos/state-universe.dto';
 
 @Component({
   selector: 'cp-state-display',
@@ -46,7 +48,7 @@ export class StateDisplayComponent {
     }
 
     let state = this.stateRow;
-    let contents = JSON.parse(state.state) as StateBase;
+    let contents = JSON.parse(state.state) as StateBaseDto;
 
     let date = new Date(state.timestamp);
     let daysSince = Math.round((Number(new Date()) - Number(date)) / (1000 * 60 * 60 * 24));
@@ -55,36 +57,41 @@ export class StateDisplayComponent {
     properties.push(['Name', state.name]);
     properties.push(['Last saved', `${daysSince} day${daysSince !== 1 ? 's' : ''} ago`]);
 
-    let isUniverseType = [GameStateType.CommnetPlanner, GameStateType.DvPlanner].includes(this.contextType);
+    let universeContextTypes = [GameStateType.CommnetPlanner, GameStateType.DvPlanner];
+    let isUniverseType = this.contextType.includesSome(universeContextTypes);
     if (isUniverseType) {
-      let universeContents = contents as unknown as StateUniverse;
-      let starName = universeContents.celestialBodies.find(cb => cb.type === SpaceObjectType.Star.name).draggableHandle.label;
+      let universeContents = contents as unknown as StateUniverseDto;
+      let starName = universeContents.planetoids.find(cb => cb.planetoidType === PlanetoidType.Star.name).draggable.label;
       properties.push(['Star', starName]);
-      properties.push(['Celestial bodies', universeContents.celestialBodies.length.toString()]);
+      properties.push(['Celestial bodies', universeContents.planetoids.length.toString()]);
     }
 
     if (this.contextType === GameStateType.CommnetPlanner) {
-      let commnetContents = contents as unknown as StateCommnetPlanner;
+      let commnetContents = contents as unknown as StateCommnetPlannerDto;
 
-      let dsnPlanets = commnetContents.celestialBodies
-        .filter(cb => cb.trackingStation);
-      let bestDsn = dsnPlanets
-          .sort((a, b) => b.trackingStation.slice(-1).toNumber()
-            - a.trackingStation.slice(-1).toNumber())
-          [0]?.trackingStation
+      let dsnPlanets = commnetContents.planetoids
+        .filter(cb => cb.communication);
+      let bestDsn = dsnPlanets.max(p => {
+          let antennaeLabel = p.communication.antennae[0][0] as string;
+          let trackingStationLevel = antennaeLabel.slice(-1);
+          return trackingStationLevel.toNumber();
+        })?.draggable.label
         || 'None';
 
       let newProperties = [
         ['Craft', commnetContents.craft.length.toString()],
         ['DSN', bestDsn],
-        ['DSN at', dsnPlanets.map(b => b.draggableHandle.label).join(', ')],
       ];
+      if (dsnPlanets.length > 1) {
+        newProperties.push(
+          ['DSN at', dsnPlanets.map(b => b.draggable.label).join(', ')]);
+      }
 
       properties.push(...newProperties);
     }
 
     if (this.contextType === GameStateType.DvPlanner) {
-      let dvContents = contents as unknown as StateDvPlanner;
+      let dvContents = contents as unknown as StateDvPlannerDto;
 
       let newProperties = [
         ['Checkpoints', dvContents.checkpoints.length.toString()],
@@ -106,7 +113,7 @@ export class StateDisplayComponent {
     }
 
     if (this.contextType === GameStateType.Isru) {
-      let isruContents = contents as unknown as StateIsru;
+      let isruContents = contents as unknown as StateIsruDto;
 
       properties.push(['Location', isruContents.planet.toTitleCase()]);
       properties.push(['Ore Concentration', isruContents.oreConcentration * 100 + '%']);

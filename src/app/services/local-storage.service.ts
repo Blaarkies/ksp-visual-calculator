@@ -9,6 +9,7 @@ enum CpKeys {
   doNotTrack = 'ksp-visual-calculator-user-opted-out-of-tracking',
   userThemePreference = 'ksp-visual-calculator-user-theme-preference',
   privacyPolicyViewed = 'ksp-visual-calculator-privacy-policy-viewed',
+  holidaysShown = 'ksp-visual-calculator-holidays-show',
 }
 
 @Injectable({providedIn: 'root'})
@@ -68,6 +69,20 @@ export class LocalStorageService {
 
   setPrivacyPolicyViewed() {
     this.localStorage.setItem(CpKeys.privacyPolicyViewed, true.toString());
+  }
+
+  hasHolidays(): boolean {
+    let existingValue = this.getValue(CpKeys.holidaysShown);
+    if (existingValue === null) {
+      this.setHolidaysShown(true);
+      return true;
+    }
+
+    return existingValue?.toBoolean();
+  }
+
+  setHolidaysShown(value: boolean) {
+    this.localStorage.setItem(CpKeys.holidaysShown, value.toString());
   }
 
   private getValue(key: CpKeys): string {

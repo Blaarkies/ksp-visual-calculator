@@ -16,17 +16,19 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
+import { CanCommunicate } from '../../common/domain/antenna-signal';
 import { Icons } from '../../common/domain/icons';
-import { Orbit } from '../../common/domain/space-objects/orbit';
+import { OrbitWithPlanetoidType } from '../../common/domain/orbit-with-planetoid-type.model';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
+import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
 import {
-  CelestialBodyDetailsDialogComponent,
-  CelestialBodyDetailsDialogData,
-} from '../../overlays/celestial-body-details-dialog/celestial-body-details-dialog.component';
+  PlanetoidDetailsDialogComponent,
+  PlanetoidDetailsDialogData,
+} from '../../overlays/celestial-body-details-dialog/planetoid-details-dialog.component';
 import { AnalyticsService } from '../../services/analytics.service';
 import { CameraService } from '../../services/camera.service';
 import { EventLogs } from '../../services/domain/event-logs';
@@ -46,7 +48,7 @@ import { SoiCircleComponent } from '../soi-circle/soi-circle.component';
     OrbitLineComponent,
     DraggableSpaceObjectComponent,
     SoiCircleComponent,
-    CelestialBodyDetailsDialogComponent,
+    PlanetoidDetailsDialogComponent,
   ],
   templateUrl: './universe-map.component.html',
   styleUrls: ['./universe-map.component.scss'],
@@ -55,46 +57,37 @@ import { SoiCircleComponent } from '../soi-circle/soi-circle.component';
 })
 export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
 
-  @Input() set orbits(value: Orbit[]) {
-    this.filteredOrbits = value?.filter(o =>
-      this.spaceObjectTypesToShow.includes(o.type));
+  bodies: Planetoid[];
+  @Input() set planetoids(value: Planetoid[]) {
+    this.bodies = value;
+    this.orbits = value?.filter(p => p.draggable.orbit)
+        .map(p => ({orbit: p.draggable.orbit, type: p.planetoidType}));
   }
 
-  @Input() set planets(value: SpaceObject[]) {
-    this.allPlanets = value ?? [];
-    this.filteredPlanets = value?.filter(b =>
-      this.spaceObjectTypesToShow.includes(b.type));
-  }
-
-  @Input() allowEdit = true;
-
-  @Output() editPlanet = new EventEmitter<{ body, details }>();
-  @Output() update = new EventEmitter<SpaceObject>();
+  @Output() editPlanetoid = new EventEmitter<{ body, details }>();
+  @Output() update = new EventEmitter<CanCommunicate>();
   @Output() startDrag = new EventEmitter<SpaceObject>();
   @Output() hoverBody = new EventEmitter<{ body: SpaceObject, hover: boolean }>();
 
   @ViewChild(CameraComponent, {static: true}) camera: CameraComponent;
   @ViewChild('backboard', {static: true}) backboard: ElementRef<HTMLDivElement>;
 
-  filteredOrbits: Orbit[];
-  filteredPlanets: SpaceObject[];
-  spaceObjectTypes = SpaceObjectType;
+  orbits: OrbitWithPlanetoidType[];
+  planetoidType = PlanetoidType;
   scaleToShowMoons = CameraService.scaleToShowMoons;
   icons = Icons;
-
-  private spaceObjectTypesToShow = [SpaceObjectType.Star, SpaceObjectType.Planet, SpaceObjectType.Moon];
-  private allPlanets: SpaceObject[];
 
   constructor(private cdr: ChangeDetectorRef,
               private dialog: MatDialog,
               private analyticsService: AnalyticsService,
               private cameraService: CameraService,
-              private universeBuilderService: AbstractUniverseBuilderService) {
+              private universeBuilderService: AbstractUniverseBuilderService,
+              private window: Window) {
     super();
   }
 
-  startBodyDrag(body: SpaceObject, event: PointerEvent, screen: HTMLDivElement, camera: CameraComponent) {
-    body.draggableHandle.startDrag(event, screen, () => this.updateUniverse(body), camera);
+  startBodyDrag(body: CanCommunicate, event: PointerEvent, screen: HTMLDivElement, camera: CameraComponent) {
+    body.draggable.startDrag(event, screen, () => this.updateUniverse(body), camera);
     this.startDrag.emit(body);
 
     this.analyticsService.logEventThrottled(EventLogs.Name.DragBody, {
@@ -106,13 +99,13 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
     });
   }
 
-  private updateUniverse(dragged: SpaceObject) {
+  private updateUniverse(dragged: CanCommunicate) {
     this.update.emit(dragged);
 
-    window.requestAnimationFrame(() => this.cdr.markForCheck());
+    this.window.requestAnimationFrame(() => this.cdr.markForCheck());
   }
 
-  editCelestialBody(body: SpaceObject) {
+  editPlanetoidWithDialog(body: Planetoid) {
     this.analyticsService.logEvent('Start edit body', {
       category: EventLogs.Category.CelestialBody,
       details: {
@@ -120,12 +113,12 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
       },
     });
 
-    this.dialog.open(CelestialBodyDetailsDialogComponent, {
+    this.dialog.open(PlanetoidDetailsDialogComponent, {
       data: {
-        forbiddenNames: this.allPlanets.map(c => c.label),
+        forbiddenNames: this.bodies.map(c => c.label),
         edit: body,
         universeBuilderHandler: this.universeBuilderService,
-      } as CelestialBodyDetailsDialogData,
+      } as PlanetoidDetailsDialogData,
       backdropClass: GlobalStyleClass.MobileFriendly,
     })
       .afterClosed()
@@ -133,7 +126,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
         filter(details => details),
         takeUntil(this.destroy$))
       .subscribe(details => {
-        this.editPlanet.emit({body, details});
+        this.editPlanetoid.emit({body, details});
         this.cdr.markForCheck();
       });
   }

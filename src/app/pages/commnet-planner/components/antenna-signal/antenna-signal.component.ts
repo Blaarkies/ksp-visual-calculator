@@ -1,27 +1,45 @@
+import { CommonModule } from '@angular/common';
 import {
   Component,
   Input,
-  OnDestroy,
 } from '@angular/core';
-import { AntennaSignal } from '../../../../common/domain/antenna.signal';
-import { Subject } from 'rxjs';
+import {
+  combineLatest,
+  map,
+  Observable,
+  startWith,
+} from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
+import { AntennaSignal } from '../../../../common/domain/antenna-signal';
 import { CameraService } from '../../../../services/camera.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'cp-antenna-signal',
   standalone: true,
-  imports: [
-    CommonModule,
-  ],
+  imports: [CommonModule],
+  // TODO: performance: The template calls SpaceObject.hasRelay() infinitely
+  // Likely through AntennaSignal.colorTotal ?
   templateUrl: './antenna-signal.component.html',
   styleUrls: ['./antenna-signal.component.scss'],
   animations: [BasicAnimations.fade],
 })
-export class AntennaSignalComponent implements OnDestroy {
+export class AntennaSignalComponent {
 
-  @Input() antennaSignal: AntennaSignal;
+  signal: AntennaSignal;
+
+  @Input() set antennaSignal(value: AntennaSignal) {
+    if (!value) {
+      return;
+    }
+
+    this.signal = value;
+    let [nodeA, nodeB] = value.nodes;
+    this.showText$ = combineLatest([
+      nodeA.draggable.isHover$.pipe(startWith(false)),
+      nodeB.draggable.isHover$.pipe(startWith(false)),
+    ])
+      .pipe(map(([a, b]) => a || b));
+  }
 
   @Input() set scale(value: number) {
     let lineSpacingFactor = .02;
@@ -30,10 +48,6 @@ export class AntennaSignalComponent implements OnDestroy {
 
   inverseScale = 1;
   worldViewScale = 100 * CameraService.normalizedScale;
-  textHover$ = new Subject<boolean>();
-
-  ngOnDestroy() {
-    this.textHover$.complete();
-  }
+  showText$: Observable<boolean>;
 
 }

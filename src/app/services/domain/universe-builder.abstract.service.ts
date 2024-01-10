@@ -7,39 +7,39 @@ import {
   takeUntil,
   tap,
 } from 'rxjs';
-import { Group } from '../../common/domain/group';
+import { PlanetoidAssetDto } from '../../common/domain/dtos/planetoid-asset.dto';
+import { StarSystemDto } from '../../common/domain/dtos/star-system-dto';
+import { StateCommnetPlannerDto } from '../../common/domain/dtos/state-commnet-planner.dto';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { OrbitParameterData } from '../../common/domain/space-objects/orbit-parameter-data';
-import { SpaceObject } from '../../common/domain/space-objects/space-object';
-import { SpaceObjectType } from '../../common/domain/space-objects/space-object-type';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
+import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { Vector2 } from '../../common/domain/vector2';
 import { WithDestroy } from '../../common/with-destroy';
-import { CelestialBodyDetails } from '../../overlays/celestial-body-details-dialog/celestial-body-details';
+import { PlanetoidDetails } from '../../overlays/celestial-body-details-dialog/planetoid-details';
 import { AnalyticsService } from '../analytics.service';
-import {
-  CelestialBody,
-  KerbolSystemCharacteristics,
-} from '../json-interfaces/kerbol-system-characteristics';
-import { StateSpaceObject } from '../json-interfaces/state-space-object';
+import { CameraService } from '../camera.service';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';
 import { UniverseContainerInstance } from '../universe-container-instance.service';
+import { EnrichedStarSystem } from './enriched-star-system.model';
 import { EventLogs } from './event-logs';
-import { OrbitsBodies } from './orbits-bodies';
+import { PlanetoidWithDto } from './planetoid-with-dto.model';
 
 export abstract class AbstractUniverseBuilderService extends WithDestroy() {
 
   protected abstract analyticsService: AnalyticsService;
   protected abstract universeContainerInstance: UniverseContainerInstance;
   protected abstract cacheService: StockEntitiesCacheService;
+  protected abstract cameraService: CameraService;
 
   orbits$ = new BehaviorSubject<Orbit[]>([]);
-  planets$ = new BehaviorSubject<SpaceObject[]>([]);
+  planetoids$ = new BehaviorSubject<Planetoid[]>([]);
 
   protected constructor() {
     super();
 
     // TODO: remove UniverseContainerInstance usages
-    setTimeout(() => this.planets$
+    setTimeout(() => this.planetoids$
       .pipe(takeUntil(this.destroy$))
       .subscribe(planets =>
         this.universeContainerInstance.planets$.next(planets)));
@@ -47,137 +47,151 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
 
   protected destroy() {
     this.orbits$.complete();
-    this.planets$.complete();
+    this.planetoids$.complete();
 
     this.universeContainerInstance.planets$.next([]);
     this.universeContainerInstance.crafts$.next([]);
   }
 
-  private stockAssetsReady(): Observable<OrbitsBodies> {
-    return this.cacheService.planets$
+  private stockAssetsReady(): Observable<EnrichedStarSystem> {
+    return this.cacheService.starSystem$
       .pipe(
         take(1),
-        map(data => AbstractUniverseBuilderService.generateOrbitsAndCelestialBodies(data)),
+        map(starSystemDto => AbstractUniverseBuilderService.generateEnrichedStarSystem(starSystemDto)),
         takeUntil(this.destroy$));
   }
 
-  buildStockState(): Observable<OrbitsBodies> {
+  buildStockState(): Observable<EnrichedStarSystem> {
     return this.stockAssetsReady()
       .pipe(
-        tap(({listOrbits, celestialBodies}) => {
+        tap(({starSystem, listOrbits, planetoids}) => {
           this.orbits$.next(listOrbits);
-          this.planets$.next(celestialBodies);
+          this.planetoids$.next(planetoids);
+          this.cameraService.focusSpaceObject(
+            planetoids.find(p => p.label.includesSome(starSystem.dsnIds))
+            ?? planetoids[0]);
         }),
-        delayWhen(() => this.setDetails()));
+        delayWhen(enrichedStarSystem => this.setStockDetails(enrichedStarSystem)));
   }
 
-  protected async setDetails() {
+  protected abstract setStockDetails(enrichedStarSystem: EnrichedStarSystem): Promise<void>
+
+  protected async buildContextState(lastState: string): Promise<void> {
+    let state: StateCommnetPlannerDto = JSON.parse(lastState);
+    let {camera} = state;
+
+    if (camera) {
+      this.cameraService.setFromJson(camera);
+    } else {
+      this.planetoids$.pipe(
+        take(1),
+        takeUntil(this.destroy$))
+        .subscribe(planetoids => {
+          let target = planetoids.find(p => p.communication) || planetoids[4];
+          if (target) {
+            this.cameraService.focusSpaceObject(target);
+          }
+        });
+    }
+    return;
   }
 
-  protected abstract buildContextState(lastState: string): Promise<void>
-
-  buildState(lastState: string): Observable<any> {
+  buildState(lastState: string): Observable<EnrichedStarSystem> {
     return this.stockAssetsReady()
       .pipe(delayWhen(() => this.buildContextState(lastState)));
   }
 
-  protected makeOrbitsLabelMap(jsonCelestialBodies: StateSpaceObject[]): Map<string, Orbit> {
-    let orbitsLabels = jsonCelestialBodies.filter(json => [
-      SpaceObjectType.types.planet,
-      SpaceObjectType.types.moon].includes(json.type))
-      .map(b => b.draggableHandle)
-      .map(draggable => {
-        let {parameters, color, type} = draggable.orbit;
-        let orbit = new Orbit(new OrbitParameterData(parameters.xy, parameters.r, parameters.parent), color);
-        orbit.type = SpaceObjectType.fromString(type);
-        return [draggable.label, orbit];
+  protected makeOrbitsLabelMap(planetoids: PlanetoidWithDto[]): Map<string, Orbit> {
+    let orbitsLabels = planetoids
+      .filter(e => e.planetoid.planetoidType !== PlanetoidType.Star)
+      .map(({planetoid, dto}) => {
+        let {parameters, color} = dto.orbit;
+        let orbit = new Orbit(
+          new OrbitParameterData(parameters.xy, parameters.r, parameters.parent),
+          color,
+          planetoid.draggable);
+        return {label: planetoid.label, orbit};
       });
-    let orbitsLabelMap = new Map<string, Orbit>(orbitsLabels as []);
-    this.orbits$.next(orbitsLabels.map(([, orbit]) => orbit) as Orbit[]);
+    let orbitsLabelMap = new Map<string, Orbit>(
+      orbitsLabels.map(e => [e.label, e.orbit]));
+    this.orbits$.next(orbitsLabels.map(e => e.orbit));
     return orbitsLabelMap;
   }
 
-  editCelestialBody(body: SpaceObject, details: CelestialBodyDetails) {
+  editCelestialBody(body: Planetoid, details: PlanetoidDetails) {
     this.analyticsService.logEvent('Edit celestial body', {
       category: EventLogs.Category.CelestialBody,
       old: {
         label: EventLogs.Sanitize.anonymize(body.label),
         type: body.type,
         size: body.size,
-        dsn: body.antennae[0] && body.antennae[0].item.label,
+        dsn: body.communication?.antennae[0] && body.communication?.antennae[0].item,
       },
       new: {
         label: EventLogs.Sanitize.anonymize(details.name),
-        type: details.celestialBodyType,
+        type: details.planetoidType,
         size: details.size,
         dsn: details.currentDsn?.label,
       },
     });
 
-    body.draggableHandle.label = details.name;
-    body.type = details.celestialBodyType;
+    body.draggable.label = details.name;
+    body.planetoidType = details.planetoidType;
     body.size = details.size;
-    if (body.draggableHandle.orbit) {
-      body.draggableHandle.orbit.color = details.orbitColor;
+    if (body.draggable.orbit) {
+      body.draggable.orbit.color = details.orbitColor;
     }
-    body.antennae = details.currentDsn ? [new Group(details.currentDsn)] : [];
   }
 
-  getSoiParent(location: Vector2): SpaceObject {
-    return this.planets$.value
+  getSoiParent(location: Vector2): Planetoid {
+    return this.planetoids$.value
       .filter(p => !p.sphereOfInfluence || location.distance(p.location) <= p.sphereOfInfluence)
-      .sort((a, b) => a.location.distance(location) - b.location.distance(location))
-      .first();
+      .min(p => p.location.distance(location));
   }
 
-  private static generateOrbitsAndCelestialBodies(data: KerbolSystemCharacteristics): OrbitsBodies {
-    // Setup abstract celestial bodies
-    let bodyToJsonMap = new Map<CelestialBody, SpaceObject>(
-      data.bodies.map(b => [
+  private static generateEnrichedStarSystem(starSystem: StarSystemDto): EnrichedStarSystem {
+    // Setup abstract planetoids
+    let bodyToJsonMap = new Map<PlanetoidAssetDto, Planetoid>(
+      starSystem.planetoids.map(b => [
         /*key  */ b,
-        /*value*/ new SpaceObject(
-          Math.log(b.equatorialRadius) * 4,
-          b.name, b.imageUrl,
-          b.type === SpaceObjectType.types.star ? 'noMove' : 'orbital',
-          SpaceObjectType.fromString(b.type as any),
+        /*value*/ new Planetoid(
+          b.id,
+          b.name,
+          b.imageUrl,
+          b.type === PlanetoidType.types.star ? 'noMove' : 'orbital',
           [],
-          b.hasDsn,
+          PlanetoidType.fromString(b.type),
+          (Math.log(b.equatorialRadius) * 4).toInt(),
           b.sphereOfInfluence,
           b.equatorialRadius),
       ]));
 
     // Setup SOI hierarchies
-    bodyToJsonMap.forEach((parentSo, parentCb, mapCollection) => {
+    bodyToJsonMap.forEach((parentP, parentPDto, mapCollection) => {
       let moons = Array.from(mapCollection.entries())
-        .filter(([cb]) => cb.parent === parentCb.id)
+        .filter(([p]) => p.parent === parentPDto.id)
         .map(([, so]) => so);
 
-      parentSo.draggableHandle.setChildren(moons);
+      parentP.draggable.setChildren(moons);
     });
 
     // Setup movement rules
     let bodyToJsonMapEntries = Array.from(bodyToJsonMap.entries());
-    let bodyOrbitMap = new Map<SpaceObject, Orbit>(
+    let bodyOrbitMap = new Map<Planetoid, Orbit>(
       bodyToJsonMapEntries
-        .filter(([cb]) => cb.type !== SpaceObjectType.types.star)
-        .map(([cb, so]) => [
-          /*key  */so,
-          /*value*/new Orbit(OrbitParameterData.fromRadius(cb.semiMajorAxis), cb.orbitLineColor),
-        ]));
-    bodyOrbitMap.forEach((orbit, body) => {
-      body.draggableHandle.addOrbit(orbit);
-      orbit.type = body.type;
-    });
+        .filter(([, p]) => p.planetoidType !== PlanetoidType.Star)
+        .map(([dto, p]) => [p, Orbit.fromJson(dto, p.draggable)]));
+    bodyOrbitMap.forEach((orbit, body) => body.draggable.setOrbit(orbit));
 
     // Done setup, call first location init
     bodyToJsonMapEntries
-      .find(([, so]) => so.type === SpaceObjectType.Star)[1]
-      .draggableHandle
+      .find(([, p]) => p.planetoidType === PlanetoidType.Star)[1]
+      .draggable
       .updateConstrainLocation({xy: [0, 0]} as OrbitParameterData);
     let listOrbits = Array.from(bodyOrbitMap.values());
-    let celestialBodies = bodyToJsonMapEntries.map(([, so]) => so);
+    let planetoids = bodyToJsonMapEntries.map(([, so]) => so);
 
-    return {listOrbits, celestialBodies};
+    return {starSystem, listOrbits, planetoids};
   }
 
 }

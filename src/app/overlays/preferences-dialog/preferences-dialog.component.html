@@ -1,0 +1,41 @@
+<div mat-dialog-content class="preferences-layout">
+  <div class="text dialog-title">Preferences</div>
+
+  <div>
+    <div class="space-for-toggle">Light Theme</div>
+    <cp-input-toggle [formControl]="controlTheme" type="switch"></cp-input-toggle>
+  </div>
+
+  <div>
+    <div class="space-for-toggle">Show Holiday Themes</div>
+    <cp-input-toggle [formControl]="controlHolidays" type="switch"></cp-input-toggle>
+  </div>
+
+  <div>
+    <div class="space-for-toggle">Analytics</div>
+    <div class="analytics-info-section">
+      <ng-container *ngIf="noUserLoggedIn$ | async; else analyticsToggle">
+        <span class="text caption indent-1 mute">
+          You are not logged in, <br> no analytics are captured.
+        </span>
+      </ng-container>
+      <ng-template #analyticsToggle>
+        <cp-input-toggle [formControl]="controlAnalytics" type="switch"></cp-input-toggle>
+        <button mat-button (click)="openAnalyticsDialog()" [matTooltip]="'What details are captured?'">
+          <div>
+            <mat-icon color="muted" [svgIcon]="icons.Info"></mat-icon>
+          </div>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+
+</div>
+
+<div mat-dialog-actions>
+  <button color="primary"
+          mat-stroked-button
+          [mat-dialog-close]>
+    OK
+  </button>
+</div>

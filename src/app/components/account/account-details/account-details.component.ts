@@ -80,30 +80,12 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   user$ = this.authService.user$;
   icons = Icons;
 
-  controlTheme = new FormControl(this.themeService.theme === ThemeTypeEnum.Light, {});
-  controlAnalytics = new FormControl(this.analyticsService.isTracking, {});
-
   constructor(private snackBar: MatSnackBar,
               private authService: AuthService,
               private analyticsService: AnalyticsService,
               private themeService: ThemeService,
               private dialog: MatDialog) {
     super();
-
-    themeService.isLightTheme$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(v => this.controlTheme.setValue(v, {emitEvent: false}));
-    this.controlTheme.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.destroy$))
-      .subscribe(() => this.themeService.toggleTheme());
-
-    this.controlAnalytics.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        takeUntil(this.destroy$))
-      .subscribe(track => this.analyticsService.setActive(track));
 
     this.user$
       .pipe(takeUntil(this.destroy$))
@@ -126,11 +108,6 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   openBmacDialog() {
     this.dialog.closeAll();
     this.dialog.open(BuyMeACoffeeDialogComponent);
-  }
-
-  openAnalyticsDialog() {
-    this.dialog.closeAll();
-    this.dialog.open(AnalyticsDialogComponent);
   }
 
   async actionSignOut() {

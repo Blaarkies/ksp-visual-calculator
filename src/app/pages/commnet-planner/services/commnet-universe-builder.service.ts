@@ -3,31 +3,45 @@ import {
   OnDestroy,
 } from '@angular/core';
 import {
-  firstValueFrom,
+  combineLatest,
+  map,
+  merge,
+  sampleTime,
+  startWith,
+  switchMap,
   take,
   takeUntil,
+  tap,
 } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { Antenna } from '../../../common/domain/antenna';
-import { AntennaSignal } from '../../../common/domain/antenna.signal';
+import {
+  AntennaSignal,
+  CanCommunicate,
+} from '../../../common/domain/antenna-signal';
+import { CraftDto } from '../../../common/domain/dtos/craft-dto';
+import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { Group } from '../../../common/domain/group';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
+import { Communication } from '../../../common/domain/space-objects/communication';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
+import { Planetoid } from '../../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
-import { Vector2 } from '../../../common/domain/vector2';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { CameraService } from '../../../services/camera.service';
+import { EnrichedStarSystem } from '../../../services/domain/enriched-star-system.model';
 import { EventLogs } from '../../../services/domain/event-logs';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
-import { StateCommnetPlanner } from '../../../services/json-interfaces/state-commnet-planner';
-import { StateCraft } from '../../../services/json-interfaces/state-craft';
-import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { CraftDetails } from '../components/craft-details-dialog/craft-details';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
+import { ConnectionGraph } from '../connection-graph';
+import {
+  antennaServiceDestroy,
+  antennaServiceSetAntennae,
+} from './pseudo/antenna.service';
 
 @Injectable()
 export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
@@ -43,20 +57,49 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
-
-    private cameraService: CameraService,
+    protected cameraService: CameraService,
   ) {
     super();
 
     this.cacheService.antennae$
       .pipe(take(1), takeUntil(this.destroy$))
       .subscribe(antennae => {
+        antennaServiceSetAntennae(antennae);
         this.antennae$.set(antennae);
         this.antennaeLabelMap = new Map<string, Antenna>(
           antennae.map(a => [a.label, a]));
       });
 
     this.difficultySetting = DifficultySetting.normal;
+
+    let getConnectionsChange$ = (signals: AntennaSignal[]) =>
+      merge(signals.map(s => s.relayChange$)).pipe(
+        startWith(undefined),
+        map(() => signals),
+        );
+
+    let signalsUpdate$ = this.signals$.stream$.pipe(
+      switchMap(signals => getConnectionsChange$(signals)),
+    );
+
+    combineLatest([
+      signalsUpdate$,
+      this.craft$.stream$,
+      this.planetoids$,
+    ]).pipe(
+      sampleTime(200),
+      tap(([signals, craft, planets]) => {
+        if (!signals.length) {
+          craft.forEach(c => c.communication.noSignal());
+          return;
+        }
+        let connectionGraph = new ConnectionGraph(signals, craft, planets);
+        craft.forEach(c => {
+          let control = connectionGraph.hasControlCraft.has(c);
+          return c.communication.hasControl$.set(control);
+        });
+      }),
+    ).subscribe();
 
     // TODO: remove UniverseContainerInstance usages
     this.craft$.stream$
@@ -70,88 +113,83 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     this.craft$.destroy();
     this.signals$.destroy();
+    antennaServiceDestroy();
   }
 
-  protected async setDetails() {
-    await super.setDetails();
-
+  protected async setStockDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.craft$.set([]);
     this.signals$.set([]);
     this.difficultySetting = DifficultySetting.normal;
 
-    // todo: hasDsn is removed. add default tracking station another way
-    let needsBasicDsn = this.planets$.value
-      .find(cb => cb.hasDsn && cb.antennae?.length === 0);
-    if (needsBasicDsn) {
-      await firstValueFrom(this.cacheService.antennae$);
-      needsBasicDsn.antennae.push(
-        new Group<Antenna>(this.getAntenna('Tracking Station 1')));
+    let dsnIds = enrichedStarSystem.starSystem.dsnIds;
+    if (dsnIds) {
+      let dsnPlanetoids = this.planetoids$.value.filter(p => p.id.includesSome(dsnIds));
+      dsnPlanetoids.forEach(p =>
+        p.communication = new Communication([new Group('Tracking Station 1')]));
     }
 
     this.updateTransmissionLines();
   }
 
-  protected async buildContextState(lastState: string) {
-    let state: StateCommnetPlanner = JSON.parse(lastState);
-    let {celestialBodies: jsonCelestialBodies, craft: jsonCraft} = state;
+  protected override async buildContextState(lastState: string) {
+    await super.buildContextState(lastState);
 
-    let orbitsLabelMap = this.makeOrbitsLabelMap(jsonCelestialBodies);
+    let state: StateCommnetPlannerDto = JSON.parse(lastState);
+    let {planetoids, craft: craftDtos} = state;
 
-    let antennaGetter = name => this.getAntenna(name);
+    let planetoidDtoPairs = planetoids
+      .map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));
+    let orbitsLabelMap = this.makeOrbitsLabelMap(planetoidDtoPairs);
 
-    let bodies = jsonCelestialBodies.filter(json => [
-      SpaceObjectType.types.star,
-      SpaceObjectType.types.planet,
-      SpaceObjectType.types.moon].includes(json.type))
-      .map(b => [SpaceObject.fromJson(b, antennaGetter), b]);
-
-    let craftJsonMap = new Map<Craft, StateCraft>(jsonCraft.map(json => [Craft.fromJson(json, antennaGetter), json]));
+    let craftJsonMap = new Map<Craft, CraftDto>(craftDtos.map(json =>
+      [Craft.fromJson(json), json]));
     let craft = Array.from(craftJsonMap.keys());
-    let bodiesChildrenMap = new Map<string, SpaceObject>([
-      ...bodies.map(([b]: [SpaceObject]) => [b.label, b]),
+    let planetoidsChildrenMap = new Map<string, SpaceObject>([
+      ...planetoidDtoPairs.map(({planetoid}) => [planetoid.label, planetoid]),
       ...craft.map(c => [c.label, c]),
     ] as any);
-    bodies.forEach(([b, json]: [SpaceObject, StateSpaceObject]) => {
-      let matchingOrbit = orbitsLabelMap.get(json.draggableHandle.label);
+    planetoidDtoPairs.forEach(({planetoid, dto}) => {
+      let matchingOrbit = orbitsLabelMap.get(dto.draggable.label);
       if (matchingOrbit) {
-        b.draggableHandle.addOrbit(matchingOrbit);
+        planetoid.draggable.setOrbit(matchingOrbit);
       } else {
-        b.draggableHandle.parameterData = new OrbitParameterData(json.draggableHandle.location);
-        b.draggableHandle.updateConstrainLocation(OrbitParameterData.fromJson(b.draggableHandle.parameterData));
+        planetoid.draggable.parameterData = new OrbitParameterData(dto.draggable.location);
+        planetoid.draggable.updateConstrainLocation(
+          OrbitParameterData.fromJson(planetoid.draggable.parameterData));
       }
 
-      b.draggableHandle.setChildren(
-        json.draggableHandle.children
-          .map(c => bodiesChildrenMap.get(c))
+      planetoid.draggable.setChildren(
+        dto.draggable.children
+          .map(c => planetoidsChildrenMap.get(c))
           // @fix v1.1.1:craft draggables were not removed from parent draggable
           .filter(c => c !== undefined));
 
-      if (json.draggableHandle.orbit) {
-        let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
-        b.draggableHandle.updateConstrainLocation(parameters);
+      if (dto.orbit) {
+        let parameters = OrbitParameterData.fromJson(dto.orbit.parameters);
+        planetoid.draggable.updateConstrainLocation(parameters);
       }
     });
-    this.planets$.next(bodies.map(([b]: [SpaceObject]) => b));
+    this.planetoids$.next(planetoidDtoPairs.map(e => e.planetoid));
 
-    craft.forEach(c => c.draggableHandle.updateConstrainLocation(
+    craft.forEach(c => c.draggable.updateConstrainLocation(
       new OrbitParameterData(
-        craftJsonMap.get(c).location, // setChildren() above resets craft locations. get original location from json
+        craftJsonMap.get(c).draggable.location, // setChildren() above resets craft locations. get original location from json
         undefined,
-        c.draggableHandle.parent)));
+        c.draggable.parent)));
     this.craft$.set(craft);
 
     this.signals$.set([]);
     this.updateTransmissionLines();
   }
 
-  private getIndexOfSameCombination = (parentItem, list) =>
+  private getIndexOfSameCombination = <T>(parentItem: T[], list: T[][]) =>
     list.findIndex(item =>
       item.every(so =>
         parentItem.includes(so)));
 
-  private getFreshTransmissionLines(nodes: SpaceObject[], signals: AntennaSignal[]): AntennaSignal[] {
-    return nodes
-      .filter(so => so.antennae?.length)
+  private getFreshTransmissionLines(nodes: CanCommunicate[], signals: AntennaSignal[]): AntennaSignal[] {
+    let [removeSignals = [], newSignals = []] = nodes
+      .filter(so => so.communication?.antennae?.length)
       .joinSelf()
       .distinct(this.getIndexOfSameCombination)
       // run again, opposing permutations are still similar as combinations
@@ -159,26 +197,36 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       .map(pair => // leave existing signals here so that visuals do not flicker
         signals.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new AntennaSignal(pair, () => this.difficultySetting.rangeModifier))
-      .filter(tl => tl.strengthTotal);
+      .splitFilter(tl => tl.strengthTotal ? 1 : 0);
+
+    removeSignals.forEach(s => s.destroy());
+
+    return newSignals;
   }
 
   updateTransmissionLines({reset}: { reset?: boolean } = {}) {
     let nodes = [
-      ...this.planets$.value ?? [],
+      ...this.planetoids$.value ?? [],
       ...this.craft$.value ?? [],
     ];
     let signals = reset ? [] : this.signals$.value;
-    this.signals$.set(this.getFreshTransmissionLines(nodes, signals));
+    let freshTransmissionLines = this.getFreshTransmissionLines(nodes, signals);
+    if (signals.equal(freshTransmissionLines)) {
+      return;
+    }
+
+    this.signals$.set(freshTransmissionLines);
   }
 
   private addCraft(details: CraftDetails, allCraft: Craft[]) {
     let location = details.advancedPlacement?.location
       ?? this.cameraService.convertScreenToGameSpace(this.cameraService.screenCenterOffset);
 
-    let craft = new Craft(details.name, details.craftType, details.antennae);
+    let craft = new Craft(details.id, details.name, details.craftType,
+      details.antennae.map(g => new Group(g.item.label, g.count)));
     let parent = this.getSoiParent(location);
-    parent.draggableHandle.addChild(craft.draggableHandle);
-    craft.draggableHandle.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggableHandle));
+    parent.draggable.addChild(craft.draggable);
+    craft.draggable.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggable));
     this.craft$.set([...allCraft, craft]);
   }
 
@@ -199,15 +247,16 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   }
 
   async editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
-    let newCraft = new Craft(craftDetails.name, craftDetails.craftType, craftDetails.antennae);
+    let newCraft = new Craft(craftDetails.id, craftDetails.name, craftDetails.craftType,
+      craftDetails.antennae.map(g => new Group(g.item.label, g.count)));
     let parent = craftDetails.advancedPlacement?.orbitParent
       ?? this.getSoiParent(oldCraft.location);
 
-    parent.draggableHandle.replaceChild(oldCraft.draggableHandle, newCraft.draggableHandle);
-    newCraft.draggableHandle.updateConstrainLocation(new OrbitParameterData(
+    parent.draggable.replaceChild(oldCraft.draggable, newCraft.draggable);
+    newCraft.draggable.updateConstrainLocation(new OrbitParameterData(
       craftDetails.advancedPlacement?.location?.toList() ?? oldCraft.location.toList(),
       undefined,
-      parent.draggableHandle));
+      parent.draggable));
 
     this.craft$.set(list => list.replace(oldCraft, newCraft));
     this.updateTransmissionLines();
@@ -216,8 +265,8 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       category: EventLogs.Category.Craft,
       old: {
         type: oldCraft.craftType,
-        antennae: oldCraft.antennae && oldCraft.antennae.map(a => ({
-          label: a.item.label,
+        antennae: oldCraft.communication.antennae && oldCraft.communication.antennae.map(a => ({
+          label: a.item,
           count: a.count,
         })),
       },
@@ -232,7 +281,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   }
 
   async removeCraft(existing: Craft) {
-    existing.draggableHandle.parent.removeChild(existing.draggableHandle);
+    existing.draggable.parent.removeChild(existing.draggable);
 
     this.craft$.set(list => list.remove(existing));
     this.updateTransmissionLines();
@@ -241,10 +290,11 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       category: EventLogs.Category.Craft,
       craft: {
         type: existing.craftType,
-        antennae: existing.antennae && existing.antennae.map(a => ({
-          label: a.item.label,
-          count: a.count,
-        })),
+        antennae: existing.communication.antennae
+          && existing.communication.antennae.map(a => ({
+            label: a.item,
+            count: a.count,
+          })),
       },
     });
   }
@@ -259,7 +309,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
   updateDifficultySetting(details: DifficultySetting) {
     this.difficultySetting = details;
-    if (this.planets$.value) {
+    if (this.planetoids$.value) {
       this.updateTransmissionLines({reset: true});
     }
   }

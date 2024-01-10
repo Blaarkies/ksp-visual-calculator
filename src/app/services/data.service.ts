@@ -87,6 +87,22 @@ export class DataService {
       {[field]: deleteField()});
   }
 
+  private async setDeletedAt(table: TableName, field: string, value: Date | undefined): Promise<void> {
+    await this.checkUserSignIn();
+
+    return setDoc(this.getRef(`${table}/${this.userId$.value}`),
+      {[field]: {deletedAt: value ?? deleteField()}},
+      {merge: true});
+  }
+
+  async deleteSoft(table: TableName, field: string): Promise<void> {
+    await this.setDeletedAt(table, field, new Date());
+  }
+
+  async recover(table: TableName, field: string): Promise<void> {
+    await this.setDeletedAt(table, field, undefined);
+  }
+
   async deleteAll(table: TableName): Promise<void> {
     await this.checkUserSignIn();
 

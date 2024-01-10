@@ -1,13 +1,17 @@
 <div class="antenna-stats-layout">
 
-  <div class="number-stat"
-       *ngFor="let stat of displayStats">
+  <div
+    class="number-stat"
+    *ngFor="let stat of displayStats"
+  >
     <div>{{stat.label}}</div>
     <div>{{stat.value}}</div>
   </div>
 
-  <div class="label-and-value"
-       [matTooltip]="'Indicates how much of the total signal power is derived from relay antennae'">
+  <div
+    class="label-and-value"
+    [matTooltip]="'Indicates how much of the total signal power is derived from relay antennae'"
+  >
     <div>Relay Bias</div>
     <div class="number-line">
       <mat-progress-bar color="primary" [value]="(stats?.relayBias || 0) * 100"></mat-progress-bar>
@@ -15,13 +19,20 @@
     </div>
   </div>
 
-  <div class="label-and-value"
-       [matTooltip]="'Indicates the diminishing returns from adding more antennae to this craft'">
+  <div
+    class="label-and-value"
+    [matTooltip]="'Indicates the diminishing returns from adding more antennae to this craft'"
+  >
     <div>Average Combinability Exponent</div>
     <div class="number-line">
       <mat-progress-bar color="primary" [value]="(stats?.averageCombinabilityExponent || 0) * 100"></mat-progress-bar>
       <div>{{(stats?.averageCombinabilityExponent || 0) | number : '1.2-2'}}</div>
     </div>
+  </div>
+
+  <div *ngIf="stats?.remoteGuidanceCapability" class="number-stat">
+    <div>Remote Guidance Capability</div>
+    <div>{{stats?.remoteGuidanceCapability}}</div>
   </div>
 
 </div>

@@ -2,15 +2,15 @@ import {
   Injectable,
   OnDestroy,
 } from '@angular/core';
+import { Planetoid } from 'src/app/common/domain/space-objects/planetoid';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { CheckpointPreferences } from '../../../common/domain/checkpoint-preferences';
+import { StateDvPlannerDto } from '../../../common/domain/dtos/state-dv-planner.dto';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
-import { SpaceObject } from '../../../common/domain/space-objects/space-object';
-import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { SubjectHandle } from '../../../common/subject-handle';
+import { CameraService } from '../../../services/camera.service';
+import { EnrichedStarSystem } from '../../../services/domain/enriched-star-system.model';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
-import { StateDvPlanner } from '../../../services/json-interfaces/state-dv-planner';
-import { StateSpaceObject } from '../../../services/json-interfaces/state-space-object';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { TravelService } from './travel.service';
@@ -25,6 +25,7 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
+    protected cameraService: CameraService,
 
     private travelService: TravelService,
   ) {
@@ -38,48 +39,43 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     this.travelService.resetCheckpoints();
   }
 
-  protected async setDetails() {
-    await super.setDetails();
+  protected async setStockDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.travelService.resetCheckpoints();
     this.checkpointPreferences$.set(CheckpointPreferences.default);
   }
 
-  protected async buildContextState(lastState: string) {
-    let state: StateDvPlanner = JSON.parse(lastState);
-    let {celestialBodies: jsonCelestialBodies, checkpoints: jsonCheckpoints} = state;
+  protected override async buildContextState(lastState: string) {
+    await super.buildContextState(lastState);
 
-    let orbitsLabelMap = this.makeOrbitsLabelMap(jsonCelestialBodies);
+    let state: StateDvPlannerDto = JSON.parse(lastState);
+    let {planetoids, checkpoints: jsonCheckpoints} = state;
 
-    let bodies = jsonCelestialBodies.filter(json => [
-      SpaceObjectType.types.star,
-      SpaceObjectType.types.planet,
-      SpaceObjectType.types.moon].includes(json.type))
-      // TODO: extend SpaceObject to SpaceObjectTransmitters
-      .map(b => [SpaceObject.fromJson(b, () => null), b]);
+    let planetoidDtoPairs = planetoids.map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));
+    let orbitsLabelMap = this.makeOrbitsLabelMap(planetoidDtoPairs);
 
-    let bodiesChildrenMap = new Map<string, SpaceObject>([
-      ...bodies.map(([b]: [SpaceObject]) => [b.label, b])] as any);
-    bodies.forEach(([b, json]: [SpaceObject, StateSpaceObject]) => {
-      let matchingOrbit = orbitsLabelMap.get(json.draggableHandle.label);
+    let planetoidsChildrenMap = new Map<string, Planetoid>([
+      ...planetoidDtoPairs.map(({planetoid}) => [planetoid.label, planetoid])] as any);
+    planetoidDtoPairs.forEach(({planetoid, dto}) => {
+      let matchingOrbit = orbitsLabelMap.get(dto.draggable.label);
       if (matchingOrbit) {
-        b.draggableHandle.addOrbit(matchingOrbit);
+        planetoid.draggable.setOrbit(matchingOrbit);
       } else {
-        b.draggableHandle.parameterData = new OrbitParameterData(json.draggableHandle.location);
-        b.draggableHandle.updateConstrainLocation(OrbitParameterData.fromJson(b.draggableHandle.parameterData));
+        planetoid.draggable.parameterData = new OrbitParameterData(dto.draggable.location);
+        planetoid.draggable.updateConstrainLocation(OrbitParameterData.fromJson(planetoid.draggable.parameterData));
       }
 
-      b.draggableHandle.setChildren(
-        json.draggableHandle.children
-          .map(c => bodiesChildrenMap.get(c)));
+      planetoid.draggable.setChildren(
+        dto.draggable.children
+          .map(c => planetoidsChildrenMap.get(c)));
 
-      if (json.draggableHandle.orbit) {
-        let parameters = OrbitParameterData.fromJson(json.draggableHandle.orbit.parameters);
-        b.draggableHandle.updateConstrainLocation(parameters);
+      if (dto.orbit) {
+        let parameters = OrbitParameterData.fromJson(dto.orbit.parameters);
+        planetoid.draggable.updateConstrainLocation(parameters);
       }
     });
-    this.planets$.next(bodies.map(([b]: [SpaceObject]) => b));
+    this.planetoids$.next(planetoidDtoPairs.map(e => e.planetoid));
 
-    let getBodyByLabel = (label: string) => this.planets$.value.find(b => b.label.like(label));
+    let getBodyByLabel = (label: string) => this.planetoids$.value.find(b => b.label.like(label));
     this.travelService.buildState(jsonCheckpoints, getBodyByLabel);
   }
 

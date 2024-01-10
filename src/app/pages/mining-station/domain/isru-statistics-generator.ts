@@ -1,7 +1,8 @@
 import { Icons } from '../../../common/domain/icons';
 import { Group } from '../../../common/domain/group';
+import { PlanetoidAssetDto } from '../../../common/domain/dtos/planetoid-asset.dto';
+import { PlanetoidType } from '../../../common/domain/space-objects/planetoid-type';
 import { Converter, CraftPart, ResourceProperties } from './craft-part';
-import { CelestialBody } from '../../../services/json-interfaces/kerbol-system-characteristics';
 import { SpaceObjectType } from '../../../common/domain/space-objects/space-object-type';
 import { PartCategory } from './part-category';
 import { ReplaySubject } from 'rxjs';
@@ -392,7 +393,7 @@ export class IsruStatisticsGenerator {
     return {combinedStats, usedStats};
   }
 
-  private getSolarEfficiency(body: CelestialBody): number {
+  private getSolarEfficiency(body: PlanetoidAssetDto): number {
     let kerbinSma = 13599840256;
     return 1 / (Math.pow(body.semiMajorAxis / kerbinSma, 2));
   }
@@ -418,10 +419,10 @@ export class IsruStatisticsGenerator {
     this.updateStats();
   }
 
-  updatePlanet(body: CelestialBody, planetMap: Map<string, CelestialBody>) {
+  updatePlanet(body: PlanetoidAssetDto, planetMap: Map<string, PlanetoidAssetDto>) {
     let planet = body ?? planetMap.get('kerbin');
 
-    let solarDistancePlanet = planet.type === SpaceObjectType.Moon.name
+    let solarDistancePlanet = planet.type === PlanetoidType.Moon.name
       ? planetMap.get(planet.parent)
       : planet;
     this.solarFactor = this.getSolarEfficiency(solarDistancePlanet);

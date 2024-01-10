@@ -9,9 +9,9 @@ import { GameStateType } from '../../../common/domain/game-state-type';
 import { AUTO_SAVE_INTERVAL } from '../../../common/token';
 import { DataService } from '../../../services/data.service';
 import { AbstractBaseStateService } from '../../../services/domain/base-state.abstract.service';
-import { StateBase } from '../../../services/json-interfaces/state-base';
+import { StateBaseDto } from '../../../common/domain/dtos/state-base-dto';
 import { MiningBaseService } from './mining-base.service';
-import { StateIsru } from '../domain/state-isru';
+import { StateIsruDto } from '../domain/state-isru.dto';
 
 @Injectable()
 export class IsruStateService extends AbstractBaseStateService {
@@ -27,7 +27,7 @@ export class IsruStateService extends AbstractBaseStateService {
     super();
   }
 
-  get stateContextual(): StateIsru {
+  get stateContextual(): StateIsruDto {
     return {
       landed: true,
       distanceFromStar: null,
@@ -48,7 +48,7 @@ export class IsruStateService extends AbstractBaseStateService {
     return this.miningBaseService.buildState();
   }
 
-  protected setStatefulDetails(parsedState: StateBase) {
+  protected setStatefulDetails(parsedState: StateBaseDto) {
   }
 
   protected setStatelessDetails() {

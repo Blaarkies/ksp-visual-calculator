@@ -10,7 +10,7 @@ import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { AnalyticsService } from '../../../services/analytics.service';
 import { EventLogs } from '../../../services/domain/event-logs';
-import { StateCheckpoint } from '../../../services/json-interfaces/state-checkpoint';
+import { CheckpointDto } from '../../../common/domain/dtos/checkpoint-dto';
 import { Checkpoint } from '../domain/checkpoint';
 import { CheckpointEdge } from '../domain/checkpoint-edge';
 import { CheckpointNode } from '../domain/checkpoint-node';
@@ -225,7 +225,7 @@ export class TravelService {
     this.updateCheckpoints(checkpoints);
   }
 
-  buildState(jsonCheckpoints: StateCheckpoint[], getBodyByLabel: (label: string) => SpaceObject) {
+  buildState(jsonCheckpoints: CheckpointDto[], getBodyByLabel: (label: string) => SpaceObject) {
     let getAvailableConditions = (label: string) => this.getAvailableConditionsByLabel(label);
     let checkpoints = jsonCheckpoints.map(json => Checkpoint.fromJson(json, getBodyByLabel, getAvailableConditions));
 

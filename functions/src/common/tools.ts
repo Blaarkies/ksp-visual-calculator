@@ -1,6 +1,9 @@
-import { Supporter, TableName } from './types';
-import { db } from './singletons';
 import * as functions from 'firebase-functions';
+import { db } from './singletons';
+import {
+  Supporter,
+  TableName,
+} from './types';
 import V1SupportersResponse = Bmac.V1SupportersResponse;
 import log = functions.logger.log;
 
@@ -92,4 +95,35 @@ export async function getAllBmacSupporters(): Promise<Bmac.Supporter[]> {
   log(`Found ${allBmacSupporters.length} supporters on Buy me a coffee.`);
 
   return allBmacSupporters;
+}
+
+interface IndexWithCache {
+  cache?: Set<number>;
+  value: number;
+}
+
+function makeRandomIntBetween(low: number, high: number): number {
+  let difference = high - low;
+  let randomFloat = Math.random() * difference + low;
+  return Math.round(randomFloat);
+}
+
+export function getNextRandomIndex(max: number, cache?: Set<number>): IndexWithCache {
+  let safeCache = cache ?? new Set<number>;
+
+  for (let i = 0; i < 10; i++) {
+    let randomIndex = makeRandomIntBetween(0, max);
+    if (!safeCache.has(randomIndex)) {
+      return {cache: safeCache, value: randomIndex};
+    }
+  }
+
+  let lastValue = Array.from(cache.values()).at(-1);
+
+  return {
+    cache: safeCache,
+    value: lastValue < max
+      ? lastValue + 1
+      : lastValue - 1,
+  };
 }

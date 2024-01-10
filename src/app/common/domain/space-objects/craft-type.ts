@@ -1,6 +1,8 @@
 import { Vector2 } from '../vector2';
 import { LabeledOption } from '../input-fields/labeled-option';
 
+let iconSize = 65.5;
+
 export class CraftType {
 
   constructor(public icon: string,
@@ -8,15 +10,15 @@ export class CraftType {
               public iconLocation: Vector2) {
   }
 
-  static Debris = new CraftType('debris', 'Debris', new Vector2(65 * 15, 65));
-  static Ship = new CraftType('ship', 'Ship', new Vector2(65 * 11, 65));
-  static Probe = new CraftType('probe', 'Probe', new Vector2(65 * 14, 65));
-  static Lander = new CraftType('lander', 'Lander', new Vector2(65 * 12, 65));
-  static Rover = new CraftType('rover', 'Rover', new Vector2(65 * 13, 65));
-  static Station = new CraftType('station', 'Station', new Vector2(65 * 10, 65));
-  static Base = new CraftType('base', 'Base', new Vector2(65 * 9, 65));
-  static Plane = new CraftType('plane', 'Plane', new Vector2(65 * 8, 65));
-  static Relay = new CraftType('relay', 'Relay', new Vector2(65 * 7, 65));
+  static Debris = new CraftType('debris', 'Debris', new Vector2(iconSize * 15, iconSize));
+  static Ship = new CraftType('ship', 'Ship', new Vector2(iconSize * 11, iconSize));
+  static Probe = new CraftType('probe', 'Probe', new Vector2(iconSize * 14, iconSize));
+  static Lander = new CraftType('lander', 'Lander', new Vector2(iconSize * 12, iconSize));
+  static Rover = new CraftType('rover', 'Rover', new Vector2(iconSize * 13, iconSize));
+  static Station = new CraftType('station', 'Station', new Vector2(iconSize * 10, iconSize));
+  static Base = new CraftType('base', 'Base', new Vector2(iconSize * 9, iconSize));
+  static Plane = new CraftType('plane', 'Plane', new Vector2(iconSize * 8, iconSize));
+  static Relay = new CraftType('relay', 'Relay', new Vector2(iconSize * 7, iconSize));
 
   private static All = [
     CraftType.Debris,

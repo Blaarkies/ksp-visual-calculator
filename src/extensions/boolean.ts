@@ -1,4 +1,12 @@
+import {
+  extensionAlso,
+  extensionLet,
+} from './callback-extensions';
+
 export {}; // this file needs to be a module
+
+Boolean.prototype.let = extensionLet<boolean>;
+Boolean.prototype.also = extensionAlso<boolean>;
 
 Boolean.prototype.toString = function (this: Boolean, variety?: 'yes' | 'good' | '✅' | 'on'): string {
   switch (variety) {
@@ -13,13 +21,4 @@ Boolean.prototype.toString = function (this: Boolean, variety?: 'yes' | 'good' |
     default:
       return this ? 'true' : 'false';
   }
-};
-
-Boolean.prototype.let = function (this: Boolean, callback: (it) => any): any {
-  return callback(this);
-};
-
-Boolean.prototype.also = function (this: Boolean, callback: (it) => void): Boolean {
-  callback(this);
-  return this;
 };

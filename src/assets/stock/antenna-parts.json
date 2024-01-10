@@ -178,5 +178,40 @@
     "tier": 7,
     "powerRating": 10e9,
     "combinabilityExponent": 0
+  },
+  {
+    "label": "RC-001S Remote Guidance Unit",
+    "cost": 2250,
+    "mass": 0.1,
+    "tier": 8,
+    "probeControlPoint": "single-hop"
+  },
+  {
+    "label": "RC-L01 Remote Guidance Unit",
+    "cost": 3400,
+    "mass": 0.5,
+    "tier": 9,
+    "probeControlPoint": "multi-hop"
+  },
+  {
+    "label": "Mk1-3 Command Pod",
+    "cost": 3764,
+    "mass": 2.6,
+    "tier": 6,
+    "probeControlPoint": "single-hop"
+  },
+  {
+    "label": "Mk2 Lander Can",
+    "cost": 3202,
+    "mass": 1.36,
+    "tier": 6,
+    "probeControlPoint": "single-hop"
+  },
+  {
+    "label": "Munar Excursion Module (M.E.M.)",
+    "cost": 3409,
+    "mass": 1.36,
+    "tier": 6,
+    "probeControlPoint": "single-hop"
   }
 ]

@@ -1,6 +1,10 @@
 import memoize from 'fast-memoize';
-import { SpaceObject } from './space-objects/space-object';
+import { Subject } from 'rxjs';
+import { Craft } from './space-objects/craft';
+import { Planetoid } from './space-objects/planetoid';
 import { Vector2 } from './vector2';
+
+export type CanCommunicate = Planetoid | Craft;
 
 export class AntennaSignal {
 
@@ -47,29 +51,31 @@ export class AntennaSignal {
 
   get strengthTotal(): number {
     return this.memoizeStrengthTotal(
-      this.nodes[0].hasRelay,
-      this.nodes[1].hasRelay,
+      this.nodes[0].communication.containsRelay(),
+      this.nodes[1].communication.containsRelay(),
       this.nodes[0].location.x,
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].antennae,
-      this.nodes[1].antennae,
+      this.nodes[0].communication.antennaeFull,
+      this.nodes[1].communication.antennaeFull,
     );
   }
 
   get strengthRelay(): number {
     return this.memoizeStrengthRelay(
-      this.nodes[0].hasRelay,
-      this.nodes[1].hasRelay,
+      this.nodes[0].communication.containsRelay(),
+      this.nodes[1].communication.containsRelay(),
       this.nodes[0].location.x,
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].antennae,
-      this.nodes[1].antennae,
+      this.nodes[0].communication.antennaeFull,
+      this.nodes[1].communication.antennaeFull,
     );
   }
+
+  relayChange$ = new Subject<void>();
 
   private memoizeTextLocation = memoize((x1, y1, x2, y2) => {
     return this.nodes[0].location
@@ -100,16 +106,28 @@ export class AntennaSignal {
   });
 
   private memoizeStrengthTotal = memoize((hasRelay1, hasRelay2, ...rest) =>
-      this.getSignalStrength(hasRelay1, hasRelay2, node => node.powerRatingTotal),
+      this.getSignalStrength(hasRelay1, hasRelay2,
+          node => node.communication.powerRatingTotal()),
     {strategy: memoize.strategies.variadic});
 
-  private memoizeStrengthRelay = memoize((hasRelay1, hasRelay2, ...rest) =>
-      this.getSignalStrength(hasRelay1, hasRelay2, node => node.powerRatingRelay),
+  private hasRelayStrength: boolean;
+
+  private memoizeStrengthRelay = memoize((hasRelay1, hasRelay2, ...rest) => {
+      let relayStrength = this.getSignalStrength(hasRelay1, hasRelay2,
+        node => node.communication.powerRatingRelay());
+      let hasRelayStrength = !!relayStrength;
+      if (this.hasRelayStrength === undefined || hasRelayStrength !== this.hasRelayStrength) {
+        this.hasRelayStrength = hasRelayStrength;
+        this.relayChange$.next();
+      }
+      return relayStrength;
+    },
     {strategy: memoize.strategies.variadic});
 
   private getSignalStrength(hasRelay1: boolean,
                             hasRelay2: boolean,
-                            powerRatingCallback: (node: SpaceObject) => number) {
+                            powerRatingCallback: (node: CanCommunicate) => number)
+    : number {
     if (!hasRelay1 && !hasRelay2) {
       return 0;
     }
@@ -128,9 +146,33 @@ export class AntennaSignal {
     return signalStrength;
   }
 
-  constructor(public nodes: SpaceObject[],
+  constructor(public nodes: CanCommunicate[],
               private getRangeModifier: () => number) {
     this.id = Math.random().toString().slice(2);
+  }
+
+  destroy() {
+    this.relayChange$.complete();
+  }
+
+  getHostToClientSignalStrength(hostNode: CanCommunicate,
+                                clientNode: CanCommunicate): number {
+    if (!hostNode.communication.containsRelay()) {
+      return 0;
+    }
+
+    let distance = hostNode.location.distance(clientNode.location);
+    let maxRange = (this.getRangeModifier()
+      * hostNode.communication.powerRatingRelay()
+      * clientNode.communication.powerRatingTotal())
+      .sqrt();
+
+    if (distance > maxRange) {
+      return 0;
+    }
+    let x = 1 - distance / maxRange; // relative distance
+    let signalStrength = (3 - 2 * x) * x.pow(2);
+    return signalStrength;
   }
 
 }
