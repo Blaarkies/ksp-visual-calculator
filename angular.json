@@ -84,18 +84,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ksp-visual-calculator:build"
+            "buildTarget": "ksp-visual-calculator:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ksp-visual-calculator:build:production"
+              "buildTarget": "ksp-visual-calculator:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ksp-visual-calculator:build"
+            "buildTarget": "ksp-visual-calculator:build"
           }
         },
         "deploy": {
