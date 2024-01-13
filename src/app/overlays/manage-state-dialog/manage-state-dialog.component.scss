@@ -79,10 +79,6 @@ mat-icon {
   align-items: center;
   justify-content: end;
   gap: 10px;
-
-  mat-icon {
-    color: var(--color-text-muted);
-  }
 }
 
 // todo: this is duplicated at upload-image

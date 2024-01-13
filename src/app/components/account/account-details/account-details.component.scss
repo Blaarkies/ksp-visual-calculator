@@ -33,9 +33,11 @@
     .premium-sash {
       background-color: var(--color-background-panel-green-opaque);
       box-shadow: 0 0 1px 1px white;
-      height: 16px;
+      height: 14px;
+      font-size: 13px;
+      line-height: 13px;
       width: max-content;
-      padding: 2px 40px 0 40px;
+      padding: 0 40px 0 40px;
       color: white;
 
       transform: translate(-30%, 100%) rotate(-45deg);

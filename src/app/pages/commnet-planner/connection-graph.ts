@@ -59,17 +59,9 @@ export class ConnectionGraph {
         if (isOtherNodeInNetwork) {
 
           let hasConnectionToBase = controlStationsAndCores
-            .some(cb => {
-              try {
-                return this.graph.shortestPath(
-                  otherNode.label, cb.label);
-              } catch (e) {
-                if (!environment.production) {
-                  console.log(`No path from [${otherNode.label}] to [${cb.label}]`);
-                }
-                return false;
-              }
-            });
+              .some(cb => this.graph
+                  .shortestPath(otherNode.label, cb.label)
+                  .length);
           if (hasConnectionToBase) {
             this.hasControlCraft.add(c);
             break;

@@ -1,16 +1,17 @@
 <div mat-dialog-content class="layout">
   <div class="text dialog-title">Upload Image</div>
 
-  <mat-stepper orientation="horizontal"
-               #stepper
-               class="upload-image-dialog-component-stepper"
-               linear
-               [formGroup]="formArrayStepper">
-    <mat-step [stepControl]="controlSelect" label="Select">
+  <mat-stepper
+    orientation="horizontal"
+    #stepper
+    class="upload-image-dialog-component-stepper"
+    linear
+  >
+    <mat-step label="Select">
       <ng-container *ngTemplateOutlet="selectFile"></ng-container>
     </mat-step>
 
-    <mat-step [stepControl]="controlCrop" label="Crop">
+    <mat-step label="Crop">
       <ng-container *ngTemplateOutlet="cropImage"></ng-container>
     </mat-step>
 
@@ -55,16 +56,17 @@
 
         [roundCropper]="true"
         [imageQuality]="80"
-        format="jpeg"
+        format="webp"
+        output="base64"
 
-        (imageCropped)="controlCrop.setValue($event.base64)"
+        (imageCropped)="updateCrop($event)"
         (loadImageFailed)="loadImageFailed()"
       ></image-cropper>
     </div>
   </ng-template>
 
   <ng-template #confirmImage>
-    <img [src]="controlCrop.value" height="200" class="image-layout" />
+    <img [src]="controlCrop.value" height="200" class="image-layout"/>
   </ng-template>
 
 </div>
@@ -72,13 +74,13 @@
 <div mat-dialog-actions>
   <ng-container [ngSwitch]="stepper.selectedIndex">
 
-    <ng-container *ngSwitchCase="0">
-      <button color="accent" class="justify-self-start"
+    <div *ngSwitchCase="0" class="justify-self-start">
+      <button color="accent"
               mat-button
               [mat-dialog-close]="null">
         Cancel
       </button>
-    </ng-container>
+    </div>
 
     <div *ngSwitchCase="1" class="confirm-buttons-layout">
       <button color="accent"

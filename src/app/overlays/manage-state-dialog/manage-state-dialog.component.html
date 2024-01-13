@@ -93,7 +93,7 @@
                   mat-stroked-button
                   [matTooltip]="'Export to JSON file'"
                   (click)="exportState(nowState)">
-            <mat-icon [svgIcon]="icons.Download"></mat-icon>
+            <mat-icon color="none" [svgIcon]="icons.Download"></mat-icon>
           </button>
           <mat-progress-bar @fade
                             *ngIf="buttonLoaders.export$ | async"
@@ -121,7 +121,7 @@
   <div class="archive-layout">
     <ng-container *ngIf="states$ | async as states;">
       <ng-container *ngIf="states.length; else archiveEmpty">
-        <mat-selection-list #stateList [multiple]="false">
+        <mat-selection-list #stateList [multiple]="false" hideSingleSelectionIndicator>
           <mat-list-option *ngFor="let state of states; let first"
                            [value]="state"
                            (keydown)="$event.stopPropagation()">
@@ -156,7 +156,7 @@
                         mat-stroked-button
                         [matTooltip]="'Export to JSON file'"
                         (click)="exportState(selectedState)">
-                  <mat-icon [svgIcon]="icons.Download"></mat-icon>
+                  <mat-icon color="none" [svgIcon]="icons.Download"></mat-icon>
                 </button>
                 <mat-progress-bar @fade
                                   *ngIf="buttonLoaders.export$ | async"

@@ -49,6 +49,7 @@ export class ValidationMessageComponent {
   }
 
   message: string;
+
   private errorMessageTranscriber = new ErrorMessageTranscriber();
 
 }

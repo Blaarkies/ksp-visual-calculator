@@ -14,16 +14,21 @@
                          class="advanced-placement-fields"
                          [inputFields]="advancedInputFieldsList"></cp-input-field-list>
 
-    <div @fade
+    <div
+      @fade
          *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
-         class="error-message">
+         class="error-message"
+    >
       <mat-error>{{advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh}}</mat-error>
 
-      <button mat-icon-button
+      <button mat-button
+              class="reset-values-button"
               color="warn"
               (click)="advancedForm.reset()"
               [matTooltip]="'Reset values'">
-        <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
+        <div>
+          <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
+        </div>
       </button>
     </div>
   </div>

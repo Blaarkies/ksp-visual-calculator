@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnDestroy,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   ReactiveFormsModule,
@@ -20,20 +21,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   BehaviorSubject,
   debounceTime,
-  distinctUntilChanged,
   filter,
   finalize,
   firstValueFrom,
   switchMap,
-  takeUntil,
   tap,
   withLatestFrom,
 } from 'rxjs';
 import { BasicAnimations } from '../../../animations/basic-animations';
 import { Icons } from '../../../common/domain/icons';
 import { GlobalStyleClass } from '../../../common/global-style-class';
-import { WithDestroy } from '../../../common/with-destroy';
-import { AnalyticsDialogComponent } from '../../../overlays/analytics-dialog/analytics-dialog.component';
 import { BuyMeACoffeeDialogComponent } from '../../../overlays/buy-me-a-coffee-dialog/buy-me-a-coffee-dialog.component';
 import {
   UploadImageDialogComponent,
@@ -43,10 +40,6 @@ import { AnalyticsService } from '../../../services/analytics.service';
 import { AuthService } from '../../../services/auth.service';
 import { UserData } from '../../../services/data.service';
 import { EventLogs } from '../../../services/domain/event-logs';
-import {
-  ThemeService,
-  ThemeTypeEnum,
-} from '../../../services/theme.service';
 import { InputFieldComponent } from '../../controls/input-field/input-field.component';
 import { InputToggleComponent } from '../../controls/input-toggle/input-toggle.component';
 import { AccountSignUpComponent } from '../sign-up/account-sign-up.component';
@@ -71,7 +64,7 @@ import { AccountSignUpComponent } from '../sign-up/account-sign-up.component';
   styleUrls: ['./account-details.component.scss'],
   animations: [BasicAnimations.fade],
 })
-export class AccountDetailsComponent extends WithDestroy() implements OnDestroy {
+export class AccountDetailsComponent {
 
   validatingCustomer$ = new BehaviorSubject<boolean>(false);
   uploadingImage$ = new BehaviorSubject<boolean>(false);
@@ -80,15 +73,15 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
   user$ = this.authService.user$;
   icons = Icons;
 
-  constructor(private snackBar: MatSnackBar,
-              private authService: AuthService,
-              private analyticsService: AnalyticsService,
-              private themeService: ThemeService,
-              private dialog: MatDialog) {
-    super();
-
+  constructor(
+    private snackBar: MatSnackBar,
+    private authService: AuthService,
+    private analyticsService: AnalyticsService,
+    private dialog: MatDialog,
+    private destroyRef: DestroyRef,
+  ) {
     this.user$
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe(user => this.controlName.setValue(user?.displayName, {emitEvent: false}));
 
     this.controlName.valueChanges
@@ -101,7 +94,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
 
           return this.authService.editUserData({...user, displayName: newName});
         }),
-        takeUntil(this.destroy$))
+        takeUntilDestroyed())
       .subscribe();
   }
 
@@ -156,7 +149,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
           }
         }),
         filter(ok => ok),
-        takeUntil(this.destroy$));
+        takeUntilDestroyed(this.destroyRef));
 
     let imageData = await firstValueFrom(dialogResult$);
 
@@ -195,7 +188,7 @@ export class AccountDetailsComponent extends WithDestroy() implements OnDestroy 
       .pipe(
         switchMap(() => this.authService.deleteAccount()),
         finalize(() => this.deletingAccount$.next(false)),
-        takeUntil(this.destroy$))
+        takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.snackBar.open(`"${user.email}" account has been deleted`);
 
