@@ -125,7 +125,7 @@ export class IsruStatisticsGenerator {
     let virtualConverterGroups = converterPartGroups
       .map(g => g.item.converters
         .map(c => ({...c, parent: g})))
-      .flatMap();
+      .flat();
     this.resourceConverterGroupsMap = new Map<keyof ResourceProperties, Converter[]>(
       resourceProperties
         .map(key => [key, virtualConverterGroups.filter(c => c[key] || c.parent.item[key])]));
@@ -400,7 +400,7 @@ export class IsruStatisticsGenerator {
 
   updateConverters(activeConverters: string[]) {
     Array.from(this.resourceConverterGroupsMap.values())
-      .flatMap()
+      .flat()
       .distinct()
       .forEach(c => c.isActive = activeConverters.includes(c.converterName));
 

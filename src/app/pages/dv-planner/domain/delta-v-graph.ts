@@ -144,7 +144,7 @@ export class DeltaVGraph {
       return StepMaker.escapeToOtherElliptical(from, to, planeChangeDv,
         ejectDv - from.dvToElliptical, captureDv - to.dvToElliptical);
     })
-      .flatMap();
+      .flat();
 
     let fullList = [
       ...kerbolOut,

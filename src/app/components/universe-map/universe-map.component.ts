@@ -16,7 +16,6 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
-import { CanCommunicate } from '../../common/domain/antenna-signal';
 import { Icons } from '../../common/domain/icons';
 import { OrbitWithPlanetoidType } from '../../common/domain/orbit-with-planetoid-type.model';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
@@ -29,6 +28,7 @@ import {
   PlanetoidDetailsDialogComponent,
   PlanetoidDetailsDialogData,
 } from '../../overlays/celestial-body-details-dialog/planetoid-details-dialog.component';
+import { CanCommunicate } from '../../pages/commnet-planner/models/antenna-signal';
 import { AnalyticsService } from '../../services/analytics.service';
 import { CameraService } from '../../services/camera.service';
 import { EventLogs } from '../../services/domain/event-logs';

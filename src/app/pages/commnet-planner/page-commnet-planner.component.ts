@@ -114,7 +114,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     ])
       .pipe(
         filter(([craft, planets]) => !!craft && !!planets),
-        map(lists => lists.flatMap() as SpaceObject[]));
+        map(lists => lists.flat() as SpaceObject[]));
 
     merge(
       this.authService.user$.pipe(take(1)),

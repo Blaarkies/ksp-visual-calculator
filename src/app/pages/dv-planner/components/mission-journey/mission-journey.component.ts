@@ -113,7 +113,7 @@ export class MissionJourneyComponent implements AfterViewInit {
     Array.from(destinationMap.values())
       .filter(list => list.length > 1)
       .map(list => list.map((tripIndex, i) => ({tripIndex, margin: i})))
-      .flatMap()
+      .flat()
       .forEach(({tripIndex, margin}) => this.tripIndexMarginMap[tripIndex] = margin);
   }
 

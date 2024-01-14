@@ -104,8 +104,6 @@ declare global {
      */
     remove(this: Array<T>, stale: T): Array<T>;
 
-    flatMap<U = T>(this: Array<T>, selectorCallback?: (item: T) => U): U;
-
     distinct(this: Array<T>, indexCallback?: (parentItem: T, list: Array<T>) => number): Array<T>;
 
     /**
