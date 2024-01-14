@@ -25,6 +25,7 @@ import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
 import { AnalyticsService } from '../../services/analytics.service';
 import { CameraService } from '../../services/camera.service';
 import { EventLogs } from '../../services/domain/event-logs';
+import { EventService } from '../../services/event.service';
 
 interface FocusItem {
   icon: string;
@@ -74,16 +75,20 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
 
   @ViewChildren('button') buttons: QueryList<MatButton>;
 
-  constructor(private cameraService: CameraService,
-              private analyticsService: AnalyticsService,
-              private window: Window) {
+  constructor(
+    private cameraService: CameraService,
+    private analyticsService: AnalyticsService,
+    private window: Window,
+    private eventService: EventService,
+  ) {
     super();
   }
 
   ngOnInit() {
     fromEvent(this.window, 'keyup')
       .pipe(
-        filter((event: KeyboardEvent) => event.key === 'Tab'),
+        filter((event: KeyboardEvent) => event.key === 'Tab'
+          && !this.eventService.hasActiveOverlay()),
         takeUntil(this.destroy$))
       .subscribe(event => this.focusNextBody(event.shiftKey));
   }
@@ -114,8 +119,6 @@ export class FocusJumpToPanelComponent extends WithDestroy() implements OnInit, 
       + buttonElement.offsetHeight * .5
       - parentNode.offsetTop
       - parentNode.offsetHeight * .5;
-
-    activeButton.ripple.launch({centered: true});
   }
 
 }
