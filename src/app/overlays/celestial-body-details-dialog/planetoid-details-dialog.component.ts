@@ -16,7 +16,7 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { Antenna } from '../../common/domain/antenna';
+import { Antenna } from '../../pages/commnet-planner/models/antenna';
 import { Icons } from '../../common/domain/icons';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';

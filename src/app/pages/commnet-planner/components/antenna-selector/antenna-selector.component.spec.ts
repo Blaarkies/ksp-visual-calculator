@@ -1,7 +1,7 @@
 import { AntennaSelectorComponent } from './antenna-selector.component';
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
 import { AppModule } from '../../app.module';
-import { Antenna } from '../../../../common/domain/antenna';
+import { Antenna } from '../../models/antenna';
 import { Group } from '../../../../common/domain/group';
 import { ineeda } from 'ineeda';
 import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';

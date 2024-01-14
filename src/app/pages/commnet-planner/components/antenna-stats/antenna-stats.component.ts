@@ -5,7 +5,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   Antenna,
   ProbeControlPoint,
-} from '../../../../common/domain/antenna';
+} from '../../models/antenna';
 import { Group } from '../../../../common/domain/group';
 import { LabeledOption } from '../../../../common/domain/input-fields/labeled-option';
 import { AntennaInput } from '../antenna-selector/antenna-input';

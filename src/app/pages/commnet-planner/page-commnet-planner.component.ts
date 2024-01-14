@@ -21,7 +21,7 @@ import { ActionOption } from '../../common/domain/action-option';
 import {
   AntennaSignal,
   CanCommunicate,
-} from '../../common/domain/antenna-signal';
+} from './models/antenna-signal';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Group } from '../../common/domain/group';
 import { Icons } from '../../common/domain/icons';

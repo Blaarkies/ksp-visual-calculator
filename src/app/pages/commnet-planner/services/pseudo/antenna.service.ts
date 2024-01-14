@@ -4,7 +4,7 @@ import {
   Observable,
   shareReplay,
 } from 'rxjs';
-import { Antenna } from '../../../../common/domain/antenna';
+import { Antenna } from '../../models/antenna';
 
 function getNewSubject() {
   return new BehaviorSubject<Antenna[]>([]);

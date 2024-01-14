@@ -10,7 +10,7 @@ import {
   startWith,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
-import { AntennaSignal } from '../../../../common/domain/antenna-signal';
+import { AntennaSignal } from '../../models/antenna-signal';
 import { CameraService } from '../../../../services/camera.service';
 
 @Component({

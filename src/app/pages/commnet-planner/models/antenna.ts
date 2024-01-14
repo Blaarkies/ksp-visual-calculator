@@ -1,6 +1,6 @@
-import { AntennaDto } from './dtos/antenna-dto';
-import { Group } from './group';
-import { Icons } from './icons';
+import { AntennaDto } from '../../../common/domain/dtos/antenna-dto';
+import { Group } from '../../../common/domain/group';
+import { Icons } from '../../../common/domain/icons';
 
 export enum ProbeControlPoint {
   SingleHop = 'single-hop',

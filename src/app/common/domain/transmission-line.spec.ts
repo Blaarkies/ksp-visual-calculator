@@ -1,4 +1,4 @@
-import { AntennaSignal } from './antenna-signal';
+import { AntennaSignal } from '../../pages/commnet-planner/models/antenna-signal';
 import { ineeda } from 'ineeda';
 import { SetupService } from '../../services/setup.service';
 import { SpaceObject } from './space-objects/space-object';

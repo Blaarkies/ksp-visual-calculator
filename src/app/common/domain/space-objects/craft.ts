@@ -1,5 +1,5 @@
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
-import { Antenna } from '../antenna';
+import { Antenna } from '../../../pages/commnet-planner/models/antenna';
 import { CraftDto } from '../dtos/craft-dto';
 import { Group } from '../group';
 import { ImageUrls } from '../image-urls';

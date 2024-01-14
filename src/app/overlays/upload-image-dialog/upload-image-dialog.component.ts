@@ -106,8 +106,9 @@ export class UploadImageDialogComponent {
     }
   }
 
-  async uploadFileSelected(event: Event & {target: {files: unknown}}) {
-    await this.importFile(event.target.files);
+  async uploadFileSelected(event: InputEvent) {
+    let element = event.target as HTMLInputElement;
+    await this.importFile(element.files);
   }
 
   loadImageFailed() {

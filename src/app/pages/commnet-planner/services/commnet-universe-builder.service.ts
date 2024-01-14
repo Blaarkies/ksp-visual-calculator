@@ -14,11 +14,11 @@ import {
   tap,
 } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
-import { Antenna } from '../../../common/domain/antenna';
+import { Antenna } from '../models/antenna';
 import {
   AntennaSignal,
   CanCommunicate,
-} from '../../../common/domain/antenna-signal';
+} from '../models/antenna-signal';
 import { CraftDto } from '../../../common/domain/dtos/craft-dto';
 import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { Group } from '../../../common/domain/group';
@@ -37,7 +37,7 @@ import { StockEntitiesCacheService } from '../../../services/stock-entities-cach
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { CraftDetails } from '../components/craft-details-dialog/craft-details';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
-import { ConnectionGraph } from '../connection-graph';
+import { ConnectionGraph } from '../models/connection-graph';
 import {
   antennaServiceDestroy,
   antennaServiceSetAntennae,

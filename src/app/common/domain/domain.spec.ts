@@ -1,7 +1,7 @@
 import * as antennaPartsJson from 'src/assets/stock/antenna-parts.json';
-import { Antenna } from './antenna';
+import { Antenna } from '../../pages/commnet-planner/models/antenna';
 import { AntennaDto } from './dtos/antenna-dto';
-import { AntennaSignal } from './antenna-signal';
+import { AntennaSignal } from '../../pages/commnet-planner/models/antenna-signal';
 import { SpaceObject } from './space-objects/space-object';
 import { Group } from './group';
 import { SetupService } from '../../services/setup.service';

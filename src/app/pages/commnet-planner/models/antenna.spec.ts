@@ -1,5 +1,5 @@
 import { Antenna } from './antenna';
-import { Icons } from './icons';
+import { Icons } from '../../../common/domain/icons';
 
 // Most antenna tests happen in "domain.spec.ts", tested against in-game results
 describe('Antenna class', () => {

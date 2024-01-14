@@ -25,7 +25,10 @@ export function NodeGraph(): GraphDataStructure {
     try {
       return baseShortestPath(source, destination);
     } catch (e) {
-      return [];
+      if (e?.message === 'Source node is not in the graph') {
+        return [];
+      }
+      throw e;
     }
   };
 

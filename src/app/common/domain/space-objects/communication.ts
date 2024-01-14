@@ -7,7 +7,7 @@ import { SubjectHandle } from '../../subject-handle';
 import {
   Antenna,
   ProbeControlPoint,
-} from '../antenna';
+} from '../../../pages/commnet-planner/models/antenna';
 import { CommunicationDto } from '../dtos/communication-dto';
 import { Group } from '../group';
 
