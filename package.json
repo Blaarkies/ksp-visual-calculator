@@ -6,8 +6,8 @@
     "start": "ng serve",
     "build": "ng build --configuration production",
     "host-local": "ng serve --host 0.0.0.0",
-    "deploy-prod": "firebase deploy --only hosting",
-    "deploy-qa": "firebase hosting:channel:deploy qa"
+    "deploy-qa": "firebase hosting:channel:deploy qa --only hosting",
+    "deploy-prod": "firebase deploy --only hosting"
   },
   "private": true,
   "dependencies": {
