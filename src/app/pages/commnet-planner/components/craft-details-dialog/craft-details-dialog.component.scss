@@ -62,6 +62,11 @@
   }
 }
 
+.divider-padding {
+  height: 36px;
+  margin-inline: 1em !important; // override .mat-divider
+}
+
 .error-message {
   display: flex;
   align-items: center;

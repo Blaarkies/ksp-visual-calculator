@@ -221,7 +221,9 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
       .afterClosed()
       .pipe(
         filter(details => details),
-        delayWhen(details => this.commnetUniverseBuilderService.editCraft(craft, details)),
+        delayWhen(details => craft.id === details.id
+          ? this.commnetUniverseBuilderService.editCraft(craft, details)
+          : this.commnetUniverseBuilderService.addCraftToUniverse(details)),
         takeUntil(this.destroy$))
       .subscribe();
   }

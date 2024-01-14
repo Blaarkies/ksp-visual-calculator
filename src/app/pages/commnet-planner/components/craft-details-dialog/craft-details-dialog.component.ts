@@ -46,6 +46,7 @@ import { Uid } from '../../../../common/uid';
 import { CommonValidators } from '../../../../common/validators/common-validators';
 import { WithDestroy } from '../../../../common/with-destroy';
 import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
+import { Antenna } from '../../models/antenna';
 import { CommnetUniverseBuilderService } from '../../services/commnet-universe-builder.service';
 import { AntennaSelectorComponent } from '../antenna-selector/antenna-selector.component';
 import { AdvancedPlacement } from './advanced-placement';
@@ -160,6 +161,42 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     this.dialogRef.close();
   }
 
+  copy() {
+    let thisCraft = this.data.edit;
+
+    this.data.forbiddenNames.push(thisCraft.label);
+    this.data.edit = undefined;
+
+    let copyLabel = this.getCopyLabel(thisCraft.label);
+    let copyAntennae = thisCraft.communication.antennaeFull
+      .map(({item, count}) => new Group(item, count));
+    this.setupInputFields(
+      copyLabel,
+      thisCraft.craftType,
+      copyAntennae);
+    this.updateMainForm();
+
+    // Name control does not update validation error message
+    this.inputFields.name.control.markAllAsTouched();
+ }
+
+  private getCopyLabel(label: string) {
+    let copyOfString = 'Copy of ';
+
+    let isCopy = label.startsWith(copyOfString);
+    if (isCopy) {
+      return 'Copy(1) of ' + label.split(copyOfString).at(-1);
+    }
+
+    let copyIteration = label.match(/^Copy\((\d{1,2})\) of /)?.[1]?.toNumber();
+    if (copyIteration && copyIteration <= 99) {
+      let copyNumber = copyIteration + 1;
+      return label.replace(/^Copy\((\d{1,2})\) of /, () => `Copy(${copyNumber}) of `);
+    }
+
+    return copyOfString + label;
+  }
+
   private getAdvancedPlacementValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       let value = formGroup.value;
@@ -182,11 +219,15 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     };
   }
 
-  private setupInputFields() {
+  private setupInputFields(label?: string,
+                           craftType?: CraftType,
+                           antennaeGroups?: Group<Antenna>[]) {
     this.inputFields = {
       name: {
         label: 'Name',
-        control: new FormControl(this.data.edit?.label ?? 'Untitled Space Craft', [
+        control: new FormControl(label
+          ?? this.data.edit?.draggable?.label
+          ?? 'Untitled Space Craft', [
           Validators.required,
           Validators.maxLength(128),
           CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
@@ -195,16 +236,20 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       },
       craftType: {
         label: 'Type',
-        control: new FormControl(this.data.edit?.craftType ?? CraftType.Relay, Validators.required),
+        control: new FormControl(craftType
+          ?? this.data.edit?.craftType
+          ?? CraftType.Relay, Validators.required),
         controlMeta: new ControlMetaSelect(CraftType.List, undefined, 'Icon to represent this craft'),
       },
       antennaSelection: {
         label: 'Antennae Onboard',
-        control: new FormControl(this.data.edit?.communication.antennaeFull
+        control: new FormControl(antennaeGroups
+          ?? this.data.edit?.communication.antennaeFull
           ?? [new Group(this.data.universeBuilderHandler.getAntenna('Internal'))]),
         controlMeta: new ControlMetaAntennaSelector(this.data.universeBuilderHandler.antennaList),
       },
     } as InputFields;
+
     this.inputListCraft = [this.inputFields.name, this.inputFields.craftType];
     this.inputListAntenna = [this.inputFields.antennaSelection];
     this.inputFieldsList = Object.values(this.inputFields);
@@ -234,4 +279,5 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       },
     } as InputFields;
   }
+
 }

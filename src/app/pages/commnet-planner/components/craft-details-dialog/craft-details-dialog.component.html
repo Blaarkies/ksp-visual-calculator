@@ -16,10 +16,10 @@
 
     <div
       @fade
-         *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
-         class="error-message"
+      *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
+      class="error-message"
     >
-      <mat-error>{{advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh}}</mat-error>
+      <mat-error>{{ advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh }}</mat-error>
 
       <button mat-button
               class="reset-values-button"
@@ -46,17 +46,33 @@
 
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]>Cancel</button>
-  <button *ngIf="data.edit"
-          class="justify-right"
-          color="warn"
-          mat-stroked-button
-          (click)="remove()">
-    Remove
-  </button>
+
+  @if (data.edit) {
+    <button
+      class="justify-right"
+      color="warn"
+      mat-stroked-button
+      (click)="remove()"
+    >
+      Remove
+    </button>
+
+    <button
+      class="justify-right"
+      color="primary"
+      mat-stroked-button
+      (click)="copy()"
+    >
+      Copy
+    </button>
+
+    <mat-divider vertical class="divider-padding"/>
+  }
+
   <button color="primary"
           mat-stroked-button
           [disabled]="form.invalid"
           (click)="submitCraftDetails()">
-    {{data.edit ? 'Save' : 'Create'}}
+    {{ data.edit ? 'Save' : 'Create' }}
   </button>
 </div>
