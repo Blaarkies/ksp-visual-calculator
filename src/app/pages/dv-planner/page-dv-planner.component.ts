@@ -13,6 +13,7 @@ import {
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Orbit } from '../../common/domain/space-objects/orbit';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { WithDestroy } from '../../common/with-destroy';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
@@ -60,7 +61,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
   contextPanelDetails: ActionPanelDetails;
   orbits$: Observable<Orbit[]>;
-  planets$: Observable<SpaceObject[]>;
+  planetoids$: Observable<Planetoid[]>;
 
   constructor(
     private authService: AuthService,
@@ -76,7 +77,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
 
     let universe = dvUniverseBuilderService;
     this.orbits$ = universe.orbits$;
-    this.planets$ = universe.planetoids$;
+    this.planetoids$ = universe.planetoids$;
 
     merge(
       this.authService.user$.pipe(take(1)),

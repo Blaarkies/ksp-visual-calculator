@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "test": "ng test",
     "build": "ng build --configuration production",
     "host-local": "ng serve --host 0.0.0.0",
     "deploy-qa": "firebase hosting:channel:deploy qa --only hosting",
@@ -11,7 +12,6 @@
     "e2e": "ng e2e",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    
     "cypress:run-component": "cypress run --config video=false --component"
   },
   "private": true,

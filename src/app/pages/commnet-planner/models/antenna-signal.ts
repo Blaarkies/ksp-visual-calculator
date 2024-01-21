@@ -180,11 +180,10 @@ export class AntennaSignal {
   }
 
   getHostToClientSignalStrength(hostNode: CanCommunicate): number {
-    let host = this.nodes.find(n => n === hostNode);
     let client = this.nodes.find(n => n !== hostNode);
 
     return this.getRelayToTotalSignalStrength(
-      host,
+      hostNode,
       client,
       this.nodes[0].communication.containsRelay(),
       this.nodes[1].communication.containsRelay(),
@@ -196,13 +195,17 @@ export class AntennaSignal {
       this.nodes[1].communication.antennaeFull);
   }
 
-  @Memoize({strategy: 'variadic'})
-  private getRelayToTotalSignalStrength(hostNode: CanCommunicate,
-                                        clientNode: CanCommunicate,
-                                        ...rest: (boolean
-                                          | number
-                                          | Group<Antenna>[])[])
-    : number {
+  // SpaceObjects (host/client) contain properties that trip up the default serializer
+  @Memoize({
+    serializer: args => args[0].id
+      + args[1].id
+      + JSON.stringify(args.slice(2)),
+  })
+  private getRelayToTotalSignalStrength(
+    hostNode: CanCommunicate,
+    clientNode: CanCommunicate,
+    ...rest: (boolean | number | Group<Antenna>[])[]
+  ): number {
     if (!hostNode.communication.containsRelay()) {
       return 0;
     }

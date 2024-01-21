@@ -6,12 +6,7 @@
   (touchstart)="touchStart($event, cameraController)"
   (contextmenu)="$event.shiftKey || $event.preventDefault()"
 >
-  <div #contentStack
-       class="contents-stack stack"
-       [style.width.px]="backboardScale * scale"
-       [style.height.px]="backboardScale * scale"
-       [style.left.px]="location.x"
-       [style.top.px]="location.y">
+  <div #contentStack class="contents-stack stack">
     <ng-content></ng-content>
   </div>
 

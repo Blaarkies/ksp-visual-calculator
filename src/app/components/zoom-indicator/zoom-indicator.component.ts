@@ -58,7 +58,7 @@ export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
               cameraService: CameraService) {
     super();
 
-    cameraService.cameraChange$
+    cameraService.cameraMovement$
       .pipe(
         sampleTime(200),
         takeUntil(this.destroy$))

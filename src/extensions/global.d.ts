@@ -127,7 +127,7 @@ declare global {
      * Returns a list split into separate lists indexed by the value of the `indexer` callback.
      * @param indexer
      */
-    splitFilter(this: Array<T>, indexer: (item: T) => number): Array<Array<T>>;
+    filterSplit(this: Array<T>, indexer: (item: T) => number): Array<Array<T>>;
   }
 
   interface Boolean extends CallbackExtensions<boolean> {

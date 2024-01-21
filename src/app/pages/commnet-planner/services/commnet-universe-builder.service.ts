@@ -197,7 +197,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       .map(pair => // leave existing signals here so that visuals do not flicker
         signals.find(t => pair.every(n => t.nodes.includes(n)))
         ?? new AntennaSignal(pair, () => this.difficultySetting.rangeModifier))
-      .splitFilter(tl => tl.strengthTotal ? 1 : 0);
+      .filterSplit(tl => tl.strengthTotal ? 1 : 0);
 
     removeSignals.forEach(s => s.destroy());
 
@@ -220,7 +220,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
   private addCraft(details: CraftDetails, allCraft: Craft[]) {
     let location = details.advancedPlacement?.location
-      ?? this.cameraService.convertScreenToGameSpace(this.cameraService.screenCenterOffset);
+      ?? this.cameraService.getGameSpaceLocationOfScreenSpaceCenter();
 
     let craft = new Craft(details.id, details.name, details.craftType,
       details.antennae.map(g => new Group(g.item.label, g.count)));

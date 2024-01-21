@@ -18,10 +18,6 @@ import {
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { ActionOption } from '../../common/domain/action-option';
-import {
-  AntennaSignal,
-  CanCommunicate,
-} from './models/antenna-signal';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Group } from '../../common/domain/group';
 import { Icons } from '../../common/domain/icons';
@@ -52,6 +48,10 @@ import {
 } from './components/craft-details-dialog/craft-details-dialog.component';
 import { CraftComponent } from './components/craft/craft.component';
 import { DifficultySettingsDialogComponent } from './components/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import {
+  AntennaSignal,
+  CanCommunicate,
+} from './models/antenna-signal';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
 

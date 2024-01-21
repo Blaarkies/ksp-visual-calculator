@@ -1,15 +1,8 @@
 import {
-  ElementRef,
+  DestroyRef,
   Injectable,
-  OnDestroy,
 } from '@angular/core';
-import {
-  ReplaySubject,
-  Subject,
-  take,
-  takeUntil,
-  timer,
-} from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { CameraDto } from '../common/domain/dtos/camera.dto';
 import { Draggable } from '../common/domain/space-objects/draggable';
 import { Planetoid } from '../common/domain/space-objects/planetoid';
@@ -17,23 +10,26 @@ import { PlanetoidType } from '../common/domain/space-objects/planetoid-type';
 import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { Vector2 } from '../common/domain/vector2';
-import { easeOutExpo } from '../common/timing-functions';
-import { WithDestroy } from '../common/with-destroy';
+import { CameraMovement } from './domain/camera-movement.model';
+import { TimingFunction } from './domain/timing-function.type';
 
 let defaultScale = 1;
 let defaultLocation = new Vector2(-960, 540);
 
 @Injectable({providedIn: 'root'})
-export class CameraService extends WithDestroy() implements OnDestroy {
+export class CameraService {
 
-  static zoomLimits = [1e-1, 1.9e3];
+  static zoomLimits = [1e-1, 2.1e3];
   static scaleToShowMoons = 25;
 
   /** Size of Backboard */
   static backboardScale = 1e4;
   /** Ratio from Gamespace locations to backboard normalized locations */
   static normalizedScale = 1e-11;
-  static scaleModifier = CameraService.backboardScale * CameraService.normalizedScale;
+
+  private scaleModifier = CameraService.backboardScale * CameraService.normalizedScale;
+
+  private hoverObject: Draggable;
 
   private _scale = defaultScale;
 
@@ -41,18 +37,12 @@ export class CameraService extends WithDestroy() implements OnDestroy {
     return this._scale;
   }
 
-  set scale(value: number) {
+  private set scale(value: number) {
     let limitedValue = value.coerceIn(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
     this._scale = limitedValue;
   }
 
-  location = defaultLocation.clone();
-
-  get screenCenterOffset(): Vector2 {
-    return new Vector2(this.window.innerWidth, this.window.innerHeight).multiply(.5);
-  }
-
-  private hoverObject: Draggable;
+  private location = defaultLocation.clone();
 
   get currentHoverObject(): Draggable {
     return this.hoverObject;
@@ -66,54 +56,22 @@ export class CameraService extends WithDestroy() implements OnDestroy {
   }
 
   lastFocusObject: Draggable;
-  cameraChange$ = new ReplaySubject<void>();
-  stopAnimation$ = new Subject<void>();
 
-  // TODO: change to proper setters, callbacks
-  cameraController: ElementRef<HTMLDivElement>;
-  contentStack: ElementRef<HTMLDivElement>;
+  private cameraMove$ = new ReplaySubject<CameraMovement>();
+  cameraMovement$ = this.cameraMove$.asObservable();
+
+  // TODO: Set by CameraComponent onInit. Remove this hack
   getSoiParent: (location: Vector2) => Planetoid;
 
-  constructor(private window: Window) {
-    super();
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-    this.cameraChange$.next();
-    this.cameraChange$.complete();
-    this.stopAnimation$.next();
-    this.stopAnimation$.complete();
+  constructor(
+    private window: Window,
+    destroyRef: DestroyRef,
+  ) {
+    destroyRef.onDestroy(() => this.cameraMove$.complete());
   }
 
   setFromJson(dto: CameraDto) {
-    this.animateCameraTo(dto.scale, Vector2.fromList(dto.location));
-  }
-
-  private animateCameraTo(endScale: number, endLocation: Vector2) {
-    this.stopAnimation$.next();
-
-    let startScale = this.scale;
-    let startLocation = this.location.clone();
-
-    let intervalDuration = 10;
-    let totalDuration = 1000;
-    let steps = (totalDuration / intervalDuration).toInt();
-
-    timer(0, intervalDuration).pipe(
-      take(steps),
-      takeUntil(this.stopAnimation$),
-      takeUntil(this.destroy$))
-      .subscribe(i => {
-        let t = (i + 1) / steps;
-        let tw = easeOutExpo(t);
-        let newScale = endScale.lerp(startScale, tw);
-        let newLocation = endLocation.lerpClone(startLocation, tw);
-        this.scale = newScale;
-        this.location.setVector2(newLocation);
-
-        this.cameraChange$.next();
-      });
+    this.startCameraMovement(dto.scale, Vector2.fromList(dto.location));
   }
 
   toJson(): CameraDto {
@@ -123,48 +81,16 @@ export class CameraService extends WithDestroy() implements OnDestroy {
     };
   }
 
-  reset(scale?: number, location?: Vector2) {
-    let newScale = scale ?? defaultScale;
-    let newLocation = location ?? defaultLocation.clone();
-    this.cameraChange$.next();
-
-    this.animateCameraTo(newScale, newLocation);
-  }
-
-  zoomAt(delta: number, mouseLocation: Vector2 = null) {
-    delta = delta > 0 ? delta : -1 / delta;
-
-    let inRange = (this.scale * delta).between(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
-    if (!inRange) {
-      return;
-    }
-
-    let zoomAtLocation = this.hoverObject
-      ? this.convertGameToScreenSpace(this.hoverObject.location)
-      : mouseLocation;
-
-    let worldLocation = zoomAtLocation.subtractVector2(this.location);
-    let shift = worldLocation.multiply(-(delta - 1));
-
-    this.location.addVector2(shift);
-    this.scale *= delta;
-
-    this.cameraChange$.next();
-    this.stopAnimation$.next();
-  }
-
   private focusAt(spaceObject: SpaceObject, zoomIn?: boolean) {
     let newScale = zoomIn
       ? CameraService.scaleToShowMoons.lerp(CameraService.zoomLimits[1], .999)
       : this.getScaleForFocus(spaceObject);
 
     let newLocation = spaceObject.location
-      .multiplyClone(-newScale * CameraService.scaleModifier)
-      .addVector2(this.screenCenterOffset);
+      .multiplyClone(-newScale * this.scaleModifier)
+      .addVector2(this.getScreenCenterOffset());
 
-    this.cameraChange$.next();
-
-    this.animateCameraTo(newScale, newLocation);
+    this.startCameraMovement(newScale, newLocation);
   }
 
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
@@ -197,11 +123,17 @@ export class CameraService extends WithDestroy() implements OnDestroy {
   }
 
   translate(x: number, y: number) {
-    this.location.add(x, y);
-    this.cameraChange$.next();
-    this.stopAnimation$.next();
+    this.startCameraMovement(this.scale, this.location.clone().add(x, y), 0);
   }
 
+  /**
+   * Find the ScreenSpace location matching `gameSpaceLocation`. This can find a
+   * location in the camera's content-stack element matching a location in the
+   * star system (i.e. displaying overlay icons).
+   * <br>GameSpace is the "in-game" measure of location where SpaceObject Draggable(s) exist.
+   * @param gameSpaceLocation Vector2 of a SpaceObject draggable
+   * @see convertScreenToGameSpace
+   */
   convertGameToScreenSpace(gameSpaceLocation: Vector2): Vector2 {
     let backboardLocation = gameSpaceLocation.clone().multiply(CameraService.normalizedScale);
     let screenSpaceLocation = backboardLocation.multiply(CameraService.backboardScale * this.scale);
@@ -209,11 +141,80 @@ export class CameraService extends WithDestroy() implements OnDestroy {
     return screenSpaceLocationOffset;
   };
 
+  /**
+   * Find the GameSpace location matching `screenSpaceLocation`. This can find a
+   * location in the star system matching the camera location (i.e. placing craft at screen center).
+   * <br>ScreenSpace is the measure of location on the Camera content-stack element.
+   * <br>The following properties are affected by camera movement:
+   * - width, height, left, top
+   * @param screenSpaceLocation Vector2 of a camera location
+   * @see convertGameToScreenSpace
+   */
   convertScreenToGameSpace(screenSpaceLocation: Vector2): Vector2 {
     let backboardLocation = screenSpaceLocation.clone().subtractVector2(this.location);
     let backboardRatio = backboardLocation.multiply(1 / (CameraService.backboardScale * this.scale));
     let gameSpaceLocationOffset = backboardRatio.multiply(1 / CameraService.normalizedScale);
     return gameSpaceLocationOffset;
+  }
+
+  /**
+   * Converts location from pageX/pageY properties found in a 'mousemove' event emitted from the
+   * content-stack element to an on-screen location for displaying icons.
+   * @param pageLocation Vector2 built from pageX/pageY properties
+   */
+  convertPageLocationToMouseLocation(pageLocation: Vector2): Vector2 {
+    return pageLocation.subtractVector2(this.location);
+  }
+
+  /** Returns the GameSpace location found at the center of the screen. */
+  getGameSpaceLocationOfScreenSpaceCenter(): Vector2 {
+    return this.convertScreenToGameSpace(this.getScreenCenterOffset());
+  }
+
+  zoomAt(delta: number, mouseLocation: Vector2) {
+    delta = delta > 0 ? delta : -1 / delta;
+
+    let inRange = (this.scale * delta)
+      .between(CameraService.zoomLimits[0], CameraService.zoomLimits[1]);
+    if (!inRange) {
+      return;
+    }
+
+    let hoverObject = this.currentHoverObject;
+    let zoomAtLocation = hoverObject
+      ? this.convertGameToScreenSpace(hoverObject.location)
+      : mouseLocation;
+
+    let worldLocation = zoomAtLocation.subtractVector2(this.location);
+    let shift = worldLocation.multiply(-(delta - 1));
+
+    let newLocation = this.location.clone().addVector2(shift);
+    let newScale = this.scale * delta;
+
+    this.startCameraMovement(newScale, newLocation, 150);
+  }
+
+  startCameraMovement(
+    newScale: number,
+    newLocation: Vector2,
+    duration: number = 700,
+    timingFunction: TimingFunction = 'ease-out',
+  ) {
+    this.cameraMove$.next(
+      new CameraMovement(newScale, newLocation.clone(),
+        this.scale, this.location.clone(),
+        duration, timingFunction));
+
+    this.updateCameraParameters(newScale, newLocation);
+  }
+
+  private updateCameraParameters(newScale: number, newLocation: Vector2) {
+    this.scale = newScale;
+    this.location.setVector2(newLocation);
+  }
+
+  private getScreenCenterOffset(): Vector2 {
+    return new Vector2(this.window.innerWidth, this.window.innerHeight).multiply(.5);
   }
 
 }

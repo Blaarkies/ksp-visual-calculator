@@ -134,7 +134,7 @@ Array.prototype.windowed = function (this: Array<any>,
   return result;
 };
 
-Array.prototype.splitFilter = function (this: Array<any>,
+Array.prototype.filterSplit = function (this: Array<any>,
                                         indexer: (item: any) => number): Array<Array<any>> {
   let resultLists = [];
   for (let item of this) {

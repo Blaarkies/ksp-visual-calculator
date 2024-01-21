@@ -6,19 +6,19 @@
                           font-size: 3em;
                           pointer-events: none;">
   <span style="opacity: .2;">Blaarkies Book</span>
-  <button mat-button
-          style="pointer-events: all; opacity: .4;"
-          [matMenuTriggerFor]="menu">
-    <div>
-      <mat-icon [svgIcon]="icons.MenuVertical" color="white"></mat-icon>
-    </div>
+  <button
+    mat-button
+    style="pointer-events: all; opacity: .4; color: #fff"
+    [matMenuTriggerFor]="menu"
+  >
+    ⁝
   </button>
   <mat-menu #menu="matMenu">
     <a mat-stroked-button
        style="display: grid; text-decoration: none;"
        *ngFor="let link of routes"
        [href]="link">
-      {{link}}
+      {{ link }}
     </a>
   </mat-menu>
 </div>

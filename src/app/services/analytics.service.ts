@@ -18,10 +18,12 @@ export class AnalyticsService {
   isTracking: boolean;
   private throttledEvents = new ThrottledEvents(this);
 
+  private isProd = environment.production;
+
   constructor(private localStorageService: LocalStorageService,
               private analytics: Analytics) {
     let optedOut = localStorageService.hasDoNotTrack();
-    if (optedOut) {
+    if (optedOut || !this.isProd) {
       this.isTracking = false;
       return;
     }
@@ -30,11 +32,8 @@ export class AnalyticsService {
   }
 
   setActive(isTracking: boolean) {
-    if (this.isTracking === false) {
-      this.isTracking = true;
-    }
-
-    this.logEvent(`Set tracking ${isTracking.toString('on')}`, {category: EventLogs.Category.Privacy});
+    this.logEvent(`Set tracking ${isTracking.toString('on')}`,
+      {category: EventLogs.Category.Privacy});
     setTimeout(() => {
       // Wait for previous event to finish sending before turning off
       setAnalyticsCollectionEnabled(this.analytics, isTracking);
@@ -44,9 +43,13 @@ export class AnalyticsService {
   }
 
   logEvent(name: string, details?: any) {
+    if (!this.isTracking) {
+      return;
+    }
+
     let newDetails = {
       ...this.flattenObject(details),
-      environment: environment.production ? 'prod' : 'dev',
+      environment: this.isProd ? 'prod' : 'dev',
     };
     newDetails.environment === 'prod'
       ? logEvent(this.analytics, name, newDetails)

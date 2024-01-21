@@ -28,7 +28,7 @@ export function NodeGraph(): GraphDataStructure {
       if (e?.message === 'Source node is not in the graph') {
         return [];
       }
-      throw e;
+      console.warn('Could not determine a node graph path to destination.', e);
     }
   };
 

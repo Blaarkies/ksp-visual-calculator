@@ -1,8 +1,8 @@
 <div #backboard class="text-white">
 
   <div class="stars-background"
-       [style.background-position-x.px]="camera.location.x * .2"
-       [style.background-position-y.px]="camera.location.y * .2"
+       [style.background-position-x.px]="cameraLocationSig().x * .2"
+       [style.background-position-y.px]="cameraLocationSig().y * .2"
        [style.background-size.px]="1000"
   ></div>
 
@@ -13,8 +13,7 @@
     <ng-container *ngFor="let pair of orbits">
       <cp-orbit-line
         @fade
-        *ngIf="pair.type !== planetoidType.Moon
-              || camera.scale > scaleToShowMoons"
+        *ngIf="pair.type !== planetoidType.Moon || showMoonsSig()"
         [orbit]="pair.orbit"
       ></cp-orbit-line>
     </ng-container>
@@ -22,20 +21,23 @@
     <ng-content select="[aboveOrbits]"></ng-content>
 
     <ng-container *ngFor="let body of bodies">
-      <cp-draggable-space-object @fade
-                                 *ngIf="body.planetoidType !== planetoidType.Moon
-                                        || camera.scale > scaleToShowMoons"
-                                 [spaceObject]="body"
-                                 (dragSpaceObject)="startBodyDrag(body, $event, backboard, camera)"
-                                 cpMouseHover (hoverChange)="hoverBody.emit({body: body, hover: $event})"
-                                 (focusObject)="focusBody(body, $event)"
-                                 [showEdit]="editPlanetoid.observed"
-                                 (editSpaceObject)="editPlanetoidWithDialog(body)">
-        <div class="div-as-image"
-             draggable="false"
-             [style.background]="body.draggable.imageUrl"
-             [style.width.px]="body.size"
-             [style.height.px]="body.size"></div>
+      <cp-draggable-space-object
+        @fade
+        *ngIf="body.planetoidType !== planetoidType.Moon || showMoonsSig()"
+        [spaceObject]="body"
+        (dragSpaceObject)="startBodyDrag(body, $event, backboard, camera)"
+        cpMouseHover (hoverChange)="hoverBody.emit({body: body, hover: $event})"
+        (focusObject)="focusBody(body, $event)"
+        [showEdit]="editPlanetoid.observed"
+        (editSpaceObject)="editPlanetoidWithDialog(body)"
+      >
+        <div
+          class="div-as-image"
+          draggable="false"
+          [style.background]="body.draggable.imageUrl"
+          [style.width.px]="body.size"
+          [style.height.px]="body.size"
+        ></div>
 
       </cp-draggable-space-object>
       <cp-soi-circle [body]="body"></cp-soi-circle>

@@ -3,17 +3,21 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   Input,
-  OnDestroy,
   Output,
   ViewChild,
 } from '@angular/core';
+import {
+  takeUntilDestroyed,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import {
   filter,
-  takeUntil,
+  map,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
@@ -21,8 +25,8 @@ import { OrbitWithPlanetoidType } from '../../common/domain/orbit-with-planetoid
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
+import { Vector2 } from '../../common/domain/vector2';
 import { GlobalStyleClass } from '../../common/global-style-class';
-import { WithDestroy } from '../../common/with-destroy';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
 import {
   PlanetoidDetailsDialogComponent,
@@ -55,13 +59,14 @@ import { SoiCircleComponent } from '../soi-circle/soi-circle.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [BasicAnimations.fade],
 })
-export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
+export class UniverseMapComponent {
 
   bodies: Planetoid[];
+
   @Input() set planetoids(value: Planetoid[]) {
     this.bodies = value;
     this.orbits = value?.filter(p => p.draggable.orbit)
-        .map(p => ({orbit: p.draggable.orbit, type: p.planetoidType}));
+      .map(p => ({orbit: p.draggable.orbit, type: p.planetoidType}));
   }
 
   @Output() editPlanetoid = new EventEmitter<{ body, details }>();
@@ -74,16 +79,24 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
 
   orbits: OrbitWithPlanetoidType[];
   planetoidType = PlanetoidType;
-  scaleToShowMoons = CameraService.scaleToShowMoons;
   icons = Icons;
 
-  constructor(private cdr: ChangeDetectorRef,
-              private dialog: MatDialog,
-              private analyticsService: AnalyticsService,
-              private cameraService: CameraService,
-              private universeBuilderService: AbstractUniverseBuilderService,
-              private window: Window) {
-    super();
+  showMoonsSig = toSignal(
+    this.cameraService.cameraMovement$.pipe(
+      map(cm => cm.scaleEnd > CameraService.scaleToShowMoons)));
+  cameraLocationSig = toSignal(
+    this.cameraService.cameraMovement$.pipe(map(cm => cm.locationEnd)),
+    {initialValue: Vector2.zero});
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private analyticsService: AnalyticsService,
+    private cameraService: CameraService,
+    private universeBuilderService: AbstractUniverseBuilderService,
+    private window: Window,
+    private destroyRef: DestroyRef,
+  ) {
   }
 
   startBodyDrag(body: CanCommunicate, event: PointerEvent, screen: HTMLDivElement, camera: CameraComponent) {
@@ -124,7 +137,7 @@ export class UniverseMapComponent extends WithDestroy() implements OnDestroy {
       .afterClosed()
       .pipe(
         filter(details => details),
-        takeUntil(this.destroy$))
+        takeUntilDestroyed(this.destroyRef))
       .subscribe(details => {
         this.editPlanetoid.emit({body, details});
         this.cdr.markForCheck();

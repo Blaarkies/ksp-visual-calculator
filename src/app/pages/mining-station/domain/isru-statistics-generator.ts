@@ -100,7 +100,7 @@ export class IsruStatisticsGenerator {
       (<PartCategory[]>['isru', 'drill', 'solar-panel', 'fuel-cell'])
         .map((k, i) => [k, i]));
     let [drills = [], isrus = [], solarPanels = [], fuelCells = []]
-      = partGroups.splitFilter(({item}) => splitMap.get(item.category));
+      = partGroups.filterSplit(({item}) => splitMap.get(item.category));
 
     this.changeAffectsMap = new Map<AffectType, Group<CraftPart>[]>([
       ['solar', solarPanels],
@@ -111,7 +111,7 @@ export class IsruStatisticsGenerator {
 
     let [converterPartGroups = [],
       drillPartGroups = [],
-      otherPartGroups = []] = partGroups.splitFilter(({item}) =>
+      otherPartGroups = []] = partGroups.filterSplit(({item}) =>
       item.converters ? 0 : item.category === 'drill' ? 1 : 2);
 
     this.resourcePartGroupsMap = new Map<keyof ResourceProperties, Group<CraftPart>[]>(
