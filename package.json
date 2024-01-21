@@ -7,7 +7,12 @@
     "build": "ng build --configuration production",
     "host-local": "ng serve --host 0.0.0.0",
     "deploy-qa": "firebase hosting:channel:deploy qa --only hosting",
-    "deploy-prod": "firebase deploy --only hosting"
+    "deploy-prod": "firebase deploy --only hosting",
+    "e2e": "ng e2e",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    
+    "cypress:run-component": "cypress run --config video=false --component"
   },
   "private": true,
   "dependencies": {
@@ -34,9 +39,11 @@
     "@angular-devkit/build-angular": "^17.0.10",
     "@angular/cli": "^17.0.10",
     "@angular/compiler-cli": "^17.0.9",
+    "@cypress/schematic": "^2.5.1",
     "@types/node": "^20.11.0",
     "@types/pako": "^2.0.3",
     "codelyzer": "^6.0.2",
+    "cypress": "^13.6.2",
     "firebase-tools": "^13.0.3",
     "ts-node": "~10.9.2",
     "tslib": "^2.6.2",

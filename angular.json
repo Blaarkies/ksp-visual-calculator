@@ -101,6 +101,65 @@
         "deploy": {
           "builder": "@angular/fire:deploy",
           "options": {}
+        },
+        "cypress-run": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "ksp-visual-calculator:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ksp-visual-calculator:serve:production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": true,
+            "headless": false
+          }
+        },
+        "ct": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "ksp-visual-calculator:serve",
+            "watch": true,
+            "headless": false,
+            "testingType": "component",
+            "main": "src/main.ts"
+          },
+          "configurations": {
+            "development": {
+              "devServerTarget": "ksp-visual-calculator:serve:development"
+            }
+          }
+        },
+        "test": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": false,
+            "headless": true,
+            "testingType": "component"
+          },
+          "configurations": {
+            "development": {
+              "devServerTarget": "ksp-visual-calculator:serve:development"
+            }
+          }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "ksp-visual-calculator:serve",
+            "watch": true,
+            "headless": false
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ksp-visual-calculator:serve:production"
+            }
+          }
         }
       }
     }
@@ -118,7 +177,9 @@
   },
   "cli": {
     "schematicCollections": [
-      "@angular-eslint/schematics"
+      "@cypress/schematic",
+      "@angular-eslint/schematics",
+      "@schematics/angular"
     ],
     "analytics": false
   }

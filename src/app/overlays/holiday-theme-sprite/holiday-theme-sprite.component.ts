@@ -100,6 +100,9 @@ export class HolidayThemeSpriteComponent implements OnInit {
     ] as SpriteContents[];
 
     let duna = this.document.querySelector('[style*="duna.png"]') as HTMLDivElement;
+    if (!duna) {
+      return;
+    }
     duna.style.background = duna.style.background.replace(
       'stock/kerbol-system-icons/duna.png',
       'holiday-sprites/halloween-pumpkin-1.png');
