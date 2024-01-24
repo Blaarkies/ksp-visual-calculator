@@ -1,4 +1,5 @@
 import {
+  Observable,
   Subject,
   takeUntil,
 } from 'rxjs';
@@ -16,6 +17,7 @@ export class Communication {
   hasControl$ = new SubjectHandle<boolean>({defaultValue: false});
   antennaeFull: Group<Antenna>[];
   antennae: Group<string>[];
+  change$ = new Subject<void>;
 
   private bestProbeControlPoint: ProbeControlPoint;
   private destroy$ = new Subject<void>();
@@ -30,6 +32,7 @@ export class Communication {
 
   destroy() {
     this.hasControl$.destroy();
+    this.change$.complete();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -47,6 +50,7 @@ export class Communication {
 
   noSignal(): void {
     this.hasControl$.set(!!this.bestProbeControlPoint);
+    this.change$.next();
   }
 
   setAntennae(antennae: Group<string>[]) {
@@ -61,6 +65,8 @@ export class Communication {
 
         this.bestProbeControlPoint = this.getBestProbeControlPoint();
         this.hasControl$.set(!!this.bestProbeControlPoint);
+
+        this.change$.next();
       });
   }
 

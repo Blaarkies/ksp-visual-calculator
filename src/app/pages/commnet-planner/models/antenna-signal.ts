@@ -1,4 +1,8 @@
-import { Subject } from 'rxjs';
+import {
+  Observable,
+  Subject,
+} from 'rxjs';
+import { merge } from 'rxjs';
 import { Group } from '../../../common/domain/group';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { Planetoid } from '../../../common/domain/space-objects/planetoid';
@@ -11,6 +15,20 @@ export type CanCommunicate = Planetoid | Craft;
 export class AntennaSignal {
 
   id: string;
+  change$: Observable<void>;
+  relayChange$ = new Subject<void>();
+
+  private hasRelayStrength: boolean;
+
+  constructor(public nodes: CanCommunicate[],
+              private getRangeModifier: () => number) {
+    this.id = Math.random().toString().slice(2);
+    this.change$ = merge(...nodes.map(n => n.change$));
+  }
+
+  destroy() {
+    this.relayChange$.complete();
+  }
 
   get textLocation(): Vector2 {
     return this.memoizeTextLocation(
@@ -144,10 +162,6 @@ export class AntennaSignal {
     return relayStrength;
   }
 
-  relayChange$ = new Subject<void>();
-
-  private hasRelayStrength: boolean;
-
   private getSignalStrength(hasRelay1: boolean,
                             hasRelay2: boolean,
                             powerRatingCallback: (node: CanCommunicate) => number)
@@ -168,15 +182,6 @@ export class AntennaSignal {
     let x = 1 - distance / maxRange; // relative distance
     let signalStrength = (3 - 2 * x) * x.pow(2);
     return signalStrength;
-  }
-
-  constructor(public nodes: CanCommunicate[],
-              private getRangeModifier: () => number) {
-    this.id = Math.random().toString().slice(2);
-  }
-
-  destroy() {
-    this.relayChange$.complete();
   }
 
   getHostToClientSignalStrength(hostNode: CanCommunicate): number {

@@ -1,19 +1,18 @@
 import { CommonModule } from '@angular/common';
 import {
-  ChangeDetectorRef,
   Component,
-  OnDestroy,
+  DestroyRef,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   debounceTime,
   finalize,
   sampleTime,
   skip,
   Subject,
-  takeUntil,
   tap,
 } from 'rxjs';
-import { WithDestroy } from '../../common/with-destroy';
 import { CameraService } from '../../services/camera.service';
 
 @Component({
@@ -23,45 +22,39 @@ import { CameraService } from '../../services/camera.service';
   templateUrl: './zoom-indicator.component.html',
   styleUrls: ['./zoom-indicator.component.scss'],
 })
-export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
+export class ZoomIndicatorComponent {
 
   set cameraScale(value: number) {
-    let adjusted = value - this.limits[0];
-    let ratio = (adjusted ?? 1e-9) / this.range;
-    ratio = this.transformToLinear(ratio);
+    let rangeConstrainedScale = value - this.limits[0];
+    let linearScale = this.expToLinearScale(rangeConstrainedScale);
 
-    this.zoomPoint = (ratio * 100).coerceIn(0, 99);
+    let newZoomPoint = (linearScale * 100).coerceIn(0, 100);
+    this.zoomPointPercentageSig.set(newZoomPoint + '%');
     this.zoomChange$.next();
   }
 
   set zoomLimits(value: number[]) {
     this.limits = value;
-    this.range = this.limits[1];
 
-    let moonsRatio = this.transformToLinear(CameraService.scaleToShowMoons / this.range) + .01;
-    let planetsRatio = moonsRatio * .5;
-    this.positions = {
-      planets: planetsRatio * 100,
-      moons: moonsRatio * 100,
-    };
+    let moonsScale = this.expToLinearScale(CameraService.scaleToShowMoons);
+    let planetsRatio = moonsScale * .5;
+    this.positionPlanetsPercentageSig.set(planetsRatio * 100+'%');
+    this.positionMoonsPercentageSig.set(moonsScale * 100+'%');
   }
 
-  zoomPoint = 0;
-  positions: { planets, moons };
-  show = false;
+  zoomPointPercentageSig = signal('0%');
+  positionPlanetsPercentageSig = signal('0%');
+  positionMoonsPercentageSig = signal('0%');
+  showSig = signal(false);
 
   private limits: number[];
-  private range: number = CameraService.scaleToShowMoons;
   private zoomChange$ = new Subject<void>();
 
-  constructor(cdr: ChangeDetectorRef,
-              cameraService: CameraService) {
-    super();
-
+  constructor(cameraService: CameraService, destroyRef: DestroyRef) {
     cameraService.cameraMovement$
       .pipe(
         sampleTime(200),
-        takeUntil(this.destroy$))
+        takeUntilDestroyed())
       .subscribe(() => this.cameraScale = cameraService.scale);
 
     this.zoomLimits = CameraService.zoomLimits;
@@ -69,24 +62,27 @@ export class ZoomIndicatorComponent extends WithDestroy() implements OnDestroy {
     this.zoomChange$
       .pipe(
         skip(1),
-        tap(() => this.show = true),
+        tap(() => this.showSig.set(true)),
         debounceTime(1e3),
-        tap(() => {
-          this.show = false;
-          cdr.markForCheck();
-        }),
-        finalize(() => this.show = false))
+        tap(() => this.showSig.set(false)),
+        finalize(() => this.showSig.set(false)),
+        takeUntilDestroyed())
       .subscribe();
+
+    destroyRef.onDestroy(() => this.zoomChange$.complete());
   }
 
-  ngOnDestroy(): void {
-    this.zoomChange$.complete();
-  }
+  expToLinearScale(scale: number): number {
+    let minZoom = this.limits[0];
+    let maxZoom = this.limits[1];
+    scale = Math.max(minZoom, Math.min(maxZoom, scale));
 
-  private transformToLinear(ratio: number) {
-    // todo: constants added to fix small ratio to fractional power. use a proper transformation instead
-    return (ratio.pow(.1) - 0.3187892865378054) * 1.4679745638725887;
-  }
+    let linearScale = (Math.log10(scale) - Math.log10(minZoom)) / (Math.log10(maxZoom) - Math.log10(minZoom));
 
+    let skewFactor = .5;
+    let skewedScale = Math.pow(linearScale, skewFactor);
+
+    return skewedScale;
+  }
 
 }

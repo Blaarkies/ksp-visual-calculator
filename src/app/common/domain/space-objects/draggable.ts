@@ -35,6 +35,8 @@ export class Draggable {
   parent: Draggable;
   imageUrl: string;
 
+  change$ = new Subject<void>();
+
   // tslint:disable:member-ordering
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
   private lastActivatedSoi: Planetoid;
@@ -48,6 +50,13 @@ export class Draggable {
       : `url(${imageUrl}) 0 0`;
   }
 
+  destroy() {
+    this.change$.complete();
+    this.isHover$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   toJson(): DraggableDto {
     return {
       label: this.label,
@@ -58,11 +67,6 @@ export class Draggable {
       moveType: this.moveType,
     };
   }
-
-  // TODO: destroy/dispose
-  // this.isHover$.complete();
-  // this.destroy$.next();
-  // this.destroy$.complete();
 
   startDrag(event: PointerEvent,
             screen: HTMLDivElement,
@@ -136,6 +140,7 @@ export class Draggable {
     let newCenter = this.constrainLocation(x, y);
     this.location.set(newCenter);
     this.children && this.updateChildren(newCenter);
+    this.change$.next();
   }
 
   private updateChildren(newCenter: number[]) {

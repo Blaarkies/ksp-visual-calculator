@@ -1,3 +1,7 @@
+import {
+  merge,
+  Observable,
+} from 'rxjs';
 import { SpaceObjectDto } from '../dtos/space-object-dto';
 import { Vector2 } from '../vector2';
 import { Draggable } from './draggable';
@@ -7,6 +11,7 @@ import { SpaceObjectType } from './space-object-type';
 export abstract class SpaceObject {
 
   draggable: Draggable;
+  change$: Observable<void>;
 
   get label(): string {
     return this.draggable.label;
@@ -25,6 +30,7 @@ export abstract class SpaceObject {
     public type: SpaceObjectType,
   ) {
     this.draggable = new Draggable(label, imageUrl, moveType);
+    this.change$ = merge(this.draggable.change$);
   }
 
   toJson(): SpaceObjectDto {

@@ -38,6 +38,7 @@ describe('AntennaSignal', () => {
         combinabilityExponent: 1,
         relay: true,
       } as Antenna);
+      // TODO: create communication through constructor for changeDetection
       signal.nodes[0].communication.antennaeFull = [antennaGroup];
       signal.nodes[1].communication.antennaeFull = [antennaGroup];
 

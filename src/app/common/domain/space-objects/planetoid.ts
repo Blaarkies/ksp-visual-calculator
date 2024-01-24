@@ -1,6 +1,6 @@
+import { merge } from 'rxjs';
 import { PlanetoidDto } from '../dtos/planetoid-dto';
 import { Group } from '../group';
-import { Vector2 } from '../vector2';
 import { Communication } from './communication';
 import { MoveType } from './move-type';
 import { PlanetoidType } from './planetoid-type';
@@ -26,6 +26,7 @@ export class Planetoid extends SpaceObject {
     super(id, size, label, imageUrl, moveType, SpaceObjectType.Planetoid);
     if (antennae?.length) {
       this.communication = new Communication(antennae.slice());
+      this.change$ = merge(this.change$, this.communication.change$);
     }
   }
 

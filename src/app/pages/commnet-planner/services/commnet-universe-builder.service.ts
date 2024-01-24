@@ -125,6 +125,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     if (dsnIds) {
       let dsnPlanetoids = this.planetoids$.value.filter(p => p.id.includesSome(dsnIds));
       dsnPlanetoids.forEach(p =>
+        // TODO: create Communication through constructor for changeDetection
         p.communication = new Communication([new Group('Tracking Station 1')]));
     }
 
