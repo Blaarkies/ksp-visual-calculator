@@ -20,44 +20,36 @@ import { PlanetoidDetails } from '../../overlays/celestial-body-details-dialog/p
 import { AnalyticsService } from '../analytics.service';
 import { CameraService } from '../camera.service';
 import { StockEntitiesCacheService } from '../stock-entities-cache.service';
-import { UniverseContainerInstance } from '../universe-container-instance.service';
 import { EnrichedStarSystem } from './enriched-star-system.model';
 import { EventLogs } from './event-logs';
+import { PlanetoidFactory } from './planetoid-factory';
 import { PlanetoidWithDto } from './planetoid-with-dto.model';
 
 export abstract class AbstractUniverseBuilderService extends WithDestroy() {
 
   protected abstract analyticsService: AnalyticsService;
-  protected abstract universeContainerInstance: UniverseContainerInstance;
   protected abstract cacheService: StockEntitiesCacheService;
   protected abstract cameraService: CameraService;
 
   orbits$ = new BehaviorSubject<Orbit[]>([]);
   planetoids$ = new BehaviorSubject<Planetoid[]>([]);
 
+  protected planetoidFactory = new PlanetoidFactory(this.planetoids$);
+
   protected constructor() {
     super();
-
-    // TODO: remove UniverseContainerInstance usages
-    setTimeout(() => this.planetoids$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(planets =>
-        this.universeContainerInstance.planets$.next(planets)));
   }
 
   protected destroy() {
     this.orbits$.complete();
     this.planetoids$.complete();
-
-    this.universeContainerInstance.planets$.next([]);
-    this.universeContainerInstance.crafts$.next([]);
   }
 
   private stockAssetsReady(): Observable<EnrichedStarSystem> {
     return this.cacheService.starSystem$
       .pipe(
         take(1),
-        map(starSystemDto => AbstractUniverseBuilderService.generateEnrichedStarSystem(starSystemDto)),
+        map(starSystemDto => this.generateEnrichedStarSystem(starSystemDto)),
         takeUntil(this.destroy$));
   }
 
@@ -149,12 +141,12 @@ export abstract class AbstractUniverseBuilderService extends WithDestroy() {
       .min(p => p.location.distance(location));
   }
 
-  private static generateEnrichedStarSystem(starSystem: StarSystemDto): EnrichedStarSystem {
+  private generateEnrichedStarSystem(starSystem: StarSystemDto): EnrichedStarSystem {
     // Setup abstract planetoids
     let bodyToJsonMap = new Map<PlanetoidAssetDto, Planetoid>(
       starSystem.planetoids.map(b => [
         /*key  */ b,
-        /*value*/ new Planetoid(
+        /*value*/ this.planetoidFactory.makePlanetoid(
           b.id,
           b.name,
           b.imageUrl,

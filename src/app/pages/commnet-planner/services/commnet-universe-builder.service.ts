@@ -14,11 +14,6 @@ import {
   tap,
 } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
-import { Antenna } from '../models/antenna';
-import {
-  AntennaSignal,
-  CanCommunicate,
-} from '../models/antenna-signal';
 import { CraftDto } from '../../../common/domain/dtos/craft-dto';
 import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { Group } from '../../../common/domain/group';
@@ -26,7 +21,6 @@ import { LabeledOption } from '../../../common/domain/input-fields/labeled-optio
 import { Communication } from '../../../common/domain/space-objects/communication';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
-import { Planetoid } from '../../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SubjectHandle } from '../../../common/subject-handle';
 import { CameraService } from '../../../services/camera.service';
@@ -34,10 +28,15 @@ import { EnrichedStarSystem } from '../../../services/domain/enriched-star-syste
 import { EventLogs } from '../../../services/domain/event-logs';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
-import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { CraftDetails } from '../components/craft-details-dialog/craft-details';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
+import { Antenna } from '../models/antenna';
+import {
+  AntennaSignal,
+  CanCommunicate,
+} from '../models/antenna-signal';
 import { ConnectionGraph } from '../models/connection-graph';
+import { CraftFactory } from '../models/craft-factory';
 import {
   antennaServiceDestroy,
   antennaServiceSetAntennae,
@@ -47,14 +46,14 @@ import {
 export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
 
   craft$ = new SubjectHandle<Craft[]>();
-  signals$ = new SubjectHandle<AntennaSignal[]>();
+  antennaSignal$ = new SubjectHandle<AntennaSignal[]>();
   antennae$ = new SubjectHandle<Antenna[]>();
   difficultySetting: DifficultySetting;
 
   private antennaeLabelMap: Map<string, Antenna>;
+  private craftFactory = new CraftFactory(this.planetoids$);
 
   constructor(
-    protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
     protected cameraService: CameraService,
@@ -78,7 +77,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         map(() => signals),
         );
 
-    let signalsUpdate$ = this.signals$.stream$.pipe(
+    let signalsUpdate$ = this.antennaSignal$.stream$.pipe(
       switchMap(signals => getConnectionsChange$(signals)),
     );
 
@@ -100,11 +99,6 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         });
       }),
     ).subscribe();
-
-    // TODO: remove UniverseContainerInstance usages
-    this.craft$.stream$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(craft => this.universeContainerInstance.crafts$.next(craft));
   }
 
   ngOnDestroy() {
@@ -112,13 +106,13 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     super.destroy();
 
     this.craft$.destroy();
-    this.signals$.destroy();
+    this.antennaSignal$.destroy();
     antennaServiceDestroy();
   }
 
   protected async setStockDetails(enrichedStarSystem: EnrichedStarSystem) {
     this.craft$.set([]);
-    this.signals$.set([]);
+    this.antennaSignal$.set([]);
     this.difficultySetting = DifficultySetting.normal;
 
     let dsnIds = enrichedStarSystem.starSystem.dsnIds;
@@ -138,11 +132,14 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     let {planetoids, craft: craftDtos} = state;
 
     let planetoidDtoPairs = planetoids
-      .map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));
+      .map(dto => ({
+        planetoid: this.planetoidFactory.makePlanetoidFromJson(dto),
+        dto,
+      }));
     let orbitsLabelMap = this.makeOrbitsLabelMap(planetoidDtoPairs);
 
     let craftJsonMap = new Map<Craft, CraftDto>(craftDtos.map(json =>
-      [Craft.fromJson(json), json]));
+      [this.craftFactory.makeCraftFromJson(json), json]));
     let craft = Array.from(craftJsonMap.keys());
     let planetoidsChildrenMap = new Map<string, SpaceObject>([
       ...planetoidDtoPairs.map(({planetoid}) => [planetoid.label, planetoid]),
@@ -178,7 +175,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
         c.draggable.parent)));
     this.craft$.set(craft);
 
-    this.signals$.set([]);
+    this.antennaSignal$.set([]);
     this.updateTransmissionLines();
   }
 
@@ -209,21 +206,23 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       ...this.planetoids$.value ?? [],
       ...this.craft$.value ?? [],
     ];
-    let signals = reset ? [] : this.signals$.value;
+    let signals = reset ? [] : this.antennaSignal$.value;
     let freshTransmissionLines = this.getFreshTransmissionLines(nodes, signals);
     if (signals.equal(freshTransmissionLines)) {
       return;
     }
 
-    this.signals$.set(freshTransmissionLines);
+    this.antennaSignal$.set(freshTransmissionLines);
   }
 
   private addCraft(details: CraftDetails, allCraft: Craft[]) {
     let location = details.advancedPlacement?.location
       ?? this.cameraService.getGameSpaceLocationOfScreenSpaceCenter();
 
-    let craft = new Craft(details.id, details.name, details.craftType,
-      details.antennae.map(g => new Group(g.item.label, g.count)));
+    let antennaeGroups = details.antennae.map(g => new Group(g.item.label, g.count));
+    let craft = this.craftFactory.makeCraft(
+      details.id, details.name, details.craftType, antennaeGroups);
+
     let parent = this.getSoiParent(location);
     parent.draggable.addChild(craft.draggable);
     craft.draggable.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggable));
@@ -247,8 +246,10 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   }
 
   async editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
-    let newCraft = new Craft(craftDetails.id, craftDetails.name, craftDetails.craftType,
-      craftDetails.antennae.map(g => new Group(g.item.label, g.count)));
+    let newAntennae = craftDetails.antennae.map(g => new Group(g.item.label, g.count));
+
+    let newCraft = this.craftFactory.makeCraft(
+      craftDetails.id, craftDetails.name, craftDetails.craftType, newAntennae);
     let parent = craftDetails.advancedPlacement?.orbitParent
       ?? this.getSoiParent(oldCraft.location);
 

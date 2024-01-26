@@ -103,7 +103,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     this.contextPanelDetails = this.getContextPanelDetails();
 
     let universe = commnetUniverseBuilderService;
-    this.signals$ = universe.signals$.stream$;
+    this.signals$ = universe.antennaSignal$.stream$;
     this.crafts$ = universe.craft$.stream$;
     this.orbits$ = universe.orbits$;
     this.planetoids$ = universe.planetoids$;

@@ -1,6 +1,8 @@
 import { merge } from 'rxjs';
+import { SoiManager } from '../../../services/domain/soi-manager';
 import { PlanetoidDto } from '../dtos/planetoid-dto';
 import { Group } from '../group';
+import { Vector2 } from '../vector2';
 import { Communication } from './communication';
 import { MoveType } from './move-type';
 import { PlanetoidType } from './planetoid-type';
@@ -29,6 +31,7 @@ export class Planetoid extends SpaceObject {
   private spaceObjectChange$ = this.change$;
 
   constructor(
+    soiManager: SoiManager,
     id: string,
     label: string,
     imageUrl: string,
@@ -38,8 +41,12 @@ export class Planetoid extends SpaceObject {
     public size: number,
     public sphereOfInfluence: number,
     public equatorialRadius: number,
+    location?: Vector2,
+    lastAttemptLocation?: number[],
   ) {
-    super(id, size, label, imageUrl, moveType, SpaceObjectType.Planetoid);
+    super(soiManager, id, size, label, imageUrl,
+      moveType, SpaceObjectType.Planetoid,
+      location, lastAttemptLocation);
     if (antennaeGroups?.length) {
       this.communication = new Communication(antennaeGroups.slice());
     }
@@ -62,11 +69,12 @@ export class Planetoid extends SpaceObject {
     };
   }
 
-  static fromJson(json: PlanetoidDto): Planetoid {
+  static fromJson(json: PlanetoidDto, soiManager: SoiManager): Planetoid {
     let communication = json.communication ? Communication.fromJson(json.communication) : undefined;
     let planetoidType = PlanetoidType.fromString(json.planetoidType);
 
-    let object = new Planetoid(
+    return new Planetoid(
+      soiManager,
       json.id,
       json.draggable.label,
       json.draggable.imageUrl,
@@ -76,12 +84,9 @@ export class Planetoid extends SpaceObject {
       json.size,
       json.sphereOfInfluence,
       json.equatorialRadius,
+      Vector2.fromList(json.draggable.location),
+      json.draggable.lastAttemptLocation,
     );
-
-    object.draggable.location.set(json.draggable.location);
-    object.draggable.lastAttemptLocation = json.draggable.lastAttemptLocation;
-
-    return object;
   }
 
 }

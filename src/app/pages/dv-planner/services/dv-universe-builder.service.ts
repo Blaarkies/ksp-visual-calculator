@@ -12,7 +12,6 @@ import { CameraService } from '../../../services/camera.service';
 import { EnrichedStarSystem } from '../../../services/domain/enriched-star-system.model';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
-import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
 import { TravelService } from './travel.service';
 
 @Injectable()
@@ -22,7 +21,6 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     {defaultValue: CheckpointPreferences.default});
 
   constructor(
-    protected universeContainerInstance: UniverseContainerInstance,
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
     protected cameraService: CameraService,
@@ -50,7 +48,10 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     let state: StateDvPlannerDto = JSON.parse(lastState);
     let {planetoids, checkpoints: jsonCheckpoints} = state;
 
-    let planetoidDtoPairs = planetoids.map(dto => ({planetoid: Planetoid.fromJson(dto), dto}));
+    let planetoidDtoPairs = planetoids.map(dto => ({
+      planetoid: this.planetoidFactory.makePlanetoidFromJson(dto),
+      dto,
+    }));
     let orbitsLabelMap = this.makeOrbitsLabelMap(planetoidDtoPairs);
 
     let planetoidsChildrenMap = new Map<string, Planetoid>([

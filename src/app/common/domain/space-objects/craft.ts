@@ -2,7 +2,7 @@ import {
   merge,
   Observable,
 } from 'rxjs';
-import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
+import { SoiManager } from '../../../services/domain/soi-manager';
 import { CraftDto } from '../dtos/craft-dto';
 import { Group } from '../group';
 import { ImageUrls } from '../image-urls';
@@ -18,11 +18,7 @@ export class Craft extends SpaceObject {
   communication: Communication;
 
   get displayAltitude(): string {
-    // performance impact on this function seems minimal, since it's called from inside an *ngIf
-    // TODO: remove UniverseContainerInstance usages
-    let soiParent = UniverseContainerInstance.instance
-      .getSoiParent(this.location);
-
+    let soiParent = this.soiManager.getSoiParent(this.location);
     let distance = this.location.distance(soiParent.location) - soiParent.equatorialRadius;
 
     return `${distance.coerceAtLeast(0).toSi(3)}m`;
@@ -31,12 +27,18 @@ export class Craft extends SpaceObject {
   private readonly spaceObjectChange$: Observable<void>;
 
   constructor(
+    private soiManager: SoiManager,
     id: string,
     label: string,
     public craftType: CraftType,
     antennae: Group<string>[] = [],
+    location?: Vector2,
+    lastAttemptLocation?: number[],
   ) {
-    super(id, 30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft);
+    super(soiManager, id, 30, label, ImageUrls.CraftIcons,
+      'soiLock', SpaceObjectType.Craft,
+      location, lastAttemptLocation);
+
     this.spriteLocation = craftType.iconLocation;
     this.communication = new Communication(antennae.slice());
     this.spaceObjectChange$ = this.change$;
@@ -57,21 +59,19 @@ export class Craft extends SpaceObject {
     };
   }
 
-  static fromJson(json: CraftDto): Craft {
+  static fromJson(json: CraftDto, soiManager: SoiManager): Craft {
     let communication = Communication.fromJson(json.communication);
     let craftType = CraftType.fromString(json.craftType);
 
-    let object = new Craft(
+    return new Craft(
+      soiManager,
       json.id,
       json.draggable.label,
       craftType,
       communication.antennae,
+      Vector2.fromList(json.draggable.location),
+      json.draggable.lastAttemptLocation,
     );
-
-    object.draggable.location = Vector2.fromList(json.draggable.location);
-    object.draggable.lastAttemptLocation = json.draggable.lastAttemptLocation;
-
-    return object;
   }
 
 }
