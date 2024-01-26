@@ -15,7 +15,6 @@ import { ReactiveFormsModule } from "@angular/forms";
   selector: 'cp-input-field-list',
   standalone: true,
   imports: [
-    CommonModule,
     InputFieldComponent,
     InputTextAreaComponent,
     InputNumberComponent,

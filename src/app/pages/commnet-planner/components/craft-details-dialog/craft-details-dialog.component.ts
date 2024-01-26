@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  effect,
   Inject,
   ViewEncapsulation,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormArray,
@@ -24,7 +26,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { takeUntil } from 'rxjs';
 import { Planetoid } from 'src/app/common/domain/space-objects/planetoid';
 import { BasicAnimations } from '../../../../animations/basic-animations';
 import { Group } from '../../../../common/domain/group';
@@ -44,7 +45,6 @@ import { CraftType } from '../../../../common/domain/space-objects/craft-type';
 import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
 import { Uid } from '../../../../common/uid';
 import { CommonValidators } from '../../../../common/validators/common-validators';
-import { WithDestroy } from '../../../../common/with-destroy';
 import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
 import { Antenna } from '../../models/antenna';
 import { CommnetUniverseBuilderService } from '../../services/commnet-universe-builder.service';
@@ -78,11 +78,11 @@ export class CraftDetailsDialogData {
   animations: [BasicAnimations.fade, BasicAnimations.height, BasicAnimations.flipVertical],
   encapsulation: ViewEncapsulation.None,
 })
-export class CraftDetailsDialogComponent extends WithDestroy() {
+export class CraftDetailsDialogComponent {
 
   advancedInputFieldsList: InputField[];
   advancedForm: FormGroup;
-  advancedIsOpen = false
+  advancedIsOpen = false;
   form: FormArray;
   inputListCraft: InputField[];
   inputListAntenna: InputField[];
@@ -93,23 +93,57 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   private inputFieldsList: InputField[];
   private orbitParentOptions: LabeledOption<SpaceObject>[];
   private advancedInputFields: InputFields;
+  private soiLockedPlanetoid?: Planetoid;
 
   constructor(private dialogRef: MatDialogRef<CraftDetailsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData) {
-    super();
-
     this.setupInputFields();
 
-    this.updateAdvancedPlacementFields(126123); // Gilly Soi == 126123
-    this.updateMainForm();
-
     this.advancedInputFields.orbitParent.control.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe(parent => {
-        let max = parent.sphereOfInfluence ?? 181e9; // 181e9 == 2x Eeloo's orbit
-        this.updateAdvancedPlacementFields(max - parent.equatorialRadius);
+        let max = parent?.sphereOfInfluence ?? 181e9; // 181e9 == 2x Eeloo's orbit
+        this.updateAdvancedPlacementFields(max - (parent?.equatorialRadius || 0));
+        this.advancedInputFields.altitude.control.markAsDirty();
         this.updateMainForm();
       });
+
+    effect(() => {
+      if (!this.data.edit) {
+        this.updateAdvancedPlacementFields();
+        this.updateMainForm();
+        return;
+      }
+      this.populateAdvancedForm();
+    });
+  }
+
+  private populateAdvancedForm() {
+    let soiLockedPlanetoidDraggable = this.data.edit.draggable.parent;
+    this.soiLockedPlanetoid = this.data.universeBuilderHandler.planetoids$.value
+      .find(p => p.draggable === soiLockedPlanetoidDraggable);
+
+    let p = this.soiLockedPlanetoid;
+    this.updateAdvancedPlacementFields(p.sphereOfInfluence - p.equatorialRadius);
+
+    this.advancedInputFields.orbitParent.control
+      .setValue(this.soiLockedPlanetoid, {emitEvent: false});
+
+    let altitude = this.soiLockedPlanetoid.location.distance(this.data.edit.location)
+      - this.soiLockedPlanetoid.equatorialRadius;
+    this.advancedInputFields.altitude.control.setValue(
+      altitude.toInt(),
+      {emitEvent: false});
+
+    let angle = this.soiLockedPlanetoid.location.direction(this.data.edit.location)
+      .let(it => it * -57.295779513) // 'rad->deg'
+      .let(it => it.round(4))
+      .let(it => it < 0
+        ? (it % 360) + 360
+        : it % 360);
+    this.advancedInputFields.angle.control.setValue(angle, {emitEvent: false});
+
+    this.updateMainForm();
   }
 
   private updateMainForm() {
@@ -118,9 +152,9 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
       this.advancedForm]);
   }
 
-  private updateAdvancedPlacementFields(soiSize: number) {
+  /** Default to the smallest soi size - Gilly:126123m */
+  private updateAdvancedPlacementFields(soiSize: number = 126123) {
     this.advancedInputFields.altitude = this.getAltitudeInputField(soiSize);
-
     this.advancedInputFieldsList = Object.values(this.advancedInputFields);
     this.advancedForm = new FormGroup({
       orbitParent: this.advancedInputFields.orbitParent.control,
@@ -157,7 +191,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
   }
 
   async remove() {
-    await this.data.universeBuilderHandler.removeCraft(this.data.edit)
+    await this.data.universeBuilderHandler.removeCraft(this.data.edit);
     this.dialogRef.close();
   }
 
@@ -178,7 +212,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
 
     // Name control does not update validation error message
     this.inputFields.name.control.markAllAsTouched();
- }
+  }
 
   private getCopyLabel(label: string) {
     let copyOfString = 'Copy of ';
@@ -201,7 +235,7 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
     return (formGroup: AbstractControl): ValidationErrors | null => {
       let value = formGroup.value;
       let inputsCount = [value.orbitParent, value.altitude, value.angle]
-        .map(v => v !== null ? 1 : 0)
+        .map(v => (v !== null && v !== undefined) ? 1 : 0)
         .sum();
 
       if (inputsCount.between(1, 2)) {
@@ -217,6 +251,12 @@ export class CraftDetailsDialogComponent extends WithDestroy() {
 
       return null;
     };
+  }
+
+  resetAdvancedForm() {
+    this.advancedForm.reset();
+    this.updateAdvancedPlacementFields();
+    this.updateMainForm();
   }
 
   private setupInputFields(label?: string,
