@@ -1,6 +1,8 @@
-import { merge } from 'rxjs';
+import {
+  merge,
+  Observable,
+} from 'rxjs';
 import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
-import { Antenna } from '../../../pages/commnet-planner/models/antenna';
 import { CraftDto } from '../dtos/craft-dto';
 import { Group } from '../group';
 import { ImageUrls } from '../image-urls';
@@ -26,6 +28,8 @@ export class Craft extends SpaceObject {
     return `${distance.coerceAtLeast(0).toSi(3)}m`;
   }
 
+  private readonly spaceObjectChange$: Observable<void>;
+
   constructor(
     id: string,
     label: string,
@@ -35,7 +39,13 @@ export class Craft extends SpaceObject {
     super(id, 30, label, ImageUrls.CraftIcons, 'soiLock', SpaceObjectType.Craft);
     this.spriteLocation = craftType.iconLocation;
     this.communication = new Communication(antennae.slice());
-    this.change$ = merge(this.change$, this.communication.change$);
+    this.spaceObjectChange$ = this.change$;
+    this.change$ = merge(this.spaceObjectChange$, this.communication.change$);
+  }
+
+  override destroy() {
+    super.destroy();
+    this.communication.destroy();
   }
 
   toJson(): CraftDto {

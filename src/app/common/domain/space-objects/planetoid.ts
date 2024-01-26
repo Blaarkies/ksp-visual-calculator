@@ -9,32 +9,52 @@ import { SpaceObjectType } from './space-object-type';
 
 export class Planetoid extends SpaceObject {
 
+  get communication(): Communication {
+    return this._communication;
+  }
+
+  set communication(value: Communication) {
+    if (this._communication) {
+      this._communication.destroy();
+    }
+    this._communication = value;
+    this.change$ = value
+      ? merge(this.spaceObjectChange$, value.change$)
+      : this.spaceObjectChange$;
+  }
+
   showSoi?: boolean;
-  communication?: Communication;
+
+  private _communication?: Communication;
+  private spaceObjectChange$ = this.change$;
 
   constructor(
     id: string,
     label: string,
     imageUrl: string,
     moveType: MoveType,
-    antennae: Group<string>[],
+    antennaeGroups: Group<string>[],
     public planetoidType: PlanetoidType,
     public size: number,
     public sphereOfInfluence: number,
     public equatorialRadius: number,
   ) {
     super(id, size, label, imageUrl, moveType, SpaceObjectType.Planetoid);
-    if (antennae?.length) {
-      this.communication = new Communication(antennae.slice());
-      this.change$ = merge(this.change$, this.communication.change$);
+    if (antennaeGroups?.length) {
+      this.communication = new Communication(antennaeGroups.slice());
     }
+  }
+
+  override destroy() {
+    super.destroy();
+    this.communication?.destroy();
   }
 
   toJson(): PlanetoidDto {
     let base = super.toJson();
     return {
       ...base,
-      communication: this.communication?.toJson(),
+      communication: this._communication?.toJson(),
       planetoidType: this.planetoidType.name,
       size: this.size,
       sphereOfInfluence: this.sphereOfInfluence,

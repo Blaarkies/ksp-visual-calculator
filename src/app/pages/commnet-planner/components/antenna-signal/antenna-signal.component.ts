@@ -9,15 +9,12 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   combineLatest,
-  distinct,
-  interval,
   map,
   Observable,
   sampleTime,
   startWith,
   Subject,
   takeUntil,
-  tap,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
 import { CameraService } from '../../../../services/camera.service';

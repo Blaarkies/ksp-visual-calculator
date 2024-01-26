@@ -33,6 +33,10 @@ export abstract class SpaceObject {
     this.change$ = merge(this.draggable.change$);
   }
 
+  destroy() {
+    this.draggable.destroy();
+  }
+
   toJson(): SpaceObjectDto {
     return {
       id: this.id,

@@ -1,31 +1,29 @@
-<div class="draggable-body stack"
-     [class.cursor-grab]="isIdle$ | async"
-     [style.left.%]="normalizedScale * spaceObject.location.x"
-     [style.top.%]="normalizedScale * spaceObject.location.y"
-     (pointerdown)="dragSpaceObject.emit($event)"
-     (touchstart)="$event.stopImmediatePropagation()"
-     (mousedown)="$event.buttons.bitwiseIncludes(1) && $event.stopImmediatePropagation()"
-     cpDoublePointerAction (doubleAction)="focusObject.emit($event)"
-     cpMouseHover (hoverChange)="buttonHover$.next($event); spaceObject.draggable.isHover$.next($event)">
+<div
+  class="draggable-body stack"
+  [class.cursor-grab]="isIdle$ | async"
+  [style.left.%]="normalizedScale * spaceObject.location.x"
+  [style.top.%]="normalizedScale * spaceObject.location.y"
+  (pointerdown)="dragSpaceObject.emit($event)"
+  (touchstart)="$event.stopImmediatePropagation()"
+  (mousedown)="$event.buttons.bitwiseIncludes(1) && $event.stopImmediatePropagation()"
+  cpDoublePointerAction (doubleAction)="focusObject.emit($event)"
+  cpMouseHover (hoverChange)="handleHover($event)"
+>
 
   <ng-content></ng-content>
 
-  <span
-    @fade
-    *ngIf="isIdle$ | async"
-    class="label-space-object"
-  >
-    {{spaceObject.label}}
-  </span>
+  @if (isIdle$ | async) {
+    <span @fade class="label-space-object">{{ spaceObject.label }}</span>
+  }
 
-  <button class="edit-button"
-          mat-button
-          @fade
-          *ngIf="showEdit$ | async"
-          matTooltip="Edit"
-          (click)="triggerEdit$.next(undefined)"
-          (pointerdown)="$event.stopPropagation()">
-    <mat-icon [svgIcon]="icons.Edit"></mat-icon>
-  </button>
-
+  @if (showEdit$ | async) {
+    <button class="edit-button"
+            mat-button
+            @fade
+            matTooltip="Edit"
+            (click)="triggerEdit$.next(undefined)"
+            (pointerdown)="$event.stopPropagation()">
+      <mat-icon [svgIcon]="icons.Edit"></mat-icon>
+    </button>
+  }
 </div>
