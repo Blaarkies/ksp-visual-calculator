@@ -1,22 +1,31 @@
+import { of } from 'rxjs';
 import * as antennaPartsJson from '../../../../assets/stock/antenna-parts.json';
 import { AntennaDto } from '../../../common/domain/dtos/antenna-dto';
 import { Group } from '../../../common/domain/group';
+import { AntennaeManager } from '../../../common/domain/space-objects/antennae-manager';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { CraftType } from '../../../common/domain/space-objects/craft-type';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
+import { SoiManager } from '../../../services/domain/soi-manager';
+import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { DifficultySetting } from '../components/difficulty-settings-dialog/difficulty-setting';
 import { Antenna } from './antenna';
 import { AntennaSignal } from './antenna-signal';
 
-describe('AntennaSignal', () => {
+describe('AntennaSignal class', () => {
+
+  let soiManager = new SoiManager(null);
+  let cacheService = {antennae$: of([])} as StockEntitiesCacheService;
+  let antennaeManager = new AntennaeManager(cacheService);
+  let craftFactory = () => new Craft(soiManager, antennaeManager, '', '', CraftType.Base, []);
 
   describe('if basic', () => {
     let signal: AntennaSignal;
 
     beforeEach(() => {
-      let craftA = new Craft('', '', CraftType.Base, []);
+      let craftA = craftFactory();
       craftA.draggable.location.set([1e5, 2e5]);
-      let craftB = new Craft('', '', CraftType.Base, []);
+      let craftB = craftFactory();
       signal = new AntennaSignal([craftA, craftB], () => 1);
     });
 
@@ -44,7 +53,7 @@ describe('AntennaSignal', () => {
 
       expect(signal.textLocation).to.deep.equal({x: 50000, y: 100000});
       expect(signal.displayDistance).to.equal('223.607 km');
-      expect(signal.offsetVector).to.deep.equal({ x: 0.8944271909999159, y: -0.447213595499958 });
+      expect(signal.offsetVector).to.deep.equal({x: 0.8944271909999159, y: -0.447213595499958});
       expect(signal.angleDeg).to.equal(-116.56505117691052);
       expect(signal.colorTotal).to.equal('#f40');
       expect(signal.colorRelay).to.equal('#f40');
@@ -52,11 +61,10 @@ describe('AntennaSignal', () => {
       expect(signal.strengthRelay).to.equal(0.16150665833325542);
     });
 
-
   });
 
   describe('if antennae scenarios', () => {
-    let {craftMap, scenarios} = getAntennaeTestScenarios();
+    let {craftMap, scenarios} = getAntennaeTestScenarios(craftFactory);
 
     scenarios.forEach(({label, distance, difficulty, expectedStrength, craft, relay}) => {
 
@@ -95,7 +103,7 @@ interface JsonImport<T> {
   default: T;
 }
 
-function getAntennaeTestScenarios(): {craftMap, scenarios: AntennaScenario[]} {
+function getAntennaeTestScenarios(craftFactory: () => Craft): { craftMap; scenarios: AntennaScenario[] } {
   let stockAntennae = ((antennaPartsJson as unknown as JsonImport<AntennaDto[]>).default)
     .map((a: AntennaDto) => Antenna.fromJson(a));
 
@@ -112,8 +120,8 @@ function getAntennaeTestScenarios(): {craftMap, scenarios: AntennaScenario[]} {
   };
 
   let makeCraft = (antennaeGroups: (Antenna | number)[][]) => {
-    let craft = new Craft('', '', CraftType.Base);
-    craft.communication.instanceAntennae = antennaeGroups.map(([a,c]) => new Group(a as Antenna, c as number));
+    let craft = craftFactory();
+    craft.communication.instanceAntennae = antennaeGroups.map(([a, c]) => new Group(a as Antenna, c as number));
     return craft;
   };
 
