@@ -26,7 +26,7 @@ export class ConnectionGraph {
     let graphNodes = this.graph.nodes();
 
     let trackingStations: CanCommunicate[] = planets
-      .filter(p => p.communication?.antennae?.length);
+      .filter(p => p.communication?.stringAntennae?.length);
     let multiHopGuidanceCores = craft
       .filter(c => c.communication.bestRemoteGuidanceCapability()
         === ProbeControlPoint.MultiHop);
@@ -71,7 +71,7 @@ export class ConnectionGraph {
   private hostNodeCanControl(signal: AntennaSignal,
                              hostNode: CanCommunicate): boolean {
     let hasDsnCapability = hostNode instanceof Planetoid
-      && hostNode.communication?.antennae.length;
+      && hostNode.communication?.stringAntennae.length;
 
     let hostCanRelayConnectionToClient = hostNode.communication.bestRemoteGuidanceCapability()
       && signal.getHostToClientSignalStrength(hostNode); // signal is of this craft; the other node has to be the craft

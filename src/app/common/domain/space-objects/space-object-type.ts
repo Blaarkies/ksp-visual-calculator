@@ -1,6 +1,5 @@
 import { Icons } from '../icons';
 import { LabeledOption } from '../input-fields/labeled-option';
-import { Planetoid } from './planetoid';
 
 export class SpaceObjectType {
 

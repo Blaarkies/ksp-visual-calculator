@@ -1,18 +1,17 @@
-import { BehaviorSubject } from 'rxjs';
 import { CraftDto } from '../../../common/domain/dtos/craft-dto';
 import { Group } from '../../../common/domain/group';
+import { AntennaeManager } from '../../../common/domain/space-objects/antennae-manager';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { CraftType } from '../../../common/domain/space-objects/craft-type';
-import { Planetoid } from '../../../common/domain/space-objects/planetoid';
 import { Vector2 } from '../../../common/domain/vector2';
 import { SoiManager } from '../../../services/domain/soi-manager';
+import { AbstractSpaceObjectFactory } from '../../../services/domain/space-object-factory.abstract';
 
-export class CraftFactory {
+export class CraftFactory extends AbstractSpaceObjectFactory {
 
-  private readonly soiManager: SoiManager;
-
-  constructor(planetoids$: BehaviorSubject<Planetoid[]>) {
-    this.soiManager = new SoiManager(planetoids$);
+  constructor(protected soiManager: SoiManager,
+              protected antennaeManager: AntennaeManager) {
+    super();
   }
 
   makeCraft(
@@ -25,6 +24,7 @@ export class CraftFactory {
   ): Craft {
     return new Craft(
       this.soiManager,
+      this.antennaeManager,
       id,
       name,
       craftType,
@@ -35,6 +35,6 @@ export class CraftFactory {
   }
 
   makeCraftFromJson(json: CraftDto) {
-    return Craft.fromJson(json, this.soiManager);
+    return Craft.fromJson(json, this.soiManager, this.antennaeManager);
   }
 }

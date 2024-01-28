@@ -202,7 +202,7 @@ export class CraftDetailsDialogComponent {
     this.data.edit = undefined;
 
     let copyLabel = this.getCopyLabel(thisCraft.label);
-    let copyAntennae = thisCraft.communication.antennaeFull
+    let copyAntennae = thisCraft.communication.instanceAntennae
       .map(({item, count}) => new Group(item, count));
     this.setupInputFields(
       copyLabel,
@@ -284,7 +284,7 @@ export class CraftDetailsDialogComponent {
       antennaSelection: {
         label: 'Antennae Onboard',
         control: new FormControl(antennaeGroups
-          ?? this.data.edit?.communication.antennaeFull
+          ?? this.data.edit?.communication.instanceAntennae
           ?? [new Group(this.data.universeBuilderHandler.getAntenna('Internal'))]),
         controlMeta: new ControlMetaAntennaSelector(this.data.universeBuilderHandler.antennaList),
       },

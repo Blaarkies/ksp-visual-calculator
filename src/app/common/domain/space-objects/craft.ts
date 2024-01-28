@@ -7,6 +7,7 @@ import { CraftDto } from '../dtos/craft-dto';
 import { Group } from '../group';
 import { ImageUrls } from '../image-urls';
 import { Vector2 } from '../vector2';
+import { AntennaeManager } from './antennae-manager';
 import { Communication } from './communication';
 import { CraftType } from './craft-type';
 import { SpaceObject } from './space-object';
@@ -28,6 +29,7 @@ export class Craft extends SpaceObject {
 
   constructor(
     private soiManager: SoiManager,
+    antennaeManager: AntennaeManager,
     id: string,
     label: string,
     public craftType: CraftType,
@@ -40,7 +42,7 @@ export class Craft extends SpaceObject {
       location, lastAttemptLocation);
 
     this.spriteLocation = craftType.iconLocation;
-    this.communication = new Communication(antennae.slice());
+    this.communication = new Communication(antennaeManager, antennae.slice());
     this.spaceObjectChange$ = this.change$;
     this.change$ = merge(this.spaceObjectChange$, this.communication.change$);
   }
@@ -59,16 +61,21 @@ export class Craft extends SpaceObject {
     };
   }
 
-  static fromJson(json: CraftDto, soiManager: SoiManager): Craft {
-    let communication = Communication.fromJson(json.communication);
+  static fromJson(
+    json: CraftDto,
+    soiManager: SoiManager,
+    antennaeManager: AntennaeManager,
+  ): Craft {
+    let communication = Communication.fromJson(json.communication, antennaeManager);
     let craftType = CraftType.fromString(json.craftType);
 
     return new Craft(
       soiManager,
+      antennaeManager,
       json.id,
       json.draggable.label,
       craftType,
-      communication.antennae,
+      communication.stringAntennae,
       Vector2.fromList(json.draggable.location),
       json.draggable.lastAttemptLocation,
     );

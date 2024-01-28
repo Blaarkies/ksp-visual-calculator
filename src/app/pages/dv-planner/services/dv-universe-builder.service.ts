@@ -1,6 +1,6 @@
 import {
+  DestroyRef,
   Injectable,
-  OnDestroy,
 } from '@angular/core';
 import { Planetoid } from 'src/app/common/domain/space-objects/planetoid';
 import { AnalyticsService } from 'src/app/services/analytics.service';
@@ -15,7 +15,7 @@ import { StockEntitiesCacheService } from '../../../services/stock-entities-cach
 import { TravelService } from './travel.service';
 
 @Injectable()
-export class DvUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
+export class DvUniverseBuilderService extends AbstractUniverseBuilderService {
 
   checkpointPreferences$ = new SubjectHandle<CheckpointPreferences>(
     {defaultValue: CheckpointPreferences.default});
@@ -24,14 +24,16 @@ export class DvUniverseBuilderService extends AbstractUniverseBuilderService imp
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
     protected cameraService: CameraService,
+    protected destroyRef: DestroyRef,
 
     private travelService: TravelService,
   ) {
     super();
+
+    destroyRef.onDestroy(() => this.destroy());
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
+  protected override destroy() {
     super.destroy();
 
     this.travelService.resetCheckpoints();

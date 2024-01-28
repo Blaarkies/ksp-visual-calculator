@@ -1,7 +1,8 @@
 import {
+  DestroyRef,
   Injectable,
-  OnDestroy,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   combineLatest,
   map,
@@ -9,8 +10,6 @@ import {
   sampleTime,
   startWith,
   switchMap,
-  take,
-  takeUntil,
   tap,
 } from 'rxjs';
 import { AnalyticsService } from 'src/app/services/analytics.service';
@@ -18,14 +17,18 @@ import { CraftDto } from '../../../common/domain/dtos/craft-dto';
 import { StateCommnetPlannerDto } from '../../../common/domain/dtos/state-commnet-planner.dto';
 import { Group } from '../../../common/domain/group';
 import { LabeledOption } from '../../../common/domain/input-fields/labeled-option';
+import { AntennaeManager } from '../../../common/domain/space-objects/antennae-manager';
 import { Communication } from '../../../common/domain/space-objects/communication';
 import { Craft } from '../../../common/domain/space-objects/craft';
 import { OrbitParameterData } from '../../../common/domain/space-objects/orbit-parameter-data';
+import { Planetoid } from '../../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../../common/domain/space-objects/space-object';
 import { SubjectHandle } from '../../../common/subject-handle';
+import { PlanetoidDetails } from '../../../overlays/celestial-body-details-dialog/planetoid-details';
 import { CameraService } from '../../../services/camera.service';
 import { EnrichedStarSystem } from '../../../services/domain/enriched-star-system.model';
 import { EventLogs } from '../../../services/domain/event-logs';
+import { PlanetoidFactory } from '../../../services/domain/planetoid-factory';
 import { AbstractUniverseBuilderService } from '../../../services/domain/universe-builder.abstract.service';
 import { StockEntitiesCacheService } from '../../../services/stock-entities-cache.service';
 import { CraftDetails } from '../components/craft-details-dialog/craft-details';
@@ -37,13 +40,9 @@ import {
 } from '../models/antenna-signal';
 import { ConnectionGraph } from '../models/connection-graph';
 import { CraftFactory } from '../models/craft-factory';
-import {
-  antennaServiceDestroy,
-  antennaServiceSetAntennae,
-} from './pseudo/antenna.service';
 
 @Injectable()
-export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService implements OnDestroy {
+export class CommnetUniverseBuilderService extends AbstractUniverseBuilderService {
 
   craft$ = new SubjectHandle<Craft[]>();
   antennaSignal$ = new SubjectHandle<AntennaSignal[]>();
@@ -51,19 +50,25 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   difficultySetting: DifficultySetting;
 
   private antennaeLabelMap: Map<string, Antenna>;
-  private craftFactory = new CraftFactory(this.planetoids$);
+  protected planetoidFactory = new PlanetoidFactory(this.soiManager, this.antennaeManager);
+  private craftFactory = new CraftFactory(
+    this.soiManager, this.antennaeManager);
 
   constructor(
     protected analyticsService: AnalyticsService,
     protected cacheService: StockEntitiesCacheService,
     protected cameraService: CameraService,
+    protected destroyRef: DestroyRef,
+
+    private antennaeManager: AntennaeManager,
   ) {
     super();
 
+    destroyRef.onDestroy(() => this.destroy());
+
     this.cacheService.antennae$
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe(antennae => {
-        antennaServiceSetAntennae(antennae);
         this.antennae$.set(antennae);
         this.antennaeLabelMap = new Map<string, Antenna>(
           antennae.map(a => [a.label, a]));
@@ -75,7 +80,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       merge(signals.map(s => s.relayChange$)).pipe(
         startWith(undefined),
         map(() => signals),
-        );
+      );
 
     let signalsUpdate$ = this.antennaSignal$.stream$.pipe(
       switchMap(signals => getConnectionsChange$(signals)),
@@ -101,13 +106,10 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     ).subscribe();
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
+  protected override destroy() {
     super.destroy();
-
     this.craft$.destroy();
     this.antennaSignal$.destroy();
-    antennaServiceDestroy();
   }
 
   protected async setStockDetails(enrichedStarSystem: EnrichedStarSystem) {
@@ -119,7 +121,8 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     if (dsnIds) {
       let dsnPlanetoids = this.planetoids$.value.filter(p => p.id.includesSome(dsnIds));
       dsnPlanetoids.forEach(p =>
-        p.communication = new Communication([new Group('Tracking Station 1')]));
+        p.communication = new Communication(
+          this.antennaeManager, [new Group('Tracking Station 1')]));
     }
 
     this.updateTransmissionLines();
@@ -186,7 +189,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
   private getFreshTransmissionLines(nodes: CanCommunicate[], signals: AntennaSignal[]): AntennaSignal[] {
     let [removeSignals = [], newSignals = []] = nodes
-      .filter(so => so.communication?.antennae?.length)
+      .filter(so => so.communication?.stringAntennae?.length)
       .joinSelf()
       .distinct(this.getIndexOfSameCombination)
       // run again, opposing permutations are still similar as combinations
@@ -266,7 +269,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       category: EventLogs.Category.Craft,
       old: {
         type: oldCraft.craftType,
-        antennae: oldCraft.communication.antennae && oldCraft.communication.antennae.map(a => ({
+        antennae: oldCraft.communication.stringAntennae && oldCraft.communication.stringAntennae.map(a => ({
           label: a.item,
           count: a.count,
         })),
@@ -293,8 +296,8 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       category: EventLogs.Category.Craft,
       craft: {
         type: existing.craftType,
-        antennae: existing.communication.antennae
-          && existing.communication.antennae.map(a => ({
+        antennae: existing.communication.stringAntennae
+          && existing.communication.stringAntennae.map(a => ({
             label: a.item,
             count: a.count,
           })),
@@ -315,6 +318,15 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
     if (this.planetoids$.value) {
       this.updateTransmissionLines({reset: true});
     }
+  }
+
+  override editCelestialBody(body: Planetoid, details: PlanetoidDetails) {
+    super.editCelestialBody(body, details);
+
+    body.communication = details.currentDsn
+      ? new Communication(this.antennaeManager, [new Group(details.currentDsn.label)])
+      : undefined;
+    this.updateTransmissionLines();
   }
 
 }

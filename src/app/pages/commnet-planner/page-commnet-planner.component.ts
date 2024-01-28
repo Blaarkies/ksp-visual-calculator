@@ -19,9 +19,7 @@ import {
 import { BasicAnimations } from '../../animations/basic-animations';
 import { ActionOption } from '../../common/domain/action-option';
 import { GameStateType } from '../../common/domain/game-state-type';
-import { Group } from '../../common/domain/group';
 import { Icons } from '../../common/domain/icons';
-import { Communication } from '../../common/domain/space-objects/communication';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
@@ -199,7 +197,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
   }
 
   updateUniverse(dragged: CanCommunicate) {
-    if (dragged.communication?.antennae?.length) {
+    if (dragged.communication?.stringAntennae?.length) {
       this.commnetUniverseBuilderService.updateTransmissionLines();
     }
   }
@@ -230,13 +228,6 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
 
   editPlanet({body, details}) {
     this.commnetUniverseBuilderService.editCelestialBody(body, details);
-    if (details.currentDsn) {
-      body.communication = new Communication([new Group(details.currentDsn.label)]);
-    } else {
-      body.communication = undefined;
-    }
-
-    this.commnetUniverseBuilderService.updateTransmissionLines();
   }
 
   trackSignal(index: number, item: AntennaSignal): string {

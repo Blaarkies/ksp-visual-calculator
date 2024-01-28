@@ -39,8 +39,8 @@ describe('AntennaSignal', () => {
         relay: true,
       } as Antenna);
       // TODO: create communication through constructor for changeDetection
-      signal.nodes[0].communication.antennaeFull = [antennaGroup];
-      signal.nodes[1].communication.antennaeFull = [antennaGroup];
+      signal.nodes[0].communication.instanceAntennae = [antennaGroup];
+      signal.nodes[1].communication.instanceAntennae = [antennaGroup];
 
       expect(signal.textLocation).to.deep.equal({x: 50000, y: 100000});
       expect(signal.displayDistance).to.equal('223.607 km');
@@ -113,7 +113,7 @@ function getAntennaeTestScenarios(): {craftMap, scenarios: AntennaScenario[]} {
 
   let makeCraft = (antennaeGroups: (Antenna | number)[][]) => {
     let craft = new Craft('', '', CraftType.Base);
-    craft.communication.antennaeFull = antennaeGroups.map(([a,c]) => new Group(a as Antenna, c as number));
+    craft.communication.instanceAntennae = antennaeGroups.map(([a,c]) => new Group(a as Antenna, c as number));
     return craft;
   };
 

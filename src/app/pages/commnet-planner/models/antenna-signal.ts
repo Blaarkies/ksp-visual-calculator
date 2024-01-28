@@ -118,8 +118,8 @@ export class AntennaSignal {
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].communication.antennaeFull,
-      this.nodes[1].communication.antennaeFull,
+      this.nodes[0].communication.instanceAntennae,
+      this.nodes[1].communication.instanceAntennae,
     );
   }
 
@@ -140,8 +140,8 @@ export class AntennaSignal {
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].communication.antennaeFull,
-      this.nodes[1].communication.antennaeFull,
+      this.nodes[0].communication.instanceAntennae,
+      this.nodes[1].communication.instanceAntennae,
     );
   }
 
@@ -196,8 +196,8 @@ export class AntennaSignal {
       this.nodes[0].location.y,
       this.nodes[1].location.x,
       this.nodes[1].location.y,
-      this.nodes[0].communication.antennaeFull,
-      this.nodes[1].communication.antennaeFull);
+      this.nodes[0].communication.instanceAntennae,
+      this.nodes[1].communication.instanceAntennae);
   }
 
   // SpaceObjects (host/client) contain properties that trip up the default serializer

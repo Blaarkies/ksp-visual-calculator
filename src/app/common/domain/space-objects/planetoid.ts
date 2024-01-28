@@ -3,6 +3,7 @@ import { SoiManager } from '../../../services/domain/soi-manager';
 import { PlanetoidDto } from '../dtos/planetoid-dto';
 import { Group } from '../group';
 import { Vector2 } from '../vector2';
+import { AntennaeManager } from './antennae-manager';
 import { Communication } from './communication';
 import { MoveType } from './move-type';
 import { PlanetoidType } from './planetoid-type';
@@ -32,6 +33,7 @@ export class Planetoid extends SpaceObject {
 
   constructor(
     soiManager: SoiManager,
+    antennaeManager: AntennaeManager,
     id: string,
     label: string,
     imageUrl: string,
@@ -48,7 +50,7 @@ export class Planetoid extends SpaceObject {
       moveType, SpaceObjectType.Planetoid,
       location, lastAttemptLocation);
     if (antennaeGroups?.length) {
-      this.communication = new Communication(antennaeGroups.slice());
+      this.communication = new Communication(antennaeManager, antennaeGroups.slice());
     }
   }
 
@@ -69,17 +71,24 @@ export class Planetoid extends SpaceObject {
     };
   }
 
-  static fromJson(json: PlanetoidDto, soiManager: SoiManager): Planetoid {
-    let communication = json.communication ? Communication.fromJson(json.communication) : undefined;
+  static fromJson(
+    json: PlanetoidDto,
+    soiManager: SoiManager,
+    antennaeManager: AntennaeManager,
+  ): Planetoid {
+    let communication = json.communication
+      ? Communication.fromJson(json.communication, antennaeManager)
+      : undefined;
     let planetoidType = PlanetoidType.fromString(json.planetoidType);
 
     return new Planetoid(
       soiManager,
+      antennaeManager,
       json.id,
       json.draggable.label,
       json.draggable.imageUrl,
       json.draggable.moveType,
-      communication?.antennae ?? [],
+      communication?.stringAntennae ?? [],
       planetoidType,
       json.size,
       json.sphereOfInfluence,

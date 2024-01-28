@@ -89,7 +89,7 @@ export class PlanetoidDetailsDialogComponent {
     },
     currentDsn: {
       label: 'Current Tracking Station',
-      control: new FormControl(this.data.edit?.communication?.antennaeFull[0]?.item),
+      control: new FormControl(this.data.edit?.communication?.instanceAntennae[0]?.item),
       controlMeta: new ControlMetaSelect(
         this.trackingStationOptions,
         new Map<Antenna, string>(this.trackingStationOptions.map(a => [a.value, a.value?.icon ?? Icons.Delete])),
