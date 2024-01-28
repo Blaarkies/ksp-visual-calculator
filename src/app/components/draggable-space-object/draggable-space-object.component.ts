@@ -6,13 +6,9 @@ import {
   Input,
   OnInit,
   Output,
-  Signal,
   ViewEncapsulation,
 } from '@angular/core';
-import {
-  takeUntilDestroyed,
-  toSignal,
-} from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';

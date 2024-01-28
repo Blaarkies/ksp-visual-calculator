@@ -1,20 +1,28 @@
-<div class="focus-layout frosted-glass"
-     [cpMouseHover]="100" (hoverChange)="isOpen = $event"
-     [@openCloseX]="isOpen">
+<div
+  class="focus-layout frosted-glass"
+  [cpMouseHover]="100" (hoverChange)="setIsOpen($event)"
+  [@openCloseX]="isOpenSig()"
+>
 
   <div class="panel">
 
-    <button #button
-            mat-button
-            class="justify-left"
-            *ngFor="let item of list"
-            (click)="item.itemAction()"
-            [matTooltip]="item.label"
-            [matTooltipDisabled]="item.label.length < 8">
-      <div class="item-layout">
-        <mat-icon [svgIcon]="item.icon"></mat-icon>
-        <div>{{item.label}}</div>
-      </div>
-    </button>
+    @for (item of listSig(); track item.label) {
+      <button
+        #button
+        mat-button
+        [tabindex]="-1"
+        class="justify-left"
+        (click)="item.itemAction()"
+        [matTooltip]="item.label"
+        [matTooltipDisabled]="item.label.length < 8"
+        mat-ripple
+      >
+        <div class="item-layout" [class.is-selected]="item.isSelected">
+          <mat-icon [svgIcon]="item.icon"/>
+          <div>{{ item.label }}</div>
+        </div>
+      </button>
+    }
+
   </div>
 </div>

@@ -1,9 +1,8 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   DestroyRef,
+  effect,
   ElementRef,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -32,21 +31,16 @@ import { Vector2 } from '../../common/domain/vector2';
 import { CameraService } from '../../services/camera.service';
 import { TimingFunction } from '../../services/domain/timing-function.type';
 import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
-
-interface TouchCameraControl {
-  dxy: Vector2;
-  dz: number;
-  lastLocation: Vector2;
-}
+import { TouchCameraControl } from '../../common/domain/touch-camera-control';
 
 @Component({
   selector: 'cp-camera',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './camera.component.html',
   styleUrls: ['./camera.component.scss'],
 })
-export class CameraComponent implements OnInit {
+export class CameraComponent {
 
   @ViewChild('cameraController', {static: true}) cameraController: ElementRef<HTMLDivElement>;
   @ViewChild('contentStack', {static: true}) contentStack: ElementRef<HTMLDivElement>;
@@ -62,6 +56,9 @@ export class CameraComponent implements OnInit {
     private universeBuilderService: AbstractUniverseBuilderService,
     private destroyRef: DestroyRef,
   ) {
+    this.cameraService.getSoiParent =
+      (location: Vector2) => this.universeBuilderService.getSoiParent(location);
+
     cameraService.cameraMovement$.pipe(
       delayWhen(() => this.onInit$),
       switchMap(cm => {
@@ -78,16 +75,14 @@ export class CameraComponent implements OnInit {
       .subscribe();
 
     destroyRef.onDestroy(() => this.onInit$.complete());
+
+    effect(() => {
+      this.onInit$.next();
+    });
   }
 
   convertScreenToGameSpace(screenSpaceLocation: Vector2): Vector2 {
     return this.cameraService.convertScreenToGameSpace(screenSpaceLocation);
-  }
-
-  ngOnInit() {
-    this.onInit$.next();
-    this.cameraService.getSoiParent =
-      (location: Vector2) => this.universeBuilderService.getSoiParent(location);
   }
 
   updateScale(event: WheelEvent) {

@@ -11,7 +11,7 @@ import { SpaceObject } from '../common/domain/space-objects/space-object';
 import { SpaceObjectType } from '../common/domain/space-objects/space-object-type';
 import { Vector2 } from '../common/domain/vector2';
 import { CameraMovement } from './domain/camera-movement.model';
-import { TimingFunction } from './domain/timing-function.type';
+import { StartCameraMovementParams } from './domain/start-camera-movement-params';
 
 let defaultScale = 1;
 let defaultLocation = new Vector2(-960, 540);
@@ -71,7 +71,8 @@ export class CameraService {
   }
 
   setFromJson(dto: CameraDto) {
-    this.startCameraMovement(dto.scale, Vector2.fromList(dto.location));
+    let location = Vector2.fromList(dto.location);
+    this.startCameraMovement({newScale: dto.scale, newLocation: location});
   }
 
   toJson(): CameraDto {
@@ -90,7 +91,7 @@ export class CameraService {
       .multiplyClone(-newScale * this.scaleModifier)
       .addVector2(this.getScreenCenterOffset());
 
-    this.startCameraMovement(newScale, newLocation);
+    this.startCameraMovement({newScale: newScale, newLocation: newLocation, focus: spaceObject});
   }
 
   focusSpaceObject(spaceObject: SpaceObject, zoomIn?: boolean) {
@@ -123,7 +124,7 @@ export class CameraService {
   }
 
   translate(x: number, y: number) {
-    this.startCameraMovement(this.scale, this.location.clone().add(x, y), 0);
+    this.startCameraMovement({newScale: this.scale, newLocation: this.location.clone().add(x, y), duration: 0});
   }
 
   /**
@@ -191,19 +192,23 @@ export class CameraService {
     let newLocation = this.location.clone().addVector2(shift);
     let newScale = this.scale * delta;
 
-    this.startCameraMovement(newScale, newLocation, 150);
+    this.startCameraMovement({newScale: newScale, newLocation: newLocation, duration: 150});
   }
 
   startCameraMovement(
-    newScale: number,
-    newLocation: Vector2,
-    duration: number = 700,
-    timingFunction: TimingFunction = 'ease-out',
+    {
+      newScale,
+      newLocation,
+      duration = 700,
+      timingFunction = 'ease-out',
+      focus,
+    }: StartCameraMovementParams,
   ) {
     this.cameraMove$.next(
       new CameraMovement(newScale, newLocation.clone(),
         this.scale, this.location.clone(),
-        duration, timingFunction));
+        duration, timingFunction,
+        focus));
 
     this.updateCameraParameters(newScale, newLocation);
   }
