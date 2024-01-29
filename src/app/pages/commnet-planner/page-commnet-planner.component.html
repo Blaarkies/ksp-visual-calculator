@@ -4,23 +4,26 @@
                  (update)="updateUniverse($event)">
 
   <ng-container aboveOrbits>
-    <cp-antenna-signal @fade
-                       *ngFor="let line of signals$ | async; trackBy: trackSignal"
-                       [antennaSignal]="line"
-                       [scale]="universe.camera.scale">
-    </cp-antenna-signal>
+    @for (line of signals$ | async; track trackSignal) {
+      <cp-antenna-signal
+        @fade
+        [antennaSignal]="line"
+        [scale]="universe.camera.scale"
+      />
+    }
   </ng-container>
 
   <ng-container abovePlanets>
-    <cp-craft
-      *ngFor="let craft of crafts$ | async"
-      @fade
-      [craft]="craft"
-      (dragStart)="universe.startBodyDrag(craft,$event,
+    @for (craft of crafts$ | async; track craft.id) {
+      <cp-craft
+        @fade
+        [craft]="craft"
+        (dragStart)="universe.startBodyDrag(craft, $event,
                    universe.backboard.nativeElement, universe.camera)"
-      (focus)="universe.focusBody(craft, $event)"
-      (edit)="editCraft(craft)"
-    ></cp-craft>
+        (focus)="universe.focusBody(craft, $event)"
+        (edit)="editCraft(craft)"
+      />
+    }
   </ng-container>
 
 </cp-universe-map>
@@ -31,11 +34,12 @@
   [contextPanelDetails]="contextPanelDetails"
 >
   <div top class="screen-border-margin">
-    <cp-zoom-indicator></cp-zoom-indicator>
+    <cp-zoom-indicator/>
   </div>
+
   <cp-focus-jump-to-panel
     class="all-pointer"
     left
     [focusables]="focusables$ | async"
-  ></cp-focus-jump-to-panel>
+  />
 </cp-hud>

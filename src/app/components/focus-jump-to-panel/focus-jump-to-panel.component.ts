@@ -97,6 +97,7 @@ export class FocusJumpToPanelComponent {
     destroyRef.onDestroy(() => this.isOpen$.complete());
 
     effect(() =>
+      // TODO: also check for touch drag events outside of component, then close the panel
       fromEvent(this.window, 'keyup')
         .pipe(
           filter((event: KeyboardEvent) => event.key === 'Tab'

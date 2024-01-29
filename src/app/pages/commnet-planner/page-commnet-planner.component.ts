@@ -1,4 +1,7 @@
-import { CommonModule } from '@angular/common';
+import {
+  AsyncPipe,
+  CommonModule,
+} from '@angular/common';
 import {
   Component,
   OnDestroy,
@@ -26,7 +29,6 @@ import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { GlobalStyleClass } from '../../common/global-style-class';
 import { WithDestroy } from '../../common/with-destroy';
-import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
@@ -57,14 +59,13 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   selector: 'cp-page-commnet-planner',
   standalone: true,
   imports: [
-    CommonModule,
+    UniverseMapComponent,
+    AntennaSignalComponent,
+    CraftComponent,
     HudComponent,
     ZoomIndicatorComponent,
     FocusJumpToPanelComponent,
-    UniverseMapComponent,
-    AntennaSignalComponent,
-    DraggableSpaceObjectComponent,
-    CraftComponent,
+    AsyncPipe,
   ],
   providers: [
     HudService,
