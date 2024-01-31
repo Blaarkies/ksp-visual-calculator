@@ -4,11 +4,18 @@ import {
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MountResponse } from 'cypress/angular';
 import {
+  BehaviorSubject,
   EMPTY,
   of,
+  skip,
+  Subject,
+  take,
 } from 'rxjs';
-import { MountResult } from '../../../../cypress/support/models/mount-response.model';
+import { Craft } from '../../common/domain/space-objects/craft';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
+import { CameraComponent } from '../../components/camera/camera.component';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { HudComponent } from '../../components/hud/hud.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
@@ -27,41 +34,18 @@ describe('PageCommnetPlannerComponent', () => {
 
   describe('if basic', () => {
 
-    @Component({selector: 'cp-universe-map', standalone: true,
-      template: '<div>universe-map<ng-content/></div>'})
-    class MockUniverseMapComponent {
-      @Input() planetoids;
-      camera = {scale: 1};
+    @Component({selector: 'cp-universe-map', standalone: true, template: 'UniverseMapComponent<ng-content/>'})
+    class MockUniverseMapComponent implements Partial<UniverseMapComponent> {
+      camera = {
+        scale: 1,
+        startBodyDrag: () => undefined,
+        backboard: {nativeElement: {}},
+        focusBody: () => undefined,
+      } as unknown as CameraComponent;
     }
 
-    @Component({selector: 'cp-antenna-signal', standalone: true,
-      template: '<div>antenna-signal</div>'})
-    class MockAntennaSignalComponent {
-      @Input() antennaSignal;
-      @Input() scale;
-    }
-
-    @Component({selector: 'cp-craft', standalone: true,
-      template: '<div>craft</div>'})
-    class MockCraftComponent {
-      @Input() craft;
-    }
-
-    @Component({selector: 'cp-hud', standalone: true,
-      template: '<div>hud<ng-content/></div>'})
-    class MockHudComponent {
-      @Input() icon;
-      @Input() contextPanelDetails;
-    }
-
-    @Component({selector: 'cp-zoom-indicator', standalone: true,
-      template: '<div>zoom-indicator</div>'})
-    class MockZoomIndicatorComponent {
-    }
-
-    @Component({selector: 'cp-focus-jump-to-panel', standalone: true,
-      template: '<div>focus-jump-to-panel</div>'})
-    class MockFocusJumpToPanelComponent {
+    @Component({selector: 'cp-focus-jump-to-panel', standalone: true, template: 'FocusJumpToPanelComponent'})
+    class MockFocusJumpToPanelComponent implements Partial<FocusJumpToPanelComponent> {
       @Input() focusables;
     }
 
@@ -83,53 +67,42 @@ describe('PageCommnetPlannerComponent', () => {
       };
       let mockCommnetUniverseBuilderService = {
         antennaSignal$: {stream$: of([{nodes: [{label: ''}, {label: ''}]}])},
-        craft$: {stream$: of([{}])},
+        craft$: {stream$: new Subject()},
         orbits$: EMPTY,
-        planetoids$: EMPTY,
+        planetoids$: new Subject(),
       };
       let mockGuidanceService = {
+        fakeAndGay: true,
         openTutorialDialog: cy.spy(),
         setSupportDeveloperSnackbar: cy.spy(),
         setSignUpDialog: cy.spy(),
       };
-      TestBed.overrideComponent(PageCommnetPlannerComponent, {
-        add: {
-          providers: [
-            {provide: AuthService, useValue: mockAuthService},
-            {provide: AnalyticsService, useValue: {}},
-            {provide: HudService, useValue: mockHudService},
-            {provide: CommnetStateService, useValue: mockCommnetStateService},
-            {provide: CommnetUniverseBuilderService, useValue: mockCommnetUniverseBuilderService},
-            {provide: GuidanceService, useValue: mockGuidanceService},
-          ],
+
+      cy.mount(PageCommnetPlannerComponent, {
+        imports: [NoopAnimationsModule],
+        TestBed,
+        override: {
           imports: [
-            MockUniverseMapComponent,
-            MockAntennaSignalComponent,
-            MockCraftComponent,
-            MockHudComponent,
-            MockZoomIndicatorComponent,
-            MockFocusJumpToPanelComponent,
-          ],
-        },
-        remove: {
-          imports: [
-            UniverseMapComponent,
+            [UniverseMapComponent, MockUniverseMapComponent],
             AntennaSignalComponent,
             CraftComponent,
             HudComponent,
             ZoomIndicatorComponent,
-            FocusJumpToPanelComponent,
+            [FocusJumpToPanelComponent, MockFocusJumpToPanelComponent],
+          ],
+          providers: [
+            [AuthService, mockAuthService],
+            [AnalyticsService, {}],
+            [HudService, mockHudService],
+            [CommnetStateService, mockCommnetStateService],
+            [CommnetUniverseBuilderService, mockCommnetUniverseBuilderService],
+            [GuidanceService, mockGuidanceService],
           ],
         },
-
-      });
-
-      mountResponse = cy.mount(PageCommnetPlannerComponent, {
-        imports: [NoopAnimationsModule],
-      });
+      }).then(mr => mountResponse = mr);
     });
 
-    let mountResponse: MountResult<PageCommnetPlannerComponent>;
+    let mountResponse: MountResponse<PageCommnetPlannerComponent>;
 
     it('exists', () => {
       cy.get('*').should('exist');
@@ -138,19 +111,65 @@ describe('PageCommnetPlannerComponent', () => {
     it('contains correct elements', () => {
       cy.get('cp-universe-map').should('exist');
       cy.get('cp-antenna-signal').should('exist');
+
+      let builderService = mountResponse.fixture.debugElement.injector
+        .get(CommnetUniverseBuilderService);
+      (builderService.craft$.stream$ as unknown as Subject<Craft[]>)
+        .next([{} as Craft]);
+      mountResponse.fixture.detectChanges();
       cy.get('cp-craft').should('exist');
+
       cy.get('cp-hud').should('exist');
       cy.get('cp-zoom-indicator').should('exist');
       cy.get('cp-focus-jump-to-panel').should('exist');
     });
 
     it('initiates calls to guidanceService', () => {
-      let guidanceService = TestBed.inject(GuidanceService);
+      let guidanceService = mountResponse.fixture.debugElement.injector
+        .get(GuidanceService);
       expect(guidanceService.openTutorialDialog).to.have.been.called;
       expect(guidanceService.setSupportDeveloperSnackbar).to.have.been.called;
       expect(guidanceService.setSignUpDialog).to.have.been.called;
     });
 
+    it('sets focusables correctly', (done) => {
+      let testLabelPlanet = 'test-planet';
+      let testLabelCraft = 'test-craft';
+
+      mountResponse.component.focusables$.pipe(
+        skip(1), take(1)) // Wait until both planetoids$ and craft$ emitted
+        .subscribe(list => {
+          expect(!!list).to.be.true;
+          expect(list.length).to.be.greaterThan(0);
+
+          let planet = list.find(f => f.label === testLabelPlanet);
+          expect(!!planet).to.be.true;
+
+          let craft = list.find(f => f.label === testLabelCraft);
+          expect(!!craft).to.be.true;
+
+          done();
+        });
+
+      let builderService = mountResponse.fixture.debugElement.injector
+        .get(CommnetUniverseBuilderService);
+
+      builderService.planetoids$.next([{label: testLabelPlanet} as Planetoid]);
+      (builderService.craft$.stream$ as unknown as Subject<Craft[]>)
+        .next([{label: testLabelCraft} as Craft]);
+    });
+
+    it.skip('handle no account logged in', (done) => {
+
+    });
+
+    it.skip('when destroyed it also destroys commnetStateService', (done) => {
+
+    });
+
+
+
   });
 
 });
+
