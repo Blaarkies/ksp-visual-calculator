@@ -2,10 +2,10 @@
   <line
     [attr.stroke-width]="2"
     [attr.stroke]="signal.colorTotal + 'A'"
-    [attr.x1]="worldViewScale * signal.nodes[0].location.x + inverseScale * signal.offsetVector.x + '%'"
-    [attr.y1]="worldViewScale * signal.nodes[0].location.y + inverseScale * signal.offsetVector.y + '%'"
-    [attr.x2]="worldViewScale * signal.nodes[1].location.x + inverseScale * signal.offsetVector.x + '%'"
-    [attr.y2]="worldViewScale * signal.nodes[1].location.y + inverseScale * signal.offsetVector.y + '%'"
+    [attr.x1]="worldViewScale * signal.nodes[0].location.x + inverseScaleSig() * signal.offsetVector.x + '%'"
+    [attr.y1]="worldViewScale * signal.nodes[0].location.y + inverseScaleSig() * signal.offsetVector.y + '%'"
+    [attr.x2]="worldViewScale * signal.nodes[1].location.x + inverseScaleSig() * signal.offsetVector.x + '%'"
+    [attr.y2]="worldViewScale * signal.nodes[1].location.y + inverseScaleSig() * signal.offsetVector.y + '%'"
   />
 
   <ng-container *ngIf="signal.strengthRelay">
@@ -29,10 +29,10 @@
     <line
       [attr.stroke-width]="3"
       [attr.stroke]="'url(#pattern' + signal.id + ')'"
-      [attr.x1]="worldViewScale * signal.nodes[0].location.x - inverseScale * signal.offsetVector.x + '%'"
-      [attr.y1]="worldViewScale * signal.nodes[0].location.y - inverseScale * signal.offsetVector.y + '%'"
-      [attr.x2]="worldViewScale * signal.nodes[1].location.x - inverseScale * signal.offsetVector.x + '%'"
-      [attr.y2]="worldViewScale * signal.nodes[1].location.y - inverseScale * signal.offsetVector.y + '%'"
+      [attr.x1]="worldViewScale * signal.nodes[0].location.x - inverseScaleSig() * signal.offsetVector.x + '%'"
+      [attr.y1]="worldViewScale * signal.nodes[0].location.y - inverseScaleSig() * signal.offsetVector.y + '%'"
+      [attr.x2]="worldViewScale * signal.nodes[1].location.x - inverseScaleSig() * signal.offsetVector.x + '%'"
+      [attr.y2]="worldViewScale * signal.nodes[1].location.y - inverseScaleSig() * signal.offsetVector.y + '%'"
     />
   </ng-container>
 

@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import {
   Component,
   DestroyRef,
+  signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
@@ -78,7 +79,7 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
 export default class PageCommnetPlannerComponent {
 
   icons = Icons;
-  contextPanelDetails: ActionPanelDetails;
+  contextPanelDetailsSig = signal<ActionPanelDetails>(null);
   signals$: Observable<AntennaSignal[]>;
   crafts$: Observable<Craft[]>;
   orbits$: Observable<Orbit[]>;
@@ -103,7 +104,7 @@ export default class PageCommnetPlannerComponent {
       this.commnetStateService.destroy();
     });
 
-    this.contextPanelDetails = this.getContextPanelDetails();
+    this.contextPanelDetailsSig.set(this.getContextPanelDetails());
 
     let universe = commnetUniverseBuilderService;
     this.signals$ = universe.antennaSignal$.stream$;

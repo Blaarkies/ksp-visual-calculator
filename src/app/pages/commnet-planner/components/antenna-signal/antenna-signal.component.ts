@@ -6,10 +6,14 @@ import {
   DestroyRef,
   Input,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  takeUntilDestroyed,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import {
   combineLatest,
   map,
+  mergeWith,
   Observable,
   sampleTime,
   startWith,
@@ -48,25 +52,32 @@ export class AntennaSignalComponent {
       .pipe(map(([a, b]) => a || b));
 
     value.change$.pipe(
+      mergeWith(this.cameraService.parameters$),
       sampleTime(16),
-      // TODO: changing antennae types - no effect until hover over
       takeUntil(this.stopChangeStream$),
       takeUntilDestroyed(this.destroyRef),
-    ).subscribe(() => this.cdr.markForCheck());
+    ).subscribe(() => {
+      this.cdr.markForCheck();
+    });
   }
 
-  @Input() set scale(value: number) {
-    let lineSpacingFactor = .02;
-    this.inverseScale = lineSpacingFactor / value;
-  }
-
-  inverseScale = 1;
+  inverseScaleSig = toSignal(this.cameraService.parameters$.pipe(
+    sampleTime(16),
+    map(() => {
+      let value = this.cameraService.scale;
+      return this.lineSpacingFactor / value;
+    }),
+    startWith(1),
+  ));
   worldViewScale = 100 * CameraService.normalizedScale;
   showText$: Observable<boolean>;
 
+  private lineSpacingFactor = .02;
   private stopChangeStream$ = new Subject<void>();
 
-  constructor(private cdr: ChangeDetectorRef, private destroyRef: DestroyRef) {
+  constructor(private cdr: ChangeDetectorRef,
+              private destroyRef: DestroyRef,
+              private cameraService: CameraService) {
     destroyRef.onDestroy(() => this.stopChangeStream$.complete());
   }
 

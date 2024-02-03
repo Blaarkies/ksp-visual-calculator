@@ -60,6 +60,9 @@ export class CameraService {
   private cameraMove$ = new ReplaySubject<CameraMovement>();
   cameraMovement$ = this.cameraMove$.asObservable();
 
+  private parametersUpdate$ = new ReplaySubject<void>();
+  parameters$ = this.parametersUpdate$.asObservable();
+
   // TODO: Set by CameraComponent onInit. Remove this hack
   getSoiParent: (location: Vector2) => Planetoid;
 
@@ -67,7 +70,10 @@ export class CameraService {
     private window: Window,
     destroyRef: DestroyRef,
   ) {
-    destroyRef.onDestroy(() => this.cameraMove$.complete());
+    destroyRef.onDestroy(() => {
+      this.cameraMove$.complete();
+      this.parametersUpdate$.complete();
+    });
   }
 
   setFromJson(dto: CameraDto) {
@@ -216,6 +222,7 @@ export class CameraService {
   private updateCameraParameters(newScale: number, newLocation: Vector2) {
     this.scale = newScale;
     this.location.setVector2(newLocation);
+    this.parametersUpdate$.next();
   }
 
   private getScreenCenterOffset(): Vector2 {

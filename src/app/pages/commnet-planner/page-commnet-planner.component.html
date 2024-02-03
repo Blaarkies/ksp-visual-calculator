@@ -5,11 +5,7 @@
 
   <ng-container aboveOrbits>
     @for (line of signals$ | async; track trackSignal) {
-      <cp-antenna-signal
-        @fade
-        [antennaSignal]="line"
-        [scale]="universe.camera.scale"
-      />
+      <cp-antenna-signal @fade [antennaSignal]="line"/>
     }
   </ng-container>
 
@@ -31,7 +27,7 @@
 <cp-hud
   tooltip="This page handles CommNet calculations, click the green menu for others"
   [icon]="icons.Relay"
-  [contextPanelDetails]="contextPanelDetails"
+  [contextPanelDetails]="contextPanelDetailsSig()"
 >
   <div top class="screen-border-margin">
     <cp-zoom-indicator/>

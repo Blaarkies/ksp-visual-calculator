@@ -6,7 +6,6 @@ import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MountResponse } from 'cypress/angular';
 import {
-  BehaviorSubject,
   EMPTY,
   of,
   skip,
@@ -132,7 +131,39 @@ describe('PageCommnetPlannerComponent', () => {
       expect(guidanceService.setSignUpDialog).to.have.been.called;
     });
 
-    it('sets focusables correctly', (done) => {
+    it.skip('handle no account logged in', (done) => {
+
+    });
+
+    it.skip('when destroyed it also destroys commnetStateService', (done) => {
+
+    });
+
+    it.skip('has correct orange context panel details', (done) => {
+
+    });
+
+    it.skip('inputs to universe component', (done) => {
+
+    });
+
+    it.skip('reacts on universe component emits', (done) => {
+
+    });
+
+    it.skip('inputs to craft component', (done) => {
+
+    });
+
+    it.skip('reacts on craft component emits', (done) => {
+
+    });
+
+    it.skip('inputs to hud component', (done) => {
+
+    });
+
+    it('inputs to focus-jump-to-panel component', (done) => {
       let testLabelPlanet = 'test-planet';
       let testLabelCraft = 'test-craft';
 
@@ -158,17 +189,6 @@ describe('PageCommnetPlannerComponent', () => {
       (builderService.craft$.stream$ as unknown as Subject<Craft[]>)
         .next([{label: testLabelCraft} as Craft]);
     });
-
-    it.skip('handle no account logged in', (done) => {
-
-    });
-
-    it.skip('when destroyed it also destroys commnetStateService', (done) => {
-
-    });
-
-
-
   });
 
 });
