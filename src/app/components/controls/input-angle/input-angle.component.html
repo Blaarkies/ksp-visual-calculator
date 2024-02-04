@@ -1,0 +1,51 @@
+<div class="input-angle-layout">
+
+  @if (label) {
+    <div class="label text caption">{{ label }}</div>
+  }
+
+  <div class="dial-and-input" [class.disabled]="disabled">
+    <div class="dial-container">
+      <div class="ring"></div>
+
+      <div class="draw-sector">
+        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+          <path [attr.d]="pathSig()"/>
+        </svg>
+      </div>
+
+      <div
+        #container
+        class="hand-container"
+        [style.--angle]="angleSig()"
+        [class.can-drag]="true"
+        (pointerdown)="dragHand($event, container)"
+      >
+        <div class="arm">
+          <svg width="20" height="20">
+            <line x1="1" y1="0" x2="16" y2="0"/>
+          </svg>
+        </div>
+
+        <div class="knob"></div>
+      </div>
+    </div>
+
+    <cp-input-field
+      #input
+      class="no-spinner-arrows"
+      [widthClass]="'digit3'"
+      type="number"
+      [suffix]="suffix"
+      (output)="userInputChange($any($event))"
+      (formTouch)="onTouched && onTouched(true)"
+    />
+  </div>
+
+  @if (hint && (value === undefined || value === null)) {
+    <div @fade class="hint text mute caption">{{ hint }}</div>
+  }
+
+  <cp-validation-message [fieldName]="label" [errors]="errors"/>
+
+</div>

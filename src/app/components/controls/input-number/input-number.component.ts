@@ -35,7 +35,7 @@ import { ControlMetaNumber } from '../../../common/domain/input-fields/control-m
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { InputFieldComponent } from '../input-field/input-field.component';
 
-export type WidthClass = 'small' | 'normal';
+export type WidthClass = 'small' | 'digit3' | 'normal';
 
 @Component({
   selector: 'cp-input-number',
