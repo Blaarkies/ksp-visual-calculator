@@ -230,8 +230,4 @@ export default class PageCommnetPlannerComponent {
     this.commnetUniverseBuilderService.editCelestialBody(body, details);
   }
 
-  trackSignal(index: number, item: AntennaSignal): string {
-    return item.nodes[0].label + item.nodes[1].label;
-  }
-
 }

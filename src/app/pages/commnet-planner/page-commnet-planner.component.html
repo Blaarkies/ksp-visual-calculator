@@ -4,7 +4,7 @@
                  (update)="updateUniverse($event)">
 
   <ng-container aboveOrbits>
-    @for (line of signals$ | async; track trackSignal) {
+    @for (line of signals$ | async; track line.id) {
       <cp-antenna-signal @fade [antennaSignal]="line"/>
     }
   </ng-container>
