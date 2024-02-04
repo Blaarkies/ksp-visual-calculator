@@ -23,15 +23,16 @@ import {
   Provider,
   Type,
 } from '@angular/core';
-import {
-  TestBed,
-  TestBedStatic,
-} from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import {
   mount,
   MountResponse,
 } from 'cypress/angular';
-import { componentMock } from './models/mockers';
+import {
+  MockComponent,
+  MockService,
+} from 'ng-mocks';
+import { MountConfigOverrides } from './types';
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -52,16 +53,6 @@ Cypress.Commands.add('mount', (component, config) => {
   return mount(component, newConfig);
 });
 
-type OverrideImportType = Type<unknown> | Type<unknown>[];
-
-interface MountConfigOverrides {
-  TestBed?: TestBedStatic;
-  override?: {
-    imports?: OverrideImportType[];
-    providers?: (Provider | unknown)[][];
-  };
-}
-
 type OverrideConfig = Parameters<typeof TestBed.overrideComponent>[1];
 type MountConfigType<T> = Parameters<typeof mount<T>>[1];
 
@@ -77,23 +68,17 @@ function overrideMount<T>(
       override.add.imports = [];
       override.remove.imports = [];
 
-      imports.forEach(details => {
+      imports.forEach(sourceAndMock => {
         let replacement: Type<Component>;
         let target: Type<Component>;
 
-        if (Array.isArray(details)) {
-          replacement = details[1];
-          target = details[0];
-        } else if (details instanceof Type) {
-          // TODO: Pass reference down to test case for triggering component events
-          [, replacement] = componentMock(details);
-          target = details;
+        if (Array.isArray(sourceAndMock)) {
+          replacement = sourceAndMock[1];
+          target = sourceAndMock[0];
+        } else if (sourceAndMock instanceof Type) {
+          replacement = MockComponent(sourceAndMock) as Type<Component>;
+          target = sourceAndMock;
         }
-
-        // TODO: Check target type and create correct mock
-        // let classDescriptor: ClassDescriptorDetails = Reflect
-        //   .getOwnPropertyDescriptor(target, '__annotations__')
-        //   .value[0];
 
         override.add.imports.push(replacement);
         override.remove.imports.push(target);
@@ -105,8 +90,23 @@ function overrideMount<T>(
       override.add.providers = [];
       override.remove.providers = [];
 
-      providers.forEach(([target, replacement]: [Provider, object]) => {
-        override.add.providers.push({provide: target, useValue: replacement});
+      providers.forEach(sourceAndMock => {
+        let replacement: Provider;
+        let target: Provider;
+
+        if (Array.isArray(sourceAndMock)) {
+          target = sourceAndMock[0];
+          let mock = sourceAndMock[1];
+          replacement = {provide: target, useValue: mock};
+
+        } else {
+          let source = sourceAndMock as Provider;
+          target = source;
+          let mock = MockService(source);
+          replacement = {provide: target, useValue: mock};
+        }
+
+        override.add.providers.push(replacement);
         override.remove.providers.push(target);
       });
     }
@@ -118,13 +118,3 @@ function overrideMount<T>(
 
   return config;
 }
-
-// interface ClassDescriptorDetails {
-//   changeDetection: ChangeDetection;
-//   selector: string;
-//   standalone: boolean;
-//   imports: [];
-//   template: string;
-//   styles: [];
-//   ngMetadataName: 'Component';
-// }

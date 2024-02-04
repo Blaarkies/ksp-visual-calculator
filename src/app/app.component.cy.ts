@@ -1,6 +1,6 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MountResponse } from 'cypress/angular/angular';
-import { MountResult } from '../../cypress/support/models/mount-response.model';
+import { MountResult } from '../../cypress/support/types';
 import { AppComponent } from './app.component';
 import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';

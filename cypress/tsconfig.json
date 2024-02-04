@@ -3,6 +3,6 @@
   "include": ["**/*.ts"],
   "compilerOptions": {
     "sourceMap": false,
-    "types": ["cypress", "chai"]
+    "types": ["cypress", "chai", "ng-mocks"]
   }
 }

@@ -1,10 +1,10 @@
-import {
-  Component,
-  Input,
-} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MountResponse } from 'cypress/angular';
+import {
+  MockService,
+  ngMocks,
+} from 'ng-mocks';
 import {
   EMPTY,
   of,
@@ -14,7 +14,6 @@ import {
 } from 'rxjs';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
-import { CameraComponent } from '../../components/camera/camera.component';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { HudComponent } from '../../components/hud/hud.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
@@ -33,67 +32,42 @@ describe('PageCommnetPlannerComponent', () => {
 
   describe('if basic', () => {
 
-    @Component({selector: 'cp-universe-map', standalone: true, template: 'UniverseMapComponent<ng-content/>'})
-    class MockUniverseMapComponent implements Partial<UniverseMapComponent> {
-      camera = {
-        scale: 1,
-        startBodyDrag: () => undefined,
-        backboard: {nativeElement: {}},
-        focusBody: () => undefined,
-      } as unknown as CameraComponent;
-    }
-
-    @Component({selector: 'cp-focus-jump-to-panel', standalone: true, template: 'FocusJumpToPanelComponent'})
-    class MockFocusJumpToPanelComponent implements Partial<FocusJumpToPanelComponent> {
-      @Input() focusables;
-    }
-
     afterEach(() => TestBed.resetTestingModule());
 
     beforeEach(() => {
-      let mockAuthService = {
+      let mockAuthService = MockService(AuthService, {
         user$: EMPTY,
         signIn$: EMPTY,
-      };
-      let mockHudService = {
-        createActionOptionTutorial: cy.spy(),
-        createActionOptionManageSaveGames: cy.spy(),
-        createActionResetPage: cy.spy(),
-        createActionOptionFaq: cy.spy(),
-      };
-      let mockCommnetStateService = {
-        destroy: cy.spy(),
-      };
-      let mockCommnetUniverseBuilderService = {
+      } as unknown);
+      let mockCommnetUniverseBuilderService = MockService(CommnetUniverseBuilderService, {
         antennaSignal$: {stream$: of([{nodes: [{label: ''}, {label: ''}]}])},
         craft$: {stream$: new Subject()},
         orbits$: EMPTY,
         planetoids$: new Subject(),
-      };
-      let mockGuidanceService = {
-        fakeAndGay: true,
+      } as unknown);
+      let mockGuidanceService = MockService(GuidanceService, {
         openTutorialDialog: cy.spy(),
         setSupportDeveloperSnackbar: cy.spy(),
         setSignUpDialog: cy.spy(),
-      };
+      } as unknown);
 
       cy.mount(PageCommnetPlannerComponent, {
         imports: [NoopAnimationsModule],
         TestBed,
         override: {
           imports: [
-            [UniverseMapComponent, MockUniverseMapComponent],
+            UniverseMapComponent,
             AntennaSignalComponent,
             CraftComponent,
             HudComponent,
             ZoomIndicatorComponent,
-            [FocusJumpToPanelComponent, MockFocusJumpToPanelComponent],
+            FocusJumpToPanelComponent,
           ],
           providers: [
             [AuthService, mockAuthService],
-            [AnalyticsService, {}],
-            [HudService, mockHudService],
-            [CommnetStateService, mockCommnetStateService],
+            AnalyticsService,
+            HudService,
+            CommnetStateService,
             [CommnetUniverseBuilderService, mockCommnetUniverseBuilderService],
             [GuidanceService, mockGuidanceService],
           ],
@@ -132,35 +106,42 @@ describe('PageCommnetPlannerComponent', () => {
     });
 
     it.skip('handle no account logged in', (done) => {
-
     });
 
     it.skip('when destroyed it also destroys commnetStateService', (done) => {
-
     });
 
     it.skip('has correct orange context panel details', (done) => {
-
     });
 
     it.skip('inputs to universe component', (done) => {
-
     });
 
-    it.skip('reacts on universe component emits', (done) => {
+    it('reacts on universe component emits', () => {
+      let component = mountResponse.component;
+      let universeMap = ngMocks.findInstance(UniverseMapComponent);
+      let test = 'test';
 
+      component.editPlanet = cy.spy();
+      universeMap.editPlanetoid.emit(test as any);
+
+      expect(component.editPlanet).to.have.been.called;
+      expect(component.editPlanet).to.have.been.calledOnceWith(test);
+
+      component.updateUniverse = cy.spy();
+      universeMap.update.emit(test as any);
+
+      expect(component.updateUniverse).to.have.been.called;
+      expect(component.updateUniverse).to.have.been.calledOnceWith(test);
     });
 
     it.skip('inputs to craft component', (done) => {
-
     });
 
     it.skip('reacts on craft component emits', (done) => {
-
     });
 
     it.skip('inputs to hud component', (done) => {
-
     });
 
     it('inputs to focus-jump-to-panel component', (done) => {
