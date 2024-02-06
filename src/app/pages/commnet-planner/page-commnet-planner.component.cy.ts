@@ -53,8 +53,8 @@ describe('PageCommnetPlannerComponent', () => {
 
       cy.mount(PageCommnetPlannerComponent, {
         imports: [NoopAnimationsModule],
-        TestBed,
         override: {
+          TestBed,
           imports: [
             UniverseMapComponent,
             AntennaSignalComponent,

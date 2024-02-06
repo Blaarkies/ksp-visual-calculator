@@ -12,7 +12,6 @@ type OverrideImportType = Type<unknown> | Type<unknown>[];
 type OverrideProviderType = (Provider | unknown) | (Provider | unknown)[];
 
 export interface MountConfigOverrides {
-  TestBed?: TestBedStatic;
   /**
    * Accepts a list of types or pairs of type and mock.
    * @example
@@ -25,6 +24,7 @@ export interface MountConfigOverrides {
    *  ]
    */
   override?: {
+    TestBed: TestBedStatic;
     /** @see MountConfigOverrides.override */
     imports?: OverrideImportType[];
     /** @see MountConfigOverrides.override */

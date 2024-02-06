@@ -148,7 +148,7 @@ export class InputAngleComponent extends BasicValueAccessor {
       throttleTime(17),
       takeWhile((m: PointerEvent) =>
         (m.pointerType === 'mouse' && m.buttons.bitwiseIncludes(1))
-        || (m.pointerType === 'touch')),
+        || (m.pointerType !== 'mouse')),
       map((m: PointerEvent) => new Vector2(m.pageX, m.pageY)),
       map(l => -radiansToDegrees(center.direction(l))),
       map(a => a < 0 ? a + 360 : a),

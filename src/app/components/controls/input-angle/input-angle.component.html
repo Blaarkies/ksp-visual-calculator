@@ -18,7 +18,7 @@
         #container
         class="hand-container"
         [style.--angle]="angleSig()"
-        [class.can-drag]="true"
+        [class.can-drag]="!disabled"
         (pointerdown)="dragHand($event, container)"
       >
         <div class="arm">

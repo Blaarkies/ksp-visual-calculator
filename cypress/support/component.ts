@@ -44,9 +44,28 @@ declare global {
       mount: <T>(componentType: Type<T>,
                  config?: MountConfigType<T> & MountConfigOverrides)
         => Cypress.Chainable<MountResponse<T>>;
+      cssVar: (name: string, selector: string) => Cypress.Chainable<string>;
+      clog: (...args: any) => Cypress.Chainable<void>;
     }
   }
 }
+
+Cypress.Commands.add('cssVar', (name, selector) =>
+  cy.get(selector)
+    .then(e => e.get())
+    .then(element => cy.window()
+      .then(win => ({win, element})))
+    .then(data => {
+      let win: Cypress.AUTWindow = data.win;
+      let element: Element = data.element[0] as any as Element;
+      return win.getComputedStyle(element)
+        .getPropertyValue(name);
+    }),
+);
+
+Cypress.Commands.add('clog', (...args) => {
+  cy.task('log', JSON.stringify(args));
+});
 
 Cypress.Commands.add('mount', (component, config) => {
   let newConfig = overrideMount(component, config);
@@ -60,7 +79,7 @@ function overrideMount<T>(
   componentType: Type<T>,
   config?: MountConfigType<T> & MountConfigOverrides,
 ): MountConfigType<T> {
-  if (config.override && config.TestBed) {
+  if (config.override && config.override.TestBed) {
     let override: OverrideConfig = {add: {}, remove: {}};
 
     let imports = config.override.imports;
@@ -111,7 +130,7 @@ function overrideMount<T>(
       });
     }
 
-    config.TestBed.overrideComponent(componentType, override);
+    config.override.TestBed.overrideComponent(componentType, override);
 
     delete config.override;
   }
