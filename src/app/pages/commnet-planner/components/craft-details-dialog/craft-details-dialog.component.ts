@@ -32,9 +32,7 @@ import { Group } from '../../../../common/domain/group';
 import { Icons } from '../../../../common/domain/icons';
 import { ControlMetaAntennaSelector } from '../../../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../../../common/domain/input-fields/control-meta-input';
-import { ControlMetaNumber } from '../../../../common/domain/input-fields/control-meta-number';
 import { ControlMetaSelect } from '../../../../common/domain/input-fields/control-meta-select';
-import { ControlMetaType } from '../../../../common/domain/input-fields/control-meta-type';
 import {
   InputField,
   InputFields,
@@ -45,7 +43,10 @@ import { CraftType } from '../../../../common/domain/space-objects/craft-type';
 import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
 import { Uid } from '../../../../common/uid';
 import { CommonValidators } from '../../../../common/validators/common-validators';
+import { InputAngleComponent } from '../../../../components/controls/input-angle/input-angle.component';
 import { InputFieldListComponent } from '../../../../components/controls/input-field-list/input-field-list.component';
+import { InputNumberComponent } from '../../../../components/controls/input-number/input-number.component';
+import { InputSelectComponent } from '../../../../components/controls/input-select/input-select.component';
 import { Antenna } from '../../models/antenna';
 import { CommnetUniverseBuilderService } from '../../services/commnet-universe-builder.service';
 import { AntennaSelectorComponent } from '../antenna-selector/antenna-selector.component';
@@ -72,6 +73,9 @@ export class CraftDetailsDialogData {
     MatDividerModule,
     AntennaSelectorComponent,
     ReactiveFormsModule,
+    InputAngleComponent,
+    InputNumberComponent,
+    InputSelectComponent,
   ],
   templateUrl: './craft-details-dialog.component.html',
   styleUrls: ['./craft-details-dialog.component.scss'],
@@ -80,7 +84,6 @@ export class CraftDetailsDialogData {
 })
 export class CraftDetailsDialogComponent {
 
-  advancedInputFieldsList: InputField[];
   advancedForm: FormGroup;
   advancedIsOpen = false;
   form: FormArray;
@@ -91,20 +94,25 @@ export class CraftDetailsDialogComponent {
 
   private inputFields: InputFields;
   private inputFieldsList: InputField[];
-  private orbitParentOptions: LabeledOption<SpaceObject>[];
-  private advancedInputFields: InputFields;
   private soiLockedPlanetoid?: Planetoid;
+
+  orbitParentControl: FormControl<Planetoid>;
+  orbitParentListOptions: LabeledOption<SpaceObject>[];
+  orbitParentMapIcons: Map<SpaceObject, string>;
+  altitudeControl: FormControl<number>;
+  altitudeMax: number;
+  angleControl: FormControl<number>;
 
   constructor(private dialogRef: MatDialogRef<CraftDetailsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData) {
     this.setupInputFields();
 
-    this.advancedInputFields.orbitParent.control.valueChanges
+    this.orbitParentControl.valueChanges
       .pipe(takeUntilDestroyed())
       .subscribe(parent => {
         let max = parent?.sphereOfInfluence ?? 181e9; // 181e9 == 2x Eeloo's orbit
         this.updateAdvancedPlacementFields(max - (parent?.equatorialRadius || 0));
-        this.advancedInputFields.altitude.control.markAsDirty();
+        this.altitudeControl.markAsDirty();
         this.updateMainForm();
       });
 
@@ -124,16 +132,16 @@ export class CraftDetailsDialogComponent {
       .find(p => p.draggable === soiLockedPlanetoidDraggable);
 
     let p = this.soiLockedPlanetoid;
-    this.updateAdvancedPlacementFields(p.sphereOfInfluence - p.equatorialRadius);
+    this.updateAdvancedPlacementFields(
+      p.sphereOfInfluence
+        ? p.sphereOfInfluence - p.equatorialRadius
+        : 181e9);
 
-    this.advancedInputFields.orbitParent.control
-      .setValue(this.soiLockedPlanetoid, {emitEvent: false});
+    this.orbitParentControl.setValue(this.soiLockedPlanetoid, {emitEvent: false});
 
     let altitude = this.soiLockedPlanetoid.location.distance(this.data.edit.location)
       - this.soiLockedPlanetoid.equatorialRadius;
-    this.advancedInputFields.altitude.control.setValue(
-      altitude.toInt(),
-      {emitEvent: false});
+    this.altitudeControl.setValue(altitude.toInt(), {emitEvent: false});
 
     let angle = this.soiLockedPlanetoid.location.direction(this.data.edit.location)
       .let(it => it * -57.295779513) // 'rad->deg'
@@ -141,7 +149,7 @@ export class CraftDetailsDialogComponent {
       .let(it => it < 0
         ? (it % 360) + 360
         : it % 360);
-    this.advancedInputFields.angle.control.setValue(angle, {emitEvent: false});
+    this.angleControl.setValue(angle, {emitEvent: false});
 
     this.updateMainForm();
   }
@@ -152,28 +160,16 @@ export class CraftDetailsDialogComponent {
       this.advancedForm]);
   }
 
-  /** Default to the smallest soi size - Gilly:126123m */
-  private updateAdvancedPlacementFields(soiSize: number = 126123) {
-    this.advancedInputFields.altitude = this.getAltitudeInputField(soiSize);
-    this.advancedInputFieldsList = Object.values(this.advancedInputFields);
-    this.advancedForm = new FormGroup({
-      orbitParent: this.advancedInputFields.orbitParent.control,
-      altitude: this.advancedInputFields.altitude.control,
-      angle: this.advancedInputFields.angle.control,
-    }, this.getAdvancedPlacementValidator());
-  }
+  /** Default to the smallest soi size - Gilly:113123m */
+  private updateAdvancedPlacementFields(soiSize: number = 113123) {
+    this.altitudeMax = soiSize;
 
-  private getAltitudeInputField(soiSize: number) {
-    return {
-      label: 'Altitude',
-      control: new FormControl<number>(null, [Validators.min(0), Validators.max(soiSize)]),
-      controlMeta: {
-        type: ControlMetaType.Number,
-        min: 0,
-        max: soiSize,
-        suffix: 'm',
-      } as ControlMetaNumber,
-    };
+    this.altitudeControl = new FormControl(null, [Validators.min(0), Validators.max(soiSize)]);
+    this.advancedForm = new FormGroup({
+      orbitParent: this.orbitParentControl,
+      altitude: this.altitudeControl,
+      angle: this.angleControl,
+    }, this.getAdvancedPlacementValidator());
   }
 
   submitCraftDetails() {
@@ -294,30 +290,14 @@ export class CraftDetailsDialogComponent {
     this.inputListAntenna = [this.inputFields.antennaSelection];
     this.inputFieldsList = Object.values(this.inputFields);
 
-    this.orbitParentOptions = this.data.universeBuilderHandler.planetoids$.value
+    let listOptions = this.data.universeBuilderHandler.planetoids$.value
       .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
 
-    this.advancedInputFields = {
-      orbitParent: {
-        label: 'Orbit Parent',
-        control: new FormControl<SpaceObject>(null),
-        controlMeta: new ControlMetaSelect(
-          this.orbitParentOptions,
-          new Map<SpaceObject, string>(this.orbitParentOptions.map(so => [so.value, so.value.type.icon]))),
-      },
-      altitude: {} as InputField,
-      angle: {
-        label: 'Angle',
-        control: new FormControl<number>(null),
-        controlMeta: {
-          type: ControlMetaType.Number,
-          min: 0,
-          max: 360,
-          factor: 1,
-          suffix: '°',
-        } as ControlMetaNumber,
-      },
-    } as InputFields;
+    this.orbitParentControl = new FormControl(null);
+    this.orbitParentListOptions = listOptions;
+    this.orbitParentMapIcons = new Map<SpaceObject, string>(listOptions.map(so => [so.value, so.value.type.icon]));
+
+    this.angleControl = new FormControl(null);
   }
 
 }

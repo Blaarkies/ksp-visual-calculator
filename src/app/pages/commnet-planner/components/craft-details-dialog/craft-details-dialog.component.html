@@ -12,11 +12,28 @@
       <mat-icon [@flipVertical]="advancedIsOpen" [svgIcon]="icons.ChevronDown"/>
       Advanced Placement
     </button>
-    <cp-input-field-list
-      [@height]="advancedIsOpen"
-      class="advanced-placement-fields"
-      [inputFields]="advancedInputFieldsList"
-    />
+
+    <div [@height]="advancedIsOpen" class="advanced-placement-fields">
+      <cp-input-select
+        label="Orbit Parent"
+        [options]="orbitParentListOptions"
+        [mapIcons]="orbitParentMapIcons"
+        [formControl]="orbitParentControl"
+        [errors]="orbitParentControl.touched && orbitParentControl.errors"
+      />
+      <cp-input-number
+        label="Altitude"
+        suffix="m"
+        [min]="0"
+        [max]="altitudeMax"
+        [formControl]="altitudeControl"
+      />
+      <cp-input-angle
+        label="Angle"
+        suffix="°"
+        [formControl]="angleControl"
+      />
+    </div>
 
     @if (advancedForm?.errors) {
       <div @fade class="error-message">
