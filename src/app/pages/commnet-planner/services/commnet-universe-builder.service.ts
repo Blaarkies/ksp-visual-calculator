@@ -228,7 +228,8 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
 
     let parent = this.getSoiParent(location);
     parent.draggable.addChild(craft.draggable);
-    craft.draggable.updateConstrainLocation(new OrbitParameterData(location.toList(), undefined, parent.draggable));
+    craft.draggable.updateConstrainLocation(
+      new OrbitParameterData(location.toList(), undefined, parent.draggable));
     this.craft$.set([...allCraft, craft]);
   }
 

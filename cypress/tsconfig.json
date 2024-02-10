@@ -1,8 +1,10 @@
 {
-  "extends": "../tsconfig.json",
-  "include": ["**/*.ts"],
   "compilerOptions": {
     "sourceMap": false,
-    "types": ["cypress", "chai", "ng-mocks"]
+    "types": ["cypress", "chai", "ng-mocks"],
+    "lib": [
+      "es2022",
+      "dom"
+    ]
   }
 }

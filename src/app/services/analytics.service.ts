@@ -25,6 +25,7 @@ export class AnalyticsService {
     let optedOut = localStorageService.hasDoNotTrack();
     if (optedOut || !this.isProd) {
       this.isTracking = false;
+      setAnalyticsCollectionEnabled(this.analytics, false);
       return;
     }
 

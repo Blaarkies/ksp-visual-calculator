@@ -9,10 +9,11 @@
     "host-local": "ng serve --host 0.0.0.0",
     "deploy-qa": "firebase hosting:channel:deploy qa --only hosting",
     "deploy-prod": "firebase deploy --only hosting",
+    "cypress-open": "cypress open",
     "e2e": "ng e2e",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:run-component": "cypress run --config video=false --component"
+    "unit-test": "cypress run --config video=false --component",
+    "pipeline-e2e": "ng e2e --headless --watch=false",
+    "pipeline-unit-test": "npm run unit-test"
   },
   "private": true,
   "dependencies": {

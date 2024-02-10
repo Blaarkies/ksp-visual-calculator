@@ -176,7 +176,7 @@ export class Draggable {
     // soiLock bodies need to account for the relative location difference from child -> parent
     let newLocation: number[];
     if (this.moveType === 'soiLock') {
-      newLocation = parameterData.parent.location
+      newLocation = parameterData.parent?.location
         .subtractVector2Clone(Vector2.fromList(parameterData.xy))
         .add(parameterData.xy[0], parameterData.xy[1])
         .toList();
