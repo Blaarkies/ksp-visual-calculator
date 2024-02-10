@@ -1,24 +1,41 @@
 import {
+  AsyncPipe,
+  NgIf,
+} from '@angular/common';
+import {
   Component,
   computed,
   DestroyRef,
+  effect,
   ElementRef,
   EventEmitter,
   forwardRef,
+  Injector,
   Input,
+  OnInit,
   Output,
+  Signal,
   signal,
   ViewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  takeUntilDestroyed,
+  toSignal,
+} from '@angular/core/rxjs-interop';
 import {
   FormControl,
   NG_VALUE_ACCESSOR,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import {
   finalize,
   fromEvent,
   map,
+  mergeWith,
+  startWith,
   Subject,
   takeUntil,
   takeWhile,
@@ -32,13 +49,16 @@ import {
 import { BasicValueAccessor } from '../../../common/domain/input-fields/basic-value-accessor';
 import { FormControlError } from '../../../common/domain/input-fields/form-control-error';
 import { Vector2 } from '../../../common/domain/vector2';
-import { InputFieldComponent } from '../input-field/input-field.component';
+import {
+  CpColors,
+  InputFieldComponent,
+} from '../input-field/input-field.component';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 
 @Component({
   selector: 'cp-input-angle',
   standalone: true,
-  imports: [InputFieldComponent, ValidationMessageComponent],
+  imports: [InputFieldComponent, ValidationMessageComponent, AsyncPipe, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, NgIf],
   templateUrl: './input-angle.component.html',
   styleUrls: ['./input-angle.component.scss'],
   providers: [{
@@ -48,8 +68,9 @@ import { ValidationMessageComponent } from '../validation-message/validation-mes
   }],
   animations: [BasicAnimations.fade],
 })
-export class InputAngleComponent extends BasicValueAccessor {
+export class InputAngleComponent extends BasicValueAccessor implements OnInit {
 
+  @Input() color: CpColors = 'primary';
   @Input() label: string;
   @Input() hint: string;
   @Input({transform: (s: string) => '°' + s}) suffix = '°';
@@ -61,21 +82,51 @@ export class InputAngleComponent extends BasicValueAccessor {
 
   @Output() output = new EventEmitter<number>();
 
-  @ViewChild('input', {static: true}) private inputRef: InputFieldComponent;
+  @ViewChild('input', {static: true})
+  private inputRef: ElementRef<HTMLInputElement>;
+
+  @ViewChild('dragContainer', {static: true})
+  private dragContainerRef: ElementRef<HTMLDivElement>;
 
   angleSig = signal(0);
   pathSig = computed(() => this.calculatePath(this.angleSig()));
+  isGrabbingSig = signal(false);
 
   private stopDrag$ = new Subject<void>();
+
+  inputFocusedSig: Signal<boolean>;
+  dialFocusedSig: Signal<boolean>;
+  componentFocusedSig: Signal<boolean>;
 
   constructor(
     private self: ElementRef,
     private destroyRef: DestroyRef,
     private document: Document,
+    private injector: Injector,
   ) {
     super();
 
     destroyRef.onDestroy(() => this.stopDrag$.complete());
+  }
+
+  ngOnInit() {
+    let input = this.inputRef.nativeElement;
+    this.inputFocusedSig = toSignal(
+      fromEvent(input, 'focus').pipe(
+        map(() => true),
+        mergeWith(
+          fromEvent(input, 'blur').pipe(map(() => false))),
+      ), {injector: this.injector});
+
+    let dial = this.dragContainerRef.nativeElement;
+    this.dialFocusedSig = toSignal(
+      fromEvent(dial, 'focus').pipe(
+        map(() => true),
+        mergeWith(
+          fromEvent(dial, 'blur').pipe(map(() => false))),
+      ), {injector: this.injector});
+
+    this.componentFocusedSig = computed(() => this.inputFocusedSig() || this.isGrabbingSig());
   }
 
   writeValue(value: number) {
@@ -84,7 +135,7 @@ export class InputAngleComponent extends BasicValueAccessor {
       return;
     }
     this.angleSig.set(-value);
-    this.inputRef.writeValue(value?.toInt());
+    this.inputRef.nativeElement.value = (value.toInt())?.toString();
   }
 
   registerOnChange(fn: (value: any) => any) {
@@ -97,7 +148,7 @@ export class InputAngleComponent extends BasicValueAccessor {
 
   setDisabledState(isDisabled: boolean) {
     this.disabled = isDisabled;
-    this.inputRef.setDisabledState(isDisabled);
+    this.inputRef.nativeElement.disabled = isDisabled;
 
     this.self.nativeElement.style.pointerEvents = isDisabled ? 'none' : 'auto';
   }
@@ -117,15 +168,17 @@ export class InputAngleComponent extends BasicValueAccessor {
     if (safeValue.isNaN()) {
       return;
     }
-    this.angleSig.set(-safeValue);
-    this.userChange(safeValue);
+    let modulated = safeValue % 360;
+    let normalized = modulated < 0 ? modulated + 360 : modulated;
+    this.angleSig.set(-normalized);
+    this.userChange(normalized);
   }
 
   focus() {
     if (this.disabled) {
       return;
     }
-    this.inputRef.focus();
+    this.inputRef.nativeElement.focus();
   }
 
   dragHand(event: PointerEvent, container: HTMLDivElement) {
@@ -135,8 +188,9 @@ export class InputAngleComponent extends BasicValueAccessor {
     this.stopDrag$.next();
     let viewport = this.document.body;
     let target = event.target as HTMLElement;
-    viewport.style.setProperty('cursor', 'grabbing');
-    target.style.setProperty('cursor', 'unset');
+    this.isGrabbingSig.set(true);
+    viewport.style.setProperty('cursor', 'grabbing', 'important');
+    target.style.setProperty('cursor', 'grabbing', 'important');
 
     let bRect = container.getBoundingClientRect();
     let centerOffset = new Vector2(bRect.width, bRect.height)
@@ -150,10 +204,11 @@ export class InputAngleComponent extends BasicValueAccessor {
         (m.pointerType === 'mouse' && m.buttons.bitwiseIncludes(1))
         || (m.pointerType !== 'mouse')),
       map((m: PointerEvent) => new Vector2(m.pageX, m.pageY)),
-      map(l => -radiansToDegrees(center.direction(l))),
+      startWith(new Vector2(event.pageX, event.pageY)),
+      map(l => -radiansToDegrees(center.direction(l)).toInt()),
       map(a => a < 0 ? a + 360 : a),
-      map(a => a.toInt()),
       finalize(() => {
+        this.isGrabbingSig.set(false);
         viewport.style.removeProperty('cursor');
         target.style.removeProperty('cursor');
       }),
@@ -173,7 +228,7 @@ export class InputAngleComponent extends BasicValueAccessor {
       .between(180, 360) ? '0' : '1';
 
     let offset = 20;
-    let r = 8;
+    let r = 9;
     let endDeg = degreesToRadians(endAngle);
 
     let x1 = offset + r * Math.cos(0);
@@ -183,4 +238,5 @@ export class InputAngleComponent extends BasicValueAccessor {
 
     return `M${x1},${y1} A${r},${r} 0 ${largeArc},0 ${x2},${y2}`;
   }
+
 }

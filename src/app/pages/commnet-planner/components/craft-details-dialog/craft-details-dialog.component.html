@@ -28,11 +28,7 @@
         [max]="altitudeMax"
         [formControl]="altitudeControl"
       />
-      <cp-input-angle
-        label="Angle"
-        suffix="°"
-        [formControl]="angleControl"
-      />
+      <cp-input-angle label="Angle" [formControl]="angleControl"/>
     </div>
 
     @if (advancedForm?.errors) {

@@ -123,7 +123,7 @@ export class CraftDetailsDialogComponent {
         return;
       }
       this.populateAdvancedForm();
-    });
+    }, {allowSignalWrites: true});
   }
 
   private populateAdvancedForm() {
@@ -296,7 +296,7 @@ export class CraftDetailsDialogComponent {
     this.orbitParentControl = new FormControl(null);
     this.orbitParentListOptions = listOptions;
     this.orbitParentMapIcons = new Map<SpaceObject, string>(listOptions.map(so => [so.value, so.value.type.icon]));
-
+    this.altitudeControl = new FormControl(null);
     this.angleControl = new FormControl(null);
   }
 

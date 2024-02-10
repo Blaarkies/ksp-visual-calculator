@@ -58,7 +58,7 @@ export class ConnectionGraph {
         if (isOtherNodeInNetwork) {
 
           let hasConnectionToBase = controlStationsAndCores
-            .some(cb => this.graph.shortestPath(otherNode.label, cb.label).length);
+            .some(cb => this.graph.shortestPath(otherNode.label, cb.label)?.length);
           if (hasConnectionToBase) {
             this.hasControlCraft.add(c);
             break;

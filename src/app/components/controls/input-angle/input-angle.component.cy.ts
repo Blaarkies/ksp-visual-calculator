@@ -46,7 +46,7 @@ describe('InputAngleComponent', () => {
       let testLabel = 'test';
       mr.component.label = testLabel;
       mr.fixture.detectChanges();
-      cy.get('div.label').should('contain.text', testLabel);
+      cy.get('div.notch-label').should('contain.text', testLabel);
     });
 
     it('is responsive to mouse click&move', () => {
@@ -81,12 +81,12 @@ describe('InputAngleComponent', () => {
     it('focuses the input when focus() is called', () => {
       let inputAngleComponent = mr.fixture.debugElement
         .query(By.directive(InputAngleComponent));
-      let inputFieldComponent = mr.fixture.debugElement
-        .query(By.directive(InputFieldComponent));
-      inputFieldComponent.componentInstance.focus = cy.spy();
+      let inputRef = mr.fixture.debugElement
+        .query(By.css('input'));
+      inputRef.nativeElement.focus = cy.spy();
 
       inputAngleComponent.componentInstance.focus();
-      expect(inputFieldComponent.componentInstance.focus).to.have.been.calledOnce;
+      expect(inputRef.nativeElement.focus).to.have.been.calledOnce;
     });
 
     it('given a form control, it displays the value', () => {
@@ -176,12 +176,12 @@ describe('InputAngleComponent', () => {
 
       let inputAngleComponent = mr.fixture.debugElement
         .query(By.directive(InputAngleComponent));
-      let inputFieldComponent = mr.fixture.debugElement
-        .query(By.directive(InputFieldComponent));
-      inputFieldComponent.componentInstance.focus = cy.spy();
+      let inputRef = mr.fixture.debugElement
+        .query(By.css('input'));
+      inputRef.nativeElement.focus = cy.spy();
 
       inputAngleComponent.componentInstance.focus();
-      expect(inputFieldComponent.componentInstance.focus).to.not.have.been.called;
+      expect(inputRef.nativeElement.focus).to.not.have.been.called;
     });
 
   });

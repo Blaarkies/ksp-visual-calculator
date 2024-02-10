@@ -25,7 +25,8 @@ export function NodeGraph(): GraphDataStructure {
     try {
       return baseShortestPath(source, destination);
     } catch (e) {
-      if (e?.message === 'Source node is not in the graph') {
+      if (e?.message === 'Source node is not in the graph'
+        || e?.message === 'No path found') {
         return [];
       }
       console.warn('Could not determine a node graph path to destination.', e);

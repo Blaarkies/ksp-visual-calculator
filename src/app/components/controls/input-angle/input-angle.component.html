@@ -1,45 +1,60 @@
 <div class="input-angle-layout">
 
-  @if (label) {
-    <div class="label text caption">{{ label }}</div>
-  }
+  <div
+    class="dial-and-input stack"
+    [class.disabled]="disabled"
+    [class.focused]="componentFocusedSig?.()"
+  >
+    <div class="label-container">
+      <div class="notch-lead"></div>
+      <div class="notch-label">{{ label }}</div>
+      <div class="notch-trail"></div>
+    </div>
 
-  <div class="dial-and-input" [class.disabled]="disabled">
-    <div class="dial-container">
-      <div class="ring"></div>
-
-      <div class="draw-sector">
-        <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-          <path [attr.d]="pathSig()"/>
-        </svg>
+    <div class="content">
+      <div
+        class="input-control"
+        [class.focused]="inputFocusedSig?.()"
+      >
+        <input
+          #input
+          class="no-spinner-arrows"
+          type="number"
+          min="0"
+          max="360"
+          (focus)="onTouched?.(true)"
+          (input)="userInputChange(input.value)"
+        />
+        <span>{{ suffix }}</span>
       </div>
 
-      <div
-        #container
-        class="hand-container"
-        [style.--angle]="angleSig()"
-        [class.can-drag]="!disabled"
-        (pointerdown)="dragHand($event, container)"
-      >
-        <div class="arm">
-          <svg width="20" height="20">
-            <line x1="1" y1="0" x2="16" y2="0"/>
+      <div class="dial-container">
+        <div class="ring"></div>
+
+        <div class="draw-sector">
+          <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <path [attr.d]="pathSig()"/>
           </svg>
         </div>
 
-        <div class="knob"></div>
+        <div
+          #dragContainer
+          class="hand-container"
+          [style.--angle]="angleSig()"
+          [class.can-drag]="!disabled"
+          [class.is-grabbing]="isGrabbingSig()"
+          (pointerdown)="dragHand($event, dragContainer)"
+        >
+          <div class="arm">
+            <svg width="20" height="20">
+              <line x1="2" y1="0" x2="16" y2="0"/>
+            </svg>
+          </div>
+
+          <div class="knob"></div>
+        </div>
       </div>
     </div>
-
-    <cp-input-field
-      #input
-      class="no-spinner-arrows"
-      [widthClass]="'digit3'"
-      type="number"
-      [suffix]="suffix"
-      (output)="userInputChange($any($event))"
-      (formTouch)="onTouched && onTouched(true)"
-    />
   </div>
 
   @if (hint && (value === undefined || value === null)) {
