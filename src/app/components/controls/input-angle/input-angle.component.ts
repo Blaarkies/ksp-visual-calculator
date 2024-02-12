@@ -131,11 +131,15 @@ export class InputAngleComponent extends BasicValueAccessor implements OnInit {
 
   writeValue(value: number) {
     this.value = value;
-    if (!value) {
+    if (value === undefined || value === null) {
+      this.angleSig.set(0);
+      this.inputRef.nativeElement.value = null;
       return;
     }
-    this.angleSig.set(-value);
-    this.inputRef.nativeElement.value = (value.toInt())?.toString();
+
+    let intValue = value.toInt();
+    this.angleSig.set(-intValue);
+    this.inputRef.nativeElement.value = intValue.toString();
   }
 
   registerOnChange(fn: (value: any) => any) {

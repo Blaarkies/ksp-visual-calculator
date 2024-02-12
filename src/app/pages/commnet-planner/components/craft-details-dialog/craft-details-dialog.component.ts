@@ -92,16 +92,21 @@ export class CraftDetailsDialogComponent {
   antennaOptions = this.data.universeBuilderHandler.antennaList;
   icons = Icons;
 
+  orbitParentControl = new FormControl<Planetoid>(null);
+  orbitParentListOptions = this.data.universeBuilderHandler
+    .planetoids$.value
+    .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
+
+  altitudeControl = new FormControl<number>(null);
+  altitudeMax: number;
+  angleControl = new FormControl<number>(null);
+
   private inputFields: InputFields;
   private inputFieldsList: InputField[];
   private soiLockedPlanetoid?: Planetoid;
 
-  orbitParentControl: FormControl<Planetoid>;
-  orbitParentListOptions: LabeledOption<SpaceObject>[];
-  orbitParentMapIcons: Map<SpaceObject, string>;
-  altitudeControl: FormControl<number>;
-  altitudeMax: number;
-  angleControl: FormControl<number>;
+  orbitParentMapIcons= new Map<SpaceObject, string>(
+    this.orbitParentListOptions.map(so => [so.value, so.value.type.icon]));
 
   constructor(private dialogRef: MatDialogRef<CraftDetailsDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CraftDetailsDialogData) {
@@ -203,7 +208,11 @@ export class CraftDetailsDialogComponent {
     this.setupInputFields(
       copyLabel,
       thisCraft.craftType,
-      copyAntennae);
+      copyAntennae,
+      this.orbitParentControl.value,
+      this.altitudeControl.value,
+      this.angleControl.value,
+    );
     this.updateMainForm();
 
     // Name control does not update validation error message
@@ -255,9 +264,14 @@ export class CraftDetailsDialogComponent {
     this.updateMainForm();
   }
 
-  private setupInputFields(label?: string,
-                           craftType?: CraftType,
-                           antennaeGroups?: Group<Antenna>[]) {
+  private setupInputFields(
+    label?: string,
+    craftType?: CraftType,
+    antennaeGroups?: Group<Antenna>[],
+    orbitParent?: Planetoid,
+    altitude?: number,
+    angle?: number,
+  ) {
     this.inputFields = {
       name: {
         label: 'Name',
@@ -290,14 +304,9 @@ export class CraftDetailsDialogComponent {
     this.inputListAntenna = [this.inputFields.antennaSelection];
     this.inputFieldsList = Object.values(this.inputFields);
 
-    let listOptions = this.data.universeBuilderHandler.planetoids$.value
-      .map(cb => new LabeledOption<SpaceObject>(cb.label, cb));
-
-    this.orbitParentControl = new FormControl(null);
-    this.orbitParentListOptions = listOptions;
-    this.orbitParentMapIcons = new Map<SpaceObject, string>(listOptions.map(so => [so.value, so.value.type.icon]));
-    this.altitudeControl = new FormControl(null);
-    this.angleControl = new FormControl(null);
+    this.orbitParentControl.setValue(orbitParent);
+    this.altitudeControl.setValue(altitude);
+    this.angleControl.setValue(angle);
   }
 
 }

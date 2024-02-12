@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "test": "ng test",
+    "test": "npm run pipeline-unit-test && npm run pipeline-e2e",
     "build": "ng build --configuration production",
     "host-local": "ng serve --host 0.0.0.0",
     "deploy-qa": "firebase hosting:channel:deploy qa --only hosting",
@@ -12,8 +12,8 @@
     "cypress-open": "cypress open",
     "e2e": "ng e2e",
     "unit-test": "cypress run --config video=false --component",
-    "pipeline-e2e": "ng e2e --headless --watch=false",
-    "pipeline-unit-test": "npm run unit-test"
+    "pipeline-unit-test": "npm run unit-test",
+    "pipeline-e2e": "ng e2e --headless --watch=false"
   },
   "private": true,
   "dependencies": {

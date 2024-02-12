@@ -32,8 +32,9 @@
     </div>
 
     @if (advancedForm?.errors) {
-      <div @fade class="error-message">
-        <mat-error>{{ advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh }}</mat-error>
+      <div @height class="error-message">
+        <mat-error>{{ advancedForm.errors.allOrNone
+        || advancedForm.errors.altitudeTooHigh }}</mat-error>
 
         <button
           mat-button

@@ -12,12 +12,12 @@ describe('Page CommNet Planner', () => {
     cy.clearAllLocalStorage();
   });
 
-  it.skip('page exists', () => {
+  it('page exists', () => {
     cy.visit('/commnet-planner');
     cy.get('cp-page-commnet-planner').should('exist');
   });
 
-  it.skip('navigation menu works', () => {
+  it('navigation menu works', () => {
     cy.window().then(w => {
       w.localStorage.setItem('ksp-visual-calculator-tutorial-viewed', 'true');
     });
