@@ -1,0 +1,66 @@
+<div class="input-angle-layout">
+
+  <div
+    class="dial-and-input stack"
+    [class.disabled]="disabled"
+    [class.focused]="componentFocusedSig?.()"
+  >
+    <div class="label-container">
+      <div class="notch-lead"></div>
+      <div class="notch-label">{{ label }}</div>
+      <div class="notch-trail"></div>
+    </div>
+
+    <div class="content">
+      <div
+        class="input-control"
+        [class.focused]="inputFocusedSig?.()"
+      >
+        <input
+          #input
+          class="no-spinner-arrows"
+          type="number"
+          min="0"
+          max="360"
+          (focus)="onTouched?.(true)"
+          (input)="userInputChange(input.value)"
+        />
+        <span>{{ suffix }}</span>
+      </div>
+
+      <div class="dial-container">
+        <div class="ring"></div>
+
+        <div class="draw-sector">
+          <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <path [attr.d]="pathSig()"/>
+          </svg>
+        </div>
+
+        <div
+          #dragContainer
+          class="hand-container"
+          [style.--angle]="angleSig()"
+          [class.can-drag]="!disabled"
+          [class.is-grabbing]="isGrabbingSig()"
+          (pointerdown)="dragHand($event, dragContainer)"
+        >
+          <div class="arm">
+            <svg width="20" height="20">
+              <line x1="2" y1="0" x2="16" y2="0"/>
+            </svg>
+          </div>
+
+          <div class="knob"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (hint && (value === undefined || value === null)) {
+    <div @fade class="hint text mute caption">{{ hint }}</div>
+  }
+
+  <cp-validation-message [fieldName]="label" [errors]="errors"/>
+
+</div>

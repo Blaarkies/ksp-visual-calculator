@@ -62,7 +62,21 @@
   }
 }
 
+.divider-padding {
+  height: 36px;
+  margin-inline: 1em !important; // override .mat-divider
+}
+
 .error-message {
   display: flex;
   align-items: center;
+
+  .reset-values-button {
+    border-radius: 50px;
+    border: 1px solid var(--color-warn);
+    padding: 6px;
+    margin: unset;
+    min-width: unset;
+    line-height: normal;
+  }
 }

@@ -1,9 +1,9 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
-  OnDestroy,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -13,7 +13,6 @@ import {
   takeWhile,
   timer,
 } from 'rxjs';
-import { WithDestroy } from './common/with-destroy';
 import { HolidayThemeSpriteComponent } from './overlays/holiday-theme-sprite/holiday-theme-sprite.component';
 import { LocalStorageService } from './services/local-storage.service';
 import { ThemeService } from './services/theme.service';
@@ -22,14 +21,13 @@ import { ThemeService } from './services/theme.service';
   selector: 'cp-root',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     HolidayThemeSpriteComponent,
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent extends WithDestroy() implements OnDestroy {
+export class AppComponent {
 
   showHolidayTheme = false;
 
@@ -41,8 +39,9 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
     matIconRegistry: MatIconRegistry,
     domSanitizer: DomSanitizer,
     storageService: LocalStorageService,
+    destroyRef: DestroyRef,
   ) {
-    super();
+    destroyRef.onDestroy(() => this.cancelHolidayTheme());
 
     matIconRegistry.addSvgIconSet(
       domSanitizer.bypassSecurityTrustResourceUrl('./assets/mdi.svg'));
@@ -53,17 +52,12 @@ export class AppComponent extends WithDestroy() implements OnDestroy {
       .pipe(
         takeWhile(() => storageService.hasHolidays()),
         takeUntil(this.unsubscribeHoliday$),
-        takeUntil(this.destroy$))
+        takeUntilDestroyed())
       .subscribe(() => {
         this.showHolidayTheme = false;
         cdr.detectChanges();
         this.showHolidayTheme = true;
       });
-  }
-
-  ngOnDestroy() {
-    this.unsubscribeHoliday$.next();
-    this.unsubscribeHoliday$.complete();
   }
 
   cancelHolidayTheme() {

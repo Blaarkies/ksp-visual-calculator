@@ -21,7 +21,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../../../animations/basic-animations';
-import { Antenna } from '../../../../common/domain/antenna';
+import { Antenna } from '../../models/antenna';
 import { Group } from '../../../../common/domain/group';
 import { Icons } from '../../../../common/domain/icons';
 import { BasicValueAccessor } from '../../../../common/domain/input-fields/basic-value-accessor';

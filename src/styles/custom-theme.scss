@@ -1,5 +1,5 @@
 @use 'node_modules/@angular/material' as mat;
-@use 'node_modules/@angular/material/theming' as theme;
+@use 'node_modules/@angular/material/index' as theme;
 
 $text-dark: #111;
 $text-light: #fff;
@@ -109,6 +109,7 @@ $dark-theme: mat.define-dark-theme((
   --color-rgb-text-white: 255, 255, 255;
   --color-rgb-border-simple: 102, 102, 102;
   --color-border-simple: #0006;
+  --color-border-1: #0008;
 
   --color-icon-white: #fffc;
   --color-icon-muted: #888;
@@ -138,6 +139,7 @@ $dark-theme: mat.define-dark-theme((
 
     --color-rgb-border-simple: 153, 153, 153;
     --color-border-simple: #fff6;
+    --color-border-1: #fff8;
 
     --color-icon-muted: #999;
     --color-icon-none: #ccc;

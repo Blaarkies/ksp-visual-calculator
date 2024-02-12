@@ -9,7 +9,7 @@ import {
   throttleTime,
 } from 'rxjs';
 import { CameraComponent } from '../../../components/camera/camera.component';
-import { UniverseContainerInstance } from '../../../services/universe-container-instance.service';
+import { SoiManager } from '../../../services/domain/soi-manager';
 import { SubjectHandle } from '../../subject-handle';
 import { ConstrainLocationFunction } from '../constrain-location-function';
 import { DraggableDto } from '../dtos/draggable.dto';
@@ -35,17 +35,36 @@ export class Draggable {
   parent: Draggable;
   imageUrl: string;
 
-  // tslint:disable:member-ordering
+  change$ = new Subject<void>();
+
   private constrainLocation: ConstrainLocationFunction = (x, y) => [x, y];
   private lastActivatedSoi: Planetoid;
   private destroy$ = new Subject<void>();
 
-  constructor(public label: string,
-              imageUrl: string,
-              public moveType: MoveType) {
+  constructor(
+    private soiManager: SoiManager,
+    public label: string,
+    imageUrl: string,
+    public moveType: MoveType,
+    location?: Vector2,
+    lastAttemptLocation?: number[],
+  ) {
     this.imageUrl = imageUrl.startsWith('url(')
       ? imageUrl
       : `url(${imageUrl}) 0 0`;
+    if (location) {
+      this.location.setVector2(location);
+    }
+    if (lastAttemptLocation) {
+      this.lastAttemptLocation = lastAttemptLocation;
+    }
+  }
+
+  destroy() {
+    this.change$.complete();
+    this.isHover$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   toJson(): DraggableDto {
@@ -58,11 +77,6 @@ export class Draggable {
       moveType: this.moveType,
     };
   }
-
-  // TODO: destroy/dispose
-  // this.isHover$.complete();
-  // this.destroy$.next();
-  // this.destroy$.complete();
 
   startDrag(event: PointerEvent,
             screen: HTMLDivElement,
@@ -136,6 +150,7 @@ export class Draggable {
     let newCenter = this.constrainLocation(x, y);
     this.location.set(newCenter);
     this.children && this.updateChildren(newCenter);
+    this.change$.next();
   }
 
   private updateChildren(newCenter: number[]) {
@@ -152,10 +167,7 @@ export class Draggable {
 
     this.children
       .filter(d => d.moveType === 'soiLock')
-      .forEach(d => {
-        let newLocation = d.constrainLocation(newCenter[0], newCenter[1]);
-        d.location.set(newLocation);
-      });
+      .forEach(d => d.setNewLocation(newCenter));
   }
 
   updateConstrainLocation(parameterData: OrbitParameterData) {
@@ -164,7 +176,7 @@ export class Draggable {
     // soiLock bodies need to account for the relative location difference from child -> parent
     let newLocation: number[];
     if (this.moveType === 'soiLock') {
-      newLocation = parameterData.parent.location
+      newLocation = parameterData.parent?.location
         .subtractVector2Clone(Vector2.fromList(parameterData.xy))
         .add(parameterData.xy[0], parameterData.xy[1])
         .toList();
@@ -189,8 +201,7 @@ export class Draggable {
       return;
     }
 
-    // TODO: remove UniverseContainerInstance usages
-    UniverseContainerInstance.instance.planets$.value
+    this.soiManager.planetoids
       .map(cb => cb.draggable)
       .forEach(d => d.removeChild(this));
 
@@ -208,8 +219,7 @@ export class Draggable {
       return;
     }
 
-    let soiParent = UniverseContainerInstance.instance
-      .getSoiParent(this.location);
+    let soiParent = this.soiManager.getSoiParent(this.location);
 
     if (this.lastActivatedSoi) {
       this.lastActivatedSoi.showSoi = false;

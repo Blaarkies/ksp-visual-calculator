@@ -85,12 +85,6 @@ Array.prototype.remove = function (this: Array<any>, stale: any): Array<any> {
   return this;
 };
 
-Array.prototype.flatMap = function (
-  this: Array<any>,
-  selectorCallback: (item: any) => any = item => item): any {
-  return this.reduce((sum, c) => [...sum, ...selectorCallback(c)], []);
-};
-
 Array.prototype.distinct
   = function (this: Array<any>, indexCallback?: (parentItem: any, list: any[]) => number): Array<any> {
   return indexCallback
@@ -101,7 +95,7 @@ Array.prototype.distinct
 Array.prototype.joinSelf = function (this: Array<any>): Array<Array<any>> {
   return this.map((item, i, list) =>
     list.map(innerItem => [item, innerItem]))
-    .flatMap();
+    .flat();
 };
 
 Array.prototype.except = function (this: Array<any>,
@@ -140,7 +134,7 @@ Array.prototype.windowed = function (this: Array<any>,
   return result;
 };
 
-Array.prototype.splitFilter = function (this: Array<any>,
+Array.prototype.filterSplit = function (this: Array<any>,
                                         indexer: (item: any) => number): Array<Array<any>> {
   let resultLists = [];
   for (let item of this) {

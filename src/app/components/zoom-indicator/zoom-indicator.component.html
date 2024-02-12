@@ -1,12 +1,22 @@
-<div class="zoom-indicator-layout stack"
-     [class.transition-in]="show"
-     [class.transition-out]="!show">
+<div
+  class="zoom-indicator-layout stack"
+  [ngClass]="showSig() ? 'transition-in' : 'transition-out'"
+>
 
   <svg xmlns="http://www.w3.org/2000/svg">
     <line x1="0" y1="0" x2="100%" y2="0"
           stroke="#aff7"
           stroke-width="6"/>
-    <rect class="move-smooth" [attr.x]="zoomPoint + '%'" y="-15" width="10" height="30" rx="2" fill="#fff"/>
+    <rect
+      class="move-smooth"
+      [attr.x]="zoomPointPercentageSig()"
+      y="-15"
+      width="10"
+      [style.translate.px]="-5"
+      height="30"
+      rx="2"
+      fill="#fff"
+    />
   </svg>
 
   <svg xmlns="http://www.w3.org/2000/svg">
@@ -32,24 +42,24 @@
     </g>
 
     <g id="planets">
-      <circle [attr.cx]="positions.planets + '%'"
+      <circle [attr.cx]="positionPlanetsPercentageSig()"
               cy="0"
               r="14"
               fill="url(#gradient-mars)"/>
-      <text [attr.x]="positions.planets + '%'" y="30" fill="#fff" text-anchor="middle">Planets</text>
+      <text [attr.x]="positionPlanetsPercentageSig()" y="30" fill="#fff" text-anchor="middle">Planets</text>
     </g>
 
     <g id="moons">
-      <circle [attr.cx]="positions.moons + '%'"
+      <circle [attr.cx]="positionMoonsPercentageSig()"
               cy="0"
               r="10"
               fill="#A0A0B8"/>
-      <circle [attr.cx]="positions.moons + '%'"
+      <circle [attr.cx]="positionMoonsPercentageSig()"
               style="translate: 4px -3px"
               cy="0"
               r="4"
               fill="#546"/>
-      <text [attr.x]="positions.moons + '%'" y="25" fill="#fff" text-anchor="middle">Moons</text>
+      <text [attr.x]="positionMoonsPercentageSig()" y="25" fill="#fff" text-anchor="middle">Moons</text>
     </g>
 
     <rect x="100%" y="-10" width="5" height="20" rx="2" fill="#517979"/>

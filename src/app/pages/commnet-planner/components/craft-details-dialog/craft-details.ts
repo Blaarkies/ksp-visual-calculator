@@ -1,4 +1,4 @@
-import { Antenna } from '../../../../common/domain/antenna';
+import { Antenna } from '../../models/antenna';
 import { Group } from '../../../../common/domain/group';
 import { CraftType } from '../../../../common/domain/space-objects/craft-type';
 import { AdvancedPlacement } from './advanced-placement';

@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import memoize from 'fast-memoize';
 import {
   filter,
-  fromEvent,
   interval,
   map,
   merge,
@@ -21,6 +20,7 @@ import { BasicAnimations } from '../../../../animations/basic-animations';
 import { Icons } from '../../../../common/domain/icons';
 import { SpaceObject } from '../../../../common/domain/space-objects/space-object';
 import { Vector2 } from '../../../../common/domain/vector2';
+import { CameraComponent } from '../../../../components/camera/camera.component';
 import { CameraService } from '../../../../services/camera.service';
 import { Checkpoint } from '../../domain/checkpoint';
 import { TripTrajectory } from '../../domain/trip-trajectory';
@@ -52,10 +52,11 @@ export class MissionJourneyComponent implements AfterViewInit {
     this.inverseScale = 1 / value;
   }
 
+  @Input() camera: CameraComponent;
+
   inverseScale = 1;
 
   icons = Icons;
-  math = Math;
   worldViewScale = 100 * CameraService.normalizedScale;
   mouseLocation$: Observable<Vector2>;
   trajectories: TripTrajectory[] = [];
@@ -65,17 +66,15 @@ export class MissionJourneyComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    let screenSpace = this.cameraService.cameraController.nativeElement;
     this.mouseLocation$ = merge(
-      fromEvent(screenSpace, 'mousemove'),
+      this.camera.getMouseMoveEvent(),
       interval(17).pipe(map(() => null)))
       .pipe(
         scan((acc, value) => value || acc),
         filter(e => e),
         sampleTime(16),
-        map((event: MouseEvent) => new Vector2(event.pageX, event.pageY)
-          .subtractVector2(this.cameraService.location)
-          .multiply(1 / this.cameraService.scale)),
+        map((event: MouseEvent) => this.cameraService
+          .convertPageLocationToMouseLocation(new Vector2(event.pageX, event.pageY))),
         startWith(Vector2.zero));
   }
 
@@ -113,7 +112,7 @@ export class MissionJourneyComponent implements AfterViewInit {
     Array.from(destinationMap.values())
       .filter(list => list.length > 1)
       .map(list => list.map((tripIndex, i) => ({tripIndex, margin: i})))
-      .flatMap()
+      .flat()
       .forEach(({tripIndex, margin}) => this.tripIndexMarginMap[tripIndex] = margin);
   }
 

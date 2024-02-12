@@ -36,6 +36,13 @@
     justify-content: left;
   }
 
+  .is-selected {
+    > div,
+    > mat-icon {
+      color: rgba(var(--color-rgb-text-map-green), .7);
+    }
+  }
+
   .item-layout {
     display: grid;
     grid-auto-flow: column;
@@ -49,6 +56,11 @@
     div {
       font-size: 1.3em;
       text-overflow: ellipsis;
+    }
+
+    > div,
+    > mat-icon {
+      transition: color .3s ease-out;
     }
   }
 }

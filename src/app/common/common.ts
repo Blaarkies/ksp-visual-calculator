@@ -121,3 +121,26 @@ type OverlayPositions = OriginConnectionPosition['originX']
   | OriginConnectionPosition['originY']
   | OverlayConnectionPosition['overlayX']
   | OverlayConnectionPosition['overlayY']
+
+export function makeIntList(count: number = 10, offset: number = 0): number[] {
+  let list = Array.from(Array(count).keys());
+  return offset
+    ? list.map(i => i + offset)
+    : list;
+}
+
+
+export function randomListIndex(listLength: number): number {
+  return Math.round(Math.random() * (listLength - 1));
+}
+
+
+let degRadFactor = Math.PI / 180;
+let radDegFactor = 1 / degRadFactor;
+export function degreesToRadians(degrees: number): number {
+  return degrees * degRadFactor;
+}
+
+export function radiansToDegrees(radians: number): number {
+  return radians * radDegFactor;
+}

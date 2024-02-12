@@ -13,6 +13,7 @@ import {
 import { GameStateType } from '../../common/domain/game-state-type';
 import { Icons } from '../../common/domain/icons';
 import { Orbit } from '../../common/domain/space-objects/orbit';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { WithDestroy } from '../../common/with-destroy';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
@@ -21,10 +22,10 @@ import { HudComponent } from '../../components/hud/hud.component';
 import { UniverseMapComponent } from '../../components/universe-map/universe-map.component';
 import { ZoomIndicatorComponent } from '../../components/zoom-indicator/zoom-indicator.component';
 import { AuthService } from '../../services/auth.service';
+import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
+import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
 import { GuidanceService } from '../../services/guidance.service';
 import { HudService } from '../../services/hud.service';
-import { AbstractUniverseStateService } from '../../services/domain/universe-state.abstract.service';
-import { AbstractUniverseBuilderService } from '../../services/domain/universe-builder.abstract.service';
 import { ManeuverSequencePanelComponent } from './components/maneuver-sequence-panel/maneuver-sequence-panel.component';
 import { MissionJourneyComponent } from './components/mission-journey/mission-journey.component';
 import { DvStateService } from './services/dv-state.service';
@@ -60,7 +61,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
   isSelectingCheckpoint$ = this.travelService.isSelectingCheckpoint$.asObservable();
   contextPanelDetails: ActionPanelDetails;
   orbits$: Observable<Orbit[]>;
-  planets$: Observable<SpaceObject[]>;
+  planetoids$: Observable<Planetoid[]>;
 
   constructor(
     private authService: AuthService,
@@ -76,7 +77,7 @@ export default class PageDvPlannerComponent extends WithDestroy() implements OnD
 
     let universe = dvUniverseBuilderService;
     this.orbits$ = universe.orbits$;
-    this.planets$ = universe.planetoids$;
+    this.planetoids$ = universe.planetoids$;
 
     merge(
       this.authService.user$.pipe(take(1)),

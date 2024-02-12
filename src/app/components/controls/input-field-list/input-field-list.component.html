@@ -1,43 +1,69 @@
-<div [@height]
-     *ngFor="let inputField of inputFields"
-     [ngSwitch]="inputField.controlMeta.type">
-
-  <cp-input-field *ngSwitchCase="controlMetaTypes.Input"
-                  [type]="$any(inputField.controlMeta).inputType"
-                  [label]="inputField.label"
-                  [hint]="inputField.controlMeta.hint"
-                  [formControl]="inputField.control"
-                  [errors]="inputField.control.touched && inputField.control.errors"></cp-input-field>
-
-  <cp-input-text-area *ngSwitchCase="controlMetaTypes.FreeText"
-                      [label]="inputField.label"
-                      [hint]="inputField.controlMeta.hint"
-                      [formControl]="inputField.control"
-                      [errors]="inputField.control.touched && inputField.control.errors"></cp-input-text-area>
-
-  <cp-input-number *ngSwitchCase="controlMetaTypes.Number"
-                   [controlMeta]="inputField.controlMeta"
-                   [label]="inputField.label"
-                   [formControl]="inputField.control"
-                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-number>
-
-  <cp-input-select *ngSwitchCase="controlMetaTypes.Select"
-                   [options]="$any(inputField.controlMeta).list"
-                   [mapIcons]="$any(inputField.controlMeta).mapIcons"
-                   [label]="inputField.label"
-                   [hint]="inputField.controlMeta.hint"
-                   [formControl]="inputField.control"
-                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-select>
-
-  <cp-input-toggle *ngSwitchCase="controlMetaTypes.Toggle"
-                   [label]="inputField.label"
-                   [hint]="inputField.controlMeta.hint"
-                   [formControl]="inputField.control"
-                   [errors]="inputField.control.touched && inputField.control.errors"></cp-input-toggle>
-
-  <cp-antenna-selector *ngSwitchCase="controlMetaTypes.AntennaSelector"
-                       [options]="$any(inputField.controlMeta).list"
-                       [label]="inputField.label"
-                       [formControl]="inputField.control"
-                       [errors]="inputField.control.touched && inputField.control.errors"></cp-antenna-selector>
-</div>
+@for (inputField of inputFields; track inputField.label) {
+  <div @height>
+    @switch (inputField.controlMeta.type) {
+      @case (controlMetaTypes.Input) {
+        @defer (when true) {
+          <cp-input-field
+            [type]="$any(inputField.controlMeta).inputType"
+            [label]="inputField.label"
+            [hint]="inputField.controlMeta.hint"
+            [formControl]="inputField.control"
+            [errors]="inputField.control.touched && inputField.control.errors"
+          />
+        }
+      }
+      @case (controlMetaTypes.FreeText) {
+        @defer (when true) {
+          <cp-input-text-area
+            [label]="inputField.label"
+            [hint]="inputField.controlMeta.hint"
+            [formControl]="inputField.control"
+            [errors]="inputField.control.touched && inputField.control.errors"
+          />
+        }
+      }
+      @case (controlMetaTypes.Number) {
+        @defer (when true) {
+          <cp-input-number
+            [controlMeta]="inputField.controlMeta"
+            [label]="inputField.label"
+            [formControl]="inputField.control"
+            [errors]="inputField.control.touched && inputField.control.errors"
+          />
+        }
+      }
+      @case (controlMetaTypes.Select) {
+        @defer (when true) {
+          <cp-input-select
+            [options]="$any(inputField.controlMeta).list"
+            [mapIcons]="$any(inputField.controlMeta).mapIcons"
+            [label]="inputField.label"
+            [hint]="inputField.controlMeta.hint"
+            [formControl]="inputField.control"
+            [errors]="inputField.control.touched && inputField.control.errors"
+          />
+        }
+      }
+      @case (controlMetaTypes.Toggle) {
+        @defer (when true) {
+          <cp-input-toggle
+            [label]="inputField.label"
+            [hint]="inputField.controlMeta.hint"
+            [formControl]="inputField.control"
+            [errors]="inputField.control.touched && inputField.control.errors"
+          />
+        }
+      }
+      @case (controlMetaTypes.AntennaSelector) {
+        @defer (when true) {
+          <cp-antenna-selector
+            [options]="$any(inputField.controlMeta).list"
+            [label]="inputField.label"
+            [formControl]="inputField.control"
+            [errors]="inputField.control.touched && inputField.control.errors"
+          />
+        }
+      }
+    }
+  </div>
+}

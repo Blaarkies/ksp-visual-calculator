@@ -16,7 +16,7 @@ import {
   MatDialogModule,
   MatDialogRef,
 } from '@angular/material/dialog';
-import { Antenna } from '../../common/domain/antenna';
+import { Antenna } from '../../pages/commnet-planner/models/antenna';
 import { Icons } from '../../common/domain/icons';
 import { ControlMetaInput } from '../../common/domain/input-fields/control-meta-input';
 import { ControlMetaNumber } from '../../common/domain/input-fields/control-meta-number';
@@ -89,7 +89,7 @@ export class PlanetoidDetailsDialogComponent {
     },
     currentDsn: {
       label: 'Current Tracking Station',
-      control: new FormControl(this.data.edit?.communication?.antennaeFull[0]?.item),
+      control: new FormControl(this.data.edit?.communication?.instanceAntennae[0]?.item),
       controlMeta: new ControlMetaSelect(
         this.trackingStationOptions,
         new Map<Antenna, string>(this.trackingStationOptions.map(a => [a.value, a.value?.icon ?? Icons.Delete])),

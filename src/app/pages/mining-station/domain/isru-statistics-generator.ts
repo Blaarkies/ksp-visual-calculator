@@ -100,7 +100,7 @@ export class IsruStatisticsGenerator {
       (<PartCategory[]>['isru', 'drill', 'solar-panel', 'fuel-cell'])
         .map((k, i) => [k, i]));
     let [drills = [], isrus = [], solarPanels = [], fuelCells = []]
-      = partGroups.splitFilter(({item}) => splitMap.get(item.category));
+      = partGroups.filterSplit(({item}) => splitMap.get(item.category));
 
     this.changeAffectsMap = new Map<AffectType, Group<CraftPart>[]>([
       ['solar', solarPanels],
@@ -111,7 +111,7 @@ export class IsruStatisticsGenerator {
 
     let [converterPartGroups = [],
       drillPartGroups = [],
-      otherPartGroups = []] = partGroups.splitFilter(({item}) =>
+      otherPartGroups = []] = partGroups.filterSplit(({item}) =>
       item.converters ? 0 : item.category === 'drill' ? 1 : 2);
 
     this.resourcePartGroupsMap = new Map<keyof ResourceProperties, Group<CraftPart>[]>(
@@ -125,7 +125,7 @@ export class IsruStatisticsGenerator {
     let virtualConverterGroups = converterPartGroups
       .map(g => g.item.converters
         .map(c => ({...c, parent: g})))
-      .flatMap();
+      .flat();
     this.resourceConverterGroupsMap = new Map<keyof ResourceProperties, Converter[]>(
       resourceProperties
         .map(key => [key, virtualConverterGroups.filter(c => c[key] || c.parent.item[key])]));
@@ -400,7 +400,7 @@ export class IsruStatisticsGenerator {
 
   updateConverters(activeConverters: string[]) {
     Array.from(this.resourceConverterGroupsMap.values())
-      .flatMap()
+      .flat()
       .distinct()
       .forEach(c => c.isActive = activeConverters.includes(c.converterName));
 

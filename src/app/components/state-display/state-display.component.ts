@@ -3,7 +3,7 @@ import {
   Component,
   Input,
 } from '@angular/core';
-import { Antenna } from '../../common/domain/antenna';
+import { Antenna } from '../../pages/commnet-planner/models/antenna';
 import { GameStateType } from '../../common/domain/game-state-type';
 import { LabeledOption } from '../../common/domain/input-fields/labeled-option';
 import { PlanetoidType } from '../../common/domain/space-objects/planetoid-type';

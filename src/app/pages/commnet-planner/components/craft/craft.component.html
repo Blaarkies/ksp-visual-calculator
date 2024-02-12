@@ -1,5 +1,5 @@
 <cp-draggable-space-object
-  [spaceObject]="craft"
+  [spaceObject]="craftSig()"
   (dragSpaceObject)="dragStart.emit($event)"
   (focusObject)="focus.emit($event)"
   [showEdit]="true"
@@ -8,26 +8,28 @@
   <div
     class="craft-icon-sprite-image"
     draggable="false"
-    [style.background]="craft.draggable.imageUrl"
-    [style.background-position-x.px]="craft.spriteLocation.x"
-    [style.background-position-y.px]="craft.spriteLocation.y"
+    [style.background]="imageUrlSig()"
+    [style.background-position-x.px]="locationXSig()"
+    [style.background-position-y.px]="locationYSig()"
   ></div>
 
-  <div
-    @fade
-    *ngIf="craft.draggable.isHover$ | async"
-    class="altitude-text"
-    matTooltip="Altitude"
-  >
-    {{craft.displayAltitude}}
-  </div>
+  @if (isHover$Sig() | async) {
+    <div
+      @fade
+      class="altitude-text"
+      matTooltip="Altitude"
+    >
+      {{ altitude$ | async }}
+    </div>
+  }
 
-  <div
-    @fade
-    *ngIf="craft.communication.hasControl$.stream$ | async | not"
-    class="connection-indicator"
-    matTooltip="No remote control"
-  >
-    <mat-icon [svgIcon]="icons.SignalStrength"></mat-icon>
-  </div>
+  @if (notConnected$Sig() | async) {
+    <div
+      @fade
+      class="connection-indicator"
+      matTooltip="No remote control"
+    >
+      <mat-icon [svgIcon]="icons.SignalStrength"></mat-icon>
+    </div>
+  }
 </cp-draggable-space-object>

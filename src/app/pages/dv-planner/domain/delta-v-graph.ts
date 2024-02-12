@@ -104,6 +104,8 @@ export class DeltaVGraph {
       ...StepMaker.self(kerbin, 3400),
       [kerbin.lowOrbit, kerbin.geostationaryOrbit, 1115],
 
+      // TODO: Add [kerbin.geostationaryOrbit, kerbin.ellipticalOrbit, ???]
+
       ...StepMaker.parentToMoon(kerbin, mun, 0, 852, 71.8),
       ...StepMaker.parentToMoon(kerbin, minmus, 0, 921, 98),
     ];
@@ -144,7 +146,7 @@ export class DeltaVGraph {
       return StepMaker.escapeToOtherElliptical(from, to, planeChangeDv,
         ejectDv - from.dvToElliptical, captureDv - to.dvToElliptical);
     })
-      .flatMap();
+      .flat();
 
     let fullList = [
       ...kerbolOut,

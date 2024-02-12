@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, shareReplay, Subject, takeUntil } from 'rxjs';
-import { Antenna } from '../common/domain/antenna';
+import { Antenna } from '../pages/commnet-planner/models/antenna';
 import { AntennaDto } from '../common/domain/dtos/antenna-dto';
 import { CraftPart, craftPartFromJson } from '../pages/mining-station/domain/craft-part';
 import { StarSystemDto } from '../common/domain/dtos/star-system-dto';

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { CameraService } from '../../services/camera.service';
@@ -14,7 +15,7 @@ import { CommonModule } from '@angular/common';
 })
 export class SoiCircleComponent {
 
-  @Input() body: SpaceObject;
+  @Input() body: Planetoid;
 
   worldViewScale = 100 * CameraService.normalizedScale;
 

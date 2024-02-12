@@ -42,7 +42,7 @@ export class LocationConstraints {
       case 'freeMove':
         return LocationConstraints.anyMove(data.xy);
       case 'soiLock':
-        return LocationConstraints.soiLock(Vector2.fromList(data.xy), data.parent.location);
+        return LocationConstraints.soiLock(Vector2.fromList(data.xy), data.parent?.location ?? Vector2.zero);
       case 'orbital':
         return LocationConstraints.circularMove(data.xy, data.r);
       default:

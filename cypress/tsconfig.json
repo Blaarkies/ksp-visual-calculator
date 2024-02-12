@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "sourceMap": false,
+    "types": ["cypress", "chai", "ng-mocks"],
+    "lib": [
+      "es2022",
+      "dom"
+    ]
+  }
+}

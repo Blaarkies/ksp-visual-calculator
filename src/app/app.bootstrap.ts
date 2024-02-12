@@ -21,12 +21,13 @@ import {
   provideFirestore,
 } from '@angular/fire/firestore';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import {
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
   MatSnackBarModule,
 } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
-import { ApplicationConfig } from '@angular/platform-browser';
+import { ApplicationConfig } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -47,8 +48,11 @@ export const appOptions: ApplicationConfig = {
       provideAnalytics(() => getAnalytics()),
 
       MatSnackBarModule,
-      HttpClientModule,
       MatDialogModule,
+
+      // for MDI icons
+      HttpClientModule,
+      MatIconModule,
     ),
     provideAnimations(),
     provideRouter(appRoutes),

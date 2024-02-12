@@ -2,56 +2,100 @@
   <div class="text dialog-title">Craft Details</div>
 
   <div class="left-column">
-    <cp-input-field-list class="add-gap" [inputFields]="inputListCraft"></cp-input-field-list>
+    <cp-input-field-list class="add-gap" [inputFields]="inputListCraft"/>
 
-    <button mat-button
-            class="advanced-placement-button"
-            (click)="advancedIsOpen = !advancedIsOpen">
-      <mat-icon [@flipVertical]="advancedIsOpen" [svgIcon]="icons.ChevronDown"></mat-icon>
+    <button
+      mat-button
+      class="advanced-placement-button"
+      (click)="advancedIsOpen = !advancedIsOpen"
+    >
+      <mat-icon [@flipVertical]="advancedIsOpen" [svgIcon]="icons.ChevronDown"/>
       Advanced Placement
     </button>
-    <cp-input-field-list [@height]="advancedIsOpen"
-                         class="advanced-placement-fields"
-                         [inputFields]="advancedInputFieldsList"></cp-input-field-list>
 
-    <div @fade
-         *ngIf="(advancedForm.dirty || advancedForm.touched) && advancedForm.errors"
-         class="error-message">
-      <mat-error>{{advancedForm.errors.allOrNone || advancedForm.errors.altitudeTooHigh}}</mat-error>
-
-      <button mat-icon-button
-              color="warn"
-              (click)="advancedForm.reset()"
-              [matTooltip]="'Reset values'">
-        <mat-icon [svgIcon]="icons.DeleteAll"></mat-icon>
-      </button>
+    <div [@height]="advancedIsOpen" class="advanced-placement-fields">
+      <cp-input-select
+        label="Orbit Parent"
+        [options]="orbitParentListOptions"
+        [mapIcons]="orbitParentMapIcons"
+        [formControl]="orbitParentControl"
+        [errors]="orbitParentControl.touched && orbitParentControl.errors"
+      />
+      <cp-input-number
+        label="Altitude"
+        suffix="m"
+        [min]="0"
+        [max]="altitudeMax"
+        [formControl]="altitudeControl"
+      />
+      <cp-input-angle label="Angle" [formControl]="angleControl"/>
     </div>
+
+    @if (advancedForm?.errors) {
+      <div @height class="error-message">
+        <mat-error>{{ advancedForm.errors.allOrNone
+        || advancedForm.errors.altitudeTooHigh }}</mat-error>
+
+        <button
+          mat-button
+          class="reset-values-button"
+          color="warn"
+          (click)="resetAdvancedForm()"
+          [matTooltip]="'Reset values'"
+        >
+          <div>
+            <mat-icon [svgIcon]="icons.DeleteAll"/>
+          </div>
+        </button>
+      </div>
+    }
   </div>
 
   <mat-divider class="middle-column" vertical></mat-divider>
 
   <div class="right-column">
-    <cp-antenna-selector *ngFor="let antenna of inputListAntenna"
-                         [options]="antennaOptions"
-                         [label]="antenna.label"
-                         [formControl]="antenna.control"></cp-antenna-selector>
+    @for (antenna of inputListAntenna; track antenna.label) {
+      <cp-antenna-selector
+        [options]="antennaOptions"
+        [label]="antenna.label"
+        [formControl]="antenna.control"
+      />
+    }
   </div>
 
 </div>
 
 <div mat-dialog-actions>
   <button mat-button [mat-dialog-close]>Cancel</button>
-  <button *ngIf="data.edit"
-          class="justify-right"
-          color="warn"
-          mat-stroked-button
-          (click)="remove()">
-    Remove
-  </button>
-  <button color="primary"
-          mat-stroked-button
-          [disabled]="form.invalid"
-          (click)="submitCraftDetails()">
-    {{data.edit ? 'Save' : 'Create'}}
+
+  @if (data.edit) {
+    <button
+      class="justify-right"
+      color="warn"
+      mat-stroked-button
+      (click)="remove()"
+    >
+      Remove
+    </button>
+
+    <button
+      class="justify-right"
+      color="primary"
+      mat-stroked-button
+      (click)="copy()"
+    >
+      Copy
+    </button>
+
+    <mat-divider vertical class="divider-padding"/>
+  }
+
+  <button
+    color="primary"
+    mat-stroked-button
+    [disabled]="!form?.valid"
+    (click)="submitCraftDetails()"
+  >
+    {{ data.edit ? 'Save' : 'Create' }}
   </button>
 </div>

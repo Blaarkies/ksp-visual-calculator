@@ -1,8 +1,9 @@
 <ng-container *ngFor="let trajectory of trajectories; trackBy: getTrajectoryKey">
-  <svg class="overflow-visible position-absolute trajectory-line"
-       xmlns="http://www.w3.org/2000/svg"
-       viewBox="0 0 100 100"
-       [@fade]
+  <svg
+    class="overflow-visible position-absolute trajectory-line"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 100"
+    @fade
   >
 
     <defs>
@@ -15,7 +16,7 @@
         <path d="M 0 2 L 1 1 L 0 0"
               fill="none"
               stroke="#fc4"
-              stroke-width=".5" />
+              stroke-width=".5"/>
       </marker>
       <marker id="tail"
               orient="auto"
@@ -26,7 +27,7 @@
         <path d="M 0 2 L 1 1 L 0 0"
               fill="none"
               stroke="#fc4"
-              stroke-width=".5" />
+              stroke-width=".5"/>
       </marker>
     </defs>
 
@@ -43,22 +44,22 @@
 
   <mat-icon class="icon-map-marker geo-markers"
             [svgIcon]="icons.MapMarker"
-            [@fade]
+            @fade
             [style.left.%]="worldViewScale * trajectory.a.location.x"
             [style.top.%]="worldViewScale * trajectory.a.location.y"
   >
     <span class="trip-index"
           xmlns="http://www.w3.org/1999/xhtml"
           [style.--margin-index]="tripIndexMarginMap[trajectory.sequence]">
-      {{trajectory.sequence}}
+      {{ trajectory.sequence }}
     </span>
   </mat-icon>
 </ng-container>
 
 <mat-icon class="icon-map-marker mouse-location-marker"
           [svgIcon]="icons.AddMapMarker"
-          [@fade]
+          @fade
           *ngIf="isAddingCheckpoint && (mouseLocation$ | async); let mouseLocation"
-          [style.left.px]="mouseLocation.x / inverseScale"
-          [style.top.px]="mouseLocation.y / inverseScale"
+          [style.left.px]="mouseLocation.x"
+          [style.top.px]="mouseLocation.y"
 ></mat-icon>

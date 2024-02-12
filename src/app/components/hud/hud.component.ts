@@ -81,7 +81,7 @@ export class HudComponent extends WithDestroy() {
     let result: MatBottomSheetRef;
     switch (group) {
       case ActionGroupType.General:
-        result = await this.bottomSheet.open(ActionBottomSheetComponent, {
+        result = this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
             startTitle: 'KSP Visual Calculator',
             actionOptions: this.navigationOptions,
@@ -90,7 +90,7 @@ export class HudComponent extends WithDestroy() {
         });
         break;
       case ActionGroupType.Information:
-        result = await this.bottomSheet.open(ActionBottomSheetComponent, {
+        result = this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
             startTitle: 'Account',
             actionOptions: this.infoOptions,
@@ -100,7 +100,7 @@ export class HudComponent extends WithDestroy() {
         break;
       case ActionGroupType.Context:
         let panel = this.contextPanelDetails;
-        result = await this.bottomSheet.open(ActionBottomSheetComponent, {
+        result = this.bottomSheet.open(ActionBottomSheetComponent, {
           data: {
             startTitle: panel.startTitle,
             actionOptions: panel.options,

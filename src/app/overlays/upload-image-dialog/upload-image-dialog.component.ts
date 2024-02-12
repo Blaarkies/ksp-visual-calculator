@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
   FormControl,
@@ -20,8 +22,16 @@ import {
   MatStepperModule,
 } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ImageCropperModule } from 'ngx-image-cropper';
-import { Subject } from 'rxjs';
+import {
+  ImageCroppedEvent,
+  ImageCropperModule,
+} from 'ngx-image-cropper';
+import {
+  finalize,
+  fromEvent,
+  Subject,
+  take,
+} from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { FileDropDirective } from '../../directives/file-drop.directive';
@@ -68,7 +78,7 @@ export class UploadImageDialogComponent {
   @ViewChild('stepper') stepper: MatStepper;
   @ViewChild(FileDropDirective) importer: FileDropDirective;
 
-  constructor(private snackBar: MatSnackBar) {
+  constructor(private snackBar: MatSnackBar, private destroyRef: DestroyRef) {
   }
 
   async importFile(files: any) {
@@ -78,26 +88,34 @@ export class UploadImageDialogComponent {
       const file: File = files[0];
       const reader = new FileReader();
 
-      reader.addEventListener('load', event => {
+      fromEvent(reader, 'load').pipe(
+        finalize(() => {
+          this.buttonLoaders.import$.next(false);
+          this.importer.showSuccess();
+        }),
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      ).subscribe((event: ProgressEvent<FileReader>) => {
         let imageData = event.target.result as string;
 
         this.controlSelect.setValue(imageData);
         this.stepper.steps.get(1).select();
-
-        this.buttonLoaders.import$.next(false);
-        this.importer.showSuccess();
       });
 
       reader.readAsDataURL(file);
     }
   }
 
-  async uploadFileSelected(event: any) {
-    await this.importFile(event.target.files);
+  async uploadFileSelected(event: InputEvent) {
+    let element = event.target as HTMLInputElement;
+    await this.importFile(element.files);
   }
 
   loadImageFailed() {
     this.snackBar.open('Could not load image. Please try a different file/format');
   }
 
+  updateCrop(event: ImageCroppedEvent) {
+    this.controlCrop.setValue(event.base64);
+  }
 }

@@ -2,7 +2,7 @@ import { AntennaStatsComponent } from './antenna-stats.component';
 import { MockBuilder, MockRender } from 'ng-mocks';
 import { AppModule } from '../../app.module';
 import { AntennaInput } from '../antenna-selector/antenna-input';
-import { Antenna } from '../../../../common/domain/antenna';
+import { Antenna } from '../../models/antenna';
 import { AntennaDto } from '../../../../common/domain/dtos/antenna-dto';
 
 let componentType = AntennaStatsComponent;

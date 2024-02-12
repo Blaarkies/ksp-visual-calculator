@@ -1,12 +1,15 @@
 <cp-universe-map #universeMap
-                 [planetoids]="planets$ | async"
+                 [planetoids]="planetoids$ | async"
                  (startDrag)="selectCheckpoint($event)">
 
-  <cp-mission-journey aboveOrbits
-                      class="no-pointer"
-                      [scale]="universeMap.camera.scale"
-                      [checkpoints]="checkpoints$ | async"
-                      [isAddingCheckpoint]="isSelectingCheckpoint$ | async">
+  <cp-mission-journey
+    aboveOrbits
+    class="no-pointer"
+    [scale]="universeMap.camera.scale"
+    [checkpoints]="checkpoints$ | async"
+    [isAddingCheckpoint]="isSelectingCheckpoint$ | async"
+    [camera]="universeMap.camera"
+  >
   </cp-mission-journey>
 </cp-universe-map>
 
@@ -21,7 +24,7 @@
   <cp-focus-jump-to-panel
     class="all-pointer"
     left
-    [focusables]="planets$ | async"
+    [focusables]="planetoids$ | async"
   ></cp-focus-jump-to-panel>
   <cp-maneuver-sequence-panel right class="all-pointer"></cp-maneuver-sequence-panel>
 </cp-hud>

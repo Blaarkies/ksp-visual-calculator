@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output,
   ViewEncapsulation,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,13 +21,11 @@ import {
   Observable,
   Subject,
   switchMap,
-  takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { Icons } from '../../common/domain/icons';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { NegatePipe } from '../../common/negate.pipe';
-import { WithDestroy } from '../../common/with-destroy';
 import { DoublePointerActionDirective } from '../../directives/double-pointer-action.directive';
 import { MouseHoverDirective } from '../../directives/mouse-hover.directive';
 import { CameraService } from '../../services/camera.service';
@@ -48,7 +47,7 @@ import { CameraService } from '../../services/camera.service';
   encapsulation: ViewEncapsulation.None,
   animations: [BasicAnimations.fade],
 })
-export class DraggableSpaceObjectComponent extends WithDestroy() implements OnInit, OnDestroy {
+export class DraggableSpaceObjectComponent implements OnInit {
 
   @Input() spaceObject: SpaceObject;
   @Input() showEdit: boolean;
@@ -57,51 +56,52 @@ export class DraggableSpaceObjectComponent extends WithDestroy() implements OnIn
   @Output() focusObject = new EventEmitter<PointerEvent>();
   @Output() editSpaceObject = new EventEmitter<void>();
 
-  buttonHover$ = new Subject<boolean>();
   normalizedScale = 100 * CameraService.normalizedScale;
   icons = Icons;
+
+  buttonHover$ = new Subject<boolean>();
+  triggerEdit$ = new Subject<void>();
   showEdit$: Observable<boolean>;
   isIdle$: Observable<boolean>;
-  triggerEdit$ = new Subject<void>();
 
-  constructor(cameraService: CameraService) {
-    super();
-    // tell camera service that any zoomAt action should focus on this object
-    this.buttonHover$
-      .pipe(
-        filter(hoverOn => {
-          let mustSetNewObject = !cameraService.currentHoverObject || hoverOn;
-          let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject.draggable && !hoverOn;
-          return mustSetNewObject || mustRemoveSelf;
-        }),
-        takeUntil(this.destroy$))
+  constructor(cameraService: CameraService, private destroyRef: DestroyRef) {
+    // set this object as the focal point to CameraService.zoomAt()
+    this.buttonHover$.pipe(
+      filter(hoverOn => {
+        let mustSetNewObject = !cameraService.currentHoverObject || hoverOn;
+        let mustRemoveSelf = cameraService.currentHoverObject === this.spaceObject.draggable && !hoverOn;
+        return mustSetNewObject || mustRemoveSelf;
+      }),
+      takeUntilDestroyed())
       .subscribe(hoverOn => cameraService.currentHoverObject = hoverOn ? this.spaceObject.draggable : null);
-  }
 
-  ngOnDestroy() {
-    this.buttonHover$.next(false);
-    this.buttonHover$.complete();
+    destroyRef.onDestroy(() => {
+      this.buttonHover$.next(false);
+      this.buttonHover$.complete();
+      this.triggerEdit$.complete();
+    });
   }
 
   ngOnInit() {
     this.isIdle$ = this.spaceObject.draggable.isGrabbing$.stream$
       .pipe(map(grabbed => !grabbed));
 
-    this.showEdit$ =
-      combineLatest([
-        this.buttonHover$,
-        this.isIdle$,
-      ]).pipe(
-        map(([hovered, idled]) =>
-          this.showEdit
-          && hovered
-          && idled));
+    this.showEdit$ = combineLatest([
+      this.buttonHover$,
+      this.isIdle$,
+    ]).pipe(
+      map(([hovered, idled]) => this.showEdit && hovered && idled));
 
     this.showEdit$.pipe(
       delay(300), // prevents accidental clicks/taps on the transparent button
       switchMap(allow => allow ? this.triggerEdit$ : EMPTY),
-      takeUntil(this.destroy$))
+      takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.editSpaceObject.emit());
+  }
+
+  handleHover(isHover: boolean) {
+    this.buttonHover$.next(isHover);
+    this.spaceObject.draggable.isHover$.next(isHover);
   }
 
 }

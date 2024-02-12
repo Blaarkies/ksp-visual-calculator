@@ -1,12 +1,11 @@
-import { environment } from '../../../environments/environment';
-import { ProbeControlPoint } from '../../common/domain/antenna';
+import { ProbeControlPoint } from './antenna';
 import {
   AntennaSignal,
   CanCommunicate,
-} from '../../common/domain/antenna-signal';
-import { NodeGraph } from '../../common/domain/graph-data-structure';
-import { Craft } from '../../common/domain/space-objects/craft';
-import { Planetoid } from '../../common/domain/space-objects/planetoid';
+} from './antenna-signal';
+import { NodeGraph } from '../../../common/domain/graph-data-structure';
+import { Craft } from '../../../common/domain/space-objects/craft';
+import { Planetoid } from '../../../common/domain/space-objects/planetoid';
 
 export class ConnectionGraph {
 
@@ -27,7 +26,7 @@ export class ConnectionGraph {
     let graphNodes = this.graph.nodes();
 
     let trackingStations: CanCommunicate[] = planets
-      .filter(p => p.communication?.antennae?.length);
+      .filter(p => p.communication?.stringAntennae?.length);
     let multiHopGuidanceCores = craft
       .filter(c => c.communication.bestRemoteGuidanceCapability()
         === ProbeControlPoint.MultiHop);
@@ -47,7 +46,7 @@ export class ConnectionGraph {
         }
 
         let otherNode = signal.nodes.find(n => n !== c);
-        let isGuidanceControlled = this.hostNodeCanControl(signal, otherNode, c);
+        let isGuidanceControlled = this.hostNodeCanControl(signal, otherNode);
 
         if (isGuidanceControlled) {
           this.hasControlCraft.add(c);
@@ -59,17 +58,7 @@ export class ConnectionGraph {
         if (isOtherNodeInNetwork) {
 
           let hasConnectionToBase = controlStationsAndCores
-            .some(cb => {
-              try {
-                return this.graph.shortestPath(
-                  otherNode.label, cb.label);
-              } catch (e) {
-                if (!environment.production) {
-                  console.log(`No path from [${otherNode.label}] to [${cb.label}]`);
-                }
-                return false;
-              }
-            });
+            .some(cb => this.graph.shortestPath(otherNode.label, cb.label)?.length);
           if (hasConnectionToBase) {
             this.hasControlCraft.add(c);
             break;
@@ -80,13 +69,12 @@ export class ConnectionGraph {
   }
 
   private hostNodeCanControl(signal: AntennaSignal,
-                             hostNode: CanCommunicate,
-                             clientNode: CanCommunicate): boolean {
+                             hostNode: CanCommunicate): boolean {
     let hasDsnCapability = hostNode instanceof Planetoid
-      && hostNode.communication?.antennae.length;
+      && hostNode.communication?.stringAntennae.length;
 
     let hostCanRelayConnectionToClient = hostNode.communication.bestRemoteGuidanceCapability()
-      && signal.getHostToClientSignalStrength(hostNode, clientNode);
+      && signal.getHostToClientSignalStrength(hostNode); // signal is of this craft; the other node has to be the craft
 
     let hasControlConnection = hasDsnCapability || hostCanRelayConnectionToClient;
     return !!hasControlConnection;

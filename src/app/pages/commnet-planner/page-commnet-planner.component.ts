@@ -1,8 +1,10 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   Component,
-  OnDestroy,
+  DestroyRef,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import {
   combineLatest,
@@ -13,26 +15,18 @@ import {
   merge,
   Observable,
   startWith,
+  Subject,
   take,
-  takeUntil,
 } from 'rxjs';
 import { BasicAnimations } from '../../animations/basic-animations';
 import { ActionOption } from '../../common/domain/action-option';
-import {
-  AntennaSignal,
-  CanCommunicate,
-} from '../../common/domain/antenna-signal';
 import { GameStateType } from '../../common/domain/game-state-type';
-import { Group } from '../../common/domain/group';
 import { Icons } from '../../common/domain/icons';
-import { Communication } from '../../common/domain/space-objects/communication';
 import { Craft } from '../../common/domain/space-objects/craft';
 import { Orbit } from '../../common/domain/space-objects/orbit';
 import { Planetoid } from '../../common/domain/space-objects/planetoid';
 import { SpaceObject } from '../../common/domain/space-objects/space-object';
 import { GlobalStyleClass } from '../../common/global-style-class';
-import { WithDestroy } from '../../common/with-destroy';
-import { DraggableSpaceObjectComponent } from '../../components/draggable-space-object/draggable-space-object.component';
 import { FocusJumpToPanelComponent } from '../../components/focus-jump-to-panel/focus-jump-to-panel.component';
 import { ActionPanelDetails } from '../../components/hud/action-panel-details';
 import { HudComponent } from '../../components/hud/hud.component';
@@ -52,6 +46,10 @@ import {
 } from './components/craft-details-dialog/craft-details-dialog.component';
 import { CraftComponent } from './components/craft/craft.component';
 import { DifficultySettingsDialogComponent } from './components/difficulty-settings-dialog/difficulty-settings-dialog.component';
+import {
+  AntennaSignal,
+  CanCommunicate,
+} from './models/antenna-signal';
 import { CommnetStateService } from './services/commnet-state.service';
 import { CommnetUniverseBuilderService } from './services/commnet-universe-builder.service';
 
@@ -59,14 +57,13 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   selector: 'cp-page-commnet-planner',
   standalone: true,
   imports: [
-    CommonModule,
+    UniverseMapComponent,
+    AntennaSignalComponent,
+    CraftComponent,
     HudComponent,
     ZoomIndicatorComponent,
     FocusJumpToPanelComponent,
-    UniverseMapComponent,
-    AntennaSignalComponent,
-    DraggableSpaceObjectComponent,
-    CraftComponent,
+    AsyncPipe,
   ],
   providers: [
     HudService,
@@ -79,10 +76,10 @@ import { CommnetUniverseBuilderService } from './services/commnet-universe-build
   styleUrls: ['./page-commnet-planner.component.scss'],
   animations: [BasicAnimations.fade],
 })
-export default class PageCommnetPlannerComponent extends WithDestroy() implements OnDestroy {
+export default class PageCommnetPlannerComponent {
 
   icons = Icons;
-  contextPanelDetails: ActionPanelDetails;
+  contextPanelDetailsSig = signal<ActionPanelDetails>(null);
   signals$: Observable<AntennaSignal[]>;
   crafts$: Observable<Craft[]>;
   orbits$: Observable<Orbit[]>;
@@ -96,14 +93,21 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     private hudService: HudService,
     private commnetStateService: CommnetStateService,
     private commnetUniverseBuilderService: CommnetUniverseBuilderService,
+    private destroyRef: DestroyRef,
     guidanceService: GuidanceService,
   ) {
-    super();
+    // TODO: Update guidanceService method parameters to receive destroyRef
+    let destroy$ = new Subject<void>();
+    destroyRef.onDestroy(() => {
+      destroy$.next();
+      destroy$.complete();
+      this.commnetStateService.destroy();
+    });
 
-    this.contextPanelDetails = this.getContextPanelDetails();
+    this.contextPanelDetailsSig.set(this.getContextPanelDetails());
 
     let universe = commnetUniverseBuilderService;
-    this.signals$ = universe.signals$.stream$;
+    this.signals$ = universe.antennaSignal$.stream$;
     this.crafts$ = universe.craft$.stream$;
     this.orbits$ = universe.orbits$;
     this.planetoids$ = universe.planetoids$;
@@ -111,25 +115,19 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
     this.focusables$ = combineLatest([
       this.crafts$.pipe(startWith([])),
       this.planetoids$,
-    ])
-      .pipe(
-        filter(([craft, planets]) => !!craft && !!planets),
-        map(lists => lists.flatMap() as SpaceObject[]));
+    ]).pipe(
+      filter(([craft, planets]) => !!craft && !!planets),
+      map(lists => lists.flat() as SpaceObject[]));
 
     merge(
       this.authService.user$.pipe(take(1)),
       this.authService.signIn$)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe(u => this.commnetStateService.handleUserSingIn(u));
 
     guidanceService.openTutorialDialog(GameStateType.CommnetPlanner);
-    guidanceService.setSupportDeveloperSnackbar(this.destroy$);
-    guidanceService.setSignUpDialog(this.destroy$);
-  }
-
-  ngOnDestroy() {
-    super.ngOnDestroy();
-    this.commnetStateService.destroy();
+    guidanceService.setSupportDeveloperSnackbar(destroy$);
+    guidanceService.setSignUpDialog(destroy$);
   }
 
   private getContextPanelDetails(): ActionPanelDetails {
@@ -152,7 +150,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
             .pipe(
               filter(craftDetails => craftDetails),
               delayWhen(craftDetails => this.commnetUniverseBuilderService.addCraftToUniverse(craftDetails)),
-              takeUntil(this.destroy$))
+              takeUntilDestroyed(this.destroyRef))
             .subscribe();
         },
       }),
@@ -167,7 +165,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
             .afterClosed()
             .pipe(
               filter(details => details),
-              takeUntil(this.destroy$))
+              takeUntilDestroyed(this.destroyRef))
             .subscribe(details =>
               this.commnetUniverseBuilderService.updateDifficultySetting(details));
         },
@@ -199,7 +197,7 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
   }
 
   updateUniverse(dragged: CanCommunicate) {
-    if (dragged.communication?.antennae?.length) {
+    if (dragged.communication?.stringAntennae?.length) {
       this.commnetUniverseBuilderService.updateTransmissionLines();
     }
   }
@@ -221,24 +219,15 @@ export default class PageCommnetPlannerComponent extends WithDestroy() implement
       .afterClosed()
       .pipe(
         filter(details => details),
-        delayWhen(details => this.commnetUniverseBuilderService.editCraft(craft, details)),
-        takeUntil(this.destroy$))
+        delayWhen(details => craft.id === details.id
+          ? this.commnetUniverseBuilderService.editCraft(craft, details)
+          : this.commnetUniverseBuilderService.addCraftToUniverse(details)),
+        takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
 
   editPlanet({body, details}) {
     this.commnetUniverseBuilderService.editCelestialBody(body, details);
-    if (details.currentDsn) {
-      body.communication = new Communication([new Group(details.currentDsn.label)]);
-    } else {
-      body.communication = undefined;
-    }
-
-    this.commnetUniverseBuilderService.updateTransmissionLines();
-  }
-
-  trackSignal(index: number, item: AntennaSignal): string {
-    return item.nodes[0].label + item.nodes[1].label;
   }
 
 }

@@ -70,7 +70,7 @@ export class ResourceProcessorsComponent extends WithDestroy() implements OnDest
   private getConverterNames(groups: Group<CraftPart>[]): string[] {
     return groups
       .map(p => p.item.converters ?? [])
-      .flatMap()
+      .flat()
       .map(a => a.converterName);
   }
 

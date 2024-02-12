@@ -1,0 +1,228 @@
+.input-angle-layout {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto max-content;
+
+  .dial-and-input {
+    width: 100%;
+
+    grid-column: 1/3;
+    grid-row: 2/3;
+
+    --transition-config: .3s ease-in-out;
+    transition: var(--transition-config);
+
+    --border-config: 1.5px solid var(--color-border-simple);
+    --border-radius: 5px;
+    border: var(--border-config);
+    border-top: none;
+    border-radius: var(--border-radius);
+
+    .content {
+      padding: 4px 10px;
+      padding-left: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .label-container {
+      display: grid;
+      grid-template-columns: 10px max-content auto;
+      align-items: start;
+      gap: 2px;
+
+      .notch-lead {
+        grid-column: 1/2;
+        transition: var(--transition-config);
+        border-top: var(--border-config);
+        width: 100%;
+        height: var(--border-radius);
+        border-top-left-radius: var(--border-radius);
+        translate: -1px;
+      }
+
+      .notch-label {
+        grid-column: 2/3;
+        transition: var(--transition-config);
+        line-height: 0;
+        color: var(--color-text);
+        font-size: 12px;
+      }
+
+      .notch-trail {
+        grid-column: 3/4;
+        transition: var(--transition-config);
+        border-top: var(--border-config);
+        width: 100%;
+        height: var(--border-radius);
+        border-top-right-radius: var(--border-radius);
+        translate: 1px;
+      }
+    }
+
+    &.focused {
+      border-color: var(--color-primary);
+
+      .label-container {
+        --border-config: 1px solid var(--color-primary);
+        .notch-label {
+          color: var(--color-primary);
+        }
+      }
+    }
+  }
+
+  .hint {
+    grid-column: 1/3;
+    grid-row: 3/4;
+  }
+}
+
+.input-control {
+
+  transition: .2s ease-out;
+  border-bottom: 1px solid var(--color-border-simple);
+
+  &.focused {
+    border-color: var(--color-primary);
+  }
+
+  input {
+    position: relative;
+    width: 30px;
+
+    border: 0;
+    outline: 0;
+    background: none;
+
+    font-size: var(--mat-form-field-container-text-size);
+  }
+
+  input:focus {
+    outline: none !important;
+  }
+
+  .no-spinner-arrows {
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+}
+
+.disabled {
+  opacity: .7;
+}
+
+.dial-container {
+  width: 40px;
+  aspect-ratio: 1;
+
+  position: relative;
+
+  --border-width: 1px;
+  --knob-size: 6px;
+
+  .ring {
+    position: absolute;
+    transition: .1s ease-in-out;
+
+    inset: calc(.5 * var(--knob-size) - var(--border-width));
+    width: calc(100% - var(--knob-size));
+    aspect-ratio: 1;
+    border-radius: 50px;
+    border: var(--border-width) solid var(--color-border-simple);
+  }
+
+  .draw-sector {
+    position: absolute;
+    max-height: 40px;
+
+    svg {
+      path {
+        stroke: var(--color-primary);
+        stroke-width: 16;
+        stroke-opacity: .5;
+        fill: none;
+      }
+    }
+  }
+
+  .hand-container {
+    position: absolute;
+    user-select: none;
+
+    width: calc(100% + 2 * var(--border-width));
+    aspect-ratio: 1;
+    --negative-translate: calc(-1 * var(--border-width));
+    translate: var(--negative-translate) var(--negative-translate);
+
+    display: grid;
+    place-items: center end;
+
+    rotate: calc(var(--angle) * 1deg);
+
+  }
+
+  .knob {
+    transition: .1s ease-in-out;
+    border-radius: var(--knob-size);
+    border-top-right-radius: 1px;
+    border-top-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    rotate: 45deg;
+    width: var(--knob-size);
+    aspect-ratio: 1;
+    background-color: #ccc;
+    border: 1px solid var(--color-border-simple);
+  }
+
+  .can-drag {
+    cursor: grab;
+  }
+
+  .is-grabbing {
+    .knob {
+      background-color: var(--color-primary);
+    }
+  }
+
+  .arm {
+    pointer-events: none;
+    position: absolute;
+    left: 20px;
+    top: 20.5px;
+    z-index: -1;
+
+    svg > line {
+      transition: .3s ease-in-out;
+      stroke: var(--color-border-simple);
+      stroke-width: 2;
+    }
+  }
+
+  &:hover {
+    .ring {
+      border-color: var(--color-border-1);
+    }
+
+    .arm > svg > line {
+      stroke: var(--color-border-1);
+    }
+
+    .knob {
+      background-color: #ddd;
+      border-color: var(--color-border-1);
+    }
+  }
+
+}
+
