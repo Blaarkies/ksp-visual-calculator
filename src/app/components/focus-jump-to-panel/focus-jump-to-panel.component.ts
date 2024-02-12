@@ -4,6 +4,7 @@ import {
   effect,
   Input,
   QueryList,
+  Signal,
   signal,
   ViewChildren,
 } from '@angular/core';
@@ -22,13 +23,11 @@ import {
   BehaviorSubject,
   debounceTime,
   filter,
-  firstValueFrom,
   fromEvent,
   map,
   shareReplay,
   startWith,
   switchMap,
-  take,
   tap,
   timer,
 } from 'rxjs';
@@ -70,31 +69,36 @@ export class FocusJumpToPanelComponent {
     this.listSig.set(this.list);
   }
 
+  @ViewChildren('button') buttons: QueryList<MatButton>;
+
   private list: FocusItem[];
   listSig = signal<FocusItem[]>([]);
 
   private isOpen$ = new BehaviorSubject<boolean>(false);
   isOpenSig = toSignal(this.isOpen$);
 
-  @ViewChildren('button') buttons: QueryList<MatButton>;
-
   private lastFocused: FocusItem;
-  private isAvailableForClick$ = this.isOpen$.pipe(
-    // prevents touch taps while panel is closed (touchscreens have no hover ability)
-    switchMap(isOpen =>
-      timer(isOpen ? 100 : 0).pipe(
-        map(() => isOpen))),
-    startWith(false),
-    shareReplay(1));
+  private canClickSig: Signal<boolean>;
 
   constructor(
     private cameraService: CameraService,
     private analyticsService: AnalyticsService,
     private window: Window,
     private eventService: EventService,
-    private destroyRef: DestroyRef,
+    destroyRef: DestroyRef,
   ) {
     destroyRef.onDestroy(() => this.isOpen$.complete());
+
+    let isAvailableForClick$ = this.isOpen$.pipe(
+      // prevents touch taps while panel is closed (touchscreens have no hover ability)
+      switchMap(isOpen =>
+        timer(isOpen ? 100 : 0).pipe(
+          map(() => isOpen))),
+      startWith(false),
+      shareReplay(1),
+    );
+
+    this.canClickSig = toSignal(isAvailableForClick$);
 
     effect(() =>
       // TODO: also check for touch drag events outside of component, then close the panel
@@ -148,11 +152,7 @@ export class FocusJumpToPanelComponent {
         : so.type.icon,
       label: so.label,
       itemAction: async () => {
-        let canClick$ = this.isAvailableForClick$.pipe(
-          take(1),
-          takeUntilDestroyed(this.destroyRef));
-        let canClick = await firstValueFrom(canClick$);
-        if (!canClick) {
+        if (!this.canClickSig()) {
           return;
         }
 
