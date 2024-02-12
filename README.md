@@ -1,6 +1,7 @@
-#### KSP Visual Calculator
+## [KSP Visual Calculator](https://ksp-visual-calculator.blaarkies.com)
 
-[Website](https://ksp-visual-calculator.blaarkies.com)
+#### [Website](https://ksp-visual-calculator.blaarkies.com)
+#### [Change log](./CHANGELOG.md)
 
 <a href="https://ksp-visual-calculator.blaarkies.com">
   <p align="center">
