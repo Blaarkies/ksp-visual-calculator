@@ -11,7 +11,7 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - run: npm ci
         name: Install packages
@@ -25,7 +25,8 @@ jobs:
       - run: npm run build
         name: Test full build
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy preview
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSP_COMMNET_PLANNER }}'
