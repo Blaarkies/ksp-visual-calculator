@@ -20,7 +20,7 @@ export class CreditsDialogComponent {
     {
       creator: 'SQUAD',
       action: 'for making the game',
-      link: 'https://www.kerbalspaceprogram.com/',
+      link: 'https://store.steampowered.com/app/220200/Kerbal_Space_Program/',
       product: 'Kerbal Space Program',
     },
     {

@@ -7,7 +7,7 @@
 ## Version 1.3.3
 
 #### Improvements
-- Copy a craft; When editing a craft, click the 'Copy' button to transfer all details to a brand new craft
+- Copy a craft; When editing a craft, click the 'Copy' button to transfer all details to a brand-new craft
 - Fine-tune an existing craft's location with pre-filled 'Advanced Placement' options in the edit craft dialog; These let you create/move a craft to a specific location, i.e. around Minmus, at altitude 69420m, at orbit location 45°.
   - The new angle-input makes this even more intuitive
 - The planet in focus is now highlighted in the focus panel
