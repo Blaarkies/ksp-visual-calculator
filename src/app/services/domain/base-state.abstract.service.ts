@@ -228,7 +228,15 @@ export abstract class AbstractBaseStateService {
       return;
     }
 
-    let states = await firstValueFrom(this.getStatesInContext({sorted: true}));
+    let states: StateEntry[];
+    try {
+      states = await firstValueFrom(this.getStatesInContext({sorted: true}));
+    } catch (e) {
+      this.snackBar.open(`Could not load savegames for ${user.email}`);
+      console.error(`Could not load savegames for ${user.email}. One or more savegames may be corrupted`, e);
+      states = [];
+    }
+
     let newestState = states[0];
     if (!newestState) {
       // New user without state
