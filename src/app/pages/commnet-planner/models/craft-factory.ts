@@ -19,6 +19,7 @@ export class CraftFactory extends AbstractSpaceObjectFactory {
     name: string,
     craftType: CraftType,
     antennaeGroups: Group<string>[],
+    locked = false,
     location?: Vector2,
     lastAttemptLocation?: number[],
   ): Craft {
@@ -31,6 +32,7 @@ export class CraftFactory extends AbstractSpaceObjectFactory {
       antennaeGroups,
       location,
       lastAttemptLocation,
+      locked,
     );
   }
 

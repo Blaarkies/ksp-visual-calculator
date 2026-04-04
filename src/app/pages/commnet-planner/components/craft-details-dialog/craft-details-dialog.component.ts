@@ -33,6 +33,7 @@ import { Icons } from '../../../../common/domain/icons';
 import { ControlMetaAntennaSelector } from '../../../../common/domain/input-fields/control-meta-antenna-selector';
 import { ControlMetaInput } from '../../../../common/domain/input-fields/control-meta-input';
 import { ControlMetaSelect } from '../../../../common/domain/input-fields/control-meta-select';
+import { ControlMetaToggle } from '../../../../common/domain/input-fields/control-meta-toggle';
 import {
   InputField,
   InputFields,
@@ -169,7 +170,8 @@ export class CraftDetailsDialogComponent {
   private updateAdvancedPlacementFields(soiSize: number = 113123) {
     this.altitudeMax = soiSize;
 
-    this.altitudeControl = new FormControl(null, [Validators.min(0), Validators.max(soiSize)]);
+    this.altitudeControl = new FormControl(null, [
+      Validators.min(0), Validators.max(soiSize)]);
     this.advancedForm = new FormGroup({
       orbitParent: this.orbitParentControl,
       altitude: this.altitudeControl,
@@ -187,7 +189,8 @@ export class CraftDetailsDialogComponent {
       this.inputFields.name.control.value,
       this.inputFields.craftType.control.value,
       this.inputFields.antennaSelection.control.value,
-      advancedPlacement);
+      advancedPlacement,
+      this.inputFields.locked.control.value);
     this.dialogRef.close(craftDetails);
   }
 
@@ -212,6 +215,7 @@ export class CraftDetailsDialogComponent {
       this.orbitParentControl.value,
       this.altitudeControl.value,
       this.angleControl.value,
+      thisCraft.locked,
     );
     this.updateMainForm();
 
@@ -271,6 +275,7 @@ export class CraftDetailsDialogComponent {
     orbitParent?: Planetoid,
     altitude?: number,
     angle?: number,
+    locked?: boolean,
   ) {
     this.inputFields = {
       name: {
@@ -280,7 +285,8 @@ export class CraftDetailsDialogComponent {
           ?? 'Untitled Space Craft', [
           Validators.required,
           Validators.maxLength(128),
-          CommonValidators.uniqueString(this.data.forbiddenNames.except([this.data.edit?.label]))],
+          CommonValidators.uniqueString(this.data.forbiddenNames
+            .except([this.data.edit?.label]))],
         ),
         controlMeta: new ControlMetaInput(),
       },
@@ -298,9 +304,18 @@ export class CraftDetailsDialogComponent {
           ?? [new Group(this.data.universeBuilderHandler.getAntenna('Internal'))]),
         controlMeta: new ControlMetaAntennaSelector(this.data.universeBuilderHandler.antennaList),
       },
+      locked: {
+        label: 'Lock Position',
+        control: new FormControl(locked ?? this.data.edit?.locked),
+        controlMeta: new ControlMetaToggle('Prevent user drag actions on this craft'),
+      },
     } as InputFields;
 
-    this.inputListCraft = [this.inputFields.name, this.inputFields.craftType];
+    this.inputListCraft = [
+      this.inputFields.name,
+      this.inputFields.craftType,
+      this.inputFields.locked,
+    ];
     this.inputListAntenna = [this.inputFields.antennaSelection];
     this.inputFieldsList = Object.values(this.inputFields);
 

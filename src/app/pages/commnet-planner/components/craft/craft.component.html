@@ -1,6 +1,6 @@
 <cp-draggable-space-object
   [spaceObject]="craftSig()"
-  (dragSpaceObject)="dragStart.emit($event)"
+  (dragSpaceObject)="!lockedSig() && dragStart.emit($event)"
   (focusObject)="focus.emit($event)"
   [showEdit]="true"
   (editSpaceObject)="edit.emit()"
@@ -13,7 +13,7 @@
     [style.background-position-y.px]="locationYSig()"
   ></div>
 
-  @if (isHover$Sig() | async) {
+  @if (isHoverSig()) {
     <div
       @fade
       class="altitude-text"
@@ -21,9 +21,19 @@
     >
       {{ altitude$ | async }}
     </div>
+
+    @if (lockedSig()) {
+      <div
+        @fade
+        class="position-lock-indicator"
+        matTooltip="Position locked - Edit to move"
+      >
+        <mat-icon [svgIcon]="icons.Lock"></mat-icon>
+      </div>
+    }
   }
 
-  @if (notConnected$Sig() | async) {
+  @if (notConnectedSig()) {
     <div
       @fade
       class="connection-indicator"
@@ -32,4 +42,5 @@
       <mat-icon [svgIcon]="icons.SignalStrength"></mat-icon>
     </div>
   }
+
 </cp-draggable-space-object>
