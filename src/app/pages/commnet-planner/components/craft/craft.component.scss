@@ -26,3 +26,11 @@
   --animate-opacity-wobble-1: 1;
   animation: 1s kf-animate-opacity-wobble var(--timing-function-quadratic-out) alternate infinite;
 }
+
+.position-lock-indicator {
+  color: var(--color-text-accent);
+  position: absolute;
+  top: 10%;
+  left: -50%;
+  opacity: .7;
+}

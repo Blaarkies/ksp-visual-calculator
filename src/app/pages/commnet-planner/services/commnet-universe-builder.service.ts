@@ -223,8 +223,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
       ?? this.cameraService.getGameSpaceLocationOfScreenSpaceCenter();
 
     let antennaeGroups = details.antennae.map(g => new Group(g.item.label, g.count));
-    let craft = this.craftFactory.makeCraft(
-      details.id, details.name, details.craftType, antennaeGroups);
+    let craft = this.craftFactory.makeCraft(details.id, details.name, details.craftType, antennaeGroups, details.locked);
 
     let parent = this.getSoiParent(location);
     parent.draggable.addChild(craft.draggable);
@@ -252,8 +251,7 @@ export class CommnetUniverseBuilderService extends AbstractUniverseBuilderServic
   async editCraft(oldCraft: Craft, craftDetails: CraftDetails) {
     let newAntennae = craftDetails.antennae.map(g => new Group(g.item.label, g.count));
 
-    let newCraft = this.craftFactory.makeCraft(
-      craftDetails.id, craftDetails.name, craftDetails.craftType, newAntennae);
+    let newCraft = this.craftFactory.makeCraft(craftDetails.id, craftDetails.name, craftDetails.craftType, newAntennae, craftDetails.locked);
     let parent = craftDetails.advancedPlacement?.orbitParent
       ?? this.getSoiParent(oldCraft.location);
 

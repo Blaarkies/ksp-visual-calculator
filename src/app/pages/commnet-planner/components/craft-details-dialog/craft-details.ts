@@ -11,6 +11,7 @@ export class CraftDetails {
     public craftType: CraftType,
     public antennae: Group<Antenna>[],
     public advancedPlacement?: AdvancedPlacement,
+    public locked = false,
   ) {
   }
 

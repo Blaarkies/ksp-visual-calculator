@@ -53,8 +53,10 @@
     <mat-list-item *ngSwitchCase="actionTypes.ExternalRoute"
                    (click)="action.emit(option);
                             option.readNotification();
-                            logExternalLink(option.actionMeta.externalRoute)">
-      <a class="anchor-invisible"
+                            logExternalLink(option.actionMeta.externalRoute);
+                            externalLink.click()">
+      <a #externalLink
+         class="anchor-invisible"
          [href]="option.actionMeta.externalRoute"
          target="_blank">
         <ng-container *ngTemplateOutlet="button"></ng-container>

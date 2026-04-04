@@ -17,6 +17,7 @@ export class Craft extends SpaceObject {
 
   spriteLocation: Vector2;
   communication: Communication;
+  locked: boolean;
 
   get displayAltitude(): string {
     let soiParent = this.soiManager.getSoiParent(this.location);
@@ -36,6 +37,7 @@ export class Craft extends SpaceObject {
     antennae: Group<string>[] = [],
     location?: Vector2,
     lastAttemptLocation?: number[],
+    locked = false,
   ) {
     super(soiManager, id, 30, label, ImageUrls.CraftIcons,
       'soiLock', SpaceObjectType.Craft,
@@ -43,6 +45,7 @@ export class Craft extends SpaceObject {
 
     this.spriteLocation = craftType.iconLocation;
     this.communication = new Communication(antennaeManager, antennae.slice());
+    this.locked = locked;
     this.spaceObjectChange$ = this.change$;
     this.change$ = merge(this.spaceObjectChange$, this.communication.change$);
   }
@@ -58,6 +61,7 @@ export class Craft extends SpaceObject {
       ...base,
       craftType: this.craftType.label,
       communication: this.communication.toJson(),
+      locked: this.locked,
     };
   }
 
@@ -78,6 +82,7 @@ export class Craft extends SpaceObject {
       communication.stringAntennae,
       Vector2.fromList(json.draggable.location),
       json.draggable.lastAttemptLocation,
+      json.locked,
     );
   }
 

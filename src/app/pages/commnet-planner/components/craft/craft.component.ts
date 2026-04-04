@@ -2,9 +2,9 @@ import { AsyncPipe } from '@angular/common';
 import {
   Component,
   computed,
-  EventEmitter,
+  EventEmitter, inject, Injector,
   Input,
-  Output,
+  Output, Signal,
   signal,
 } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,10 @@ import {
 import { BasicAnimations } from '../../../../animations/basic-animations';
 import { Icons } from '../../../../common/domain/icons';
 import { Craft } from '../../../../common/domain/space-objects/craft';
-import { DraggableSpaceObjectComponent } from '../../../../components/draggable-space-object/draggable-space-object.component';
+import {
+  DraggableSpaceObjectComponent
+} from '../../../../components/draggable-space-object/draggable-space-object.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'cp-craft',
@@ -35,6 +38,8 @@ import { DraggableSpaceObjectComponent } from '../../../../components/draggable-
 })
 export class CraftComponent {
 
+  private injector = inject(Injector);
+
   @Input() set craft(value: Craft) {
     this.craftSig.set(value);
 
@@ -42,6 +47,13 @@ export class CraftComponent {
       startWith(undefined),
       map(() => value.displayAltitude),
       shareReplay(1));
+
+    const injector = this.injector;
+    this.isHoverSig = toSignal(value.draggable.isHover$, {injector});
+
+    const connected$ = value.communication.hasControl$.stream$
+      .pipe(map(v => !v));
+    this.notConnectedSig = toSignal(connected$, {injector});
   }
 
   @Output() dragStart = new EventEmitter<PointerEvent>();
@@ -50,13 +62,13 @@ export class CraftComponent {
 
   icons = Icons;
   altitude$: Observable<string>;
+  isHoverSig: Signal<boolean>;
+  notConnectedSig: Signal<boolean>;
 
   craftSig = signal<Craft>(null);
   imageUrlSig = computed(() => this.craftSig().draggable.imageUrl);
   locationXSig = computed(() => this.craftSig().spriteLocation.x);
   locationYSig = computed(() => this.craftSig().spriteLocation.y);
-  isHover$Sig = computed(() => this.craftSig().draggable.isHover$);
-  notConnected$Sig = computed(() =>
-    this.craftSig().communication.hasControl$.stream$.pipe(map(v => !v)));
+  lockedSig = computed(() => this.craftSig().locked);
 
 }
