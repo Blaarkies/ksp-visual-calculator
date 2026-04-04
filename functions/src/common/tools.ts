@@ -19,7 +19,7 @@ let getFirst = q => q.docs?.[0];
 
 export async function getFirstSupporterDoc(email: string): Promise<Supporter> {
   let supportersQuery = await db.collection(<TableName>'supporters')
-    .where('email', '==', email)
+    .where('email', '==', email.toLowerCase())
     .limit(1)
     .get().then(getFirst);
   return supportersQuery as unknown as Supporter;
@@ -27,7 +27,7 @@ export async function getFirstSupporterDoc(email: string): Promise<Supporter> {
 
 export async function getFirstUserDoc(email: string) {
   let userQuery = await db.collection(<TableName>'users')
-    .where('email', '==', email)
+    .where('email', '==', email.toLowerCase())
     .limit(1)
     .get().then(getFirst);
   return userQuery;

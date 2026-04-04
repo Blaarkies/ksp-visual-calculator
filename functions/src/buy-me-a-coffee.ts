@@ -23,8 +23,8 @@ export const isEmailACustomer = functions
 
     let allCustomers: string[] = allBmacSupporters.map(c => c.payer_email);
 
-    let queryEmail = req.query.email;
-    let isCustomer = allCustomers.some(email => email === queryEmail);
+    let queryEmail = req.query.email.toString().toLowerCase();
+    let isCustomer = allCustomers.some(email => email.toLowerCase() === queryEmail);
 
     log(`Email [${queryEmail}] is ${isCustomer ? '' : 'not'} a customer`);
 
@@ -68,7 +68,8 @@ export const webhookNewSupporter = functions
     // let webhookSecret = functions.config().bmac.webhooksecret;
     let data: WebhookRequest = req.body.response;
 
-    let existingSupporter = await getFirstSupporterDoc(data.supporter_email);
+    let newEmail = data.supporter_email.toLowerCase();
+    let existingSupporter = await getFirstSupporterDoc(newEmail);
     if (existingSupporter) {
       log(`Supporter ${existingSupporter.email} already exists. Skipping this request.`);
       res.sendStatus(200)
@@ -76,15 +77,15 @@ export const webhookNewSupporter = functions
     }
 
     let supporterDoc = {
-      email: data.supporter_email,
+      email: newEmail,
       type: 'once-off',
       joined: new Date(data.support_created_on),
     } as Supporter;
 
-    let userDoc = await getFirstUserDoc(data.supporter_email);
+    let userDoc = await getFirstUserDoc(newEmail);
 
     if (!userDoc) {
-      log(`No user found that matches ${data.supporter_email}. Saving supporter entry.`);
+      log(`No user found that matches ${newEmail}. Saving supporter entry.`);
       await db.collection(<TableName>'supporters')
         .doc(`unmatched-${uid()}`)
         .set(supporterDoc);
@@ -101,7 +102,7 @@ export const webhookNewSupporter = functions
       });
 
     // backward compatible for old table
-    log(`Set user [${data.supporter_email}] isCustomer [true].`);
+    log(`Set user [${newEmail}] isCustomer [true].`);
     await userDoc.ref.set({isCustomer: true}, {merge: true});
 
     res.sendStatus(200)
